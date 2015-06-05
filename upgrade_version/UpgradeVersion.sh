@@ -28,8 +28,8 @@ function load_options () {
     b.opt.add_alias --source-path -s
 
     # Mandatory arguments
-    #b.opt.required_args --old --new --date --project
-    b.opt.required_args --old --new --project
+    #b.opt.required_args --project --old --new --date
+    b.opt.required_args --project --old --new
 }
 
 function displayHelp () {
@@ -102,7 +102,7 @@ function run () {
         Project=$(sanitize_arg $(b.opt.get_opt --project))
 
         # TODO: possibility to run the script from anywhere
-        Script="$(b.get bang.working_dir)/../../${Project}/Release/Update${Project}.sh"
+        Script="$(b.get bang.working_dir)/../../${Project}/Release/UpgradeVersion.sh"
 
         # For lisibility
         echo
@@ -113,11 +113,12 @@ function run () {
             # the corresponding task
             . $Script
             # Launch the task for this project
-            b.task.run Update$Project
+            b.task.run UpgradeVersion
         else
             echo "Error : no task found for $Project!"
             echo
             echo "Warning : you must be in UpdateVersion.sh's directory to launch it."
+            echo "ie: .../path/to/MediaArea-Utils/update_version"
         fi
 
         # For lisibility
@@ -129,6 +130,7 @@ function run () {
         unset -v Version_old_array Version_new_array 
         unset -v Version_old_major Version_old_minor Version_old_patch
         unset -v Version_new_major Version_new_minor Version_new_patch
+        unset -v Project Script
     fi
 }
 
