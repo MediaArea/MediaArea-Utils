@@ -118,7 +118,8 @@ function run () {
             echo "Error : no task found for $Project!"
             echo
             echo "Warning : you must be in UpdateVersion.sh's directory to launch it."
-            echo "ie: .../path/to/MediaArea-Utils/update_version"
+            echo "e.g. /path/to/MediaArea-Utils/update_version"
+            echo "and the project repository must be in the same directory than MediaArea-Utils"
         fi
 
         # For lisibility

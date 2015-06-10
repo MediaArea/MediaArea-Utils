@@ -86,7 +86,8 @@ function run () {
         Version=$(sanitize_arg $(b.opt.get_opt --version))
 
         # TODO: possibility to run the script from anywhere
-        Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
+        #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
+        Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
         #echo $Script
 
         # For lisibility
@@ -103,9 +104,8 @@ function run () {
             echo "Error : no task found for $Project!"
             echo
             echo "Warning : you must be in PrepareSource.sh's directory to launch it."
-            echo "ie: .../path/to/MediaArea-Utils/prepare_source"
+            echo "e.g. /path/to/MediaArea-Utils/prepare_source"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
-
         fi
 
         # For lisibility
