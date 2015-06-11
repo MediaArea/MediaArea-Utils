@@ -7,40 +7,46 @@
 
 function _get_source () {
 
-    # Determine where are the sources of the project
+    local RepoURL
+
+    cd $Path
+    mkdir repos
+
+    # Determine where are the sources of the target project
     if [ $(b.opt.get_opt --source-path) ]; then
         MIL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
     else    
-        if [ $(b.opt.get_opt --repo-url) ]; then
-            RepoURL=$(sanitize_arg $(b.opt.get_opt --repo-url))
+        if [ $(b.opt.get_opt --repo) ]; then
+            RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
         else
             RepoURL="https://github.com/MediaArea/"
         fi
-        getRepo MediaInfoLib $RepoURL $Path
-        MIL_source=$Path/$Project
+        getRepo MediaInfoLib $RepoURL $Path/repos
+        MIL_source=$Path/repos/MediaInfoLib
     fi
 
     # Dependency : ZenLib
-    if [ $(b.opt.get_opt --repo-url) ]; then
-        RepoURL=$(sanitize_arg $(b.opt.get_opt --repo-url))
+    if [ $(b.opt.get_opt --repo) ]; then
+        RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
     else
         RepoURL="https://github.com/MediaArea/"
     fi
     echo
-    getRepo ZenLib $RepoURL $Path
-    ZL_source=$Path/ZenLib
+    # TODO: call the function who build a clean ZenLib compil archive
+    getRepo ZenLib $RepoURL $Path/repos
+    ZL_source=$Path/repos/ZenLib
 
     # Dependency : zlib
     echo
-    getRepo zlib https://github.com/madler/ $Path
-    zlib_source=$Path/zlib
+    getRepo zlib https://github.com/madler/ $Path/repos
+    zlib_source=$Path/repos/zlib
 
 }
 
 function _linux_compil () {
 
     echo
-    echo "Prepare the archive for compilation on Linux:"
+    echo "Generate the archive for compilation under Linux:"
     echo "1: copy what is wanted..."
 
     cd $Path
@@ -51,7 +57,6 @@ function _linux_compil () {
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
 
     # Dependency : ZenLib
-    # TODO: call the function who build a clean ZenLib compil archive
     cp -r $ZL_source .
 
     # Other Dependencies
@@ -59,7 +64,7 @@ function _linux_compil () {
     cp -r $zlib_source Shared/Project
     # TODO
     #cp -r $curl_source Shared/Project
-    # TODO: _Common files, currently an empty dir on the online archive
+    # TODO: _Common files, currently an empty dir in the online archive
     mkdir Shared/Project/_Common
 
     echo "2: remove what isn't wanted..."
@@ -118,7 +123,7 @@ function _linux_compil () {
 function _windows_compil () {
 
     echo
-    echo "Prepare the archive for compilation on Windows:"
+    echo "Generate the archive for compilation under Windows:"
     echo "1: copy what is wanted..."
 
     cd $Path
@@ -128,7 +133,6 @@ function _windows_compil () {
     cp -r $MIL_source .
 
     # Dependency : ZenLib
-    # TODO: call the function who build a clean ZenLib compil archive
     cp -r $ZL_source .
 
     # Dependency : zlib
@@ -192,12 +196,10 @@ function _windows_compil () {
 function _linux_packages () {
 
     echo
-    echo "Prepare the archive for Linux packages creation:"
+    echo "Generate the archive for Linux packages creation:"
     echo "1: copy what is wanted..."
 
     cd $Path
-    mkdir tmp
-    cd tmp
     cp -r $MIL_source .
 
     echo "2: remove what isn't wanted..."
@@ -249,17 +251,15 @@ function _linux_packages () {
         if ! b.path.dir? archives; then
             mkdir archives
         fi
-        cd tmp
-        #(GZIP=-9 tar -czf ../archives/libmediainfo_${Version}.tgz MediaInfoLib)
-        #(BZIP=-9 tar -cjf ../archives/libmediainfo_${Version}.tbz MediaInfoLib)
-        (XZ_OPT=-9 tar -cJf ../archives/libmediainfo_${Version}.txz MediaInfoLib)
+        #(GZIP=-9 tar -czf archives/libmediainfo_${Version}.tgz MediaInfoLib)
+        #(BZIP=-9 tar -cjf archives/libmediainfo_${Version}.tbz MediaInfoLib)
+        (XZ_OPT=-9 tar -cJf archives/libmediainfo_${Version}.txz MediaInfoLib)
     fi
 
 }
 
 function btask.PrepareSource.run () {
 
-    Project=MediaInfoLib
     Path=/tmp/ma
 
     LinuxCompil=false
@@ -294,29 +294,33 @@ function btask.PrepareSource.run () {
 
     # Clean up
     rm -fr archives
+    rm -fr repos
+    # Clean the archive for compilation under linux
     rm -fr MediaInfo_DLL_${Version}_GNU_FromSource
+    # Clean the archive for compilation under windows
     rm -fr libmediainfo_${Version}_AllInclusive
-    rm -fr tmp
+    # Clean the archive for linux package creation
+    rm -fr MediaInfoLib
 
     if $LinuxCompil || $WindowsCompil || $LinuxPackages || $AllTarget; then
-        #echo -n
         _get_source
     else
         echo "Besides --project and --version, you must specify at least"
         echo "one of this options:"
         echo
         echo "--linux-compil|-lc"
-        echo "              Prepare the archive for compilation on Linux"
+        echo "              Generate the archive for compilation under Linux"
         echo
         echo "--windows-compil|-wc"
-        echo "              Prepare the archive for compilation on Windows"
+        echo "              Generate the archive for compilation under Windows"
         echo
         echo "--linux-packages|-lp|--linux-package"
-        echo "              Prepare the archive for Linux packages creation"
+        echo "              Generate the archive for Linux packages creation"
         echo
         echo "--all|-a"
         echo "              Prepare all the targets for this project"
     fi
+
     if $LinuxCompil; then
         _linux_compil
     fi
@@ -336,10 +340,14 @@ function btask.PrepareSource.run () {
     # TODO: option -nc
     if $CleanUp; then
         cd $Path
+        rm -fr repos
         rm -fr MediaInfo_DLL_${Version}_GNU_FromSource
         rm -fr libmediainfo_${Version}_AllInclusive
-        rm -fr tmp
     fi
 
-    #unset -v MIL_files index MIL_source
+    unset -v Path MIL_source ZL_source zlib_source
+    #unset -v curl_source
+    unset -v LinuxCompil WindowsCompil LinuxPackages AllTarget
+    unset -v CleanUp MakeArchives
+
 }

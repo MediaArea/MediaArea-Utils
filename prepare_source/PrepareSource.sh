@@ -19,21 +19,21 @@ function load_options () {
     b.opt.add_opt --version "The version of the project"
     b.opt.add_alias --version -v
 
-    b.opt.add_flag --linux-compil "Prepare the archive for compilation on Linux"
+    b.opt.add_flag --linux-compil "Generate the archive for compilation under Linux"
     b.opt.add_alias --linux-compil -lc
 
-    b.opt.add_flag --windows-compil "Prepare the archive for compilation on Windows"
+    b.opt.add_flag --windows-compil "Generate the archive for compilation under Windows"
     b.opt.add_alias --windows-compil -wc
 
-    b.opt.add_flag --linux-packages "Prepare the archive for Linux packages creation"
+    b.opt.add_flag --linux-packages "Generate the archive for Linux packages creation"
     b.opt.add_alias --linux-packages --linux-package
     b.opt.add_alias --linux-packages -lp
     
     b.opt.add_flag --all "Prepare all the targets for this project."
     b.opt.add_alias --all -a
 
-    b.opt.add_opt --repo-url "Source repository URL"
-    b.opt.add_alias --repo-url -u
+    b.opt.add_opt --repo "Source repository URL"
+    b.opt.add_alias --repo -r
 
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
@@ -88,7 +88,6 @@ function run () {
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
         Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
-        #echo $Script
 
         # For lisibility
         echo
@@ -111,7 +110,7 @@ function run () {
         # For lisibility
         echo
 
-        unset -v Project Script
+        unset -v Project Version Script
     fi
 }
 
