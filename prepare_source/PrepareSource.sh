@@ -2,11 +2,12 @@
 
 # MediaArea-Utils/upgrade_version/UpgradeVersion.sh 
 # Upgrade the version number of the projects used by MediaArea
-# This script requires : bang.sh and sed
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
 # Use of this source code is governed by a BSD-style license that can
 # be found in the License.txt file in the root of the source tree.
+
+# This script requires : bang.sh, git, tar, xz-utils and p7zip-full
 
 function load_options () {
 
@@ -18,6 +19,15 @@ function load_options () {
 
     b.opt.add_opt --version "The version of the project"
     b.opt.add_alias --version -v
+
+    b.opt.add_opt --repo "Source repository URL"
+    b.opt.add_alias --repo -r
+
+    b.opt.add_opt --source-path "Source directory to modify"
+    b.opt.add_alias --source-path -s
+
+    b.opt.add_opt --working-path "Specify the Working path (otherwise /tmp)"
+    b.opt.add_alias --working-path -w
 
     b.opt.add_flag --linux-compil "Generate the archive for compilation under Linux"
     b.opt.add_alias --linux-compil -lc
@@ -32,20 +42,14 @@ function load_options () {
     b.opt.add_flag --all "Prepare all the targets for this project."
     b.opt.add_alias --all -a
 
-    b.opt.add_opt --repo "Source repository URL"
-    b.opt.add_alias --repo -r
-
-    b.opt.add_opt --source-path "Source directory to modify"
-    b.opt.add_alias --source-path -s
-
-    b.opt.add_flag --no-cleanup "Don’t erase the temporary repertories"
+    b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
     b.opt.add_flag --no-archives "Don’t create the archives"
     b.opt.add_alias --no-archives --no-archive
     b.opt.add_alias --no-archives -na
 
     # Mandatory arguments
-    b.opt.required_args --project --version
+    b.opt.required_args --project
 }
 
 function displayHelp () {
@@ -83,7 +87,10 @@ function run () {
     if b.opt.check_required_args; then
 
         Project=$(sanitize_arg $(b.opt.get_opt --project))
-        Version=$(sanitize_arg $(b.opt.get_opt --version))
+        Version=""
+        if [ $(b.opt.get_opt --version) ]; then
+            Version="_$(sanitize_arg $(b.opt.get_opt --version))"
+        fi
 
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"

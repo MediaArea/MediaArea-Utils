@@ -9,10 +9,12 @@ function _get_source () {
 
     local RepoURL
 
-    cd $Path
-    mkdir repos
+    cd $WPath
+    if ! b.path.dir? repos; then
+        mkdir repos
+    fi
 
-    # Determine where are the sources of the target project
+    # Determine where are the sources of MediaInfoLib
     if [ $(b.opt.get_opt --source-path) ]; then
         MIL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
     else    
@@ -21,8 +23,8 @@ function _get_source () {
         else
             RepoURL="https://github.com/MediaArea/"
         fi
-        getRepo MediaInfoLib $RepoURL $Path/repos
-        MIL_source=$Path/repos/MediaInfoLib
+        getRepo MediaInfoLib $RepoURL $WPath/repos
+        MIL_source=$WPath/repos/MediaInfoLib
     fi
 
     # Dependency : ZenLib
@@ -31,37 +33,33 @@ function _get_source () {
     else
         RepoURL="https://github.com/MediaArea/"
     fi
-    echo
-    # TODO: call the function who build a clean ZenLib compil archive
-    getRepo ZenLib $RepoURL $Path/repos
-    ZL_source=$Path/repos/ZenLib
+    cd $(b.get bang.working_dir)
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -w $WPath -lc -wc -na -nc
 
     # Dependency : zlib
-    echo
-    getRepo zlib https://github.com/madler/ $Path/repos
-    zlib_source=$Path/repos/zlib
+    getRepo zlib https://github.com/madler/ $WPath/repos
 
 }
 
 function _linux_compil () {
 
     echo
-    echo "Generate the archive for compilation under Linux:"
+    echo "Generate the MIL archive for compilation under Linux:"
     echo "1: copy what is wanted..."
 
-    cd $Path
-    mkdir MediaInfo_DLL_${Version}_GNU_FromSource
-    cd MediaInfo_DLL_${Version}_GNU_FromSource
+    cd $WPath/MIL
+    mkdir MediaInfo_DLL${Version}_GNU_FromSource
+    cd MediaInfo_DLL${Version}_GNU_FromSource
 
     cp -r $MIL_source .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $ZL_source .
+    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
 
     # Other Dependencies
     mkdir -p Shared/Project/
-    cp -r $zlib_source Shared/Project
+    cp -r $WPath/repos/zlib Shared/Project
     # TODO
     #cp -r $curl_source Shared/Project
     # TODO: _Common files, currently an empty dir in the online archive
@@ -109,13 +107,13 @@ function _linux_compil () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $Path
-        if ! b.path.dir? archives; then
-            mkdir archives
+        cd $WPath/MIL
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
         fi
-        #(GZIP=-9 tar -czf archives/MediaInfo_DLL_${Version}_GNU_FromSource.tgz MediaInfo_DLL_${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cjf archives/MediaInfo_DLL_${Version}_GNU_FromSource.tbz MediaInfo_DLL_${Version}_GNU_FromSource)
-        (XZ_OPT=-9e tar -cJf archives/MediaInfo_DLL_${Version}_GNU_FromSource.txz MediaInfo_DLL_${Version}_GNU_FromSource)
+        #(GZIP=-9 tar -czf ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tgz MediaInfo_DLL${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cjf ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tbz MediaInfo_DLL${Version}_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJf ../archives/MediaInfo_DLL${Version}_GNU_FromSource.txz MediaInfo_DLL${Version}_GNU_FromSource)
     fi
 
 }
@@ -123,20 +121,20 @@ function _linux_compil () {
 function _windows_compil () {
 
     echo
-    echo "Generate the archive for compilation under Windows:"
+    echo "Generate the MIL archive for compilation under Windows:"
     echo "1: copy what is wanted..."
 
-    cd $Path
-    mkdir libmediainfo_${Version}_AllInclusive
-    cd libmediainfo_${Version}_AllInclusive
+    cd $WPath/MIL
+    mkdir libmediainfo${Version}_AllInclusive
+    cd libmediainfo${Version}_AllInclusive
 
     cp -r $MIL_source .
 
     # Dependency : ZenLib
-    cp -r $ZL_source .
+    cp -r $WPath/ZL/ZenLib_compilation_under_windows ZenLib
 
     # Dependency : zlib
-    cp -r $zlib_source .
+    cp -r $WPath/repos/zlib .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -184,11 +182,11 @@ function _windows_compil () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $Path
-        if ! b.path.dir? archives; then
-            mkdir archives
+        cd $WPath/MIL
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
         fi
-        7z a -t7z -mx=9 -bd archives/libmediainfo_${Version}_AllInclusive.7z libmediainfo_${Version}_AllInclusive >/dev/null
+        7z a -t7z -mx=9 -bd ../archives/libmediainfo${Version}_AllInclusive.7z libmediainfo${Version}_AllInclusive >/dev/null
     fi
 
 }
@@ -196,10 +194,10 @@ function _windows_compil () {
 function _linux_packages () {
 
     echo
-    echo "Generate the archive for Linux packages creation:"
+    echo "Generate the MIL archive for Linux packages creation:"
     echo "1: copy what is wanted..."
 
-    cd $Path
+    cd $WPath/MIL
     cp -r $MIL_source .
 
     echo "2: remove what isn't wanted..."
@@ -247,20 +245,18 @@ function _linux_packages () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $Path
-        if ! b.path.dir? archives; then
-            mkdir archives
+        cd $WPath/MIL
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
         fi
-        #(GZIP=-9 tar -czf archives/libmediainfo_${Version}.tgz MediaInfoLib)
-        #(BZIP=-9 tar -cjf archives/libmediainfo_${Version}.tbz MediaInfoLib)
-        (XZ_OPT=-9 tar -cJf archives/libmediainfo_${Version}.txz MediaInfoLib)
+        #(GZIP=-9 tar -czf ../archives/libmediainfo${Version}.tgz MediaInfoLib)
+        #(BZIP=-9 tar -cjf ../archives/libmediainfo${Version}.tbz MediaInfoLib)
+        (XZ_OPT=-9 tar -cJf ../archives/libmediainfo${Version}.txz MediaInfoLib)
     fi
 
 }
 
 function btask.PrepareSource.run () {
-
-    Path=/tmp/ma
 
     LinuxCompil=false
     if b.opt.has_flag? --linux-compil; then
@@ -287,26 +283,34 @@ function btask.PrepareSource.run () {
         MakeArchives=false
     fi
 
-    if ! b.path.dir? $Path || ! b.path.writable? $Path; then
-        b.abort "The repertory $Path doesn't exit or isn't writable."
+    WPath=/tmp/
+    if [ $(b.opt.get_opt --working-path) ]; then
+        WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
+        if b.path.dir? $WPath && ! b.path.writable? $WPath; then
+            echo "The directory $WPath isn't writable : will use /tmp instead."
+            echo
+            WPath=/tmp/
+        else
+            # TODO: Handle exception if mkdir fail
+            if ! b.path.dir? $WPath ;then
+                mkdir $WPath
+            fi
+        fi
     fi
-    cd $Path
+    cd $WPath
 
     # Clean up
     rm -fr archives
-    rm -fr repos
-    # Clean the archive for compilation under linux
-    rm -fr MediaInfo_DLL_${Version}_GNU_FromSource
-    # Clean the archive for compilation under windows
-    rm -fr libmediainfo_${Version}_AllInclusive
-    # Clean the archive for linux package creation
-    rm -fr MediaInfoLib
+    rm -fr repos/MediaInfoLib
+    rm -fr repos/ZenLib
+    rm -fr $WPath/MIL
+    rm -fr $WPath/ZL
+    mkdir $WPath/MIL
 
     if $LinuxCompil || $WindowsCompil || $LinuxPackages || $AllTarget; then
         _get_source
     else
-        echo "Besides --project and --version, you must specify at least"
-        echo "one of this options:"
+        echo "Besides --project, you must specify at least one of this options:"
         echo
         echo "--linux-compil|-lc"
         echo "              Generate the archive for compilation under Linux"
@@ -336,16 +340,14 @@ function btask.PrepareSource.run () {
         _linux_packages
     fi
     
-    # Clean up
-    # TODO: option -nc
     if $CleanUp; then
-        cd $Path
+        cd $WPath
         rm -fr repos
-        rm -fr MediaInfo_DLL_${Version}_GNU_FromSource
-        rm -fr libmediainfo_${Version}_AllInclusive
+        rm -fr MIL
+        rm -fr ZL
     fi
 
-    unset -v Path MIL_source ZL_source zlib_source
+    unset -v WPath MIL_source
     #unset -v curl_source
     unset -v LinuxCompil WindowsCompil LinuxPackages AllTarget
     unset -v CleanUp MakeArchives
