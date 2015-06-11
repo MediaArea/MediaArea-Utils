@@ -19,17 +19,17 @@ function load_options () {
     b.opt.add_opt --version "The version of the project"
     b.opt.add_alias --version -v
 
-    b.opt.add_flag --linux-compil "Create the archive for compilation on Linux"
+    b.opt.add_flag --linux-compil "Prepare the archive for compilation on Linux"
     b.opt.add_alias --linux-compil -lc
 
-    b.opt.add_flag --windows-compil "Create the archive for compilation on Windows"
+    b.opt.add_flag --windows-compil "Prepare the archive for compilation on Windows"
     b.opt.add_alias --windows-compil -wc
 
-    b.opt.add_flag --linux-packages "Create the archive for Linux packages creation"
+    b.opt.add_flag --linux-packages "Prepare the archive for Linux packages creation"
     b.opt.add_alias --linux-packages --linux-package
     b.opt.add_alias --linux-packages -lp
     
-    b.opt.add_flag --all "Create all the targets for this project."
+    b.opt.add_flag --all "Prepare all the targets for this project."
     b.opt.add_alias --all -a
 
     b.opt.add_opt --repo-url "Source repository URL"
@@ -38,11 +38,11 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
 
+    b.opt.add_flag --no-cleanup "Don’t erase the temporary repertories"
+    b.opt.add_alias --no-cleanup -nc
     b.opt.add_flag --no-archives "Don’t create the archives"
     b.opt.add_alias --no-archives --no-archive
     b.opt.add_alias --no-archives -na
-    #b.opt.add_flag --no-cleanup "Don’t erase the result"
-    #b.opt.add_alias --no-cleanup -nc
 
     # Mandatory arguments
     b.opt.required_args --project --version
