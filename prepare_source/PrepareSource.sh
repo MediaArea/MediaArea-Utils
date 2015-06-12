@@ -1,7 +1,7 @@
 #!/usr/bin/env bang run
 
-# MediaArea-Utils/upgrade_version/UpgradeVersion.sh 
-# Upgrade the version number of the projects used by MediaArea
+# MediaArea-Utils/prepare_source/PrepareSource.sh
+# Prepare the source of the projects used by MediaArea
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
 # Use of this source code is governed by a BSD-style license that can
