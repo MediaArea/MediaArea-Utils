@@ -89,22 +89,64 @@ function run () {
         Project=$(sanitize_arg $(b.opt.get_opt --project))
         Version=""
         if [ $(b.opt.get_opt --version) ]; then
+            # We put an _ in $Version, this way if the user doesn't give
+            # an --version argument, we don't generate directories and
+            # archives with __ (e.g. MediaInfo_GUI__GNU_FromSource)
             Version="_$(sanitize_arg $(b.opt.get_opt --version))"
         fi
 
+        LinuxCompil=false
+        if b.opt.has_flag? --linux-compil; then
+            LinuxCompil=true
+        fi
+        WindowsCompil=false
+        if b.opt.has_flag? --windows-compil; then
+            WindowsCompil=true
+        fi
+        LinuxPackages=false
+        if b.opt.has_flag? --linux-packages; then
+            LinuxPackages=true
+        fi
+        AllTarget=false
+        if b.opt.has_flag? --all; then
+            AllTarget=true
+        fi
+        CleanUp=true
+        if b.opt.has_flag? --no-cleanup; then
+            CleanUp=false
+        fi
+        MakeArchives=true
+        if b.opt.has_flag? --no-archives; then
+            MakeArchives=false
+        fi
+    
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
         Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
+
+        WPath=/tmp/
+        if [ $(b.opt.get_opt --working-path) ]; then
+            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
+                echo "The directory $WPath isn't writable : will use /tmp instead."
+                echo
+                WPath=/tmp/
+            else
+                # TODO: Handle exception if mkdir fail
+                if ! b.path.dir? $WPath ;then
+                    mkdir -p $WPath
+                fi
+            fi
+        fi
 
         # For lisibility
         echo
 
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
-            # Load the script for this project, otherwise bang can't find
-            # the corresponding task
+            # Load the script for this project, so bang can find the
+            # corresponding task, then launch it
             . $Script
-            # Launch the task for this project
             b.task.run PrepareSource
         else
             echo "Error : no task found for $Project!"
@@ -117,7 +159,11 @@ function run () {
         # For lisibility
         echo
 
-        unset -v Project Version Script
+        unset -v Project Version
+        unset -v LinuxCompil WindowsCompil LinuxPackages AllTarget
+        unset -v CleanUp MakeArchives
+        unset -v WPath Script
+
     fi
 }
 
