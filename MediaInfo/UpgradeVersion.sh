@@ -7,19 +7,23 @@
 
 function btask.UpgradeVersion.run () {
 
+    local Repo MI_source MI_files index
+
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
+    else
+        Repo="git://github.com/MediaArea/MediaInfo/"
+    fi
+
     if [ $(b.opt.get_opt --source-path) ]; then
         MI_source=$(sanitize_arg $(b.opt.get_opt --source-path))
     else
-        if [ $(b.opt.get_opt --repo-url) ]; then
-            RepoURL=$(sanitize_arg $(b.opt.get_opt --repo-url))
-        else
-            RepoURL="git://github.com/MediaArea/MediaInfo/"
-        fi
-        getSource /tmp $RepoURL
-        MI_source=/tmp/MediaInfo
+        getRepo $Repo $WPath
+        MI_source=${WPath}/MediaInfo
+        # For lisibility after git, otherwise not needed
+        echo
     fi
 
-    echo
     echo "Passage for version with dots..."
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"
@@ -47,7 +51,7 @@ function btask.UpgradeVersion.run () {
     for MI_file in ${MI_files[@]}
     do
         echo ${MI_source}/${MI_file}
-        updateFile $Version_old_dot $Version_new ${MI_source}/${MI_file}
+        updateFile $Version_old_escaped $Version_new ${MI_source}/${MI_file}
 
     done
     unset -v MI_files index
@@ -83,5 +87,4 @@ function btask.UpgradeVersion.run () {
         "<VerInfo_Release>"$Version_new_patch"<\/VerInfo_Release>" \
         "${MI_source}/Project/BCB/GUI/MediaInfo_GUI.cbproj"
 
-    unset -v MI_files index MI_source
 }

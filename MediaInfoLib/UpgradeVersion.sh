@@ -7,19 +7,23 @@
 
 function btask.UpgradeVersion.run () {
 
+    local Repo MIL_source MIL_files index
+
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
+    else
+        Repo="git://github.com/MediaArea/MediaInfoLib/"
+    fi
+
     if [ $(b.opt.get_opt --source-path) ]; then
         MIL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
     else
-        if [ $(b.opt.get_opt --repo-url) ]; then
-            RepoURL=$(sanitize_arg $(b.opt.get_opt --repo-url))
-        else
-            RepoURL="git://github.com/MediaArea/MediaInfoLib/"
-        fi
-        getSource /tmp $RepoURL
-        MIL_source=/tmp/MediaInfoLib
+        getRepo $Repo $WPath
+        MIL_source=${WPath}/MediaInfoLib
+        # For lisibility after git, otherwise not needed
+        echo
     fi
 
-    echo
     echo "Passage for version with dots..."
     index=0
     MIL_files[((index++))]="Source/MediaInfo/MediaInfo_Config.cpp"
@@ -49,7 +53,7 @@ function btask.UpgradeVersion.run () {
     for MIL_file in ${MIL_files[@]}
     do
         echo "${MIL_source}/${MIL_file}"
-        updateFile $Version_old_dot $Version_new "${MIL_source}/${MIL_file}"
+        updateFile $Version_old_escaped $Version_new "${MIL_source}/${MIL_file}"
     done
     unset -v MIL_files
 
@@ -89,5 +93,4 @@ function btask.UpgradeVersion.run () {
         "set(MediaInfoLib_PATCH_VERSION $Version_new_patch)" \
         "${MIL_source}/Project/CMake/CMakeLists.txt"
 
-    unset -v MIL_files index MIL_source
 }
