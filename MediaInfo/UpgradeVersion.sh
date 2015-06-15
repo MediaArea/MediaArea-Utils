@@ -54,7 +54,7 @@ function btask.UpgradeVersion.run () {
         updateFile $Version_old_escaped $Version_new ${MI_source}/${MI_file}
 
     done
-    unset -v MI_files index
+    unset -v MI_files
 
     echo
     echo "Passage for version with commas..."

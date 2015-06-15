@@ -94,8 +94,7 @@ function run () {
         Version_old_comma=$(b.str.replace_all Version_old '.' ',')
         Version_new_comma=$(b.str.replace_all Version_new '.' ',')
 
-        # For the replacement of major/minor/patch : split $Version_new on
-        # the .
+        # Split the version in major/minor/patch on the points
         OLD_IFS="$IFS"
         IFS="."
         Version_old_array=($Version_old)
@@ -107,6 +106,14 @@ function run () {
         Version_new_major=${Version_new_array[0]}
         Version_new_minor=${Version_new_array[1]}
         Version_new_patch=${Version_new_array[2]}
+        # If we ask -o X.Y append an 0 for the version in X.Y.0.0 mode
+        if ! [ $Version_old_patch ]; then
+            Version_old_patch=0
+        fi
+        # If we ask -n X.Y append an 0 for the version in X.Y.0.0 mode
+        if ! [ $Version_new_patch ]; then
+            Version_new_patch=0
+        fi
 
         #Release_date=$(sanitize_arg $(b.opt.get_opt --date))
 
@@ -114,7 +121,7 @@ function run () {
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/UpgradeVersion.sh"
         Script="$(b.get bang.working_dir)/../${Project}/UpgradeVersion.sh"
 
-        WPath=/tmp/
+        WPath=/tmp
         if [ $(b.opt.get_opt --working-path) ]; then
             WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
             if b.path.dir? $WPath && ! b.path.writable? $WPath; then
