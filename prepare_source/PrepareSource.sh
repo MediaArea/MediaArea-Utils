@@ -20,14 +20,14 @@ function load_options () {
     b.opt.add_opt --version "The version of the project"
     b.opt.add_alias --version -v
 
+    b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
+    b.opt.add_alias --working-path -w
+
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
-
-    b.opt.add_opt --working-path "Specify the Working path (otherwise /tmp)"
-    b.opt.add_alias --working-path -w
 
     b.opt.add_flag --linux-compil "Generate the archive for compilation under Linux"
     b.opt.add_alias --linux-compil -lc
@@ -87,6 +87,19 @@ function run () {
     if b.opt.check_required_args; then
 
         Project=$(sanitize_arg $(b.opt.get_opt --project))
+        if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
+            Project=ZenLib
+        fi
+        if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
+            Project=MediaInfoLib
+        fi
+        if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
+            Project=MediaInfo
+        fi
+        if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
+            Project=MediaConch_SourceCode
+        fi
+
         Version=""
         if [ $(b.opt.get_opt --version) ]; then
             # We put an _ in $Version, this way if the user doesn't give

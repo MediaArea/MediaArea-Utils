@@ -83,6 +83,18 @@ function run () {
     if b.opt.check_required_args; then
 
         Project=$(sanitize_arg $(b.opt.get_opt --project))
+        if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
+            Project=ZenLib
+        fi
+        if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
+            Project=MediaInfoLib
+        fi
+        if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
+            Project=MediaInfo
+        fi
+        if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
+            Project=MediaConch_SourceCode
+        fi
 
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
         Version_new=$(sanitize_arg $(b.opt.get_opt --new))
