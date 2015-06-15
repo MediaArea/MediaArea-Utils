@@ -16,54 +16,66 @@ function btask.UpgradeVersion.run () {
     fi
 
     if [ $(b.opt.get_opt --source-path) ]; then
-        MI_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        MC_source=$(sanitize_arg $(b.opt.get_opt --source-path))
     else
         getRepo $Repo $WPath
-        MI_source=${WPath}/MediaConch_SourceCode
+        MC_source=${WPath}/MediaConch_SourceCode
         # For lisibility after git, otherwise not needed
         echo
     fi
 
-    echo "Passage for version with dots..."
+    #echo "$Version_old_major\.$Version_old_minor\.$Version_old_patch \
+    #    => $Version_new_major.$Version_new_minor.$Version_new_patch"
+
+    echo "Passage for version YY.MM ..."
     index=0
-    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/GNU/mediaconch.dsc" 
     MC_files[((index++))]="Project/GNU/mediaconch.dsc" 
     MC_files[((index++))]="Project/GNU/mediaconch.spec" 
-    MC_files[((index++))]="Project/GNU/mediaconch.spec" 
-    MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
-    MC_files[((index++))]="Project/OBS/obs_mediaconch" 
     MC_files[((index++))]="Project/Mac/mkdmg_GUI" 
     MC_files[((index++))]="Project/Mac/mkdmg_CLI" 
-    MC_files[((index++))]="debian/changelog" 
     MC_files[((index++))]="Source/CLI/Help.cpp" 
-    MC_files[((index++))]="Source/Install/MediaConch_GUI_Windows.nsi" 
 
-    # Replace old version by new version
     for MC_file in ${MC_files[@]}
     do
-        echo ${MI_source}/${MC_file}
-        updateFile $Version_old_escaped $Version_new ${MI_source}/${MC_file}
-
+        echo ${MC_source}/${MC_file}
+        updateFile $Version_old_escaped $Version_new ${MC_source}/${MC_file}
     done
     unset -v MC_files
 
     echo
-    echo "Passage for version with commas..."
+    echo "Passage for version YY.MM.patch ..."
     index=0
-    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
+    MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
+    MC_files[((index++))]="Project/OBS/obs_mediaconch" 
+    MC_files[((index++))]="debian/changelog" 
 
-    # Replace old version by new version
     for MC_file in ${MC_files[@]}
     do
-        echo ${MI_source}/${MC_file}
-        updateFile $Version_old_comma $Version_new_comma ${MI_source}/${MC_file}
+        echo ${MC_source}/${MC_file}
+        updateFile $Version_old_major\.$Version_old_minor\.$Version_old_patch $Version_new_major.$Version_new_minor.$Version_new_patch ${MC_source}/${MC_file}
     done
+    unset -v MC_files
+
+    echo
+    echo "Passage for version YY,MM,patch[,0] ..."
+    index=0
+    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
+    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
+
+    for MC_file in ${MC_files[@]}
+    do
+        echo ${MC_source}/${MC_file}
+        updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch ${MC_source}/${MC_file}
+    done
+    unset -v MC_files
+
+    echo
+    echo "Update Source/Install/MediaConch_GUI_Windows.nsi ..."
+    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor ${MC_source}/Source/Install/MediaConch_GUI_Windows.nsi
+    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_patch\.0\"" \
+        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_new_patch\.0\"" \
+        ${MC_source}/Source/Install/MediaConch_GUI_Windows.nsi
 
 }
