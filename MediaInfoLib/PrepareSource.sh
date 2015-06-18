@@ -33,7 +33,8 @@ function _get_source () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -w $WPath -lc -wc -na -nc
 
     # Dependency : zlib
-    getRepo zlib https://github.com/madler/ $WPath/repos
+    cd $WPath/repos
+    git clone -b "v1.2.8" https://github.com/madler/zlib
 
 }
 
@@ -64,7 +65,6 @@ function _linux_compil () {
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
-        rm -f ToDo.txt ReadMe.txt
         #rm -fr Release
         rm -fr debian
         cd Project
@@ -77,8 +77,13 @@ function _linux_compil () {
         cd ..
         rm -fr Contrib
         rm -fr Source/Resource
-        cd ..
     cd ..
+
+    echo "3: Autogen…"
+    cd ZenLib/Project/GNU/Library
+    ./autogen
+    cd ../../../../MediaInfoLib/Project/GNU/Library/
+    ./autogen
 
     if $MakeArchives; then
         echo "3: compressing..."
@@ -143,7 +148,6 @@ function _linux_packages () {
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
-        rm -f ToDo.txt ReadMe.txt
         #rm -fr Release
         cd Project
             rm -fr Coverity PureBasic Java NetBeans BCB CMake CodeBlocks
