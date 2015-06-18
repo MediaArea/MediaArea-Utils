@@ -33,7 +33,75 @@ function _get_source () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -a -na -nc
 
     # Dependency : WxWidgets
-    #getRepo zlib https://github.com/madler/ $WPath/repos
+    cd $WPath/repos
+    git clone -b "v3.0.2" https://github.com/wxWidgets/wxWidgets
+
+}
+
+function _linux_cli_compil () {
+
+    echo
+    echo "Generate the MI CLI directory for compilation under Linux:"
+    echo "1: copy what is wanted..."
+
+    cd $WPath/MI
+    mkdir MediaInfo_CLI${Version}_GNU_FromSource
+    cd MediaInfo_CLI${Version}_GNU_FromSource
+
+    cp -r $MI_source .
+    mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
+
+    # Dependency : ZenLib
+    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+
+    # Dependency : MediaInfoLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Other Dependencies
+    mkdir -p Shared/Project/
+    cp -r $WPath/repos/zlib Shared/Project
+    # TODO: _Common files, currently an empty dir in the online archive
+    mkdir Shared/Project/_Common
+
+    echo "2: remove what isn't wanted..."
+    cd MediaInfo
+        rm -fr .cvsignore .git*
+        rm -f History_GUI.txt
+        #rm -fr Release
+        rm -fr debian
+        cd Project
+            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
+            rm -fr GNU/GUI
+            rm -fr BCB QMake CodeBlocks
+            rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
+        cd ..
+        rm -fr Contrib
+        cd Source
+            rm -fr Source/GUI/
+            rm -fr Source/Install
+            rm -fr Source/PreRelease
+            rm -fr Source/Resource/
+        cd ..
+    cd ..
+
+    echo "3: Autogen…"
+    cd ZenLib/Project/GNU/Library
+    ./autogen
+    cd ../../../../MediaInfoLib/Project/GNU/Library/
+    ./autogen
+    cd ../../../../MediaInfo/Project/GNU/CLI/
+    ./autogen
+
+    if $MakeArchives; then
+        echo "4: compressing..."
+        cd $WPath/MI
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
+        fi
+        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tgz MediaInfo_CLI${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tbz MediaInfo_CLI${Version}_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.txz MediaInfo_CLI${Version}_GNU_FromSource)
+    fi
 
 }
 
@@ -53,7 +121,7 @@ function _linux_gui_compil () {
     cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
 
     # Dependency : MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource MediaInfoLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Other Dependencies
     mkdir -p Shared/Project/
@@ -124,8 +192,16 @@ function _linux_gui_compil () {
         cd ..
     cd ..
 
+    echo "3: Autogen…"
+    cd ZenLib/Project/GNU/Library
+    ./autogen
+    cd ../../../../MediaInfoLib/Project/GNU/Library/
+    ./autogen
+    cd ../../../../MediaInfo/Project/GNU/GUI/
+    ./autogen
+
     if $MakeArchives; then
-        echo "3: compressing..."
+        echo "4: compressing..."
         cd $WPath/MI
         if ! b.path.dir? ../archives; then
             mkdir ../archives
@@ -133,65 +209,6 @@ function _linux_gui_compil () {
         #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tgz MediaInfo_GUI${Version}_GNU_FromSource)
         #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tbz MediaInfo_GUI${Version}_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.txz MediaInfo_GUI${Version}_GNU_FromSource)
-    fi
-
-}
-
-function _linux_cli_compil () {
-
-    echo
-    echo "Generate the MI CLI directory for compilation under Linux:"
-    echo "1: copy what is wanted..."
-
-    cd $WPath/MI
-    mkdir MediaInfo_CLI${Version}_GNU_FromSource
-    cd MediaInfo_CLI${Version}_GNU_FromSource
-
-    cp -r $MI_source .
-    mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
-
-    # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
-
-    # Dependency : MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource MediaInfoLib
-
-    # Other Dependencies
-    mkdir -p Shared/Project/
-    cp -r $WPath/repos/zlib Shared/Project
-    # TODO: _Common files, currently an empty dir in the online archive
-    mkdir Shared/Project/_Common
-
-    echo "2: remove what isn't wanted..."
-    cd MediaInfo
-        rm -fr .cvsignore .git*
-        rm -f History_GUI.txt
-        #rm -fr Release
-        rm -fr debian
-        cd Project
-            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
-            rm -fr GNU/GUI
-            rm -fr BCB QMake CodeBlocks
-            rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
-        cd ..
-        rm -fr Contrib
-        cd Source
-            rm -fr Source/GUI/
-            rm -fr Source/Install
-            rm -fr Source/PreRelease
-            rm -fr Source/Resource/
-        cd ..
-    cd ..
-
-    if $MakeArchives; then
-        echo "3: compressing..."
-        cd $WPath/MI
-        if ! b.path.dir? ../archives; then
-            mkdir ../archives
-        fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tgz MediaInfo_CLI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tbz MediaInfo_CLI${Version}_GNU_FromSource)
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.txz MediaInfo_CLI${Version}_GNU_FromSource)
     fi
 
 }
@@ -212,7 +229,7 @@ function _windows_compil () {
     cp -r $WPath/ZL/ZenLib_compilation_under_windows ZenLib
 
     # Dependency : MediaInfoLib
-    cp -r $WPath/MIL/libmediainfo_AllInclusive MediaInfoLib
+    cp -r $WPath/MIL/libmediainfo_AllInclusive/MediaInfoLib .
 
     # Dependency : zlib
     cp -r $WPath/repos/zlib .
@@ -309,8 +326,8 @@ function btask.PrepareSource.run () {
     fi
 
     if $LinuxCompil; then
-        _linux_gui_compil
         _linux_cli_compil
+        _linux_gui_compil
     fi
     if $WindowsCompil; then
         _windows_compil
@@ -319,8 +336,8 @@ function btask.PrepareSource.run () {
         _linux_packages
     fi
     if $AllTarget; then
-        _linux_gui_compil
         _linux_cli_compil
+        _linux_gui_compil
         _windows_compil
         _linux_packages
     fi
