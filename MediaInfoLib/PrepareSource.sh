@@ -54,13 +54,14 @@ function _linux_compil () {
     # Dependency : ZenLib
     cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
 
+    # Dependency : zlib
+    mkdir -p Shared/Source
+    cp -r $WPath/repos/zlib Shared/Source
+    mkdir -p Shared/Project/zlib
+    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+
     # Other Dependencies
-    mkdir -p Shared/Project/
-    cp -r $WPath/repos/zlib Shared/Project
-    # TODO
-    #cp -r /path/to/curl_source Shared/Project
-    # TODO: _Common files, currently an empty dir in the online archive
-    mkdir Shared/Project/_Common
+    #mkdir Shared/Project/_Common
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -81,9 +82,9 @@ function _linux_compil () {
 
     echo "3: Autogen…"
     cd ZenLib/Project/GNU/Library
-    ./autogen
+    ./autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library/
-    ./autogen
+    ./autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "3: compressing..."
@@ -179,6 +180,7 @@ function btask.PrepareSource.run () {
     rm -fr archives
     rm -fr repos/ZenLib
     rm -fr repos/MediaInfoLib
+    rm -fr repos/zlib
     rm -fr ZL
     rm -fr MIL
     mkdir MIL

@@ -7,7 +7,8 @@
 # Use of this source code is governed by a BSD-style license that can
 # be found in the License.txt file in the root of the source tree.
 
-# This script requires : bang.sh, git, tar, xz-utils and p7zip-full
+# This script requires : bang.sh git tar xz-utils p7zip-full
+# The compilation requires : g++ make libgtk2.0-dev
 
 function load_options () {
 

@@ -57,11 +57,14 @@ function _linux_cli_compil () {
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
+    # Dependency : zlib
+    mkdir -p Shared/Source
+    cp -r $WPath/repos/zlib Shared/Source
+    mkdir -p Shared/Project/zlib
+    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+
     # Other Dependencies
-    mkdir -p Shared/Project/
-    cp -r $WPath/repos/zlib Shared/Project
-    # TODO: _Common files, currently an empty dir in the online archive
-    mkdir Shared/Project/_Common
+    #mkdir Shared/Project/_Common
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -77,20 +80,20 @@ function _linux_cli_compil () {
         cd ..
         rm -fr Contrib
         cd Source
-            rm -fr Source/GUI/
+            rm -fr Source/GUI
             rm -fr Source/Install
             rm -fr Source/PreRelease
-            rm -fr Source/Resource/
+            rm -fr Source/Resource
         cd ..
     cd ..
 
     echo "3: Autogen…"
     cd ZenLib/Project/GNU/Library
-    ./autogen
-    cd ../../../../MediaInfoLib/Project/GNU/Library/
-    ./autogen
-    cd ../../../../MediaInfo/Project/GNU/CLI/
-    ./autogen
+    ./autogen > /dev/null 2>&1
+    cd ../../../../MediaInfoLib/Project/GNU/Library
+    ./autogen > /dev/null 2>&1
+    cd ../../../../MediaInfo/Project/GNU/CLI
+    ./autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -107,6 +110,7 @@ function _linux_cli_compil () {
 
 function _linux_gui_compil () {
 
+    echo
     echo "Generate the MI GUI directory for compilation under Linux:"
     echo "1: copy what is wanted..."
 
@@ -123,13 +127,20 @@ function _linux_gui_compil () {
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
+    # Dependency : zlib
+    mkdir -p Shared/Source
+    cp -r $WPath/repos/zlib Shared/Source
+    mkdir -p Shared/Project/zlib
+    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+
+    # Dependency : wxWidgets
+    cp -r $WPath/repos/wxWidgets Shared/Source/WxWidgets
+    touch Shared/Project/WxWidgets.sh
+    mkdir Shared/Project/WxWidgets
+    echo "./configure && make" > Shared/Project/WxWidgets/Compile.sh
+
     # Other Dependencies
-    mkdir -p Shared/Project/
-    cp -r $WPath/repos/zlib Shared/Project
-    # TODO
-    # WxWidgets
-    # TODO: _Common files, currently an empty dir in the online archive
-    mkdir Shared/Project/_Common
+    #mkdir Shared/Project/_Common
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -153,40 +164,6 @@ function _linux_gui_compil () {
             rm -fr Install
             rm -fr PreRelease
             rm -fr Resource/Plugin
-            #rm -f Resource/Image/MediaInfo.ico
-            #rm -f Resource/Image/MediaInfo.svg
-            #rm -f Resource/Image/MediaInfo_TinyOnly.ico
-            #rm -f Resource/Image/Menu/Debug.ico
-            #rm -f Resource/Image/Menu/File_Export.ico
-            #rm -f Resource/Image/Menu/File_Open_Directory.ico
-            #rm -f Resource/Image/Menu/File_Open_Directory.xpm
-            #rm -f Resource/Image/Menu/File_Open_File.ico
-            #rm -f Resource/Image/Menu/File_Open_File.xpm
-            #rm -f Resource/Image/Menu/Help_About.ico
-            #rm -f Resource/Image/Menu/Help_About.xpm
-            #rm -f Resource/Image/Menu/K20/File_Export.png
-            #rm -f Resource/Image/Menu/K20/File_Export.svg
-            #rm -f Resource/Image/Menu/K20/File_Open_Directory.ico
-            #rm -f Resource/Image/Menu/K20/File_Open_Directory.png
-            #rm -f Resource/Image/Menu/K20/File_Open_Directory.svg
-            #rm -f Resource/Image/Menu/K20/File_Open_File2.png
-            #rm -f Resource/Image/Menu/K20/File_Open_File.ico
-            #rm -f Resource/Image/Menu/K20/File_Open_File.png
-            #rm -f Resource/Image/Menu/K20/File_Open_File.svg
-            #rm -f Resource/Image/Menu/K20/File_Save.svg
-            #rm -f Resource/Image/Menu/K20/Help_About.ico
-            #rm -f Resource/Image/Menu/K20/Help_About.png
-            #rm -f Resource/Image/Menu/K20/Help_About.svg
-            #rm -f Resource/Image/Menu/K20/Options_Prefs.png
-            #rm -f Resource/Image/Menu/K20/Options_Prefs.svg
-            #rm -f Resource/Image/Menu/K20/View2.svg
-            #rm -f Resource/Image/Menu/K20/View.png
-            #rm -f Resource/Image/Menu/K20/View.svg
-            #rm -f Resource/Image/Menu/Language.ico
-            #rm -f Resource/Image/Menu/Options_Prefs.ico
-            #rm -f Resource/Image/Menu/View.ico
-            #rm -f Resource/Image/Menu/View_System.ico
-            #rm -f Resource/Image/Windows_Finish.bmp
             rm -f Resource/Language.csv
             rm -f Resource/Resources.qrc
         cd ..
@@ -194,11 +171,11 @@ function _linux_gui_compil () {
 
     echo "3: Autogen…"
     cd ZenLib/Project/GNU/Library
-    ./autogen
-    cd ../../../../MediaInfoLib/Project/GNU/Library/
-    ./autogen
-    cd ../../../../MediaInfo/Project/GNU/GUI/
-    ./autogen
+    ./autogen > /dev/null 2>&1
+    cd ../../../../MediaInfoLib/Project/GNU/Library
+    ./autogen > /dev/null 2>&1
+    cd ../../../../MediaInfo/Project/GNU/GUI
+    ./autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -243,7 +220,7 @@ function _windows_compil () {
         cd Project
             rm -fr Mac Solaris OBS
         cd ..
-        rm -fr Source/GUI/Cocoa/
+        rm -fr Source/GUI/Cocoa
         cd ..
     cd ..
 
@@ -276,7 +253,7 @@ function _linux_packages () {
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr Mac Solaris OBS
         cd ..
-        rm -fr Source/GUI/Cocoa/
+        rm -fr Source/GUI/Cocoa
     cd ..
 
     if $MakeArchives; then
@@ -347,6 +324,7 @@ function btask.PrepareSource.run () {
         rm -fr repos
         rm -fr ZL
         rm -fr MIL
+        rm -fr MI
     fi
 
 }
