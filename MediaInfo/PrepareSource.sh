@@ -32,9 +32,14 @@ function _get_source () {
     cd $(b.get bang.working_dir)
     $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -a -na -nc
 
-    # Dependency : WxWidgets
-    cd $WPath/repos
-    git clone -b "v3.0.2" https://github.com/wxWidgets/wxWidgets
+    # Dependency : wxWidgets
+    if [ $(b.opt.get_opt --wx-path) ]; then
+        WX_source=$(sanitize_arg $(b.opt.get_opt --wx-path))
+    else
+        cd $WPath/repos
+        git clone -b "v3.0.2" https://github.com/wxWidgets/wxWidgets
+        WX_source=$WPath/repos/wxWidgets
+    fi
 
 }
 
@@ -61,10 +66,8 @@ function _linux_cli_compil () {
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
-
-    # Other Dependencies
-    #mkdir Shared/Project/_Common
+    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -131,16 +134,17 @@ function _linux_gui_compil () {
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
 
     # Dependency : wxWidgets
-    cp -r $WPath/repos/wxWidgets Shared/Source/WxWidgets
+    cp -r $WX_source Shared/Source/WxWidgets
+    # TODO: modify configure.ac to do directly:
+    # test -e .../Shared/Project/wxWidgets/Compile.sh
     touch Shared/Project/WxWidgets.sh
     mkdir Shared/Project/WxWidgets
-    echo "./configure && make" > Shared/Project/WxWidgets/Compile.sh
-
-    # Other Dependencies
-    #mkdir Shared/Project/_Common
+    # TODO: put this directly in MI/Shared/Project/wxWidgets/Compile.sh
+    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic $* && make clean && make" > Shared/Project/WxWidgets/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -271,7 +275,7 @@ function _linux_packages () {
 
 function btask.PrepareSource.run () {
 
-    local MI_source
+    local MI_source WX_source
 
     cd $WPath
 

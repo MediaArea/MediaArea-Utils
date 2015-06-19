@@ -30,6 +30,9 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
 
+    b.opt.add_opt --wx-path "wxWidgets source directory, if already compiled"
+    b.opt.add_alias --wx-path -wxw
+
     b.opt.add_flag --linux-compil "Generate the archive for compilation under Linux"
     b.opt.add_alias --linux-compil -lc
 

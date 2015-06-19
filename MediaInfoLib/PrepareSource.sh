@@ -58,10 +58,8 @@ function _linux_compil () {
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
-
-    # Other Dependencies
-    #mkdir Shared/Project/_Common
+    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
