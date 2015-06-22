@@ -30,7 +30,7 @@ function _get_source () {
 
     # Dependency : ZenLib
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -w $WPath -lc -wc -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -w $WPath -${Target} -na -nc
 
     # Dependency : zlib
     cd $WPath/repos
@@ -58,8 +58,9 @@ function _linux_compil () {
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
-    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
+    # TODO: put this directly in MIL/Shared/Project/zlib/Compile.sh
+    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -78,11 +79,11 @@ function _linux_compil () {
         rm -fr Source/Resource
     cd ..
 
-    echo "3: Autogen…"
+    echo "3: Autogen..."
     cd ZenLib/Project/GNU/Library
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library/
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "3: compressing..."
@@ -183,39 +184,23 @@ function btask.PrepareSource.run () {
     rm -fr MIL
     mkdir MIL
 
-    if $LinuxCompil || $WindowsCompil || $LinuxPackages || $AllTarget; then
-        _get_source
-    else
-        echo "Besides --project, you must specify at least one of this options:"
-        echo
-        echo "--linux-compil|-lc"
-        echo "              Generate the MIL directory for compilation under Linux"
-        echo
-        echo "--windows-compil|-wc"
-        echo "              Generate the MIL directory for compilation under Windows"
-        echo
-        echo "--linux-packages|-lp|--linux-package"
-        echo "              Generate the MIL directory for Linux packages creation"
-        echo
-        echo "--all|-a"
-        echo "              Prepare all the targets for this project"
+    _get_source
+
+    if [ "$Target" = "lc" ]; then
+        _linux_compil
+    fi
+    if [ "$Target" = "wc" ]; then
+        _windows_compil
+    fi
+    if [ "$Target" = "lp" ]; then
+        _linux_packages
+    fi
+    if [ "$Target" = "all" ]; then
+        _linux_compil
+        _windows_compil
+        _linux_packages
     fi
 
-    if $LinuxCompil; then
-        _linux_compil
-    fi
-    if $WindowsCompil; then
-        _windows_compil
-    fi
-    if $LinuxPackages; then
-        _linux_packages
-    fi
-    if $AllTarget; then
-        _linux_compil
-        _windows_compil
-        _linux_packages
-    fi
-    
     if $CleanUp; then
         cd $WPath
         rm -fr repos

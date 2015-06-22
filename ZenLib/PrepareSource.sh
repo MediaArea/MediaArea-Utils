@@ -119,39 +119,23 @@ function btask.PrepareSource.run () {
     rm -fr $WPath/ZL
     mkdir $WPath/ZL
 
-    if $LinuxCompil || $WindowsCompil || $LinuxPackages || $AllTarget; then
-        _get_source
-    else
-        echo "Besides --project, you must specify at least one of this options:"
-        echo
-        echo "--linux-compil|-lc"
-        echo "              Generate the ZL directory for compilation under Linux"
-        echo
-        echo "--windows-compil|-wc"
-        echo "              Generate the ZL directory for compilation under Windows"
-        echo
-        echo "--linux-packages|-lp|--linux-package"
-        echo "              Generate the ZL directory for Linux packages creation"
-        echo
-        echo "--all|-a"
-        echo "              Prepare all the targets for this project"
+    _get_source
+
+    if [ "$Target" = "lc" ]; then
+        _linux_compil
+    fi
+    if [ "$Target" = "wc" ]; then
+        _windows_compil
+    fi
+    if [ "$Target" = "lp" ]; then
+        _linux_packages
+    fi
+    if [ "$Target" = "all" ]; then
+        _linux_compil
+        _windows_compil
+        _linux_packages
     fi
 
-    if $LinuxCompil; then
-        _linux_compil
-    fi
-    if $WindowsCompil; then
-        _windows_compil
-    fi
-    if $LinuxPackages; then
-        _linux_packages
-    fi
-    if $AllTarget; then
-        _linux_compil
-        _windows_compil
-        _linux_packages
-    fi
-    
     if $CleanUp; then
         cd $WPath
         rm -fr repos

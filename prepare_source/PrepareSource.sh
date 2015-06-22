@@ -44,7 +44,8 @@ function load_options () {
     b.opt.add_alias --linux-packages -lp
     
     b.opt.add_flag --all "Prepare all the targets for this project."
-    b.opt.add_alias --all -a
+    # Mandatory for the call in _get_source
+    b.opt.add_alias --all -all
 
     b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
@@ -112,75 +113,87 @@ function run () {
             Version="_$(sanitize_arg $(b.opt.get_opt --version))"
         fi
 
-        LinuxCompil=false
+        Target="none"
         if b.opt.has_flag? --linux-compil; then
-            LinuxCompil=true
+            Target="lc"
         fi
-        WindowsCompil=false
         if b.opt.has_flag? --windows-compil; then
-            WindowsCompil=true
+            Target="wc"
         fi
-        LinuxPackages=false
         if b.opt.has_flag? --linux-packages; then
-            LinuxPackages=true
+            Target="lp"
         fi
-        AllTarget=false
         if b.opt.has_flag? --all; then
-            AllTarget=true
+            Target="all"
         fi
-        CleanUp=true
-        if b.opt.has_flag? --no-cleanup; then
-            CleanUp=false
-        fi
-        MakeArchives=true
-        if b.opt.has_flag? --no-archives; then
-            MakeArchives=false
-        fi
-    
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
 
-        WPath=/tmp/
-        if [ $(b.opt.get_opt --working-path) ]; then
-            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
-                echo "The directory $WPath isn't writable : will use /tmp instead."
-                echo
-                WPath=/tmp/
-            else
-                # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? $WPath ;then
-                    mkdir -p $WPath
+        # For lisibility
+        echo
+    
+        if [ "$Target" = "none" ]; then
+            echo "Besides --project, you must specify at least one of this options:"
+            echo
+            echo "--linux-compil|-lc"
+            echo "              Generate the directory(ies) for compilation under Linux"
+            echo
+            echo "--windows-compil|-wc"
+            echo "              Generate the directory for compilation under Windows"
+            echo
+            echo "--linux-packages|-lp|--linux-package"
+            echo "              Generate the directory for Linux packages creation"
+            echo
+            echo "--all"
+            echo "              Generate all the targets above"
+        else
+            CleanUp=true
+            if b.opt.has_flag? --no-cleanup; then
+                CleanUp=false
+            fi
+            MakeArchives=true
+            if b.opt.has_flag? --no-archives; then
+                MakeArchives=false
+            fi
+        
+            # TODO: possibility to run the script from anywhere
+            #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
+            Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
+    
+            WPath=/tmp/
+            if [ $(b.opt.get_opt --working-path) ]; then
+                WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
+                if b.path.dir? $WPath && ! b.path.writable? $WPath; then
+                    echo "The directory $WPath isn't writable : will use /tmp instead."
+                    echo
+                    WPath=/tmp/
+                else
+                    # TODO: Handle exception if mkdir fail
+                    if ! b.path.dir? $WPath ;then
+                        mkdir -p $WPath
+                    fi
                 fi
             fi
+        
+            # If the user give a correct project name
+            if b.path.file? $Script && b.path.readable? $Script; then
+                # Load the script for this project, so bang can find the
+                # corresponding task. Then, launch the task.
+                . $Script
+                b.task.run PrepareSource
+            else
+                echo "Error : no task found for $Project!"
+                echo
+                echo "Warning : you must be in PrepareSource.sh's directory to launch it."
+                echo "e.g. /path/to/MediaArea-Utils/prepare_source"
+                echo "and the project repository must be in the same directory than MediaArea-Utils"
+            fi
+    
+            unset -v Project Version Target CleanUp MakeArchives
+            unset -v Script WPath
         fi
 
         # For lisibility
         echo
-
-        # If the user give a correct project name
-        if b.path.file? $Script && b.path.readable? $Script; then
-            # Load the script for this project, so bang can find the
-            # corresponding task, then launch it
-            . $Script
-            b.task.run PrepareSource
-        else
-            echo "Error : no task found for $Project!"
-            echo
-            echo "Warning : you must be in PrepareSource.sh's directory to launch it."
-            echo "e.g. /path/to/MediaArea-Utils/prepare_source"
-            echo "and the project repository must be in the same directory than MediaArea-Utils"
-        fi
-
-        # For lisibility
-        echo
-
-        unset -v Project Version
-        unset -v LinuxCompil WindowsCompil LinuxPackages AllTarget
-        unset -v CleanUp MakeArchives
-        unset -v WPath Script
-
+    
     fi
 }
 

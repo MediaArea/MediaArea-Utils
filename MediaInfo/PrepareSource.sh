@@ -30,7 +30,7 @@ function _get_source () {
 
     # Dependency : MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -a -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -${Target} -na -nc
 
     # Dependency : wxWidgets
     if [ $(b.opt.get_opt --wx-path) ]; then
@@ -67,7 +67,8 @@ function _linux_cli_compil () {
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
     # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
+    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ./configure && make" > Shared/Project/zlib/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -90,13 +91,13 @@ function _linux_cli_compil () {
         cd ..
     cd ..
 
-    echo "3: Autogen…"
+    echo "3: Autogen..."
     cd ZenLib/Project/GNU/Library
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfo/Project/GNU/CLI
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -135,7 +136,8 @@ function _linux_gui_compil () {
     cp -r $WPath/repos/zlib Shared/Source
     mkdir -p Shared/Project/zlib
     # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
+    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ./configure && make" > Shared/Project/zlib/Compile.sh
 
     # Dependency : wxWidgets
     cp -r $WX_source Shared/Source/WxWidgets
@@ -144,7 +146,8 @@ function _linux_gui_compil () {
     touch Shared/Project/WxWidgets.sh
     mkdir Shared/Project/WxWidgets
     # TODO: put this directly in MI/Shared/Project/wxWidgets/Compile.sh
-    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic $* && make clean && make" > Shared/Project/WxWidgets/Compile.sh
+    #echo "cd ../../Source/WxWidgets ; make clean ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
+    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -162,7 +165,6 @@ function _linux_gui_compil () {
         cd Source
             # Since the linux archive is also for mac
             #rm -fr GUI/Cocoa
-            #rm -fr GUI/Qt
             rm -fr GUI/VCL
             rm -fr GUI/VCL_New
             rm -fr Install
@@ -173,13 +175,13 @@ function _linux_gui_compil () {
         cd ..
     cd ..
 
-    echo "3: Autogen…"
+    echo "3: Autogen..."
     cd ZenLib/Project/GNU/Library
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfo/Project/GNU/GUI
-    ./autogen > /dev/null 2>&1
+    sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -222,10 +224,9 @@ function _windows_compil () {
         #rm -fr Release
         rm -fr debian
         cd Project
-            rm -fr Mac Solaris OBS
+            rm -fr GNU Mac Solaris OBS
         cd ..
         rm -fr Source/GUI/Cocoa
-        cd ..
     cd ..
 
     if $MakeArchives; then
@@ -288,35 +289,19 @@ function btask.PrepareSource.run () {
     rm -fr MI
     mkdir MI
 
-    if $LinuxCompil || $WindowsCompil || $LinuxPackages || $AllTarget; then
-        _get_source
-    else
-        echo "Besides --project, you must specify at least one of this options:"
-        echo
-        echo "--linux-compil|-lc"
-        echo "              Generate the MI directory for compilation under Linux"
-        echo
-        echo "--windows-compil|-wc"
-        echo "              Generate the MI directory for compilation under Windows"
-        echo
-        echo "--linux-packages|-lp|--linux-package"
-        echo "              Generate the MI directory for Linux packages creation"
-        echo
-        echo "--all|-a"
-        echo "              Prepare all the targets for this project"
-    fi
+    _get_source
 
-    if $LinuxCompil; then
+    if [ "$Target" = "lc" ]; then
         _linux_cli_compil
         _linux_gui_compil
     fi
-    if $WindowsCompil; then
+    if [ "$Target" = "wc" ]; then
         _windows_compil
     fi
-    if $LinuxPackages; then
+    if [ "$Target" = "lp" ]; then
         _linux_packages
     fi
-    if $AllTarget; then
+    if [ "$Target" = "all" ]; then
         _linux_cli_compil
         _linux_gui_compil
         _windows_compil
