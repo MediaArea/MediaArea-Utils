@@ -50,6 +50,7 @@ function _linux_compil () {
 
     cp -r $MIL_source .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
+    chmod +x SO_Compile.sh
 
     # Dependency : ZenLib
     cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
@@ -57,10 +58,10 @@ function _linux_compil () {
     # Dependency : zlib
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
+    # TODO: put MIL/Shared/Project/zlib/Compile.sh on github
     mkdir -p Shared/Project/zlib
-    # TODO: put this directly in MIL/Shared/Project/zlib/Compile.sh
-    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    #echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    echo "cd ../../Source/zlib/ ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -75,8 +76,6 @@ function _linux_compil () {
             rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr PureBasic
         cd ..
-        rm -fr Contrib
-        rm -fr Source/Resource
     cd ..
 
     echo "3: Autogen..."
@@ -91,8 +90,6 @@ function _linux_compil () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tgz MediaInfo_DLL${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tbz MediaInfo_DLL${Version}_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.txz MediaInfo_DLL${Version}_GNU_FromSource)
     fi
 
@@ -162,8 +159,6 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libmediainfo${Version}.tgz MediaInfoLib)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libmediainfo${Version}.tbz MediaInfoLib)
         (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/libmediainfo${Version}.txz MediaInfoLib)
     fi
 

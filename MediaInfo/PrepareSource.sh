@@ -55,9 +55,10 @@ function _linux_cli_compil () {
 
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
+    chmod +x CLI_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
@@ -65,10 +66,9 @@ function _linux_cli_compil () {
     # Dependency : zlib
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
-    mkdir -p Shared/Project/zlib
-    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
-    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ./configure && make" > Shared/Project/zlib/Compile.sh
+    # TODO: put MI/Shared/Project/zlib/Compile.sh on github
+    mkdir Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -82,21 +82,11 @@ function _linux_cli_compil () {
             rm -fr BCB QMake CodeBlocks
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
         cd ..
-        rm -fr Contrib
-        cd Source
-            rm -fr Source/GUI
-            rm -fr Source/Install
-            rm -fr Source/PreRelease
-            rm -fr Source/Resource
-        cd ..
+        rm -fr Source/GUI
     cd ..
 
     echo "3: Autogen..."
-    cd ZenLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfoLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfo/Project/GNU/CLI
+    cd MediaInfo/Project/GNU/CLI
     sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
@@ -105,8 +95,6 @@ function _linux_cli_compil () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tgz MediaInfo_CLI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tbz MediaInfo_CLI${Version}_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.txz MediaInfo_CLI${Version}_GNU_FromSource)
     fi
 
@@ -124,9 +112,10 @@ function _linux_gui_compil () {
 
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    chmod +x GUI_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
@@ -134,10 +123,8 @@ function _linux_gui_compil () {
     # Dependency : zlib
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
-    mkdir -p Shared/Project/zlib
-    # TODO: put this directly in MI/Shared/Project/zlib/Compile.sh
-    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ./configure && make" > Shared/Project/zlib/Compile.sh
+    mkdir Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
 
     # Dependency : wxWidgets
     cp -r $WX_source Shared/Source/WxWidgets
@@ -145,9 +132,9 @@ function _linux_gui_compil () {
     # test -e .../Shared/Project/wxWidgets/Compile.sh
     touch Shared/Project/WxWidgets.sh
     mkdir Shared/Project/WxWidgets
-    # TODO: put this directly in MI/Shared/Project/wxWidgets/Compile.sh
-    #echo "cd ../../Source/WxWidgets ; make clean ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
-    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
+    # TODO: put MI/Shared/Project/wxWidgets/Compile.sh on github
+    #echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
+    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make clean && make" > Shared/Project/WxWidgets/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -161,26 +148,10 @@ function _linux_gui_compil () {
             rm -fr BCB QMake CodeBlocks
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
         cd ..
-        rm -fr Contrib
-        cd Source
-            # Since the linux archive is also for mac
-            #rm -fr GUI/Cocoa
-            rm -fr GUI/VCL
-            rm -fr GUI/VCL_New
-            rm -fr Install
-            rm -fr PreRelease
-            rm -fr Resource/Plugin
-            rm -f Resource/Language.csv
-            rm -f Resource/Resources.qrc
-        cd ..
     cd ..
 
     echo "3: Autogen..."
-    cd ZenLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfoLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfo/Project/GNU/GUI
+    cd MediaInfo/Project/GNU/GUI
     sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
@@ -189,8 +160,6 @@ function _linux_gui_compil () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tgz MediaInfo_GUI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tbz MediaInfo_GUI${Version}_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.txz MediaInfo_GUI${Version}_GNU_FromSource)
     fi
 
@@ -216,6 +185,13 @@ function _windows_compil () {
 
     # Dependency : zlib
     cp -r $WPath/repos/zlib .
+    # TODO: put it on github
+    cp -r ~/ma/archives/zlib_Template/projects zlib
+
+    # Dependency : wxWidgets
+    #mkdir -p Shared/Source/                   
+    #cp -r $WX_source Shared/Source/WxWidgets
+    cp -r $WX_source WxWidgets
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -258,7 +234,6 @@ function _linux_packages () {
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr Mac Solaris OBS
         cd ..
-        rm -fr Source/GUI/Cocoa
     cd ..
 
     if $MakeArchives; then
@@ -267,8 +242,6 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediainfo${Version}.tgz MediaInfo)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/mediainfo${Version}.tbz MediaInfo)
         (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/mediainfo${Version}.txz MediaInfo)
     fi
 

@@ -100,8 +100,6 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libzen_${Version}.tgz ZenLib)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libzen_${Version}.tbz ZenLib)
         (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/libzen${Version}.txz ZenLib)
     fi
 

@@ -46,9 +46,10 @@ function _linux_cli_compil () {
 
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
+    chmod +x CLI_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
@@ -56,9 +57,8 @@ function _linux_cli_compil () {
     # Dependency : zlib
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
-    mkdir -p Shared/Project/zlib
-    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    mkdir Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -70,19 +70,11 @@ function _linux_cli_compil () {
             rm -fr GNU/GUI
             rm -fr MSVC2013 OBS Qt
         cd ..
-        cd Source
-            rm -fr Source/GUI
-            rm -fr Source/Install
-            rm -fr Source/Resource
-        cd ..
+        rm -fr Source/GUI
     cd ..
 
     echo "3: Autogen..."
-    cd ZenLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfoLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaConch/Project/GNU/CLI
+    cd MediaConch/Project/GNU/CLI
     sh autogen > /dev/null 2>&1
 
     if $MakeArchives; then
@@ -108,9 +100,10 @@ function _linux_gui_compil () {
 
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    chmod +x GUI_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
@@ -118,9 +111,9 @@ function _linux_gui_compil () {
     # Dependency : zlib
     mkdir -p Shared/Source
     cp -r $WPath/repos/zlib Shared/Source
-    mkdir -p Shared/Project/zlib
-    #echo "cd ../../Source/zlib/ ; make clean ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
+    # TODO: put MC/Shared/Project/zlib/Compile.sh on github
+    mkdir Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -130,21 +123,9 @@ function _linux_gui_compil () {
         cd Project
             rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
             rm -fr GNU/CLI
-            rm -fr MSVC2013 OBS Qt
-        cd ..
-        cd Source
-            rm -fr Install
-            rm -f Resource/Resources.qrc
+            rm -fr MSVC2013 OBS
         cd ..
     cd ..
-
-    echo "3: Autogen..."
-    cd ZenLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaInfoLib/Project/GNU/Library
-    sh autogen > /dev/null 2>&1
-    cd ../../../../MediaConch/Project/GNU/GUI
-    sh autogen
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -249,9 +230,7 @@ function btask.PrepareSource.run () {
 
     if [ "$Target" = "lc" ]; then
         _linux_cli_compil
-        #_linux_gui_compil
-        echo
-        echo "The MC GUI function isn't ready yet."
+        _linux_gui_compil
     fi
     if [ "$Target" = "wc" ]; then
         _windows_compil
@@ -261,9 +240,7 @@ function btask.PrepareSource.run () {
     fi
     if [ "$Target" = "all" ]; then
         _linux_cli_compil
-        #_linux_gui_compil
-        echo
-        echo "The MC GUI function isn't ready yet."
+        _linux_gui_compil
         _windows_compil
         _linux_packages
     fi
