@@ -30,17 +30,17 @@ function _get_source () {
 
 }
 
-function _linux_compil () {
+function _compil_unix () {
 
     echo
     echo "Generate the ZL directory for compilation under Linux:"
     echo "1: copy what is wanted..."
 
     cd $WPath/ZL
-    cp -r $ZL_source ZenLib${Version}_compilation_under_linux
+    cp -r $ZL_source ZenLib${Version}_compilation_under_unix
 
     echo "2: remove what isn't wanted..."
-    cd ZenLib${Version}_compilation_under_linux
+    cd ZenLib${Version}_compilation_under_unix
         rm -fr .cvsignore .git*
         #rm -fr Release
         rm -fr debian
@@ -54,7 +54,7 @@ function _linux_compil () {
 
 }
 
-function _windows_compil () {
+function _compil_windows () {
 
     echo
     echo "Generate the ZL directory for compilation under Windows:"
@@ -119,18 +119,18 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "lc" ]; then
-        _linux_compil
+    if [ "$Target" = "cu" ]; then
+        _compil_unix
     fi
-    if [ "$Target" = "wc" ]; then
-        _windows_compil
+    if [ "$Target" = "cw" ]; then
+        _compil_windows
     fi
     if [ "$Target" = "lp" ]; then
         _linux_packages
     fi
     if [ "$Target" = "all" ]; then
-        _linux_compil
-        _windows_compil
+        _compil_unix
+        _compil_windows
         _linux_packages
     fi
 

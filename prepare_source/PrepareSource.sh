@@ -7,7 +7,8 @@
 # Use of this source code is governed by a BSD-style license that can
 # be found in the License.txt file in the root of the source tree.
 
-# This script requires : bang.sh git tar xz-utils p7zip-full
+# This script requires : bang.sh git tar xz-utils p7zip-full automake
+#                         libtool doxygen
 # The compilation requires : g++ make libgtk2.0-dev
 
 function load_options () {
@@ -30,25 +31,23 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
 
-    b.opt.add_opt --wx-path "wxWidgets source directory, if already compiled"
-    b.opt.add_alias --wx-path -wxw
+    b.opt.add_flag --compil-unix "Generate the archive for compilation under Linux"
+    b.opt.add_alias --compil-unix -cu
 
-    b.opt.add_flag --linux-compil "Generate the archive for compilation under Linux"
-    b.opt.add_alias --linux-compil -lc
-
-    b.opt.add_flag --windows-compil "Generate the archive for compilation under Windows"
-    b.opt.add_alias --windows-compil -wc
+    b.opt.add_flag --compil-windows "Generate the archive for compilation under Windows"
+    b.opt.add_alias --compil-windows -cw
 
     b.opt.add_flag --linux-packages "Generate the archive for Linux packages creation"
     b.opt.add_alias --linux-packages --linux-package
     b.opt.add_alias --linux-packages -lp
     
     b.opt.add_flag --all "Prepare all the targets for this project."
-    # Mandatory for the call in _get_source
+    # Required for the call in _get_source
     b.opt.add_alias --all -all
 
     b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
+
     b.opt.add_flag --no-archives "Don’t create the archives"
     b.opt.add_alias --no-archives --no-archive
     b.opt.add_alias --no-archives -na
@@ -114,11 +113,11 @@ function run () {
         fi
 
         Target="none"
-        if b.opt.has_flag? --linux-compil; then
-            Target="lc"
+        if b.opt.has_flag? --compil-unix; then
+            Target="cu"
         fi
-        if b.opt.has_flag? --windows-compil; then
-            Target="wc"
+        if b.opt.has_flag? --compil-windows; then
+            Target="cw"
         fi
         if b.opt.has_flag? --linux-packages; then
             Target="lp"
@@ -133,10 +132,10 @@ function run () {
         if [ "$Target" = "none" ]; then
             echo "Besides --project, you must specify at least one of this options:"
             echo
-            echo "--linux-compil|-lc"
+            echo "--compil-unix|-cu"
             echo "              Generate the directory(ies) for compilation under Linux"
             echo
-            echo "--windows-compil|-wc"
+            echo "--compil-windows|-cw"
             echo "              Generate the directory for compilation under Windows"
             echo
             echo "--linux-packages|-lp|--linux-package"

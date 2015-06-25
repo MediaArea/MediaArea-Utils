@@ -38,7 +38,7 @@ function _get_source () {
 
 }
 
-function _linux_compil () {
+function _compil_unix () {
 
     echo
     echo "Generate the MIL directory for compilation under Linux:"
@@ -53,15 +53,11 @@ function _linux_compil () {
     chmod +x SO_Compile.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_linux ZenLib
+    cp -r $WPath/ZL/ZenLib_compilation_under_unix ZenLib
 
     # Dependency : zlib
-    mkdir -p Shared/Source
-    cp -r $WPath/repos/zlib Shared/Source
-    # TODO: put MIL/Shared/Project/zlib/Compile.sh on github
     mkdir -p Shared/Project/zlib
-    #echo "cd ../../Source/zlib/ ; ./configure && make" > Shared/Project/zlib/Compile.sh
-    echo "cd ../../Source/zlib/ ./configure && make clean && make" > Shared/Project/zlib/Compile.sh
+    mv MediaInfoLib/Project/zlib/Compile.sh Shared/Project/zlib
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -83,9 +79,14 @@ function _linux_compil () {
     sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library/
     sh autogen > /dev/null 2>&1
+    cd ../../../..
+
+    echo "4: Doxygen..."
+    cd MediaInfoLib/Source/Doc
+    doxygen
 
     if $MakeArchives; then
-        echo "3: compressing..."
+        echo "5: compressing..."
         cd $WPath/MIL
         if ! b.path.dir? ../archives; then
             mkdir ../archives
@@ -95,7 +96,7 @@ function _linux_compil () {
 
 }
 
-function _windows_compil () {
+function _compil_windows () {
 
     echo
     echo "Generate the MIL directory for compilation under Windows:"
@@ -112,6 +113,8 @@ function _windows_compil () {
 
     # Dependency : zlib
     cp -r $WPath/repos/zlib .
+    rm -fr zlib/.git zlib/contrib zlib/examples zlib/doc
+    mv MediaInfoLib/Project/zlib/projects zlib
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib
@@ -181,18 +184,18 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "lc" ]; then
-        _linux_compil
+    if [ "$Target" = "cu" ]; then
+        _compil_unix
     fi
-    if [ "$Target" = "wc" ]; then
-        _windows_compil
+    if [ "$Target" = "cw" ]; then
+        _compil_windows
     fi
     if [ "$Target" = "lp" ]; then
         _linux_packages
     fi
     if [ "$Target" = "all" ]; then
-        _linux_compil
-        _windows_compil
+        _compil_unix
+        _compil_windows
         _linux_packages
     fi
 

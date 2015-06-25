@@ -28,22 +28,13 @@ function _get_source () {
         MI_source=$WPath/repos/MediaInfo
     fi
 
-    # Dependency : MediaInfoLib (will also bring ZenLib and zlib)
+    # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
     $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -${Target} -na -nc
 
-    # Dependency : wxWidgets
-    if [ $(b.opt.get_opt --wx-path) ]; then
-        WX_source=$(sanitize_arg $(b.opt.get_opt --wx-path))
-    else
-        cd $WPath/repos
-        git clone -b "v3.0.2" https://github.com/wxWidgets/wxWidgets
-        WX_source=$WPath/repos/wxWidgets
-    fi
-
 }
 
-function _linux_cli_compil () {
+function _compil_unix_cli () {
 
     echo
     echo "Generate the MI CLI directory for compilation under Linux:"
@@ -57,18 +48,9 @@ function _linux_cli_compil () {
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
 
-    # Dependency : ZenLib
+    # Dependencies
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-
-    # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
-
-    # Dependency : zlib
-    mkdir -p Shared/Source
-    cp -r $WPath/repos/zlib Shared/Source
-    # TODO: put MI/Shared/Project/zlib/Compile.sh on github
-    mkdir Shared/Project
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -100,7 +82,7 @@ function _linux_cli_compil () {
 
 }
 
-function _linux_gui_compil () {
+function _compil_unix_gui () {
 
     echo
     echo "Generate the MI GUI directory for compilation under Linux:"
@@ -114,27 +96,9 @@ function _linux_gui_compil () {
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
 
-    # Dependency : ZenLib
+    # Dependencies
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-
-    # Dependency : MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
-
-    # Dependency : zlib
-    mkdir -p Shared/Source
-    cp -r $WPath/repos/zlib Shared/Source
-    mkdir Shared/Project
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
-
-    # Dependency : wxWidgets
-    cp -r $WX_source Shared/Source/WxWidgets
-    # TODO: modify configure.ac to do directly:
-    # test -e .../Shared/Project/wxWidgets/Compile.sh
-    touch Shared/Project/WxWidgets.sh
-    mkdir Shared/Project/WxWidgets
-    # TODO: put MI/Shared/Project/wxWidgets/Compile.sh on github
-    #echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make" > Shared/Project/WxWidgets/Compile.sh
-    echo "cd ../../Source/WxWidgets ; ./configure --disable-shared --disable-gui --enable-unicode --enable-monolithic \$* && make clean && make" > Shared/Project/WxWidgets/Compile.sh
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -165,7 +129,7 @@ function _linux_gui_compil () {
 
 }
 
-function _windows_compil () {
+function _compil_windows () {
 
     echo
     echo "Generate the MI directory for compilation under Windows:"
@@ -177,21 +141,10 @@ function _windows_compil () {
 
     cp -r $MI_source .
 
-    # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_windows ZenLib
-
-    # Dependency : MediaInfoLib
+    # Dependencies
+    cp -r $WPath/MIL/libmediainfo_AllInclusive/ZenLib .
     cp -r $WPath/MIL/libmediainfo_AllInclusive/MediaInfoLib .
-
-    # Dependency : zlib
-    cp -r $WPath/repos/zlib .
-    # TODO: put it on github
-    cp -r ~/ma/archives/zlib_Template/projects zlib
-
-    # Dependency : wxWidgets
-    #mkdir -p Shared/Source/                   
-    #cp -r $WX_source Shared/Source/WxWidgets
-    cp -r $WX_source WxWidgets
+    cp -r $WPath/MIL/libmediainfo_AllInclusive/zlib .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -249,7 +202,7 @@ function _linux_packages () {
 
 function btask.PrepareSource.run () {
 
-    local MI_source WX_source
+    local MI_source
 
     cd $WPath
 
@@ -264,20 +217,20 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "lc" ]; then
-        _linux_cli_compil
-        _linux_gui_compil
+    if [ "$Target" = "cu" ]; then
+        _compil_unix_cli
+        _compil_unix_gui
     fi
-    if [ "$Target" = "wc" ]; then
-        _windows_compil
+    if [ "$Target" = "cw" ]; then
+        _compil_windows
     fi
     if [ "$Target" = "lp" ]; then
         _linux_packages
     fi
     if [ "$Target" = "all" ]; then
-        _linux_cli_compil
-        _linux_gui_compil
-        _windows_compil
+        _compil_unix_cli
+        _compil_unix_gui
+        _compil_windows
         _linux_packages
     fi
     

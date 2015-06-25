@@ -28,13 +28,13 @@ function _get_source () {
         MC_source=$WPath/repos/MediaConch_SourceCode
     fi
 
-    # Dependency : MediaInfoLib (will also bring ZenLib and zlib)
+    # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
     $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -${Target} -na -nc
 
 }
 
-function _linux_cli_compil () {
+function _compil_unix_cli () {
 
     echo
     echo "Generate the MC CLI directory for compilation under Linux:"
@@ -48,17 +48,9 @@ function _linux_cli_compil () {
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
 
-    # Dependency : ZenLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-
-    # Dependency : MediaInfoLib
+    # MediaInfoLib and ZenLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
-
-    # Dependency : zlib
-    mkdir -p Shared/Source
-    cp -r $WPath/repos/zlib Shared/Source
-    mkdir Shared/Project
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -88,7 +80,7 @@ function _linux_cli_compil () {
 
 }
 
-function _linux_gui_compil () {
+function _compil_unix_gui () {
 
     echo
     echo "Generate the MC GUI directory for compilation under Linux:"
@@ -102,18 +94,9 @@ function _linux_gui_compil () {
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
 
-    # Dependency : ZenLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-
-    # Dependency : MediaInfoLib
+    # Dependencies
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
-
-    # Dependency : zlib
-    mkdir -p Shared/Source
-    cp -r $WPath/repos/zlib Shared/Source
-    # TODO: put MC/Shared/Project/zlib/Compile.sh on github
-    mkdir Shared/Project
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared/Project/zlib Shared/Project
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -138,7 +121,7 @@ function _linux_gui_compil () {
 
 }
 
-function _windows_compil () {
+function _compil_windows () {
 
     echo
     echo "Generate the MC directory for compilation under Windows:"
@@ -150,14 +133,12 @@ function _windows_compil () {
 
     cp -r $MC_source MediaConch
 
-    # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_windows ZenLib
-
-    # Dependency : MediaInfoLib
+    # MediaInfoLib and ZenLib
     cp -r $WPath/MIL/libmediainfo_AllInclusive/MediaInfoLib .
+    cp -r $WPath/MIL/libmediainfo_AllInclusive/ZenLib .
 
     # Dependency : zlib
-    cp -r $WPath/repos/zlib .
+    cp -r $WPath/MIL/libmediainfo_AllInclusive/zlib .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -228,20 +209,20 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "lc" ]; then
-        _linux_cli_compil
-        _linux_gui_compil
+    if [ "$Target" = "cu" ]; then
+        _compil_unix_cli
+        _compil_unix_gui
     fi
-    if [ "$Target" = "wc" ]; then
-        _windows_compil
+    if [ "$Target" = "cw" ]; then
+        _compil_windows
     fi
     if [ "$Target" = "lp" ]; then
         _linux_packages
     fi
     if [ "$Target" = "all" ]; then
-        _linux_cli_compil
-        _linux_gui_compil
-        _windows_compil
+        _compil_unix_cli
+        _compil_unix_gui
+        _compil_windows
         _linux_packages
     fi
     
