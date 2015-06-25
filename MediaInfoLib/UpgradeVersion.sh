@@ -20,7 +20,7 @@ function btask.UpgradeVersion.run () {
     else
         getRepo $Repo $WPath
         MIL_source=${WPath}/MediaInfoLib
-        # For lisibility after git, otherwise not needed
+        # For lisibility after git
         echo
     fi
 
@@ -53,12 +53,12 @@ function btask.UpgradeVersion.run () {
     for MIL_file in ${MIL_files[@]}
     do
         echo "${MIL_source}/${MIL_file}"
-        updateFile $Version_old_escaped $Version_new "${MIL_source}/${MIL_file}"
+        updateFile "$Version_old_escaped" $Version_new "${MIL_source}/${MIL_file}"
     done
-    unset -v MIL_files
 
     echo
     echo "Passage for version with commas..."
+    unset -v MIL_files
     index=0
     MIL_files[((index++))]="Project/MSVC2005/DLL/MediaInfo.rc"
     MIL_files[((index++))]="Project/MSVC2012/Dll/MediaInfo.rc"

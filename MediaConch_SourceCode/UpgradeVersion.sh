@@ -20,12 +20,9 @@ function btask.UpgradeVersion.run () {
     else
         getRepo $Repo $WPath
         MC_source=${WPath}/MediaConch_SourceCode
-        # For lisibility after git, otherwise not needed
+        # For lisibility after git
         echo
     fi
-
-    #echo "$Version_old_major\.$Version_old_minor\.$Version_old_patch \
-    #    => $Version_new_major.$Version_new_minor.$Version_new_patch"
 
     echo "Passage for version YY.MM ..."
     index=0
@@ -38,12 +35,12 @@ function btask.UpgradeVersion.run () {
     for MC_file in ${MC_files[@]}
     do
         echo ${MC_source}/${MC_file}
-        updateFile $Version_old_escaped $Version_new ${MC_source}/${MC_file}
+        updateFile "$Version_old_escaped" $Version_new "${MC_source}/${MC_file}"
     done
-    unset -v MC_files
 
     echo
     echo "Passage for version YY.MM.patch ..."
+    unset -v MC_files
     index=0
     MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
@@ -54,12 +51,12 @@ function btask.UpgradeVersion.run () {
     for MC_file in ${MC_files[@]}
     do
         echo ${MC_source}/${MC_file}
-        updateFile $Version_old_major\.$Version_old_minor\.$Version_old_patch $Version_new_major.$Version_new_minor.$Version_new_patch ${MC_source}/${MC_file}
+        updateFile "$Version_old_major\.$Version_old_minor\.$Version_old_patch" $Version_new_major.$Version_new_minor.$Version_new_patch "${MC_source}/${MC_file}"
     done
-    unset -v MC_files
 
     echo
-    echo "Passage for version YY,MM,patch[,0] ..."
+    echo "Passage for version YY,MM,patch ..."
+    unset -v MC_files
     index=0
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
@@ -67,15 +64,14 @@ function btask.UpgradeVersion.run () {
     for MC_file in ${MC_files[@]}
     do
         echo ${MC_source}/${MC_file}
-        updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch ${MC_source}/${MC_file}
+        updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch "${MC_source}/${MC_file}"
     done
-    unset -v MC_files
 
     echo
     echo "Update Source/Install/MediaConch_GUI_Windows.nsi ..."
-    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor ${MC_source}/Source/Install/MediaConch_GUI_Windows.nsi
+    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
     updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_patch\.0\"" \
         "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_new_patch\.0\"" \
-        ${MC_source}/Source/Install/MediaConch_GUI_Windows.nsi
+        "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
 
 }

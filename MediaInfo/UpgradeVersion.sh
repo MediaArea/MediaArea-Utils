@@ -20,7 +20,7 @@ function btask.UpgradeVersion.run () {
     else
         getRepo $Repo $WPath
         MI_source=${WPath}/MediaInfo
-        # For lisibility after git, otherwise not needed
+        # For lisibility after git
         echo
     fi
 
@@ -36,6 +36,8 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/OBS/obs_mediainfo"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
+    MI_files[((index++))]="Project/Mac/mkdmg_CLI"
+    MI_files[((index++))]="Project/Mac/mkdmg_GUI"
     MI_files[((index++))]="Source/Install/MediaInfo_GUI_Windows.nsi"
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
     MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
@@ -51,13 +53,13 @@ function btask.UpgradeVersion.run () {
     for MI_file in ${MI_files[@]}
     do
         echo ${MI_source}/${MI_file}
-        updateFile $Version_old_escaped $Version_new ${MI_source}/${MI_file}
+        updateFile "$Version_old_escaped" $Version_new "${MI_source}/${MI_file}"
 
     done
-    unset -v MI_files
 
     echo
     echo "Passage for version with commas..."
+    unset -v MI_files
     index=0
     MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2012/CLI/MediaInfo_CLI.rc"
@@ -72,19 +74,19 @@ function btask.UpgradeVersion.run () {
     for MI_file in ${MI_files[@]}
     do
         echo ${MI_source}/${MI_file}
-        updateFile $Version_old_comma $Version_new_comma ${MI_source}/${MI_file}
+        updateFile $Version_old_comma $Version_new_comma "${MI_source}/${MI_file}"
     done
 
     echo
     echo "Replace major/minor/patch in ${MI_source}/Project/BCB/GUI/MediaInfo_GUI.cbproj"
     updateFile "<VerInfo_MajorVer>$Version_old_major<\/VerInfo_MajorVer>" \
         "<VerInfo_MajorVer>"$Version_new_major"<\/VerInfo_MajorVer>" \
-        "${MI_source}/Project/BCB/GUI/MediaInfo_GUI.cbproj"
+        "${MI_source}"/Project/BCB/GUI/MediaInfo_GUI.cbproj
     updateFile "<VerInfo_MinorVer>$Version_old_minor<\/VerInfo_MinorVer>" \
         "<VerInfo_MinorVer>"$Version_new_minor"<\/VerInfo_MinorVer>" \
-        "${MI_source}/Project/BCB/GUI/MediaInfo_GUI.cbproj"
+        "${MI_source}"/Project/BCB/GUI/MediaInfo_GUI.cbproj
     updateFile "<VerInfo_Release>$Version_old_patch<\/VerInfo_Release>" \
         "<VerInfo_Release>"$Version_new_patch"<\/VerInfo_Release>" \
-        "${MI_source}/Project/BCB/GUI/MediaInfo_GUI.cbproj"
+        "${MI_source}"/Project/BCB/GUI/MediaInfo_GUI.cbproj
 
 }

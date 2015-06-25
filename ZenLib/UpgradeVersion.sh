@@ -7,7 +7,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo MI_source MI_files index
+    local Repo ZL_source ZL_files index
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
@@ -20,7 +20,7 @@ function btask.UpgradeVersion.run () {
     else
         getRepo $Repo $WPath
         ZL_source=${WPath}/ZenLib
-        # For lisibility after git, otherwise not needed
+        # For lisibility after git
         echo
     fi
 
@@ -37,19 +37,19 @@ function btask.UpgradeVersion.run () {
     for ZL_file in ${ZL_files[@]}
     do
         echo "${ZL_source}/${ZL_file}"
-        updateFile $Version_old_escaped $Version_new "${ZL_source}/${ZL_file}"
+        updateFile "$Version_old_escaped" $Version_new "${ZL_source}/${ZL_file}"
     done
 
     echo
     echo "Replace major/minor/patch in ${ZL_source}/Project/CMake/CMakeLists.txt"
     updateFile "set(ZenLib_MAJOR_VERSION \"$Version_old_major\")" \
         "set(ZenLib_MAJOR_VERSION \"$Version_new_major\")" \
-        "${ZL_source}/Project/CMake/CMakeLists.txt"
+        "${ZL_source}"/Project/CMake/CMakeLists.txt
     updateFile "set(ZenLib_MINOR_VERSION \"$Version_old_minor\")" \
         "set(ZenLib_MINOR_VERSION \"$Version_new_minor\")" \
-        "${ZL_source}/Project/CMake/CMakeLists.txt"
+        "${ZL_source}"/Project/CMake/CMakeLists.txt
     updateFile "set(ZenLib_PATCH_VERSION \"$Version_old_patch\")" \
         "set(ZenLib_PATCH_VERSION \"$Version_new_patch\")" \
-        "${ZL_source}/Project/CMake/CMakeLists.txt"
+        "${ZL_source}"/Project/CMake/CMakeLists.txt
 
 }
