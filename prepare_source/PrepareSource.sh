@@ -9,7 +9,7 @@
 
 # This script requires : bang.sh git tar xz-utils p7zip-full automake
 #                         libtool doxygen
-# The compilation requires : g++ make libgtk2.0-dev
+# The compilation requires : g++ make libwxgtk3.0-dev libxml2-dev
 
 function load_options () {
 
@@ -31,7 +31,7 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
 
-    b.opt.add_flag --compil-unix "Generate the archive for compilation under Linux"
+    b.opt.add_flag --compil-unix "Generate the archive for compilation under Unix"
     b.opt.add_alias --compil-unix -cu
 
     b.opt.add_flag --compil-windows "Generate the archive for compilation under Windows"
@@ -133,7 +133,7 @@ function run () {
             echo "Besides --project, you must specify at least one of this options:"
             echo
             echo "--compil-unix|-cu"
-            echo "              Generate the directory(ies) for compilation under Linux"
+            echo "              Generate the directory(ies) for compilation under Unix"
             echo
             echo "--compil-windows|-cw"
             echo "              Generate the directory for compilation under Windows"

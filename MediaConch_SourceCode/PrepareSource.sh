@@ -37,35 +37,46 @@ function _get_source () {
 function _compil_unix_cli () {
 
     echo
-    echo "Generate the MC CLI directory for compilation under Linux:"
+    echo "Generate the MC CLI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MC
-    mkdir MediaConch_CLI${Version}_GNU_FromSource
-    cd MediaConch_CLI${Version}_GNU_FromSource
+    #mkdir MediaConch_CLI${Version}_GNU_FromSource
+    #cd MediaConch_CLI${Version}_GNU_FromSource
+    mkdir MediaConch_CLI_GNU_FromSource
+    cd MediaConch_CLI_GNU_FromSource
 
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
+    chmod +x MediaConch/Project/Mac/mkdmg_CLI
 
-    # MediaInfoLib and ZenLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Dependency : zlib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+
+    # ? Dependency : libxml2
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
         rm -fr .cvsignore .git*
+        rm -f History_GUI.txt
         #rm -fr Release
         rm -fr debian
         cd Project
             rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
-            rm -fr GNU/GUI
-            rm -fr MSVC2013 OBS Qt
+            #rm -fr OBS Qt
+            rm -fr OBS
+            rm -fr GNU/GUI Mac/mkdmg_GUI
+            rm -fr MSVC2013
         cd ..
         rm -fr Source/GUI
     cd ..
 
-    echo "3: Autogen..."
+    echo "3: Autotools..."
     cd MediaConch/Project/GNU/CLI
     sh autogen > /dev/null 2>&1
 
@@ -75,7 +86,10 @@ function _compil_unix_cli () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.txz MediaConch_CLI${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.bz2 MediaConch_CLI${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.xz MediaConch_CLI${Version}_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.bz2 MediaConch_CLI_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.xz MediaConch_CLI_GNU_FromSource)
     fi
 
 }
@@ -83,30 +97,38 @@ function _compil_unix_cli () {
 function _compil_unix_gui () {
 
     echo
-    echo "Generate the MC GUI directory for compilation under Linux:"
+    echo "Generate the MC GUI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MC
-    mkdir MediaConch_GUI${Version}_GNU_FromSource
-    cd MediaConch_GUI${Version}_GNU_FromSource
+    #mkdir MediaConch_GUI${Version}_GNU_FromSource
+    #cd MediaConch_GUI${Version}_GNU_FromSource
+    mkdir MediaConch_GUI_GNU_FromSource
+    cd MediaConch_GUI_GNU_FromSource
 
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
+    chmod +x MediaConch/Project/Mac/mkdmg_GUI
 
-    # Dependencies
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Dependency : zlib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
         rm -fr .cvsignore .git*
+        rm -f History_CLI.txt
         #rm -fr Release
         rm -fr debian
         cd Project
             rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
-            rm -fr GNU/CLI
-            rm -fr MSVC2013 OBS
+            rm -fr OBS
+            rm -fr GNU/CLI Mac/mkdmg_CLI
+            rm -fr MSVC2013
         cd ..
     cd ..
 
@@ -116,7 +138,10 @@ function _compil_unix_gui () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.txz MediaConch_GUI${Version}_GNU_FromSource)
+        #(BZIP=-9e tar -cj --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.bz2 MediaConch_GUI${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.xz MediaConch_GUI${Version}_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.bz2 MediaConch_GUI_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.xz MediaConch_GUI_GNU_FromSource)
     fi
 
 }
@@ -128,8 +153,10 @@ function _compil_windows () {
     echo "1: copy what is wanted..."
 
     cd $WPath/MC
-    mkdir mediaconch${Version}_AllInclusive
-    cd mediaconch${Version}_AllInclusive
+    #mkdir mediaconch${Version}_AllInclusive
+    #cd mediaconch${Version}_AllInclusive
+    mkdir mediaconch_AllInclusive
+    cd mediaconch_AllInclusive
 
     cp -r $MC_source MediaConch
 
@@ -157,7 +184,8 @@ function _compil_windows () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        7z a -t7z -mx=9 -bd ../archives/mediaconch${Version}_AllInclusive.7z mediaconch${Version}_AllInclusive >/dev/null
+        #7z a -t7z -mx=9 -bd ../archives/mediaconch${Version}_AllInclusive.7z mediaconch${Version}_AllInclusive >/dev/null
+        7z a -t7z -mx=9 -bd ../archives/mediaconch${Version}_AllInclusive.7z mediaconch_AllInclusive >/dev/null
     fi
 
 }
@@ -177,7 +205,7 @@ function _linux_packages () {
         rm -fr .cvsignore .git*
         #rm -fr Release
         cd Project
-            rm -fr MSVC2013 Mac Qt
+            rm -fr MSVC2013 Mac
         cd ..
     cd ..
 
@@ -187,7 +215,7 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/mediaconch${Version}.txz MediaConch)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediaconch${Version}.tar.gz MediaConch)
     fi
 
 }

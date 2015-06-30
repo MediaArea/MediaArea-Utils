@@ -37,20 +37,26 @@ function _get_source () {
 function _compil_unix_cli () {
 
     echo
-    echo "Generate the MI CLI directory for compilation under Linux:"
+    echo "Generate the MI CLI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MI
-    mkdir MediaInfo_CLI${Version}_GNU_FromSource
-    cd MediaInfo_CLI${Version}_GNU_FromSource
+    #mkdir MediaInfo_CLI${Version}_GNU_FromSource
+    #cd MediaInfo_CLI${Version}_GNU_FromSource
+    mkdir MediaInfo_CLI_GNU_FromSource
+    cd MediaInfo_CLI_GNU_FromSource
 
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
+    chmod +x MediaInfo/Project/Mac/mkdmg_CLI
 
-    # Dependencies
+    # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Dependency : zlib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -60,14 +66,15 @@ function _compil_unix_cli () {
         rm -fr debian
         cd Project
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
-            rm -fr GNU/GUI
-            rm -fr BCB QMake CodeBlocks
+            rm -fr OBS Solaris
+            rm -fr GNU/GUI Mac/mkdmg_GUI wxWidgets
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
+            rm -fr BCB QMake CodeBlocks
         cd ..
         rm -fr Source/GUI
     cd ..
 
-    echo "3: Autogen..."
+    echo "3: Autotools..."
     cd MediaInfo/Project/GNU/CLI
     sh autogen > /dev/null 2>&1
 
@@ -77,7 +84,10 @@ function _compil_unix_cli () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.txz MediaInfo_CLI${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI${Version}_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI_GNU_FromSource)
     fi
 
 }
@@ -85,20 +95,28 @@ function _compil_unix_cli () {
 function _compil_unix_gui () {
 
     echo
-    echo "Generate the MI GUI directory for compilation under Linux:"
+    echo "Generate the MI GUI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MI
-    mkdir MediaInfo_GUI${Version}_GNU_FromSource
-    cd MediaInfo_GUI${Version}_GNU_FromSource
+    #mkdir MediaInfo_GUI${Version}_GNU_FromSource
+    #cd MediaInfo_GUI${Version}_GNU_FromSource
+    mkdir MediaInfo_GUI_GNU_FromSource
+    cd MediaInfo_GUI_GNU_FromSource
 
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
+    chmod +x MediaInfo/Project/Mac/mkdmg_GUI
 
-    # Dependencies
+    # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Dependency : zlib
+    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    # Dependency : wxWidgets
+    mv MediaInfo/Project/wxWidgets Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -108,13 +126,15 @@ function _compil_unix_gui () {
         rm -fr debian
         cd Project
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
-            rm -fr GNU/CLI
-            rm -fr BCB QMake CodeBlocks
+            rm -fr OBS Solaris
+            rm -fr GNU/CLI Mac/mkdmg_CLI
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
+            rm -fr BCB QMake CodeBlocks
         cd ..
+        # Don’t delete CLI source, required for command-line parsing
     cd ..
 
-    echo "3: Autogen..."
+    echo "3: Autotools..."
     cd MediaInfo/Project/GNU/GUI
     sh autogen > /dev/null 2>&1
 
@@ -124,7 +144,10 @@ function _compil_unix_gui () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.txz MediaInfo_GUI${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz MediaInfo_GUI${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.txz MediaInfo_GUI${Version}_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz2 MediaInfo_GUI_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.xz MediaInfo_GUI_GNU_FromSource)
     fi
 
 }
@@ -136,8 +159,10 @@ function _compil_windows () {
     echo "1: copy what is wanted..."
 
     cd $WPath/MI
-    mkdir mediainfo${Version}_AllInclusive
-    cd mediainfo${Version}_AllInclusive
+    #mkdir mediainfo${Version}_AllInclusive
+    #cd mediainfo${Version}_AllInclusive
+    mkdir mediainfo_AllInclusive
+    cd mediainfo_AllInclusive
 
     cp -r $MI_source .
 
@@ -153,7 +178,7 @@ function _compil_windows () {
         #rm -fr Release
         rm -fr debian
         cd Project
-            rm -fr GNU Mac Solaris OBS
+            rm -fr GNU OBS Mac Solaris
         cd ..
         rm -fr Source/GUI/Cocoa
     cd ..
@@ -164,7 +189,8 @@ function _compil_windows () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        7z a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo${Version}_AllInclusive >/dev/null
+        #7z a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo${Version}_AllInclusive >/dev/null
+        7z a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo_AllInclusive >/dev/null
     fi
 
 }
@@ -183,9 +209,9 @@ function _linux_packages () {
         rm -fr .cvsignore .git*
         #rm -fr Release
         cd Project
-            rm -fr BCB QMake CodeBlocks
+            rm -fr Mac Solaris
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
-            rm -fr Mac Solaris OBS
+            rm -fr BCB QMake CodeBlocks
         cd ..
     cd ..
 
@@ -195,7 +221,7 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/mediainfo${Version}.txz MediaInfo)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediainfo${Version}.tar.gz MediaInfo)
     fi
 
 }

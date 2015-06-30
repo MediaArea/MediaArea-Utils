@@ -41,12 +41,14 @@ function _get_source () {
 function _compil_unix () {
 
     echo
-    echo "Generate the MIL directory for compilation under Linux:"
+    echo "Generate the MIL directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MIL
-    mkdir MediaInfo_DLL${Version}_GNU_FromSource
-    cd MediaInfo_DLL${Version}_GNU_FromSource
+    #mkdir MediaInfo_DLL${Version}_GNU_FromSource
+    #cd MediaInfo_DLL${Version}_GNU_FromSource
+    mkdir MediaInfo_DLL_GNU_FromSource
+    cd MediaInfo_DLL_GNU_FromSource
 
     cp -r $MIL_source .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
@@ -66,15 +68,15 @@ function _compil_unix () {
         rm -fr debian
         cd Project
             rm -f GNU/libmediainfo.dsc GNU/libmediainfo.spec
-            rm -fr Solaris
-            rm -fr BCB CMake CodeBlocks Coverity Delphi Java NetBeans
+            rm -fr OBS Solaris
             rm -fr MSCS2008 MSCS2010 MSJS MSVB MSVB2010
-            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
+            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013 zlib
+            rm -fr BCB CMake CodeBlocks Coverity Delphi Java NetBeans
             rm -fr PureBasic
         cd ..
     cd ..
 
-    echo "3: Autogen..."
+    echo "3: Autotools..."
     cd ZenLib/Project/GNU/Library
     sh autogen > /dev/null 2>&1
     cd ../../../../MediaInfoLib/Project/GNU/Library/
@@ -91,7 +93,10 @@ function _compil_unix () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.txz MediaInfo_DLL${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.bz MediaInfo_DLL${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.xz MediaInfo_DLL${Version}_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.bz2 MediaInfo_DLL_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.xz MediaInfo_DLL_GNU_FromSource)
     fi
 
 }
@@ -122,7 +127,7 @@ function _compil_windows () {
         rm -fr .git
         #rm -fr Release
         rm -fr debian
-        rm -fr Project/GNU Project/Solaris
+        rm -fr Project/GNU Project/Solaris Project/zlib
     cd ..
 
     if $MakeArchives; then
@@ -152,7 +157,7 @@ function _linux_packages () {
         cd Project
             rm -fr Coverity PureBasic Java NetBeans BCB CMake CodeBlocks
             rm -fr Delphi MSJS MSVB MSCS2008 MSCS2010 MSVB2010
-            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
+            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013 zlib
         cd ..
     cd ..
 
@@ -162,7 +167,7 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/libmediainfo${Version}.txz MediaInfoLib)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libmediainfo${Version}.tar.gz MediaInfoLib)
     fi
 
 }

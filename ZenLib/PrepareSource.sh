@@ -33,7 +33,7 @@ function _get_source () {
 function _compil_unix () {
 
     echo
-    echo "Generate the ZL directory for compilation under Linux:"
+    echo "Generate the ZL directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd $WPath/ZL
@@ -100,7 +100,7 @@ function _linux_packages () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (XZ_OPT=-9 tar -cJ --owner=root --group=root -f ../archives/libzen${Version}.txz ZenLib)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.gz ZenLib)
     fi
 
 }
