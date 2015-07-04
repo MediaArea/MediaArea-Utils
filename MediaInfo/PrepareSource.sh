@@ -49,7 +49,7 @@ function _compil_unix_cli () {
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
-    chmod +x MediaInfo/Project/Mac/mkdmg_CLI
+    chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -67,7 +67,7 @@ function _compil_unix_cli () {
         cd Project
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
-            rm -fr GNU/GUI Mac/mkdmg_GUI wxWidgets
+            rm -fr GNU/GUI Mac/osascript_MediaInfo_GUI.sh wxWidgets
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
         cd ..
@@ -76,7 +76,7 @@ function _compil_unix_cli () {
 
     echo "3: Autotools..."
     cd MediaInfo/Project/GNU/CLI
-    sh autogen > /dev/null 2>&1
+    sh autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -84,8 +84,10 @@ function _compil_unix_cli () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
+        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.gz MediaInfo_CLI${Version}_GNU_FromSource)
         #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI${Version}_GNU_FromSource)
         #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI${Version}_GNU_FromSource)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.gz MediaInfo_CLI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI_GNU_FromSource)
     fi
@@ -107,7 +109,7 @@ function _compil_unix_gui () {
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
-    chmod +x MediaInfo/Project/Mac/mkdmg_GUI
+    chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -127,7 +129,7 @@ function _compil_unix_gui () {
         cd Project
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
-            rm -fr GNU/CLI Mac/mkdmg_CLI
+            rm -fr GNU/CLI Mac/osascript_MediaInfo_CLI.sh
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
         cd ..
@@ -136,7 +138,7 @@ function _compil_unix_gui () {
 
     echo "3: Autotools..."
     cd MediaInfo/Project/GNU/GUI
-    sh autogen > /dev/null 2>&1
+    sh autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -144,8 +146,10 @@ function _compil_unix_gui () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(BZIP=-9 tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz MediaInfo_GUI${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.txz MediaInfo_GUI${Version}_GNU_FromSource)
+        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.gz MediaInfo_GUI${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz2 MediaInfo_GUI${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.xz MediaInfo_GUI${Version}_GNU_FromSource)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.gz MediaInfo_GUI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz2 MediaInfo_GUI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.xz MediaInfo_GUI_GNU_FromSource)
     fi
@@ -222,6 +226,8 @@ function _linux_packages () {
             mkdir ../archives
         fi
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediainfo${Version}.tar.gz MediaInfo)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/mediainfo${Version}.tar.bz2 MediaInfo)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/mediainfo${Version}.tar.xz MediaInfo)
     fi
 
 }

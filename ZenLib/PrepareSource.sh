@@ -101,6 +101,8 @@ function _linux_packages () {
             mkdir ../archives
         fi
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.gz ZenLib)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libzen${Version}.tar.bz2 ZenLib)
+        (XZ_OPT=-9e tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.xz ZenLib)
     fi
 
 }
