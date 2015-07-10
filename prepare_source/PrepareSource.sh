@@ -7,9 +7,11 @@
 # Use of this source code is governed by a BSD-style license that can
 # be found in the License.txt file in the root of the source tree.
 
-# This script requires : bang.sh git tar xz-utils p7zip-full automake
-#                         libtool doxygen
-# The compilation requires : g++ make libwxgtk3.0-dev libxml2-dev
+# This script requires bang.sh (https://github.com/bangsh/bangsh)
+# This script requires the following packages (debian):
+#    git tar xz-utils p7zip-full automake libtool doxygen graphviz
+# The compilation requires the following packages (debian):
+#    g++ make libwxgtk3.0-dev libxml2-dev
 
 function load_options () {
 
@@ -37,11 +39,10 @@ function load_options () {
     b.opt.add_flag --compil-windows "Generate the archive for compilation under Windows"
     b.opt.add_alias --compil-windows -cw
 
-    b.opt.add_flag --linux-packages "Generate the archive for Linux packages creation"
-    b.opt.add_alias --linux-packages --linux-package
-    b.opt.add_alias --linux-packages -lp
+    b.opt.add_flag --source-package "Generate the source package"
+    b.opt.add_alias --source-package -sp
     
-    b.opt.add_flag --all "Prepare all the targets for this project."
+    b.opt.add_flag --all "Prepare all the targets for this project"
     # Required for the call in _get_source
     b.opt.add_alias --all -all
 
@@ -112,87 +113,66 @@ function run () {
             Version="_$(sanitize_arg $(b.opt.get_opt --version))"
         fi
 
-        Target="none"
+        Target="all"
         if b.opt.has_flag? --compil-unix; then
             Target="cu"
         fi
         if b.opt.has_flag? --compil-windows; then
             Target="cw"
         fi
-        if b.opt.has_flag? --linux-packages; then
-            Target="lp"
-        fi
-        if b.opt.has_flag? --all; then
-            Target="all"
+        if b.opt.has_flag? --source-package; then
+            Target="sp"
         fi
 
         # For lisibility
         echo
     
-        if [ "$Target" = "none" ]; then
-            echo "Besides --project, you must specify at least one of this options:"
-            echo
-            echo "--compil-unix|-cu"
-            echo "              Generate the directory(ies) for compilation under Unix"
-            echo
-            echo "--compil-windows|-cw"
-            echo "              Generate the directory for compilation under Windows"
-            echo
-            echo "--linux-packages|-lp|--linux-package"
-            echo "              Generate the directory for Linux packages creation"
-            echo
-            echo "--all"
-            echo "              Generate all the targets above"
-        else
-            CleanUp=true
-            if b.opt.has_flag? --no-cleanup; then
-                CleanUp=false
-            fi
-            MakeArchives=true
-            if b.opt.has_flag? --no-archives; then
-                MakeArchives=false
-            fi
-        
-            # TODO: possibility to run the script from anywhere
-            #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
-            Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
+        CleanUp=true
+        if b.opt.has_flag? --no-cleanup; then
+            CleanUp=false
+        fi
+        MakeArchives=true
+        if b.opt.has_flag? --no-archives; then
+            MakeArchives=false
+        fi
     
-            WPath=/tmp/
-            if [ $(b.opt.get_opt --working-path) ]; then
-                WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
-                if b.path.dir? $WPath && ! b.path.writable? $WPath; then
-                    echo "The directory $WPath isn't writable : will use /tmp instead."
-                    echo
-                    WPath=/tmp/
-                else
-                    # TODO: Handle exception if mkdir fail
-                    if ! b.path.dir? $WPath ;then
-                        mkdir -p $WPath
-                    fi
+        WPath=/tmp/
+        if [ $(b.opt.get_opt --working-path) ]; then
+            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
+                echo "The directory $WPath isn't writable : will use /tmp instead."
+                echo
+                WPath=/tmp/
+            else
+                # TODO: Handle exception if mkdir fail
+                if ! b.path.dir? $WPath ;then
+                    mkdir -p $WPath
                 fi
             fi
-        
-            # If the user give a correct project name
-            if b.path.file? $Script && b.path.readable? $Script; then
-                # Load the script for this project, so bang can find the
-                # corresponding task. Then, launch the task.
-                . $Script
-                b.task.run PrepareSource
-            else
-                echo "Error : no task found for $Project!"
-                echo
-                echo "Warning : you must be in PrepareSource.sh's directory to launch it."
-                echo "e.g. /path/to/MediaArea-Utils/prepare_source"
-                echo "and the project repository must be in the same directory than MediaArea-Utils"
-            fi
-    
-            unset -v Project Version Target CleanUp MakeArchives
-            unset -v Script WPath
         fi
+    
+        # TODO: possibility to run the script from anywhere
+        #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
+        Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
+        # If the user give a correct project name
+        if b.path.file? $Script && b.path.readable? $Script; then
+            # Load the script for this project, so bang can find the
+            # corresponding task. Then, launch the task.
+            . $Script
+            b.task.run PrepareSource
+        else
+            echo "Error : no task found for $Project!"
+            echo
+            echo "Warning : you must be in PrepareSource.sh's directory to launch it."
+            echo "e.g. /path/to/MediaArea-Utils/prepare_source"
+            echo "and the project repository must be in the same directory than MediaArea-Utils"
+        fi
+
+        unset -v Project Version Target CleanUp MakeArchives
+        unset -v Script WPath
 
         # For lisibility
         echo
-    
     fi
 }
 

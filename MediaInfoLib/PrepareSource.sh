@@ -143,10 +143,10 @@ function _compil_windows () {
 
 }
 
-function _linux_packages () {
+function _source_package () {
 
     echo
-    echo "Generate the MIL directory for Linux packages creation:"
+    echo "Generate the MIL directory for the source package:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MIL
@@ -156,11 +156,6 @@ function _linux_packages () {
     cd MediaInfoLib
         rm -fr .cvsignore .git*
         #rm -fr Release
-        cd Project
-            rm -fr Coverity PureBasic Java NetBeans BCB CMake CodeBlocks
-            rm -fr Delphi MSJS MSVB MSCS2008 MSCS2010 MSVB2010
-            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013 zlib
-        cd ..
     cd ..
 
     if $MakeArchives; then
@@ -199,13 +194,13 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "lp" ]; then
-        _linux_packages
+    if [ "$Target" = "sp" ]; then
+        _source_package
     fi
     if [ "$Target" = "all" ]; then
         _compil_unix
         _compil_windows
-        _linux_packages
+        _source_package
     fi
 
     if $CleanUp; then

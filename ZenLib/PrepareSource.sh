@@ -76,10 +76,10 @@ function _compil_windows () {
 
 }
 
-function _linux_packages () {
+function _source_package () {
 
     echo
-    echo "Generate the ZL directory for Linux packages creation:"
+    echo "Generate the ZL directory for the source package:"
     echo "1: copy what is wanted..."
 
     cd $WPath/ZL
@@ -89,10 +89,6 @@ function _linux_packages () {
     cd ZenLib
         rm -fr .cvsignore .git*
         #rm -fr Release
-        cd Project
-            rm -fr BCB CMake CodeBlocks Coverity
-            rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
-        cd ..
     cd ..
     if $MakeArchives; then
         echo "3: compressing..."
@@ -102,7 +98,7 @@ function _linux_packages () {
         fi
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.gz ZenLib)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libzen${Version}.tar.bz2 ZenLib)
-        (XZ_OPT=-9e tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.xz ZenLib)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/libzen${Version}.tar.xz ZenLib)
     fi
 
 }
@@ -127,13 +123,13 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "lp" ]; then
-        _linux_packages
+    if [ "$Target" = "sp" ]; then
+        _source_package
     fi
     if [ "$Target" = "all" ]; then
         _compil_unix
         _compil_windows
-        _linux_packages
+        _source_package
     fi
 
     if $CleanUp; then

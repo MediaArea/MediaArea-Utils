@@ -194,10 +194,10 @@ function _compil_windows () {
 
 }
 
-function _linux_packages () {
+function _source_package () {
 
     echo
-    echo "Generate the MC directory for Linux packages creation:"
+    echo "Generate the MC directory for the source package:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MC
@@ -208,9 +208,6 @@ function _linux_packages () {
     cd MediaConch
         rm -fr .cvsignore .git*
         #rm -fr Release
-        cd Project
-            rm -fr MSVC2013 Mac
-        cd ..
     cd ..
 
     if $MakeArchives; then
@@ -250,14 +247,14 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "lp" ]; then
-        _linux_packages
+    if [ "$Target" = "sp" ]; then
+        _source_package
     fi
     if [ "$Target" = "all" ]; then
         _compil_unix_cli
         _compil_unix_gui
         _compil_windows
-        _linux_packages
+        _source_package
     fi
     
     if $CleanUp; then

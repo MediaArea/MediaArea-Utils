@@ -67,7 +67,7 @@ function _compil_unix_cli () {
         cd Project
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
-            rm -fr GNU/GUI Mac/osascript_MediaInfo_GUI.sh wxWidgets
+            rm -fr GNU/GUI Mac/osascript_MediaInfo_GUI.sh WxWidgets
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
         cd ..
@@ -118,7 +118,7 @@ function _compil_unix_gui () {
     # Dependency : zlib
     cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
     # Dependency : wxWidgets
-    mv MediaInfo/Project/wxWidgets Shared/Project
+    mv MediaInfo/Project/WxWidgets Shared/Project
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -199,10 +199,10 @@ function _compil_windows () {
 
 }
 
-function _linux_packages () {
+function _source_package () {
 
     echo
-    echo "Generate the MI directory for Linux packages creation:"
+    echo "Generate the MI directory for the source package:"
     echo "1: copy what is wanted..."
 
     cd $WPath/MI
@@ -212,11 +212,6 @@ function _linux_packages () {
     cd MediaInfo
         rm -fr .cvsignore .git*
         #rm -fr Release
-        cd Project
-            rm -fr Mac Solaris
-            rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
-            rm -fr BCB QMake CodeBlocks
-        cd ..
     cd ..
 
     if $MakeArchives; then
@@ -256,14 +251,14 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "lp" ]; then
-        _linux_packages
+    if [ "$Target" = "sp" ]; then
+        _source_package
     fi
     if [ "$Target" = "all" ]; then
         _compil_unix_cli
         _compil_unix_gui
         _compil_windows
-        _linux_packages
+        _source_package
     fi
     
     if $CleanUp; then
