@@ -108,17 +108,17 @@ function run () {
             Target="linux"
         fi
 
-        WPath=/tmp
+        WDir=/tmp
         if [ $(b.opt.get_opt --working-path) ]; then
-            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
-                echo "The directory $WPath isn't writable : will use /tmp instead."
+            WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? $WDir && ! b.path.writable? $WDir; then
+                echo "The directory $WDir isn't writable : will use /tmp instead."
                 echo
-                WPath=/tmp/
+                WDir=/tmp/
             else
                 # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? $WPath ;then
-                    mkdir -p $WPath
+                if ! b.path.dir? $WDir ;then
+                    mkdir -p $WDir
                 fi
             fi
         fi
@@ -153,9 +153,8 @@ function run () {
         # For lisibility
         echo
 
-        #unset -v Project Release_date Script
-        unset -v Project Version_old Version_new Snapshot Target WPath
-        unset -v CleanUp Script
+        unset -v Project Version_old Version_new Snapshot Target
+        unset -v WDir CleanUp Script
     fi
 }
 

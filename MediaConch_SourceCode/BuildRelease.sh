@@ -10,12 +10,6 @@ function _build_mac () {
 
     local sp RWDir
 
-    echo Import :
-    echo $IP
-    echo $SSHPort
-    echo $SSHUser
-    echo $KeyChain
-
     # SSH prefix
     sp="ssh -p $SSHPort $SSHUser@$IP"
     RWDir="/Users/mymac/Documents/almin"
@@ -29,7 +23,7 @@ function _build_mac () {
     echo "Compile Mac MC CLI..."
     echo
 
-    scp -P $SSHPort "$WPath/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz" $SSHUser@$IP:$RWDir/build
+    scp -P $SSHPort archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $SSHUser@$IP:$RWDir/build
             #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             tar xJf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
@@ -41,7 +35,7 @@ function _build_mac () {
     echo "Compile Mac MC GUI..."
     echo
 
-    scp -P $SSHPort "$WPath/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz" $SSHUser@$IP:$RWDir/build
+    scp -P $SSHPort archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $SSHUser@$IP:$RWDir/build
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             tar xJf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
@@ -62,15 +56,27 @@ function _build_mac () {
             cd - > /dev/null ;
             cd MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./mkdmg.sh mc gui $Version_new"
-    mkdir "$WPath/mac"
-    scp -P $SSHPort "$SSHUser@$IP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" "$WPath/mac"
-    scp -P $SSHPort "$SSHUser@$IP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" "$WPath/mac"
+
+    mkdir mac
+    scp -P $SSHPort "$SSHUser@$IP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" mac
+    scp -P $SSHPort "$SSHUser@$IP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" mac
 
 }
 
 function btask.BuildRelease.run () {
 
-    cd $WPath
+    # TODO: incrementals snapshots if multiple execution in the
+    # same day eg. AAAAMMJJ-X
+    #if b.path.dir? $WDir/`date +%Y%m%d`; then
+    #    mv $WDir/`date +%Y%m%d` $WDir/`date +%Y%m%d`-1
+    #    WDir=$WDir/`date +%Y%m%d`-2
+    #    mkdir -p $WDir
+    # + handle a third run, etc
+        
+    WDir="$WDir/`date +%Y%m%d`/mc"
+    rm -fr $WDir
+    mkdir -p $WDir
+    cd $WDir
 
     echo
     echo Clean up...
@@ -81,16 +87,18 @@ function btask.BuildRelease.run () {
     rm -fr archives
     rm -fr mac
 
-    mkdir "$WPath/upgrade_version"
-    mkdir "$WPath/prepare_source"
+    mkdir upgrade_version
+    mkdir prepare_source
 
     cd $(b.get bang.working_dir)/../upgrade_version
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -w "$WPath/upgrade_version"
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -w "$WDir/upgrade_version"
 
     cd $(b.get bang.working_dir)/../prepare_source
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WPath/upgrade_version/MediaConch_SourceCode" -w "$WPath/prepare_source" -nc
+    #$(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir/upgrade_version/MediaConch_SourceCode" -w "$WDir/prepare_source"
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir/upgrade_version/MediaConch_SourceCode" -w "$WDir/prepare_source" -nc
 
-    mv "$WPath/prepare_source/archives" "$WPath"
+    cd $WDir
+    mv prepare_source/archives .
 
     if [ "$Target" = "mac" ]; then
         _build_mac
@@ -108,7 +116,7 @@ function btask.BuildRelease.run () {
     fi
 
     if $CleanUp; then
-        cd $WPath
+        cd $WDir
         rm -fr upgrade_version
         rm -fr prepare_source
     fi
