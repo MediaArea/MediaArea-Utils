@@ -2,8 +2,9 @@
 # Upgrade the version number of MediaInfo
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.html file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.html file in the root of the source
+# tree.
 
 function btask.UpgradeVersion.run () {
 
@@ -32,22 +33,12 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/Solaris/mkpkg"
     MI_files[((index++))]="debian/changelog"
     MI_files[((index++))]="debian/control"
-    MI_files[((index++))]="Project/BCB/GUI/MediaInfo_GUI.cbproj"
     MI_files[((index++))]="Project/OBS/obs_mediainfo"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
     MI_files[((index++))]="Project/Mac/mkdmg_CLI"
     MI_files[((index++))]="Project/Mac/mkdmg_GUI"
-    MI_files[((index++))]="Source/Install/MediaInfo_GUI_Windows.nsi"
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
-    MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2012/CLI/MediaInfo_CLI.rc"
-    MI_files[((index++))]="Project/MSVC2010/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2010/CLI/MediaInfo_CLI.rc"
-    MI_files[((index++))]="Project/MSVC2008/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2008/CLI/MediaInfo_CLI.rc"
-    MI_files[((index++))]="Project/MSVC2013/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2013/CLI/MediaInfo_CLI.rc"
 
     # Replace old version by new version
     for MI_file in ${MI_files[@]}
@@ -58,23 +49,44 @@ function btask.UpgradeVersion.run () {
     done
 
     echo
-    echo "Passage for version with commas..."
+    echo "Passage for major.minor.patch.build..."
     unset -v MI_files
     index=0
-    MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2012/CLI/MediaInfo_CLI.rc"
-    MI_files[((index++))]="Project/MSVC2010/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2010/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/BCB/GUI/MediaInfo_GUI.cbproj"
     MI_files[((index++))]="Project/MSVC2008/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2008/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/MSVC2010/GUI/MediaInfo_GUI.rc"
+    MI_files[((index++))]="Project/MSVC2010/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
+    MI_files[((index++))]="Project/MSVC2012/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2013/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2013/CLI/MediaInfo_CLI.rc"
 
     # Replace old version by new version
     for MI_file in ${MI_files[@]}
     do
+
         echo ${MI_source}/${MI_file}
-        updateFile $Version_old_comma $Version_new_comma "${MI_source}/${MI_file}"
+
+        # If $Version_old_build is set = it's already include in
+        # $Version_old_escaped, so we will try to replace
+        # major.minor.patch.build.build, and that doesn't exist in
+        # the file
+        if [ "$Version_old_build" = "0" ] && [ "$Version_new_build" != "0" ]; then
+            updateFile "$Version_old_escaped"\.0 $Version_new "${MI_source}/${MI_file}"
+            updateFile $Version_old_comma,0 $Version_new_comma "${MI_source}/${MI_file}"
+
+        elif [ "$Version_old_build" != "0" ] && [ "$Version_new_build" = "0" ]; then
+            updateFile "$Version_old_escaped" $Version_new.0 "${MI_source}/${MI_file}"
+            updateFile $Version_old_comma $Version_new_comma,0 "${MI_source}/${MI_file}"
+
+        # When $Version_old_build and $Version_and_build are set
+        # (or not set) together
+        else
+            updateFile "$Version_old_escaped" $Version_new "${MI_source}/${MI_file}"
+            updateFile $Version_old_comma $Version_new_comma "${MI_source}/${MI_file}"
+        fi
+
     done
 
     echo
@@ -88,5 +100,12 @@ function btask.UpgradeVersion.run () {
     updateFile "<VerInfo_Release>$Version_old_patch<\/VerInfo_Release>" \
         "<VerInfo_Release>"$Version_new_patch"<\/VerInfo_Release>" \
         "${MI_source}"/Project/BCB/GUI/MediaInfo_GUI.cbproj
+
+    echo
+    echo "Update Source/Install/MediaInfo_GUI_Windows.nsi ..."
+    updateFile $Version_old_major\.$Version_old_minor\.$Version_old_patch $Version_new_major.$Version_new_minor.$Version_new_patch "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_build\"" \
+        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" \
+        "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
 
 }

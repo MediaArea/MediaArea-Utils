@@ -4,10 +4,11 @@
 # Upgrade the version number of the projects used by MediaArea
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.txt file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.txt file in the root of the source
+# tree.
 
-# This script requires : bang.sh, git and sed
+# This script requires: bang.sh, git and sed
 
 function load_options () {
 
@@ -20,10 +21,10 @@ function load_options () {
     #b.opt.add_opt --date "Release date"
     #b.opt.add_alias --date -d
 
-    b.opt.add_opt --old "Old release version"
+    b.opt.add_opt --old "Old version of the project"
     b.opt.add_alias --old -o
     
-    b.opt.add_opt --new "New release version"
+    b.opt.add_opt --new "New version of the project"
     b.opt.add_alias --new -n
 
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
@@ -34,6 +35,9 @@ function load_options () {
 
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -s
+
+    #b.opt.add_opt --commit "Commit the changes on git"
+    #b.opt.add_alias --commit -c
 
     # Mandatory arguments
     #b.opt.required_args --project --date --old --new
@@ -65,8 +69,8 @@ function getRepo () {
 
     cd $Path
     rm -fr $Project
-    # TODO: if the repository url is wrong, or no network is available, ask
-    # for --source-path and exit
+    # TODO: if the repository url is wrong, or no network is
+    # available, ask for --source-path and exit
     git clone $Repo
 }
 
@@ -98,15 +102,15 @@ function run () {
 
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
         Version_new=$(sanitize_arg $(b.opt.get_opt --new))
-        # For the first loop : in the files with version with commas, to
-        # avoid the replacement of X,Y,ZZ by X.Y.ZZ we need to specify \.
-        # instead of . (because it's a regexp)
+        # For the first loop : in the files with version with
+        # commas, to avoid the replacement of X,Y,ZZ by X.Y.ZZ we
+        # need to specify \. instead of . (because it's a regexp)
         Version_old_escaped=$(b.str.replace_all Version_old '.' '\.')
         # For the second loop : version with commas
         Version_old_comma=$(b.str.replace_all Version_old '.' ',')
         Version_new_comma=$(b.str.replace_all Version_new '.' ',')
 
-        # Split the version in major/minor/patch on the points
+        # Split version in major/minor/patch/build on the points
         OLD_IFS="$IFS"
         IFS="."
         Version_old_array=($Version_old)
@@ -115,23 +119,29 @@ function run () {
         Version_old_major=${Version_old_array[0]}
         Version_old_minor=${Version_old_array[1]}
         Version_old_patch=${Version_old_array[2]}
+        Version_old_build=${Version_old_array[3]}
         Version_new_major=${Version_new_array[0]}
         Version_new_minor=${Version_new_array[1]}
         Version_new_patch=${Version_new_array[2]}
-        # If we ask -o X.Y append an 0 for the version in X.Y.0.0 mode
+        Version_new_build=${Version_new_array[3]}
+        # If we ask -o X.Y the patch is 0
         if ! [ $Version_old_patch ]; then
             Version_old_patch=0
         fi
-        # If we ask -n X.Y append an 0 for the version in X.Y.0.0 mode
+        # If we ask -n X.Y the patch is 0
         if ! [ $Version_new_patch ]; then
             Version_new_patch=0
         fi
+        # If we ask -o X.Y.Z the build is 0
+        if ! [ $Version_old_build ]; then
+            Version_old_build=0
+        fi
+        # If we ask -n X.Y.Z the build is 0
+        if ! [ $Version_new_build ]; then
+            Version_new_build=0
+        fi
 
         #Release_date=$(sanitize_arg $(b.opt.get_opt --date))
-
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/UpgradeVersion.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/UpgradeVersion.sh"
 
         WPath=/tmp
         if [ $(b.opt.get_opt --working-path) ]; then
@@ -151,10 +161,13 @@ function run () {
         # For lisibility
         echo
 
+        # TODO: possibility to run the script from anywhere
+        #Script="$(b.get bang.working_dir)/../../${Project}/Release/UpgradeVersion.sh"
+        Script="$(b.get bang.working_dir)/../${Project}/UpgradeVersion.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
-            # Load the script for this project, so bang can find the
-            # corresponding task, then launch it
+            # Load the script for this project, so bang can find
+            # the corresponding task, then launch it
             . $Script
             b.task.run UpgradeVersion
         else
