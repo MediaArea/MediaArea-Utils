@@ -7,8 +7,8 @@
 # Use of this source code is governed by a BSD-style license that can
 # be found in the License.txt file in the root of the source tree.
 
-# This script requires : bang.sh UpgradeVersion.sh PrepareSource.sh 
-#                         ssh
+# This script requires: bang.sh UpgradeVersion.sh PrepareSource.sh 
+#                        ssh
 
 function load_options () {
 
@@ -42,6 +42,8 @@ function load_options () {
     b.opt.add_flag --all "Build all the targets for this project"
     # Same arguments as PrepareSource.sh
     b.opt.add_alias --all -all
+
+    b.opt.add_flag --log "Log the output in a file instead of display it"
 
     b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
@@ -81,12 +83,14 @@ function run () {
             Project=MediaConch_SourceCode
         fi
 
+        Date=`date +%Y%m%d`
+
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
 
         Snapshot="no"
         if b.opt.has_flag? --snapshot; then
             Snapshot="yes"
-            Version_new="${Version_old}.`date +%Y%m%d`"
+            Version_new="${Version_old}.$Date"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
         else
@@ -98,11 +102,14 @@ function run () {
         fi
 
         Target="all"
+        PSTarget=""
         if b.opt.has_flag? --build-mac; then
             Target="mac"
+            PSTarget="-cu"
         fi
         if b.opt.has_flag? --build-windows; then
             Target="windows"
+            PSTarget="-cw"
         fi
         if b.opt.has_flag? --build-linux; then
             Target="linux"
@@ -111,50 +118,58 @@ function run () {
         WDir=/tmp
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? $WDir && ! b.path.writable? $WDir; then
+            if b.path.dir? "$WDir" && ! b.path.writable? "$WDir"; then
                 echo "The directory $WDir isn't writable : will use /tmp instead."
                 echo
                 WDir=/tmp/
             else
                 # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? $WDir ;then
+                if ! b.path.dir? "$WDir" ;then
                     mkdir -p $WDir
                 fi
             fi
         fi
-
+        if ! b.path.dir? "$WDir"/$Date; then
+            mkdir "$WDir"/$Date
+        fi
+        
         CleanUp=true
         if b.opt.has_flag? --no-cleanup; then
             CleanUp=false
         fi
 
-        . Config.sh
-
-        # For lisibility
-        echo
-
+        . Config.sh    
+        
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/BuildRelease.sh"
         Script="$(b.get bang.working_dir)/../${Project}/BuildRelease.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
-            # Load the script for this project, so bang can find the
-            # corresponding task, then launch it
+            # Load the script for this project, so bang can find
+            # the corresponding task
             . $Script
-            b.task.run BuildRelease
+            if b.opt.has_flag? --log; then
+                if ! b.path.dir? "$WDir"/$Date/log; then
+                    mkdir "$WDir"/$Date/log
+                fi
+                b.task.run BuildRelease > "$WDir"/$Date/log/$Date-$Project-init.log 2>&1
+            else
+                echo
+                b.task.run BuildRelease
+                echo
+            fi
         else
+            echo
             echo "Error : no task found for $Project!"
             echo
             echo "Warning : you must be in BuildRelease.sh's directory to launch it."
             echo "e.g. /path/to/MediaArea-Utils/buildrelease"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
+            echo
         fi
 
-        # For lisibility
-        echo
-
-        unset -v Project Version_old Version_new Snapshot Target
-        unset -v WDir CleanUp Script
+        unset -v Project Date Version_old Version_new
+        unset -v Snapshot Target WDir CleanUp Script
     fi
 }
 
