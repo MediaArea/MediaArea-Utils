@@ -1,5 +1,5 @@
-# MediaConch_SourceCode/Release/BuildRelease.sh
-# Build a release of MediaConch
+# MediaInfo/Release/BuildRelease.sh
+# Build a release of MediaInfo
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
 # Use of this source code is governed by a BSD-style license that
@@ -19,51 +19,51 @@ function _build_mac () {
     # Clean up
     $sp "cd $RWDir/ ;
             test -d build || mkdir build ;
-            rm -fr build/MediaConch_*"
+            rm -fr build/MediaInfo_*"
 
     echo
-    echo "Compile MC CLI for mac..."
+    echo "Compile MI CLI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
-            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
+    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
+            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             $KeyChain ;
-            tar xJf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
-            cd MediaConch_CLI_GNU_FromSource ;
-            cp -r ../../libxml2 . ;
-            ./CLI_Compile.sh"
+            tar xJf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
+            cd MediaInfo_CLI_GNU_FromSource ;
+            ./CLI_Compile.sh --enable-arch-i386 --enable-arch-x86_64"
 
     echo
-    echo "Compile MC GUI for mac..."
+    echo "Compile MI GUI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
-            #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
+    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
+            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             $KeyChain ;
-            tar xJf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
-            cd MediaConch_GUI_GNU_FromSource ;
-            cp -r ../../libxml2 . ;
-            PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh"
+            tar xJf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
+            cd MediaInfo_GUI_GNU_FromSource ;
+            mkdir -p Shared/Source
+            cp -r ../../WxWidgets Shared/Source ;
+            ./GUI_Compile.sh --with-wx-static --enable-arch-i386 --enable-arch-x86_64"
 
     echo
     echo "Making the dmg..."
     echo
 
-            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
-            #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
+            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
+            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             $KeyChain ;
-            cd MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac ;
-            ./mkdmg.sh mc cli $Version_new ;
+            cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
+            ./mkdmg.sh mi cli $Version_new ;
             cd - > /dev/null ;
-            cd MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac ;
-            PATH=$PATH:~/Qt/5.3/clang_64/bin ./mkdmg.sh mc gui $Version_new"
+            cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
+            ./mkdmg.sh mi gui $Version_new"
 
     mkdir mac
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" mac
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" mac
 
 }
 
@@ -78,26 +78,25 @@ function _build_windows () {
     cd $WDir
 
     # Clean up
-    $sp "c: & chdir $RWDir & rmdir /S /Q build & md build"
+    $sp "c: & chdir $RWDir & rmdir /S /Q build"
+    $sp "c: & chdir $RWDir & md build"
 
     echo
-    echo "Compile MC CLI for windows..."
+    echo "Compile MI CLI for windows..."
     echo
 
-    scp -P $WinSSHPort prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediaconch_${Version_new}_AllInclusive.7z
-            #xcopy /E /I /Q ..\\libxml2 mediaconch_${Version_new}_AllInclusive\\libxml2 & \
+    scp -P $WinSSHPort prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediainfo_${Version_new}_AllInclusive.7z
     $sp "c: & chdir $RWDir/build & \
-            c:/\"Program Files\"/7-Zip/7z x mediaconch_${Version_new}_AllInclusive.7z & \
-            xcopy /E /I /Q ..\\libxml2 mediaconch_AllInclusive\\libxml2 & \
+            c:/\"Program Files\"/7-Zip/7z x mediainfo_${Version_new}_AllInclusive.7z & \
 
 "
-#            copy /Y ..\\MediaConch.vcxproj mediaconch_AllInclusive\\MediaConch\\Project\\MSVC2013\\CLI & \
-#            copy /Y ..\\MediaInfoLib.vcxproj mediaconch_AllInclusive\\MediaInfoLib\\Project\\MSVC2013\\Library & \
+#            copy /Y ..\\MediaInfo.vcxproj mediainfo_AllInclusive\\MediaInfo\\Project\\MSVC2013\\CLI & \
+#            copy /Y ..\\MediaInfoLib.vcxproj mediainfo_AllInclusive\\MediaInfoLib\\Project\\MSVC2013\\Library & \
 
 #cd "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64"
 #%comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" amd64
-#cd C:\Users\almin\build\mediaconch_AllInclusive\MediaConch\Project\MSVC2013\CLI
-#msbuild MediaConch.vcxproj
+#cd C:\Users\almin\build\mediainfo_AllInclusive\MediaInfo\Project\MSVC2013\CLI
+#msbuild MediaInfo.vcxproj
 
 }
 
@@ -111,7 +110,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    WDir="$WDir"/$Date/mc
+    WDir="$WDir"/$Date/mi
     rm -fr $WDir
     mkdir -p $WDir
     cd $WDir
@@ -129,11 +128,11 @@ function btask.BuildRelease.run () {
     mkdir prepare_source
 
     cd $(b.get bang.working_dir)/../upgrade_version
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -w "$WDir/upgrade_version"
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -w "$WDir/upgrade_version"
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir/upgrade_version/MediaConch_SourceCode" -w "$WDir/prepare_source" $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -all -s "$WDir/upgrade_version/MediaInfo" -w "$WDir/prepare_source" $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
         if b.opt.has_flag? --log; then
