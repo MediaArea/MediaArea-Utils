@@ -4,11 +4,12 @@
 # Build releases of the projects used by MediaArea
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.txt file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.txt file in the root of the source
+# tree.
 
 # This script requires: bang.sh UpgradeVersion.sh PrepareSource.sh 
-#                        ssh
+#                        ssh gawk
 
 function load_options () {
 
@@ -28,7 +29,10 @@ function load_options () {
     b.opt.add_alias --snapshot -s
 
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
-    b.opt.add_alias --working-path -w
+    b.opt.add_alias --working-path -wp
+
+    b.opt.add_opt --source-path "Source directory to modify"
+    b.opt.add_alias --source-path -sp
 
     b.opt.add_flag --build-mac "Build only for Mac"
     b.opt.add_alias --build-mac -bm
@@ -102,7 +106,7 @@ function run () {
         fi
 
         Target="all"
-        PSTarget=""
+        PSTarget="-all"
         if b.opt.has_flag? --build-mac; then
             Target="mac"
             PSTarget="-cu"
@@ -113,26 +117,38 @@ function run () {
         fi
         if b.opt.has_flag? --build-linux; then
             Target="linux"
+            #PSTarget="-sp"
         fi
 
-        WDir=/tmp
+        # In case --working-path is not defined
+        WDir=/tmp/$Date
+        # In case it is
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
             if b.path.dir? "$WDir" && ! b.path.writable? "$WDir"; then
+                echo
                 echo "The directory $WDir isn't writable : will use /tmp instead."
                 echo
-                WDir=/tmp/
+                WDir=/tmp/$Date
             else
-                # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? "$WDir" ;then
-                    mkdir -p $WDir
-                fi
+                WDir="$WDir"/$Date
             fi
         fi
-        if ! b.path.dir? "$WDir"/$Date; then
-            mkdir "$WDir"/$Date
+        # TODO: Handle exception if mkdir fail (/tmp not writable)
+        if ! b.path.dir? "$WDir"; then
+            mkdir -p "$WDir"
         fi
         
+        if [ $(b.opt.get_opt --source-path) ]; then
+            SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
+            if ! b.path.dir? "$SDir"; then
+                echo
+                echo "The directory $SDir doesn't exist!"
+                echo
+                exit
+            fi
+        fi
+
         CleanUp=true
         if b.opt.has_flag? --no-cleanup; then
             CleanUp=false
@@ -149,10 +165,10 @@ function run () {
             # the corresponding task
             . $Script
             if b.opt.has_flag? --log; then
-                if ! b.path.dir? "$WDir"/$Date/log; then
-                    mkdir "$WDir"/$Date/log
+                if ! b.path.dir? "$WDir"/log; then
+                    mkdir "$WDir"/log
                 fi
-                b.task.run BuildRelease > "$WDir"/$Date/log/$Date-$Project-init.log 2>&1
+                b.task.run BuildRelease > "$WDir"/log/$Date-$Project-init.log 2>&1
             else
                 echo
                 b.task.run BuildRelease
@@ -169,7 +185,7 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v Snapshot Target WDir CleanUp Script
+        unset -v Snapshot Target WDir SDir CleanUp Script
     fi
 }
 

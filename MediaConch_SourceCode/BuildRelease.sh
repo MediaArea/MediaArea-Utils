@@ -6,7 +6,7 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
-function _build_mac () {
+function _build_mac_cli () {
 
     local sp RWDir
 
@@ -14,12 +14,12 @@ function _build_mac () {
     sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
     RWDir="/Users/mymac/Documents/almin"
 
-    cd $WDir
+    cd "$WDir"
 
     # Clean up
-    $sp "cd $RWDir/ ;
+    $sp "cd $RWDir ;
             test -d build || mkdir build ;
-            rm -fr build/MediaConch_*"
+            rm -fr build/MediaConch_CLI*"
 
     echo
     echo "Compile MC CLI for mac..."
@@ -28,11 +28,42 @@ function _build_mac () {
     scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            $KeyChain ;
             tar xJf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             ./CLI_Compile.sh"
+            # Because the libxml2 doesn't compile in 32 bits
+            #./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
+
+    echo
+    echo
+    echo "DMG stage..."
+
+            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
+    $sp "cd $RWDir/build ;
+            $KeyChain ;
+            cd MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac ;
+            ./mkdmg.sh mc cli $Version_new"
+
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" mac
+
+}
+
+
+function _build_mac_gui () {
+
+    local sp RWDir
+
+    # SSH prefix
+    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    RWDir="/Users/mymac/Documents/almin"
+
+    cd "$WDir"
+
+    # Clean up
+    $sp "cd $RWDir ;
+            test -d build || mkdir build ;
+            rm -fr build/MediaConch_GUI*"
 
     echo
     echo "Compile MC GUI for mac..."
@@ -41,29 +72,63 @@ function _build_mac () {
     scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            $KeyChain ;
             tar xJf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh"
 
     echo
-    echo "Making the dmg..."
     echo
+    echo "DMG stage..."
 
-            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             $KeyChain ;
-            cd MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac ;
-            ./mkdmg.sh mc cli $Version_new ;
-            cd - > /dev/null ;
             cd MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./mkdmg.sh mc gui $Version_new"
 
-    mkdir mac
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" mac
     scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" mac
+
+}
+
+function _build_mac () {
+
+    # This function is a temporay fix for the autotools bug under
+    # mac. Check the size to know if the compilation was
+    # successful. If not, retry to compile up to 3 times.
+
+    local Try
+
+    cd "$WDir"
+    mkdir mac
+
+    Try=0
+    touch mac/MediaConch_CLI_${Version_new}_Mac.dmg
+    if b.opt.has_flag? --log; then
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+            _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
+            Try=$(($Try + 1))
+        done
+    else
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+            _build_mac_cli
+            Try=$(($Try + 1))
+        done
+    fi
+
+    Try=0
+    touch mac/MediaConch_GUI_${Version_new}_Mac.dmg
+    if b.opt.has_flag? --log; then
+        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+            _build_mac_gui > ../log/$Date-$Project-mac-gui.log 2>&1
+            Try=$(($Try + 1))
+        done
+    else
+        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+            _build_mac_gui
+            Try=$(($Try + 1))
+        done
+    fi
 
 }
 
@@ -75,7 +140,7 @@ function _build_windows () {
     sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
-    cd $WDir
+    cd "$WDir"
 
     # Clean up
     $sp "c: & chdir $RWDir & rmdir /S /Q build & md build"
@@ -111,10 +176,10 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    WDir="$WDir"/$Date/mc
-    rm -fr $WDir
-    mkdir -p $WDir
-    cd $WDir
+    WDir="$WDir"/mc
+    rm -fr "$WDir"
+    mkdir -p "$WDir"
+    cd "$WDir"
 
     echo
     echo Clean up...
@@ -129,18 +194,29 @@ function btask.BuildRelease.run () {
     mkdir prepare_source
 
     cd $(b.get bang.working_dir)/../upgrade_version
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -w "$WDir/upgrade_version"
+    if [ $(b.opt.get_opt --source-path) ]; then
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version -sp "$SDir"
+    else
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version
+    fi
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir/upgrade_version/MediaConch_SourceCode" -w "$WDir/prepare_source" $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir"/upgrade_version/MediaConch_SourceCode -wp "$WDir"/prepare_source $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        if b.opt.has_flag? --log; then
-            _build_mac > "$WDir"/../log/$Date-$Project-mac.log 2>&1
-        else
-            _build_mac
-        fi
+        # Due to the autotools bug
+        #if b.opt.has_flag? --log; then
+        #   _build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
+        #else
+        #   _build_mac_cli
+        #fi
+        #if b.opt.has_flag? --log; then
+        #   _build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
+        #else
+        #   _build_mac_gui
+        #fi
+        _build_mac
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -161,7 +237,10 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            _build_mac > "$WDir"/../log/$Date-$Project-mac.log 2>&1
+            # Due to the autotools bug
+            #_build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
+            #_build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
+            _build_mac
             echo _build_windows > "$WDir"/../log/$Date-$Project-windows.log 2>&1
             echo _build_linux > "$WDir"/../log/$Date-$Project-linux.log 2>&1
         else
@@ -171,7 +250,7 @@ function btask.BuildRelease.run () {
         fi
     fi
 
-    cd $WDir
+    cd "$WDir"
     mv prepare_source/archives .
 
     if $CleanUp; then
