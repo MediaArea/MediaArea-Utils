@@ -35,6 +35,9 @@ function _build_mac_cli () {
             # Because the libxml2 doesn't compile in 32 bits
             #./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 
+            # configure xml :
+            #./configure --disable-shared --enable-static --disable-ipv6 --without-ftp --without-http --without-html --without-c14n --without-catalog --with-xpath --without-xptr --without-xinclude --without-iconv --without-icu --without-iso8859x --without-zlib --without-lzma --without-memdebug --without-rundebug --without-regexps --without-modules --with-tree --without-writer --with-pattern --with-push --without-valid --with-sax1 --without-legacy --with-output --without-schemas --with-schematron --without-python LAGS=" -mmacosx-version-min=10.5" CXXFLAGS=" -mmacosx-version-min=10.5" LDFLAGS=" -mmacosx-version-min=10.5"
+
     echo
     echo
     echo "DMG stage..."
@@ -105,12 +108,12 @@ function _build_mac () {
     Try=0
     touch mac/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 3 ]; do
             _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 3 ]; do
             _build_mac_cli
             Try=$(($Try + 1))
         done
@@ -195,14 +198,15 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version -sp "$SDir"
+        cp -r "$SDir" "$WDir"/upgrade_version/MediaConch_SourceCode
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$WDir"/upgrade_version/MediaConch_SourceCode
     else
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -all -s "$WDir"/upgrade_version/MediaConch_SourceCode -wp "$WDir"/prepare_source $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$WDir"/prepare_source -sp "$WDir"/upgrade_version/MediaConch_SourceCode $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
         # Due to the autotools bug

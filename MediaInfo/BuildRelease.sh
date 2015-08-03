@@ -237,15 +237,15 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version -sp "$SDir"
+        cp -r "$SDir" "$WDir"/upgrade_version/MediaInfo
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$WDir"/upgrade_version/MediaInfo
     else
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -sp "$WDir"/upgrade_version/MediaInfo -wp "$WDir"/prepare_source $PSTarget -nc
-
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$WDir"/prepare_source -sp "$WDir"/upgrade_version/MediaInfo $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
         # Due to the autotools bug
