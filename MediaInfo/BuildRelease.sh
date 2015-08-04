@@ -96,21 +96,28 @@ function _build_mac () {
     # mac. Check the size to know if the compilation was
     # successful. If not, retry to compile up to 3 times.
 
-    local Try
+    local Try MultiArch
 
     cd "$WDir"
     mkdir mac
 
+    MultiArch=0
     Try=0
     touch mac/MediaInfo_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
+            # Return 1 if MI-cli is compiled for i386 and x86_64,
+            # 0 otherwise
+            #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+            MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
             _build_mac_cli
+            #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+            MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             Try=$(($Try + 1))
         done
     fi
@@ -118,12 +125,12 @@ function _build_mac () {
     Try=0
     touch mac/MediaInfo_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui > ../log/$Date-$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done

@@ -100,7 +100,7 @@ function _build_mac () {
     # mac. Check the size to know if the compilation was
     # successful. If not, retry to compile up to 3 times.
 
-    local Try
+    local Try MultiArch
 
     cd "$WDir"
     mkdir mac
@@ -108,12 +108,12 @@ function _build_mac () {
     Try=0
     touch mac/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
-            Try=$(($Try + 1))
+            Try=$(($Try + 1))            
         done
     else
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli
             Try=$(($Try + 1))
         done
@@ -122,12 +122,12 @@ function _build_mac () {
     Try=0
     touch mac/MediaConch_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui > ../log/$Date-$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 400000 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done
