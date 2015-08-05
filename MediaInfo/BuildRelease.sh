@@ -14,7 +14,7 @@ function _build_mac_cli () {
     sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
     RWDir="/Users/mymac/Documents/almin"
 
-    cd "$WDir"
+    cd "$MI_tmp"
 
     # Clean up
     $sp "cd $RWDir ;
@@ -42,7 +42,7 @@ function _build_mac_cli () {
             cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
             ./mkdmg.sh mi cli $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" "$MIC_dir"
 
 }
 
@@ -54,7 +54,7 @@ function _build_mac_gui () {
     sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
     RWDir="/Users/mymac/Documents/almin"
 
-    cd "$WDir"
+    cd "$MI_tmp"
 
     # Clean up
     $sp "cd $RWDir ;
@@ -86,7 +86,7 @@ function _build_mac_gui () {
             cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
             ./mkdmg.sh mi gui $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" "$MIG_dir"
 
 }
 
@@ -98,15 +98,14 @@ function _build_mac () {
 
     local Try MultiArch
 
-    cd "$WDir"
-    mkdir mac
+    cd "$MI_tmp"
 
     MultiArch=0
     Try=0
-    touch mac/MediaInfo_CLI_${Version_new}_Mac.dmg
+    touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
-            _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
+        until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+            _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
             # Return 1 if MI-cli is compiled for i386 and x86_64,
             # 0 otherwise
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -114,23 +113,27 @@ function _build_mac () {
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
             _build_mac_cli
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             Try=$(($Try + 1))
         done
+        # TODO: send a mail if the build fail
+        #if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
+        #    mail -s "Problem building MI-cli" someone@mediaarea.net < "The log is http://url/"$Log"/$Project-mac-cli.log"
+        #fi
     fi
 
     Try=0
-    touch mac/MediaInfo_GUI_${Version_new}_Mac.dmg
+    touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
-            _build_mac_gui > ../log/$Date-$Project-mac-gui.log 2>&1
+        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+            _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done
@@ -146,7 +149,7 @@ function _build_windows () {
     sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
-    cd "$WDir"
+    cd "$MI_tmp"
 
     # Clean up
     $sp "c: & chdir $RWDir & rmdir /S /Q build"
@@ -225,53 +228,58 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    WDir="$WDir"/mi
-    rm -fr "$WDir"
-    mkdir -p "$WDir"
-    cd "$WDir"
+    MIC_dir="$WDir"/binary/mediainfo/$Date
+    MIG_dir="$WDir"/binary/mediainfo-gui/$Date
+    MIS_dir="$WDir"/source/mediainfo/$Date
+    MI_tmp="$WDir"/tmp/$Date/mi
 
     echo
     echo Clean up...
     echo
 
+    rm -fr "$MIC_dir"
+    rm -fr "$MIG_dir"
+    rm -fr "$MIS_dir"
+    rm -fr "$MI_tmp"
+
+    mkdir -p "$MIC_dir"
+    mkdir -p "$MIG_dir"
+    mkdir -p "$MIS_dir"
+    mkdir -p "$MI_tmp"
+
+    cd "$MI_tmp"
     rm -fr upgrade_version
     rm -fr prepare_source
-    rm -fr archives
-    rm -fr mac
-
     mkdir upgrade_version
     mkdir prepare_source
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$SDir" "$WDir"/upgrade_version/MediaInfo
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$WDir"/upgrade_version/MediaInfo
+        cp -r "$SDir" "$MI_tmp"/upgrade_version/MediaInfo
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$WDir"/prepare_source -sp "$WDir"/upgrade_version/MediaInfo $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        # Due to the autotools bug
+        # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #    _build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
+        #   _build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
+        #   _build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
         #else
-        #    _build_mac_cli
-        #fi
-        #if b.opt.has_flag? --log; then
-        #    _build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
-        #else
-        #    _build_mac_gui
+        #   _build_mac_cli
+        #   _build_mac_gui
         #fi
         _build_mac
     fi
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$WDir"/../log/$Date-$Project-windows.log 2>&1
+            echo _build_windows > "$Log"/$Project-windows.log 2>&1
         else
             echo _build_windows
         fi
@@ -279,7 +287,7 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$WDir"/../log/$Date-$Project-linux.log 2>&1
+            echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
             echo _build_linux
         fi
@@ -287,12 +295,12 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            # Due to the autotools bug
-            #_build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
-            #_build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
+            # Uncomment after the resolution of the autotools bug
+            #_build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
+            #_build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
             _build_mac
-            echo _build_windows > "$WDir"/../log/$Date-$Project-windows.log 2>&1
-            echo _build_linux > "$WDir"/../log/$Date-$Project-linux.log 2>&1
+            echo _build_windows > "$Log"/$Project-windows.log 2>&1
+            echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
             _build_mac
             echo _build_windows
@@ -300,12 +308,15 @@ function btask.BuildRelease.run () {
         fi
     fi
 
-    cd "$WDir"
-    mv prepare_source/archives .
+    cd "$MI_tmp"
+    mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* $MIC_dir
+    mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* $MIG_dir
 
     if $CleanUp; then
-        rm -fr upgrade_version
-        rm -fr prepare_source
+        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
+        # another instance of BS.sh can be running for another
+        # project
+        rm -fr "$MI_tmp"
     fi
 
 }

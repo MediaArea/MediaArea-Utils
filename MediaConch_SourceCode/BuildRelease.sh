@@ -14,7 +14,7 @@ function _build_mac_cli () {
     sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
     RWDir="/Users/mymac/Documents/almin"
 
-    cd "$WDir"
+    cd "$MC_tmp"
 
     # Clean up
     $sp "cd $RWDir ;
@@ -48,7 +48,7 @@ function _build_mac_cli () {
             cd MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac ;
             ./mkdmg.sh mc cli $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" "$MCC_dir"
 
 }
 
@@ -61,7 +61,7 @@ function _build_mac_gui () {
     sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
     RWDir="/Users/mymac/Documents/almin"
 
-    cd "$WDir"
+    cd "$MC_tmp"
 
     # Clean up
     $sp "cd $RWDir ;
@@ -90,7 +90,7 @@ function _build_mac_gui () {
             cd MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./mkdmg.sh mc gui $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" mac
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" "$MCG_dir"
 
 }
 
@@ -102,32 +102,31 @@ function _build_mac () {
 
     local Try MultiArch
 
-    cd "$WDir"
-    mkdir mac
+    cd "$MC_tmp"
 
     Try=0
-    touch mac/MediaConch_CLI_${Version_new}_Mac.dmg
+    touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
-            _build_mac_cli > ../log/$Date-$Project-mac-cli.log 2>&1
+        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
+            _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
             Try=$(($Try + 1))            
         done
     else
-        until [ `ls -l mac/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli
             Try=$(($Try + 1))
         done
     fi
 
     Try=0
-    touch mac/MediaConch_GUI_${Version_new}_Mac.dmg
+    touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
-            _build_mac_gui > ../log/$Date-$Project-mac-gui.log 2>&1
+        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
+            _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l mac/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done
@@ -143,7 +142,7 @@ function _build_windows () {
     sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
-    cd "$WDir"
+    cd "$MC_tmp"
 
     # Clean up
     $sp "c: & chdir $RWDir & rmdir /S /Q build & md build"
@@ -178,46 +177,51 @@ function btask.BuildRelease.run () {
     #    WDir=$WDir/`date +%Y%m%d`-2
     #    mkdir -p $WDir
     # + handle a third run, etc
-        
-    WDir="$WDir"/mc
-    rm -fr "$WDir"
-    mkdir -p "$WDir"
-    cd "$WDir"
+
+    MCC_dir="$WDir"/binary/mediaconch/$Date
+    MCG_dir="$WDir"/binary/mediaconch-gui/$Date
+    MCS_dir="$WDir"/source/mediaconch/$Date
+    MC_tmp="$WDir"/tmp/$Date/mc
 
     echo
     echo Clean up...
     echo
 
+    rm -fr "$MCC_dir"
+    rm -fr "$MCG_dir"
+    rm -fr "$MCS_dir"
+    rm -fr "$MC_tmp"
+
+    mkdir -p "$MCC_dir"
+    mkdir -p "$MCG_dir"
+    mkdir -p "$MCS_dir"
+    mkdir -p "$MC_tmp"
+
+    cd "$MC_tmp"
     rm -fr upgrade_version
     rm -fr prepare_source
-    rm -fr archives
-    rm -fr mac
-
     mkdir upgrade_version
     mkdir prepare_source
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$SDir" "$WDir"/upgrade_version/MediaConch_SourceCode
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$WDir"/upgrade_version/MediaConch_SourceCode
+        cp -r "$SDir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$WDir"/upgrade_version
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$MC_tmp"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$WDir"/prepare_source -sp "$WDir"/upgrade_version/MediaConch_SourceCode $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        # Due to the autotools bug
+        # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
+        #   _build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
+        #   _build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
         #else
         #   _build_mac_cli
-        #fi
-        #if b.opt.has_flag? --log; then
-        #   _build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
-        #else
         #   _build_mac_gui
         #fi
         _build_mac
@@ -225,7 +229,7 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$WDir"/../log/$Date-$Project-windows.log 2>&1
+            echo _build_windows > "$Log"/$Project-windows.log 2>&1
         else
             echo _build_windows
         fi
@@ -233,7 +237,7 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$WDir"/../log/$Date-$Project-linux.log 2>&1
+            echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
             echo _build_linux
         fi
@@ -241,12 +245,12 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            # Due to the autotools bug
-            #_build_mac_cli > "$WDir"/../log/$Date-$Project-mac-cli.log 2>&1
-            #_build_mac_gui > "$WDir"/../log/$Date-$Project-mac-gui.log 2>&1
+            # Uncomment after the resolution of the autotools bug
+            #_build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
+            #_build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
             _build_mac
-            echo _build_windows > "$WDir"/../log/$Date-$Project-windows.log 2>&1
-            echo _build_linux > "$WDir"/../log/$Date-$Project-linux.log 2>&1
+            echo _build_windows > "$Log"/$Project-windows.log 2>&1
+            echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
             _build_mac
             echo _build_windows
@@ -254,12 +258,15 @@ function btask.BuildRelease.run () {
         fi
     fi
 
-    cd "$WDir"
-    mv prepare_source/archives .
+    cd "$MC_tmp"
+    mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* $MCC_dir
+    mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* $MCG_dir
 
     if $CleanUp; then
-        rm -fr upgrade_version
-        rm -fr prepare_source
+        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
+        # another instance of BS.sh can be running for another
+        # project
+        rm -fr "$MC_tmp"
     fi
 
 }

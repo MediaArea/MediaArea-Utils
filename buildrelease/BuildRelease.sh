@@ -121,7 +121,7 @@ function run () {
         fi
 
         # In case --working-path is not defined
-        WDir=/tmp/$Date
+        WDir=/tmp/snapshots
         # In case it is
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
@@ -129,16 +129,12 @@ function run () {
                 echo
                 echo "The directory $WDir isn't writable : will use /tmp instead."
                 echo
-                WDir=/tmp/$Date
+                WDir=/tmp/snapshots
             else
-                WDir="$WDir"/$Date
+                WDir="$WDir"/snapshots
             fi
         fi
-        # TODO: Handle exception if mkdir fail (/tmp not writable)
-        if ! b.path.dir? "$WDir"; then
-            mkdir -p "$WDir"
-        fi
-        
+
         if [ $(b.opt.get_opt --source-path) ]; then
             SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$SDir"; then
@@ -156,6 +152,11 @@ function run () {
 
         . Config.sh    
         
+        # TODO: Handle exception if mkdir fail (/tmp not writable)
+        if ! b.path.dir? "$WDir"; then
+            mkdir -p "$WDir"
+        fi
+
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/BuildRelease.sh"
         Script="$(b.get bang.working_dir)/../${Project}/BuildRelease.sh"
@@ -165,10 +166,11 @@ function run () {
             # the corresponding task
             . $Script
             if b.opt.has_flag? --log; then
-                if ! b.path.dir? "$WDir"/log; then
-                    mkdir "$WDir"/log
+                Log="$WDir"/log/$Date
+                if ! b.path.dir? "$Log"; then
+                    mkdir -p "$Log"
                 fi
-                b.task.run BuildRelease > "$WDir"/log/$Date-$Project-init.log 2>&1
+                b.task.run BuildRelease > "$Log"/$Project-init.log 2>&1
             else
                 echo
                 b.task.run BuildRelease
@@ -185,7 +187,7 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v Snapshot Target WDir SDir CleanUp Script
+        unset -v Snapshot Target WDir SDir CleanUp Log Script
     fi
 }
 
