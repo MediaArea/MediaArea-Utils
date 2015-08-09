@@ -13,14 +13,14 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        Repo="git://github.com/MediaArea/ZenLib/"
+        Repo="https://github.com/MediaArea/ZenLib.lib"
     fi
    
     if [ $(b.opt.get_opt --source-path) ]; then
-        ZL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        ZL_source="$SDir"
     else
-        getRepo $Repo $WPath
-        ZL_source=${WPath}/ZenLib
+        getRepo $Repo "$WDir"
+        ZL_source="$WDir"/ZenLib
         # For lisibility after git
         echo
     fi

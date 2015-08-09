@@ -28,13 +28,15 @@ function load_options () {
     b.opt.add_alias --new -n
 
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
-    b.opt.add_alias --working-path -w
+    b.opt.add_alias --working-path -wp
 
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
+    # WDir and SDir aren't used togheter at the same time :
+    # WDir is used for git, SDir for modify a local repertory
     b.opt.add_opt --source-path "Source directory to modify"
-    b.opt.add_alias --source-path -s
+    b.opt.add_alias --source-path -sp
 
     #b.opt.add_opt --commit "Commit the changes on git"
     #b.opt.add_alias --commit -c
@@ -143,18 +145,28 @@ function run () {
 
         #Release_date=$(sanitize_arg $(b.opt.get_opt --date))
 
-        WPath=/tmp
+        WDir=/tmp
         if [ $(b.opt.get_opt --working-path) ]; then
-            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
-                echo "The directory $WPath isn't writable : will use /tmp instead."
+            WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? $WDir && ! b.path.writable? $WDir; then
                 echo
-                WPath=/tmp/
+                echo "The directory $WDir isn't writable : will use /tmp instead."
+                WDir=/tmp/
             else
                 # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? $WPath ;then
-                    mkdir -p $WPath
+                if ! b.path.dir? $WDir ;then
+                    mkdir -p $WDir
                 fi
+            fi
+        fi
+
+        if [ $(b.opt.get_opt --source-path) ]; then
+            SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
+            if ! b.path.dir? "$SDir"; then
+                echo
+                echo "The directory $SDir doesn't exist!"
+                echo
+                exit
             fi
         fi
 
@@ -182,7 +194,7 @@ function run () {
         echo
 
         #unset -v Project Release_date Script
-        unset -v Project Script
+        unset -v Project Script SDir
         unset -v Version_old Version_new
         unset -v Version_old_escaped Version_old_comma Version_new_comma
         unset -v Version_old_array Version_new_array 

@@ -13,14 +13,14 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        Repo="https://github.com/MediaArea/MediaConch_SourceCode/"
+        Repo="https://github.com/MediaArea/MediaConch_SourceCode.git"
     fi
 
     if [ $(b.opt.get_opt --source-path) ]; then
-        MC_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        MC_source="$SDir"
     else
-        getRepo $Repo $WPath
-        MC_source=${WPath}/MediaConch_SourceCode
+        getRepo $Repo "$WDir"
+        MC_source="$WDir"/MediaConch_SourceCode
         # For lisibility after git
         echo
     fi
@@ -31,6 +31,7 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/GNU/mediaconch.spec" 
     MC_files[((index++))]="Project/Mac/mkdmg_GUI" 
     MC_files[((index++))]="Project/Mac/mkdmg_CLI" 
+    MC_files[((index++))]="debian/changelog" 
     MC_files[((index++))]="Source/CLI/Help.cpp" 
 
     for MC_file in ${MC_files[@]}
@@ -47,7 +48,6 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
     MC_files[((index++))]="Project/OBS/obs_mediaconch" 
-    MC_files[((index++))]="debian/changelog" 
 
     for MC_file in ${MC_files[@]}
     do
