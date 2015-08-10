@@ -90,7 +90,7 @@ function _build_mac_gui () {
 
 }
 
-function _build_mac () {
+function _build_mac_tmp () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
@@ -274,7 +274,7 @@ function btask.BuildRelease.run () {
         #   _build_mac_cli
         #   _build_mac_gui
         #fi
-        _build_mac
+        _build_mac_tmp
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -302,15 +302,15 @@ function btask.BuildRelease.run () {
             echo _build_windows > "$Log"/$Project-windows.log 2>&1
             echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
-            _build_mac
+            _build_mac_tmp
             echo _build_windows
             echo _build_linux
         fi
     fi
 
     cd "$MI_tmp"
-    mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* $MIC_dir
-    mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* $MIG_dir
+    mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
+    mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because

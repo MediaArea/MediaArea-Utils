@@ -31,7 +31,8 @@ function _build_mac_cli () {
             tar xJf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
-            ./CLI_Compile.sh"
+            ./CLI_Compile.sh ;
+            strip -u -r MediaConch/Project/GNU/CLI/mediaconch"
             # Because the libxml2 doesn't compile in 32 bits
             #./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 
@@ -78,7 +79,8 @@ function _build_mac_gui () {
             tar xJf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
-            PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh"
+            PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh ;
+            strip -u -r MediaConch/Project/Qt/MediaConch.app/Contents/MacOS/MediaConch"
 
     echo
     echo
@@ -94,7 +96,7 @@ function _build_mac_gui () {
 
 }
 
-function _build_mac () {
+function _build_mac_tmp () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
@@ -107,12 +109,13 @@ function _build_mac () {
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l
+        "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
             Try=$(($Try + 1))            
         done
     else
-        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2500000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 5 ]; do
             _build_mac_cli
             Try=$(($Try + 1))
         done
@@ -224,7 +227,7 @@ function btask.BuildRelease.run () {
         #   _build_mac_cli
         #   _build_mac_gui
         #fi
-        _build_mac
+        _build_mac_tmp
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -248,19 +251,19 @@ function btask.BuildRelease.run () {
             # Uncomment after the resolution of the autotools bug
             #_build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
             #_build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
-            _build_mac
+            _build_mac_tmp
             echo _build_windows > "$Log"/$Project-windows.log 2>&1
             echo _build_linux > "$Log"/$Project-linux.log 2>&1
         else
-            _build_mac
+            _build_mac_tmp
             echo _build_windows
             echo _build_linux
         fi
     fi
 
     cd "$MC_tmp"
-    mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* $MCC_dir
-    mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* $MCG_dir
+    mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+    mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
