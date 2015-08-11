@@ -31,8 +31,7 @@ function _build_mac () {
             tar xJf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_DLL_GNU_FromSource ;
             ./SO_Compile.sh --enable-arch-x86_64 --enable-arch-i386 ;
-            strip -u -r MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib ;
-            codesign -f -s \"Developer ID Application: MediaArea.net\" --verbose libmediainfo.dylib"
+            strip -u -r MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib"
 
     echo
     echo
@@ -42,44 +41,11 @@ function _build_mac () {
             #cd MediaInfo_DLL_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
             $KeyChain ;
-            rm -fr MediaInfoLib ;
-            mkdir MediaInfoLib ;
-            cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib ;
-            cp Project/GNU/Library/.libs/libmediainfo.0.dylib ../../MediaInfoLib ;
-            cd ../../MediaInfoLib ;
-            ln -s libmediainfo.0.dylib libmediainfo.dylib ;
-            cd ../MediaInfo_DLL_GNU_FromSource/MediaInfoLib ;
+            cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac ;
+            ./mktarball.sh ${Version_new}"
 
-            cp License.html ../../MediaInfoLib ;
-            cp History_DLL.txt ../../MediaInfoLib/History.txt ;
-            cp Changes.txt ../../MediaInfoLib ;
-            cp Release/ReadMe_DLL_Mac.txt ../../MediaInfoLib/ReadMe.txt ;
-            mkdir ../../MediaInfoLib/Developpers ;
-            cp Source/Doc/Documentation.html ../../MediaInfoLib/Developpers ;
-            cp -r Doc ../../MediaInfoLib/Developpers ;
-
-            mkdir ../../MediaInfoLib/Developpers/Source ;
-            cp -r Source/Example ../../MediaInfoLib/Developpers/Source ;
-            mkdir -p ../../MediaInfoLib/Developpers/Include/MediaInfo ;
-            cp Source/MediaInfo/MediaInfo.h ../../MediaInfoLib/Developpers/Include/MediaInfo ;
-            cp Source/MediaInfo/MediaInfo_Const.h ../../MediaInfoLib/Developpers/Include/MediaInfo ;
-            cp Source/MediaInfo/MediaInfo_Events.h ../../MediaInfoLib/Developpers/Include/MediaInfo ;
-            cp Source/MediaInfo/MediaInfoList.h ../../MediaInfoLib/Developpers/Include/MediaInfo ;
-            mkdir -p ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL.h ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL_Static.h ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL.cs ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL.JNA.java ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL.JNative.java ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL.py ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-            cp Source/MediaInfoDLL/MediaInfoDLL3.py ../../MediaInfoLib/Developpers/Include/MediaInfoDLL ;
-
-            cd ../.. ;
-            (BZIP=-9 tar -cjf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 MediaInfoLib) ;
-            (XZ_OPT=-9e tar -cJf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz MediaInfoLib)"
-
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2" "$MIL_dir"
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" "$MIL_dir"
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2" "$MIL_dir"
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" "$MIL_dir"
 
 }
 
@@ -98,7 +64,7 @@ function _build_mac_tmp () {
     touch "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
-            _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
+            _build_mac >> "$Log"/$Project-mac.log 2>&1
             # Return 1 if MIL is compiled for i386 and x86_64,
             # 0 otherwise
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -114,7 +80,7 @@ function _build_mac_tmp () {
         done
         # TODO: send a mail if the build fail
         #if [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-        #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/$Project-mac-cli.log"
+        #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/$Project-mac.log"
         #fi
     fi
 
