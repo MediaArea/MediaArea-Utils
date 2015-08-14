@@ -148,7 +148,7 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../prepare_source
     # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PSTarget -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -o $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
