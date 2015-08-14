@@ -15,25 +15,25 @@ function _get_source () {
         RepoURL="https://github.com/MediaArea/"
     fi
 
-    cd $WPath
+    cd "$WDir"
     if ! b.path.dir? repos; then
         mkdir repos
     fi
 
     # Determine where are the sources of MediaInfoLib
     if [ $(b.opt.get_opt --source-path) ]; then
-        MIL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        MIL_source="$SDir"
     else
-        getRepo MediaInfoLib $RepoURL $WPath/repos
-        MIL_source=$WPath/repos/MediaInfoLib
+        getRepo MediaInfoLib $RepoURL "$WDir"/repos
+        MIL_source="$WDir"/repos/MediaInfoLib
     fi
 
     # Dependency : ZenLib
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -w $WPath -${Target} -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -r $RepoURL -wp "$WDir" -${Target} -na -nc
 
     # Dependency : zlib
-    cd $WPath/repos
+    cd "$WDir"/repos
     git clone -b "v1.2.8" https://github.com/madler/zlib
 
 }
@@ -44,7 +44,7 @@ function _compil_unix () {
     echo "Generate the MIL directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MIL
+    cd "$WDir"/MIL
     #mkdir MediaInfo_DLL${Version}_GNU_FromSource
     #cd MediaInfo_DLL${Version}_GNU_FromSource
     mkdir MediaInfo_DLL_GNU_FromSource
@@ -53,9 +53,10 @@ function _compil_unix () {
     cp -r $MIL_source .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
     chmod +x SO_Compile.sh
+    chmod +x MediaInfoLib/Project/Mac/mktarball.sh
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_unix ZenLib
+    cp -r "$WDir"/ZL/ZenLib_compilation_under_unix ZenLib
 
     # Dependency : zlib
     mkdir -p Shared/Project/zlib
@@ -71,7 +72,7 @@ function _compil_unix () {
             rm -fr OBS Solaris
             rm -fr MSCS2008 MSCS2010 MSJS MSVB MSVB2010
             rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013 zlib
-            rm -fr BCB CMake CodeBlocks Coverity Delphi Java NetBeans
+            rm -fr BCB CodeBlocks Coverity Delphi Java NetBeans
             rm -fr PureBasic
         cd ..
     cd ..
@@ -89,7 +90,7 @@ function _compil_unix () {
 
     if $MakeArchives; then
         echo "5: compressing..."
-        cd $WPath/MIL
+        cd "$WDir"/MIL
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -109,17 +110,17 @@ function _compil_windows () {
     echo "Generate the MIL directory for compilation under Windows:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MIL
+    cd "$WDir"/MIL
     mkdir libmediainfo${Version}_AllInclusive
     cd libmediainfo${Version}_AllInclusive
 
     cp -r $MIL_source .
 
     # Dependency : ZenLib
-    cp -r $WPath/ZL/ZenLib_compilation_under_windows ZenLib
+    cp -r "$WDir"/ZL/ZenLib_compilation_under_windows ZenLib
 
     # Dependency : zlib
-    cp -r $WPath/repos/zlib .
+    cp -r "$WDir"/repos/zlib .
     rm -fr zlib/.git zlib/contrib zlib/examples zlib/doc
     mv MediaInfoLib/Project/zlib/projects zlib
 
@@ -129,12 +130,12 @@ function _compil_windows () {
         rm -fr .git
         #rm -fr Release
         rm -fr debian
-        rm -fr Project/GNU Project/Solaris Project/zlib
+        rm -fr Project/Solaris Project/zlib
     cd ..
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MIL
+        cd "$WDir"/MIL
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -149,7 +150,7 @@ function _source_package () {
     echo "Generate the MIL directory for the source package:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MIL
+    cd "$WDir"/MIL
     cp -r $MIL_source .
 
     echo "2: remove what isn't wanted..."
@@ -160,7 +161,7 @@ function _source_package () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MIL
+        cd "$WDir"/MIL
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -175,7 +176,7 @@ function btask.PrepareSource.run () {
 
     local MIL_source
 
-    cd $WPath
+    cd "$WDir"
 
     # Clean up
     rm -fr archives
@@ -194,7 +195,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "sp" ]; then
+    if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
@@ -204,7 +205,7 @@ function btask.PrepareSource.run () {
     fi
 
     if $CleanUp; then
-        cd $WPath
+        cd "$WDir"
         rm -fr repos
         rm -fr MIL
         rm -fr ZL

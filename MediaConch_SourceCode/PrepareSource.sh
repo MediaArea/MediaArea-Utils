@@ -15,22 +15,22 @@ function _get_source () {
         RepoURL="https://github.com/MediaArea/"
     fi
 
-    cd $WPath
+    cd "$WDir"
     if ! b.path.dir? repos; then
         mkdir repos
     fi
 
     # Determine where are the sources of MediaConch
     if [ $(b.opt.get_opt --source-path) ]; then
-        MC_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        MC_source="$SDir"
     else
-        getRepo MediaConch_SourceCode $RepoURL $WPath/repos
-        MC_source=$WPath/repos/MediaConch_SourceCode
+        getRepo MediaConch_SourceCode $RepoURL "$WDir"/repos
+        MC_source="$WDir"/repos/MediaConch_SourceCode
     fi
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -${Target} -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -wp "$WDir" -${Target} -na -nc
 
 }
 
@@ -40,7 +40,7 @@ function _compil_unix_cli () {
     echo "Generate the MC CLI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MC
+    cd "$WDir"/MC
     #mkdir MediaConch_CLI${Version}_GNU_FromSource
     #cd MediaConch_CLI${Version}_GNU_FromSource
     mkdir MediaConch_CLI_GNU_FromSource
@@ -52,11 +52,11 @@ function _compil_unix_cli () {
     chmod +x MediaConch/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     # ? Dependency : libxml2
 
@@ -82,7 +82,7 @@ function _compil_unix_cli () {
 
     if $MakeArchives; then
         echo "4: compressing..."
-        cd $WPath/MC
+        cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -102,7 +102,7 @@ function _compil_unix_gui () {
     echo "Generate the MC GUI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MC
+    cd "$WDir"/MC
     #mkdir MediaConch_GUI${Version}_GNU_FromSource
     #cd MediaConch_GUI${Version}_GNU_FromSource
     mkdir MediaConch_GUI_GNU_FromSource
@@ -114,11 +114,11 @@ function _compil_unix_gui () {
     chmod +x MediaConch/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -136,7 +136,7 @@ function _compil_unix_gui () {
 
     if $MakeArchives; then
         echo "4: compressing..."
-        cd $WPath/MC
+        cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -156,7 +156,7 @@ function _compil_windows () {
     echo "Generate the MC directory for compilation under Windows:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MC
+    cd "$WDir"/MC
     #mkdir mediaconch${Version}_AllInclusive
     #cd mediaconch${Version}_AllInclusive
     mkdir mediaconch_AllInclusive
@@ -165,11 +165,11 @@ function _compil_windows () {
     cp -r $MC_source MediaConch
 
     # MediaInfoLib and ZenLib
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/MediaInfoLib .
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/ZenLib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
 
     # Dependency : zlib
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
@@ -184,7 +184,7 @@ function _compil_windows () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MC
+        cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -200,7 +200,7 @@ function _source_package () {
     echo "Generate the MC directory for the source package:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MC
+    cd "$WDir"/MC
 
     cp -r $MC_source MediaConch
 
@@ -212,7 +212,7 @@ function _source_package () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MC
+        cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -227,7 +227,7 @@ function btask.PrepareSource.run () {
 
     local MC_source
 
-    cd $WPath
+    cd "$WDir"
 
     # Clean up
     rm -fr archives
@@ -247,7 +247,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "sp" ]; then
+    if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
@@ -258,7 +258,7 @@ function btask.PrepareSource.run () {
     fi
     
     if $CleanUp; then
-        cd $WPath
+        cd "$WDir"
         rm -fr repos
         rm -fr ZL
         rm -fr MIL

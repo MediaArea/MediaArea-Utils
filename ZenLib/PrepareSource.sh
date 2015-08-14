@@ -15,17 +15,17 @@ function _get_source () {
         RepoURL="https://github.com/MediaArea/"
     fi
 
-    cd $WPath
+    cd "$WDir"
     if ! b.path.dir? repos; then
         mkdir repos
     fi
 
     # Determine where are the sources of ZenLib
     if [ $(b.opt.get_opt --source-path) ]; then
-        ZL_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        ZL_source="$SDir"
     else
-        getRepo ZenLib $RepoURL $WPath/repos
-        ZL_source=$WPath/repos/ZenLib
+        getRepo ZenLib $RepoURL "$WDir"/repos
+        ZL_source="$WDir"/repos/ZenLib
     fi
 
 }
@@ -36,7 +36,7 @@ function _compil_unix () {
     echo "Generate the ZL directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/ZL
+    cd "$WDir"/ZL
     cp -r $ZL_source ZenLib${Version}_compilation_under_unix
 
     echo "2: remove what isn't wanted..."
@@ -46,7 +46,7 @@ function _compil_unix () {
         rm -fr debian
         cd Project
             rm -f GNU/libzen.dsc GNU/libzen.spec
-            rm -fr BCB CMake CodeBlocks Coverity
+            rm -fr BCB CodeBlocks Coverity
             rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
         cd ..
         rm -fr Source/Doc Source/Example
@@ -60,7 +60,7 @@ function _compil_windows () {
     echo "Generate the ZL directory for compilation under Windows:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/ZL
+    cd "$WDir"/ZL
     cp -r $ZL_source ZenLib${Version}_compilation_under_windows
 
     echo "2: remove what isn't wanted..."
@@ -82,7 +82,7 @@ function _source_package () {
     echo "Generate the ZL directory for the source package:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/ZL
+    cd "$WDir"/ZL
     cp -r $ZL_source .
 
     echo "2: remove what isn't wanted..."
@@ -92,7 +92,7 @@ function _source_package () {
     cd ..
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/ZL
+        cd "$WDir"/ZL
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -107,13 +107,13 @@ function btask.PrepareSource.run () {
 
     local ZL_source
 
-    cd $WPath
+    cd "$WDir"
 
     # Clean up
     rm -fr archives
     rm -fr repos/ZenLib
-    rm -fr $WPath/ZL
-    mkdir $WPath/ZL
+    rm -fr "$WDir"/ZL
+    mkdir "$WDir"/ZL
 
     _get_source
 
@@ -123,7 +123,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "sp" ]; then
+    if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
@@ -133,7 +133,7 @@ function btask.PrepareSource.run () {
     fi
 
     if $CleanUp; then
-        cd $WPath
+        cd "$WDir"
         rm -fr repos
         rm -fr ZL
     fi

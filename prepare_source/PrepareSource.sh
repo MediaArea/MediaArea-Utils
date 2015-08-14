@@ -9,7 +9,8 @@
 
 # This script requires bang.sh (https://github.com/bangsh/bangsh)
 # This script requires the following packages (debian):
-#    git tar xz-utils p7zip-full automake libtool doxygen graphviz
+#    git ca-certificates tar xz-utils p7zip-full automake libtool
+#    doxygen graphviz
 # The compilation requires the following packages (debian):
 #    g++ make libwxgtk3.0-dev libxml2-dev
 
@@ -25,13 +26,13 @@ function load_options () {
     b.opt.add_alias --version -v
 
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
-    b.opt.add_alias --working-path -w
+    b.opt.add_alias --working-path -wp
 
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
     b.opt.add_opt --source-path "Source directory to modify"
-    b.opt.add_alias --source-path -s
+    b.opt.add_alias --source-path -sp
 
     b.opt.add_flag --compil-unix "Generate the archive for compilation under Unix"
     b.opt.add_alias --compil-unix -cu
@@ -40,7 +41,7 @@ function load_options () {
     b.opt.add_alias --compil-windows -cw
 
     b.opt.add_flag --source-package "Generate the source package"
-    b.opt.add_alias --source-package -sp
+    b.opt.add_alias --source-package -sa
     
     b.opt.add_flag --all "Prepare all the targets for this project"
     # Required for the call in _get_source
@@ -68,14 +69,15 @@ function getRepo () {
 
     local Project="$1" RepoURL="$2" Path="$3"
 
-    # TODO: if $RepoURL use the git protocol, we must remove the last / if
-    # present because the git protocol doesn’t handle //
+    # TODO: if $RepoURL use the git protocol, we must remove the
+    # last / if present because the git protocol doesn’t handle //
     # ie. git://github.com/MediaArea>>>//<<<ZenLib fail
 
     cd $Path
     rm -fr $Project
-    # TODO: if $Path isn’t writable, or if no network is available, or
-    # if the repository url is wrong, ask for --source-path and exit
+    # TODO: if $Path isn’t writable, or if no network is available,
+    # or if the repository url is wrong, ask for --source-path and
+    # exit
     git clone "$RepoURL/$Project"
 }
 
@@ -121,12 +123,35 @@ function run () {
             Target="cw"
         fi
         if b.opt.has_flag? --source-package; then
-            Target="sp"
+            Target="sa"
+        fi
+    
+        WDir=/tmp/
+        if [ $(b.opt.get_opt --working-path) ]; then
+            WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? "$WDir" && ! b.path.writable? "$WDir"; then
+                echo
+                echo "The directory $WDir isn't writable : will use /tmp instead."
+                echo
+                WDir=/tmp/
+            else
+                # TODO: Handle exception if mkdir fail
+                if ! b.path.dir? "$WDir" ;then
+                    mkdir -p "$WDir"
+                fi
+            fi
+        fi
+    
+        if [ $(b.opt.get_opt --source-path) ]; then
+            SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
+            if ! b.path.dir? "$SDir"; then
+                echo
+                echo "The directory $SDir doesn't exist!"
+                echo
+                exit
+            fi
         fi
 
-        # For lisibility
-        echo
-    
         CleanUp=true
         if b.opt.has_flag? --no-cleanup; then
             CleanUp=false
@@ -134,23 +159,12 @@ function run () {
         MakeArchives=true
         if b.opt.has_flag? --no-archives; then
             MakeArchives=false
+            CleanUp=false
         fi
     
-        WPath=/tmp/
-        if [ $(b.opt.get_opt --working-path) ]; then
-            WPath="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? $WPath && ! b.path.writable? $WPath; then
-                echo "The directory $WPath isn't writable : will use /tmp instead."
-                echo
-                WPath=/tmp/
-            else
-                # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? $WPath ;then
-                    mkdir -p $WPath
-                fi
-            fi
-        fi
-    
+        # For lisibility
+        echo
+
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
         Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
@@ -169,7 +183,7 @@ function run () {
         fi
 
         unset -v Project Version Target CleanUp MakeArchives
-        unset -v Script WPath
+        unset -v Script WDir SDir
 
         # For lisibility
         echo

@@ -15,22 +15,22 @@ function _get_source () {
         RepoURL="https://github.com/MediaArea/"
     fi
 
-    cd $WPath
+    cd "$WDir"
     if ! b.path.dir? repos; then
         mkdir repos
     fi
 
     # Determine where are the sources of MediaInfo
     if [ $(b.opt.get_opt --source-path) ]; then
-        MI_source=$(sanitize_arg $(b.opt.get_opt --source-path))
+        MI_source="$SDir"
     else
-        getRepo MediaInfo $RepoURL $WPath/repos
-        MI_source=$WPath/repos/MediaInfo
+        getRepo MediaInfo $RepoURL "$WDir"/repos
+        MI_source="$WDir"/repos/MediaInfo
     fi
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -w $WPath -${Target} -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -wp "$WDir" -${Target} -na -nc
 
 }
 
@@ -40,7 +40,7 @@ function _compil_unix_cli () {
     echo "Generate the MI CLI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MI
+    cd "$WDir"/MI
     #mkdir MediaInfo_CLI${Version}_GNU_FromSource
     #cd MediaInfo_CLI${Version}_GNU_FromSource
     mkdir MediaInfo_CLI_GNU_FromSource
@@ -52,11 +52,11 @@ function _compil_unix_cli () {
     chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -80,7 +80,7 @@ function _compil_unix_cli () {
 
     if $MakeArchives; then
         echo "4: compressing..."
-        cd $WPath/MI
+        cd "$WDir"/MI
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -100,7 +100,7 @@ function _compil_unix_gui () {
     echo "Generate the MI GUI directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MI
+    cd "$WDir"/MI
     #mkdir MediaInfo_GUI${Version}_GNU_FromSource
     #cd MediaInfo_GUI${Version}_GNU_FromSource
     mkdir MediaInfo_GUI_GNU_FromSource
@@ -112,11 +112,11 @@ function _compil_unix_gui () {
     chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r $WPath/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
     # Dependency : wxWidgets
     mv MediaInfo/Project/WxWidgets Shared/Project
 
@@ -142,7 +142,7 @@ function _compil_unix_gui () {
 
     if $MakeArchives; then
         echo "4: compressing..."
-        cd $WPath/MI
+        cd "$WDir"/MI
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -162,7 +162,7 @@ function _compil_windows () {
     echo "Generate the MI directory for compilation under Windows:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MI
+    cd "$WDir"/MI
     #mkdir mediainfo${Version}_AllInclusive
     #cd mediainfo${Version}_AllInclusive
     mkdir mediainfo_AllInclusive
@@ -171,9 +171,9 @@ function _compil_windows () {
     cp -r $MI_source .
 
     # Dependencies
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/ZenLib .
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/MediaInfoLib .
-    cp -r $WPath/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo
@@ -182,14 +182,14 @@ function _compil_windows () {
         #rm -fr Release
         rm -fr debian
         cd Project
-            rm -fr GNU OBS Mac Solaris
+            rm -fr OBS Mac Solaris
         cd ..
         rm -fr Source/GUI/Cocoa
     cd ..
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MI
+        cd "$WDir"/MI
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -205,7 +205,7 @@ function _source_package () {
     echo "Generate the MI directory for the source package:"
     echo "1: copy what is wanted..."
 
-    cd $WPath/MI
+    cd "$WDir"/MI
     cp -r $MI_source .
 
     echo "2: remove what isn't wanted..."
@@ -216,7 +216,7 @@ function _source_package () {
 
     if $MakeArchives; then
         echo "3: compressing..."
-        cd $WPath/MI
+        cd "$WDir"/MI
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
@@ -231,7 +231,7 @@ function btask.PrepareSource.run () {
 
     local MI_source
 
-    cd $WPath
+    cd "$WDir"
 
     # Clean up
     rm -fr archives
@@ -251,7 +251,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cw" ]; then
         _compil_windows
     fi
-    if [ "$Target" = "sp" ]; then
+    if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
@@ -262,7 +262,7 @@ function btask.PrepareSource.run () {
     fi
     
     if $CleanUp; then
-        cd $WPath
+        cd "$WDir"
         rm -fr repos
         rm -fr ZL
         rm -fr MIL
