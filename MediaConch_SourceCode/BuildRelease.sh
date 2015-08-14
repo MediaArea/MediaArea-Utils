@@ -110,12 +110,12 @@ function _build_mac_tmp () {
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
         until [ `ls -l
-        "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 5 ]; do
+        "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
             _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
             Try=$(($Try + 1))            
         done
     else
-        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
             _build_mac_cli
             Try=$(($Try + 1))
         done
@@ -124,12 +124,12 @@ function _build_mac_tmp () {
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
             _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done

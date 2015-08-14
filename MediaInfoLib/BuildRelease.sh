@@ -63,7 +63,7 @@ function _build_mac_tmp () {
     Try=0
     touch "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
             _build_mac >> "$Log"/$Project-mac.log 2>&1
             # Return 1 if MIL is compiled for i386 and x86_64,
             # 0 otherwise

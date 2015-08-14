@@ -104,7 +104,7 @@ function _build_mac_tmp () {
     Try=0
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
             _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
             # Return 1 if MI-cli is compiled for i386 and x86_64,
             # 0 otherwise
@@ -128,12 +128,12 @@ function _build_mac_tmp () {
     Try=0
     touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
             _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 5 ]; do
+        until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
             _build_mac_gui
             Try=$(($Try + 1))
         done
