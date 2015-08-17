@@ -2,12 +2,13 @@
 # Prepare the source of MediaInfo
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.html file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.html file in the root of the source
+# tree.
 
 function _get_source () {
 
-    local RepoURL
+    local RepoURL MIL_gs ZL_gs
 
     if [ $(b.opt.get_opt --repo) ]; then
         RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
@@ -26,11 +27,25 @@ function _get_source () {
     else
         getRepo MediaInfo $RepoURL "$WDir"/repos
         MI_source="$WDir"/repos/MediaInfo
+        # We ask a specific git state (a tag, a branch, a commit)
+        if [ $(b.opt.get_opt --git-state) ]; then
+            cd $MI_source
+            git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        fi
+    fi
+
+    MIL_gs=""
+    if [ $(b.opt.get_opt --mil-gs) ]; then
+        MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
+    fi
+    ZL_gs=""
+    if [ $(b.opt.get_opt --zl-gs) ]; then
+        ZL_gs="--zl-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -r $RepoURL -wp "$WDir" -${Target} -na -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" -r $RepoURL $MIL_gs $ZL_gs -${Target} -na
 
 }
 

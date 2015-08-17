@@ -2,8 +2,9 @@
 # Prepare the source of ZenLib
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.txt file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.txt file in the root of the source
+# tree.
 
 function _get_source () {
 
@@ -26,6 +27,11 @@ function _get_source () {
     else
         getRepo ZenLib $RepoURL "$WDir"/repos
         ZL_source="$WDir"/repos/ZenLib
+        # We ask a specific git state (a tag, a branch, a commit)
+        if [ $(b.opt.get_opt --git-state) ]; then
+            cd $ZL_source
+            git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        fi
     fi
 
 }

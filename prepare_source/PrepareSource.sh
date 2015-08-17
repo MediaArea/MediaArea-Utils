@@ -4,8 +4,9 @@
 # Prepare the source of the projects used by MediaArea
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
-# Use of this source code is governed by a BSD-style license that can
-# be found in the License.txt file in the root of the source tree.
+# Use of this source code is governed by a BSD-style license that
+# can be found in the License.txt file in the root of the source
+# tree.
 
 # This script requires bang.sh (https://github.com/bangsh/bangsh)
 # This script requires the following packages (debian):
@@ -28,11 +29,17 @@ function load_options () {
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
     b.opt.add_alias --working-path -wp
 
+    b.opt.add_opt --source-path "Source directory to modify"
+    b.opt.add_alias --source-path -sp
+
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
-    b.opt.add_opt --source-path "Source directory to modify"
-    b.opt.add_alias --source-path -sp
+    b.opt.add_opt --git-state "Ask for a specific git state of the current project"
+    b.opt.add_alias --git-state -gs
+
+    b.opt.add_opt --mil-gs "Ask for a specific git state for the MIL dependency"
+    b.opt.add_opt --zl-gs "Ask for a specific git state for the ZL dependency"
 
     b.opt.add_flag --compil-unix "Generate the archive for compilation under Unix"
     b.opt.add_alias --compil-unix -cu
@@ -47,10 +54,10 @@ function load_options () {
     # Required for the call in _get_source
     b.opt.add_alias --all -all
 
-    b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
+    b.opt.add_flag --no-cleanup "Don't erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
 
-    b.opt.add_flag --no-archives "Don’t create the archives"
+    b.opt.add_flag --no-archives "Don't create the archives"
     b.opt.add_alias --no-archives --no-archive
     b.opt.add_alias --no-archives -na
 
@@ -70,12 +77,12 @@ function getRepo () {
     local Project="$1" RepoURL="$2" Path="$3"
 
     # TODO: if $RepoURL use the git protocol, we must remove the
-    # last / if present because the git protocol doesn’t handle //
+    # last / if present because the git protocol doesn't handle //
     # ie. git://github.com/MediaArea>>>//<<<ZenLib fail
 
     cd $Path
     rm -fr $Project
-    # TODO: if $Path isn’t writable, or if no network is available,
+    # TODO: if $Path isn't writable, or if no network is available,
     # or if the repository url is wrong, ask for --source-path and
     # exit
     git clone "$RepoURL/$Project"
