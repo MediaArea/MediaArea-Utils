@@ -28,10 +28,9 @@ function _build_mac () {
     scp -P $MacSSHPort prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaInfo_DLL_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            tar xJf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
+            tar xf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_DLL_GNU_FromSource ;
-            ./SO_Compile.sh --enable-arch-x86_64 --enable-arch-i386 ;
-            strip -u -r MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib"
+            ./SO_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 
     echo
     echo
@@ -64,7 +63,7 @@ function _build_mac_tmp () {
     touch "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
-            _build_mac >> "$Log"/$Project-mac.log 2>&1
+            _build_mac >> "$Log"/mac.log 2>&1
             # Return 1 if MIL is compiled for i386 and x86_64,
             # 0 otherwise
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -80,7 +79,7 @@ function _build_mac_tmp () {
         done
         # TODO: send a mail if the build fail
         #if [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-        #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/$Project-mac.log"
+        #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/mac.log"
         #fi
     fi
 
@@ -118,7 +117,7 @@ function btask.BuildRelease.run () {
         
     MIL_dir="$WDir"/binary/libmediainfo0/$Date
     MILS_dir="$WDir"/source/libmediainfo/$Date
-    MIL_tmp="$WDir"/tmp/$Date/mil
+    MIL_tmp="$WDir"/tmp/libmediainfo/$Date
 
     echo
     echo Clean up...
@@ -153,7 +152,7 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac > "$Log"/$Project-mac.log 2>&1
+        #   _build_mac > "$Log"/mac.log 2>&1
         #else
         #   _build_mac
         #fi
@@ -162,7 +161,7 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
         else
             echo _build_windows
         fi
@@ -170,7 +169,7 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             echo _build_linux
         fi
@@ -179,10 +178,10 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Uncomment after the resolution of the autotools bug
-            #_build_mac > "$Log"/$Project-mac.log 2>&1
+            #_build_mac > "$Log"/mac.log 2>&1
             _build_mac_tmp
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             _build_mac_tmp
             echo _build_windows

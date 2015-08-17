@@ -28,7 +28,7 @@ function _build_mac_cli () {
     scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            tar xJf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
+            tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_CLI_GNU_FromSource ;
             ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 
@@ -68,7 +68,7 @@ function _build_mac_gui () {
     scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            tar xJf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
+            tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_GUI_GNU_FromSource ;
             mkdir -p Shared/Source
             cp -r ../../WxWidgets Shared/Source ;
@@ -85,6 +85,33 @@ function _build_mac_gui () {
             $KeyChain ;
             cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
             ./mkdmg.sh mi gui $Version_new"
+
+    if ! b.opt.has_flag? --snapshot; then
+
+        echo
+        echo
+        echo "Preparing for the appstore..."
+    
+        rm -fr "$MI_tmp"/dylib
+        mkdir "$MI_tmp"/dylib
+        cd $(b.get bang.working_dir)
+        $(b.get bang.src_path)/bang run BuildRelease.sh -wp "$MI_tmp"/dylib -p mil -s -o tmp -bm
+        scp -P $MacSSHPort "$MI_tmp"/dylib/snapshots/binary/libmediainfo0/$Date/MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/
+
+                #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
+        $sp "cd $RWDir/build ;
+                cd MediaInfo_GUI_GNU_FromSource ;
+                mkdir dylib_for_xcode ;
+                mv MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz dylib_for_xcode ;
+                cd dylib_for_xcode ;
+                tar xf MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz ;
+                cp MediaInfoLib/libmediainfo.dylib ../MediaInfo/Source/GUI/Cocoa ;
+                cd ../MediaInfo/Source/GUI/Cocoa ;
+                install_name_tool -id @executable_path/../Resources/libmediainfo.dylib libmediainfo.dylib ;
+                rm -fr *lproj ;
+                cp -r ~/Documents/almin/xibs/* ."
+
+    fi
 
     scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" "$MIG_dir"
 
@@ -105,7 +132,7 @@ function _build_mac_tmp () {
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
+            _build_mac_cli >> "$Log"/mac-cli.log 2>&1
             # Return 1 if MI-cli is compiled for i386 and x86_64,
             # 0 otherwise
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -121,7 +148,7 @@ function _build_mac_tmp () {
         done
         # TODO: send a mail if the build fail
         #if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-        #    mail -s "Problem building MI-cli" someone@mediaarea.net < "The log is http://url/"$Log"/$Project-mac-cli.log"
+        #    mail -s "Problem building MI-cli" someone@mediaarea.net < "The log is http://url/"$Log"/mac-cli.log"
         #fi
     fi
 
@@ -129,7 +156,7 @@ function _build_mac_tmp () {
     touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
+            _build_mac_gui >> "$Log"/mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
@@ -180,7 +207,7 @@ function _build_windows () {
 #    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
 #    $sp "cd $RWDir/build ;
-#            tar xJf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
+#            tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_CLI_GNU_FromSource ;
 #            ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 #
@@ -191,7 +218,7 @@ function _build_windows () {
 #    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
 #    $sp "cd $RWDir/build ;
-#            tar xJf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
+#            tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_GUI_GNU_FromSource ;
 #            mkdir -p Shared/Source
 #            cp -r ../../WxWidgets Shared/Source ;
@@ -231,7 +258,7 @@ function btask.BuildRelease.run () {
     MIC_dir="$WDir"/binary/mediainfo/$Date
     MIG_dir="$WDir"/binary/mediainfo-gui/$Date
     MIS_dir="$WDir"/source/mediainfo/$Date
-    MI_tmp="$WDir"/tmp/$Date/mi
+    MI_tmp="$WDir"/tmp/mediainfo/$Date
 
     echo
     echo Clean up...
@@ -268,8 +295,8 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
-        #   _build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
+        #   _build_mac_cli > "$Log"/mac-cli.log 2>&1
+        #   _build_mac_gui > "$Log"/mac-gui.log 2>&1
         #else
         #   _build_mac_cli
         #   _build_mac_gui
@@ -279,7 +306,7 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
         else
             echo _build_windows
         fi
@@ -287,7 +314,7 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             echo _build_linux
         fi
@@ -296,11 +323,11 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Uncomment after the resolution of the autotools bug
-            #_build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
-            #_build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
+            #_build_mac_cli > "$Log"/mac-cli.log 2>&1
+            #_build_mac_gui > "$Log"/mac-gui.log 2>&1
             _build_mac
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             _build_mac_tmp
             echo _build_windows

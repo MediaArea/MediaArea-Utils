@@ -49,7 +49,7 @@ function load_options () {
 
     b.opt.add_flag --log "Log the output in a file instead of display it"
 
-    b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
+    b.opt.add_flag --no-cleanup "Don't erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
 
     # Mandatory arguments
@@ -166,11 +166,11 @@ function run () {
             # the corresponding task
             . $Script
             if b.opt.has_flag? --log; then
-                Log="$WDir"/log/$Date
+                Log="$WDir"/log/$Project/$Date
                 if ! b.path.dir? "$Log"; then
                     mkdir -p "$Log"
                 fi
-                b.task.run BuildRelease > "$Log"/$Project-init.log 2>&1
+                b.task.run BuildRelease > "$Log"/init.log 2>&1
             else
                 echo
                 b.task.run BuildRelease

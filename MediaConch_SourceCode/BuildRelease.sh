@@ -28,7 +28,7 @@ function _build_mac_cli () {
     scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            tar xJf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
+            tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             ./CLI_Compile.sh ;
@@ -76,7 +76,7 @@ function _build_mac_gui () {
     scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
     $sp "cd $RWDir/build ;
-            tar xJf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
+            tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh ;
@@ -110,7 +110,7 @@ function _build_mac_tmp () {
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_cli >> "$Log"/$Project-mac-cli.log 2>&1
+            _build_mac_cli >> "$Log"/mac-cli.log 2>&1
             Try=$(($Try + 1))            
         done
     else
@@ -124,7 +124,7 @@ function _build_mac_tmp () {
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     if b.opt.has_flag? --log; then
         until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_gui >> "$Log"/$Project-mac-gui.log 2>&1
+            _build_mac_gui >> "$Log"/mac-gui.log 2>&1
             Try=$(($Try + 1))
         done
     else
@@ -183,7 +183,7 @@ function btask.BuildRelease.run () {
     MCC_dir="$WDir"/binary/mediaconch/$Date
     MCG_dir="$WDir"/binary/mediaconch-gui/$Date
     MCS_dir="$WDir"/source/mediaconch/$Date
-    MC_tmp="$WDir"/tmp/$Date/mc
+    MC_tmp="$WDir"/tmp/mediaconch/$Date
 
     echo
     echo Clean up...
@@ -220,8 +220,8 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
-        #   _build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
+        #   _build_mac_cli > "$Log"/mac-cli.log 2>&1
+        #   _build_mac_gui > "$Log"/mac-gui.log 2>&1
         #else
         #   _build_mac_cli
         #   _build_mac_gui
@@ -231,7 +231,7 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
         else
             echo _build_windows
         fi
@@ -239,7 +239,7 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             echo _build_linux
         fi
@@ -248,11 +248,11 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Uncomment after the resolution of the autotools bug
-            #_build_mac_cli > "$Log"/$Project-mac-cli.log 2>&1
-            #_build_mac_gui > "$Log"/$Project-mac-gui.log 2>&1
+            #_build_mac_cli > "$Log"/mac-cli.log 2>&1
+            #_build_mac_gui > "$Log"/mac-gui.log 2>&1
             _build_mac_tmp
-            echo _build_windows > "$Log"/$Project-windows.log 2>&1
-            echo _build_linux > "$Log"/$Project-linux.log 2>&1
+            echo _build_windows > "$Log"/windows.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             _build_mac_tmp
             echo _build_windows
