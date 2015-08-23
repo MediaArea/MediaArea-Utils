@@ -13,7 +13,7 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        Repo="https://github.com/MediaArea/ZenLib.lib"
+        Repo="https://github.com/MediaArea/ZenLib.git"
     fi
    
     if [ $(b.opt.get_opt --source-path) ]; then
