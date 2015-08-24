@@ -61,6 +61,42 @@ function displayHelp () {
     b.opt.show_usage
 }
 
+function update_DSC () {
+
+    # Arguments :
+    # update_DSC $DSC $Archive
+    
+    local DSC=$1 Archive=$2
+    
+    if [ $# -lt 2 ]; then
+        echo "Insuffisent parameters"
+        exit
+    fi
+    
+    Size=`ls -l $Archive |awk '{print $5}'`
+    SHA1=`sha1sum $Archive |awk '{print $1}'`
+    SHA256=`sha256sum $Archive |awk '{print $1}'`
+    MD5=`md5sum $Archive |awk '{print $1}'`
+    
+    oldSHA1="0000000000000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
+    oldSHA256="0000000000000000000000000000000000000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
+    oldMD5="00000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
+
+    newSHA1="$SHA1 $Size libzen_${Version_new}.tar.gz"
+    newSHA256="$SHA256 $Size libzen_${Version_new}.tar.gz"
+    newMD5="$MD5 $Size libzen_${Version_new}.tar.gz"
+    
+    # TODO: handle exception if file not found
+    if b.path.file? $DSC && b.path.readable? $DSC; then
+        # Handle the longuest strings first, otherwise the shorters
+        # get in the way
+        $(sed -i "s/${oldSHA256}/$newSHA256/g" $DSC)
+        $(sed -i "s/${oldSHA1}/$newSHA1/g" $DSC)
+        $(sed -i "s/${oldMD5}/$newMD5/g" $DSC)
+    fi
+
+}
+
 function run () {
     load_options
     b.opt.init "$@"

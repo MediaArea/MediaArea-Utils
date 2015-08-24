@@ -172,7 +172,7 @@ function _build_windows () {
 
 function btask.BuildRelease.run () {
 
-    # TODO: incrementals snapshots if multiple execution in the
+    # TODO: incremental snapshots if multiple execution in the
     # same day eg. AAAAMMJJ-X
     #if b.path.dir? $WDir/`date +%Y%m%d`; then
     #    mv $WDir/`date +%Y%m%d` $WDir/`date +%Y%m%d`-1

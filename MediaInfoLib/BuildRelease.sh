@@ -43,8 +43,8 @@ function _build_mac () {
             cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac ;
             ./mktarball.sh ${Version_new}"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2" "$MIL_dir"
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" "$MIL_dir"
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2" "$MILB_dir"
+    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" "$MILB_dir"
 
 }
 
@@ -60,9 +60,9 @@ function _build_mac_tmp () {
 
     MultiArch=0
     Try=0
-    touch "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
+    touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     if b.opt.has_flag? --log; then
-        until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
+        until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
             _build_mac >> "$Log"/mac.log 2>&1
             # Return 1 if MIL is compiled for i386 and x86_64,
             # 0 otherwise
@@ -71,14 +71,14 @@ function _build_mac_tmp () {
             Try=$(($Try + 1))
         done
     else
-        until [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
+        until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
             _build_mac
             #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
             Try=$(($Try + 1))
         done
         # TODO: send a mail if the build fail
-        #if [ `ls -l "$MIL_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
+        #if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
         #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/mac.log"
         #fi
     fi
@@ -105,9 +105,42 @@ function _build_windows () {
 
 }
 
+function _build_linux () {
+
+    local State=1 OBS_Repo="home:almin/MediaInfoLib"
+
+    cd "$MIL_tmp"
+
+    echo
+    echo "Initialize OBS files..."
+    echo
+
+    osc checkout $OBS_Repo
+
+    # Clean up
+    rm -f $OBS_Repo/*.*
+
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_Repo
+    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.spec $OBS_Repo
+    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
+    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_Repo
+    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
+
+    update_DSC "$MIL_tmp"/$OBS_Repo/libmediainfo_${Version_new}.dsc "$MIL_tmp"/$OBS_Repo/libmediainfo_${Version_new}.tar.gz
+
+    echo
+    echo "Build on OBS..."
+    echo
+
+    cd $OBS_Repo
+    osc addremove *
+    osc commit -n
+
+}
+
 function btask.BuildRelease.run () {
 
-    # TODO: incrementals snapshots if multiple execution in the
+    # TODO: incremental snapshots if multiple execution in the
     # same day eg. AAAAMMJJ-X
     #if b.path.dir? $WDir/`date +%Y%m%d`; then
     #    mv $WDir/`date +%Y%m%d` $WDir/`date +%Y%m%d`-1
@@ -115,7 +148,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    MIL_dir="$WDir"/binary/libmediainfo0/$Date
+    MILB_dir="$WDir"/binary/libmediainfo0/$Date
     MILS_dir="$WDir"/source/libmediainfo/$Date
     MIL_tmp="$WDir"/tmp/libmediainfo/$Date
 
@@ -123,11 +156,11 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$MIL_dir"
+    rm -fr "$MILB_dir"
     rm -fr "$MILS_dir"
     rm -fr "$MIL_tmp"
 
-    mkdir -p "$MIL_dir"
+    mkdir -p "$MILB_dir"
     mkdir -p "$MILS_dir"
     mkdir -p "$MIL_tmp"
 
@@ -169,9 +202,9 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/linux.log 2>&1
+            _build_linux > "$Log"/linux.log 2>&1
         else
-            echo _build_linux
+            _build_linux
         fi
     fi
     
@@ -181,16 +214,18 @@ function btask.BuildRelease.run () {
             #_build_mac > "$Log"/mac.log 2>&1
             _build_mac_tmp
             echo _build_windows > "$Log"/windows.log 2>&1
-            echo _build_linux > "$Log"/linux.log 2>&1
+            _build_linux > "$Log"/linux.log 2>&1
         else
             _build_mac_tmp
             echo _build_windows
-            echo _build_linux
+            _build_linux
         fi
     fi
 
     cd "$MIL_tmp"
-    mv prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MIL_dir"
+    mv prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
+    mv prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
+
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
