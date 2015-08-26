@@ -170,6 +170,40 @@ function _build_windows () {
 
 }
 
+function _build_linux () {
+
+    local OBS_Repo="home:almin/MediaConch" State=1
+
+    cd "$MC_tmp"
+
+    echo
+    echo "Initialize OBS files..."
+    echo
+
+    osc checkout $OBS_Repo
+
+    # Clean up
+    rm -f $OBS_Repo/*
+
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_Repo
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_Repo/mediaconch_${Version_new}-1.tar.gz
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_Repo
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_Repo/mediaconch_${Version_new}.dsc
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_Repo
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_Repo/mediaconch_${Version_new}.dsc
+
+    update_DSC "$MC_tmp"/$OBS_Repo mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
+
+    echo
+    echo "Build on OBS..."
+    echo
+
+    cd $OBS_Repo
+    osc addremove *
+    osc commit -n
+
+}
+
 function btask.BuildRelease.run () {
 
     # TODO: incremental snapshots if multiple execution in the
@@ -261,8 +295,16 @@ function btask.BuildRelease.run () {
     fi
 
     cd "$MC_tmp"
-    mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
-    mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
+    if b.opt.has_flag? --build-mac; then
+        mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+        mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
+    fi
+    if b.opt.has_flag? --build-windows; then
+        echo -n
+    fi
+    if b.opt.has_flag? --build-linux; then
+        mv prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
+    fi
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because

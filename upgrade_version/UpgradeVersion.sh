@@ -53,13 +53,13 @@ function displayHelp () {
 
 function updateFile () {
     # Arguments :
-    # updateFile $Version_old $Version_new "${Source}/${MIL_File}"
+    # updateFile $Version_old $Version_new ${Source}/${MX_File}
 
     local Search="$1" Replace="$2" File="$3"
 
     # TODO: handle exception if file not found
-    if b.path.file? $File && b.path.readable? $File; then
-        $(sed -i "s/${Search}/$Replace/g" $File)
+    if b.path.file? "$File" && b.path.readable? "$File"; then
+        $(sed -i "s/${Search}/$Replace/g" "$File")
     fi
 }
 

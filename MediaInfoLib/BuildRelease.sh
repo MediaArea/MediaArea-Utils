@@ -107,7 +107,7 @@ function _build_windows () {
 
 function _build_linux () {
 
-    local State=1 OBS_Repo="home:almin/MediaInfoLib"
+    local OBS_Repo="home:almin/MediaInfoLib" State=1
 
     cd "$MIL_tmp"
 
@@ -118,15 +118,16 @@ function _build_linux () {
     osc checkout $OBS_Repo
 
     # Clean up
-    rm -f $OBS_Repo/*.*
+    rm -f $OBS_Repo/*
 
-    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_Repo
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.xz $OBS_Repo
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_Repo/libmediainfo_${Version_new}-1.tar.gz
     #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.spec $OBS_Repo
     #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
     cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_Repo
     cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
 
-    update_DSC "$MIL_tmp"/$OBS_Repo/libmediainfo_${Version_new}.dsc "$MIL_tmp"/$OBS_Repo/libmediainfo_${Version_new}.tar.gz
+    update_DSC "$MIL_tmp"/$OBS_Repo libmediainfo_${Version_new}.tar.xz libmediainfo_${Version_new}.dsc
 
     echo
     echo "Build on OBS..."
@@ -202,9 +203,9 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            _build_linux > "$Log"/linux.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
-            _build_linux
+            echo _build_linux
         fi
     fi
     
@@ -214,18 +215,24 @@ function btask.BuildRelease.run () {
             #_build_mac > "$Log"/mac.log 2>&1
             _build_mac_tmp
             echo _build_windows > "$Log"/windows.log 2>&1
-            _build_linux > "$Log"/linux.log 2>&1
+            echo _build_linux > "$Log"/linux.log 2>&1
         else
             _build_mac_tmp
             echo _build_windows
-            _build_linux
+            echo _build_linux
         fi
     fi
 
     cd "$MIL_tmp"
-    mv prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
-    mv prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
-
+    if b.opt.has_flag? --build-mac; then
+        mv prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
+    fi
+    if b.opt.has_flag? --build-windows; then
+        echo -n
+    fi
+    if b.opt.has_flag? --build-linux; then
+        mv prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
+    fi
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because

@@ -64,35 +64,38 @@ function displayHelp () {
 function update_DSC () {
 
     # Arguments :
-    # update_DSC $DSC $Archive
+    # update_DSC $Path_to_obs_repo $Archive $DSC
     
-    local DSC=$1 Archive=$2
+    local OBSPath=$1 Archive=$2 DSC=$3
     
-    if [ $# -lt 2 ]; then
-        echo "Insuffisent parameters"
+    DSC="$OBSPath"/$DSC
+
+    if [ $# -lt 3 ]; then
+        echo "Insuffisent parameters for update_DSC"
         exit
     fi
     
-    Size=`ls -l $Archive |awk '{print $5}'`
-    SHA1=`sha1sum $Archive |awk '{print $1}'`
-    SHA256=`sha256sum $Archive |awk '{print $1}'`
-    MD5=`md5sum $Archive |awk '{print $1}'`
+    Size=`ls -l "$OBSPath"/$Archive |awk '{print $5}'`
+    SHA1=`sha1sum "$OBSPath"/$Archive |awk '{print $1}'`
+    SHA256=`sha256sum "$OBSPath"/$Archive |awk '{print $1}'`
+    MD5=`md5sum "$OBSPath"/$Archive |awk '{print $1}'`
     
-    oldSHA1="0000000000000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
-    oldSHA256="0000000000000000000000000000000000000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
-    oldMD5="00000000000000000000000000000000 000000 libzen_${Version_new}.tar.gz"
+    # For sed, 00* = 0+
+    oldSHA1="0000000000000000000000000000000000000000 00* $Archive"
+    oldSHA256="0000000000000000000000000000000000000000000000000000000000000000 00* $Archive"
+    oldMD5="00000000000000000000000000000000 00* $Archive"
 
-    newSHA1="$SHA1 $Size libzen_${Version_new}.tar.gz"
-    newSHA256="$SHA256 $Size libzen_${Version_new}.tar.gz"
-    newMD5="$MD5 $Size libzen_${Version_new}.tar.gz"
+    newSHA1="$SHA1 $Size $Archive"
+    newSHA256="$SHA256 $Size $Archive"
+    newMD5="$MD5 $Size $Archive"
     
     # TODO: handle exception if file not found
-    if b.path.file? $DSC && b.path.readable? $DSC; then
+    if b.path.file? "$DSC" && b.path.readable? "$DSC"; then
         # Handle the longuest strings first, otherwise the shorters
         # get in the way
-        $(sed -i "s/${oldSHA256}/$newSHA256/g" $DSC)
-        $(sed -i "s/${oldSHA1}/$newSHA1/g" $DSC)
-        $(sed -i "s/${oldMD5}/$newMD5/g" $DSC)
+        $(sed -i "s/${oldSHA256}/$newSHA256/g" "$DSC")
+        $(sed -i "s/${oldSHA1}/$newSHA1/g" "$DSC")
+        $(sed -i "s/${oldMD5}/$newMD5/g" "$DSC")
     fi
 
 }
@@ -153,7 +156,7 @@ function run () {
         fi
         if b.opt.has_flag? --build-linux; then
             Target="linux"
-            #PSTarget="-sp"
+            PSTarget="-sa"
         fi
 
         # In case --working-path is not defined

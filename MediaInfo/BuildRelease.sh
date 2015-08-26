@@ -245,6 +245,40 @@ function _build_windows () {
 
 }
 
+function _build_linux () {
+
+    local OBS_Repo="home:almin/MediaInfo" State=1
+
+    cd "$MI_tmp"
+
+    echo
+    echo "Initialize OBS files..."
+    echo
+
+    osc checkout $OBS_Repo
+
+    # Clean up
+    rm -f $OBS_Repo/*
+
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_Repo
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_Repo/mediainfo_${Version_new}-1.tar.gz
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.spec $OBS_Repo
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.dsc $OBS_Repo/mediainfo_${Version_new}.dsc
+    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_Repo
+    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_Repo/mediainfo_${Version_new}.dsc
+
+    update_DSC "$MI_tmp"/$OBS_Repo mediainfo_${Version_new}.tar.xz mediainfo_${Version_new}.dsc
+
+    echo
+    echo "Build on OBS..."
+    echo
+
+    cd $OBS_Repo
+    osc addremove *
+    osc commit -n
+
+}
+
 function btask.BuildRelease.run () {
 
     # TODO: incremental snapshots if multiple execution in the
@@ -336,8 +370,16 @@ function btask.BuildRelease.run () {
     fi
 
     cd "$MI_tmp"
-    mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
-    mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
+    if b.opt.has_flag? --build-mac; then
+        mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
+        mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
+    fi
+    if b.opt.has_flag? --build-windows; then
+        echo -n
+    fi
+    if b.opt.has_flag? --build-linux; then
+        mv prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
+    fi
 
     if $CleanUp; then
         # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
