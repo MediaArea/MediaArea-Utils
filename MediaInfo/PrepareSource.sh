@@ -208,8 +208,8 @@ function _compil_windows () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #7z a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo${Version}_AllInclusive >/dev/null
-        7z a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo_AllInclusive >/dev/null
+        #7za a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo${Version}_AllInclusive >/dev/null
+        7za a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo_AllInclusive >/dev/null
     fi
 
 }
