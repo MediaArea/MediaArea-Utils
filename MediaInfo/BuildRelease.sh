@@ -336,6 +336,8 @@ function btask.BuildRelease.run () {
         #   _build_mac_gui
         #fi
         _build_mac_tmp
+        mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
+        mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -344,6 +346,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_windows
         fi
+        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
     fi
     
     if [ "$Target" = "linux" ]; then
@@ -352,6 +355,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_linux
         fi
+        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
@@ -359,7 +363,7 @@ function btask.BuildRelease.run () {
             # Uncomment after the resolution of the autotools bug
             #_build_mac_cli > "$Log"/mac-cli.log 2>&1
             #_build_mac_gui > "$Log"/mac-gui.log 2>&1
-            _build_mac
+            _build_mac_tmp
             echo _build_windows > "$Log"/windows.log 2>&1
             echo _build_linux > "$Log"/linux.log 2>&1
         else
@@ -367,18 +371,10 @@ function btask.BuildRelease.run () {
             echo _build_windows
             echo _build_linux
         fi
-    fi
-
-    cd "$MI_tmp"
-    if b.opt.has_flag? --build-mac; then
-        mv prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
-        mv prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
-    fi
-    if b.opt.has_flag? --build-windows; then
-        echo -n
-    fi
-    if b.opt.has_flag? --build-linux; then
-        mv prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
+        mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
+        mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
+        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
+        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
 
     if $CleanUp; then

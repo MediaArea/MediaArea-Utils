@@ -261,6 +261,8 @@ function btask.BuildRelease.run () {
         #   _build_mac_gui
         #fi
         _build_mac_tmp
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -269,6 +271,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_windows
         fi
+        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
     fi
     
     if [ "$Target" = "linux" ]; then
@@ -277,6 +280,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_linux
         fi
+        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
@@ -292,18 +296,10 @@ function btask.BuildRelease.run () {
             echo _build_windows
             echo _build_linux
         fi
-    fi
-
-    cd "$MC_tmp"
-    if b.opt.has_flag? --build-mac; then
-        mv prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
-        mv prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
-    fi
-    if b.opt.has_flag? --build-windows; then
-        echo -n
-    fi
-    if b.opt.has_flag? --build-linux; then
-        mv prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
+        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
+        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
 
     if $CleanUp; then

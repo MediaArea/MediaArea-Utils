@@ -191,6 +191,7 @@ function btask.BuildRelease.run () {
         #   _build_mac
         #fi
         _build_mac_tmp
+        mv "$MIL_tmp"prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
@@ -199,6 +200,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_windows
         fi
+        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
     fi
     
     if [ "$Target" = "linux" ]; then
@@ -207,6 +209,7 @@ function btask.BuildRelease.run () {
         else
             echo _build_linux
         fi
+        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
@@ -221,17 +224,9 @@ function btask.BuildRelease.run () {
             echo _build_windows
             echo _build_linux
         fi
-    fi
-
-    cd "$MIL_tmp"
-    if b.opt.has_flag? --build-mac; then
-        mv prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
-    fi
-    if b.opt.has_flag? --build-windows; then
-        echo -n
-    fi
-    if b.opt.has_flag? --build-linux; then
-        mv prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
+        mv "$MIL_tmp"prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
+        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
+        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
 
     if $CleanUp; then
