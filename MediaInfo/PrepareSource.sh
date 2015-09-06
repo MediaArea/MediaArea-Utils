@@ -49,7 +49,7 @@ function _get_source () {
 
 }
 
-function _compil_unix_cli () {
+function _unix_cli () {
 
     echo
     echo "Generate the MI CLI directory for compilation under Unix:"
@@ -109,7 +109,7 @@ function _compil_unix_cli () {
 
 }
 
-function _compil_unix_gui () {
+function _unix_gui () {
 
     echo
     echo "Generate the MI GUI directory for compilation under Unix:"
@@ -171,7 +171,7 @@ function _compil_unix_gui () {
 
 }
 
-function _compil_windows () {
+function _windows () {
 
     echo
     echo "Generate the MI directory for compilation under Windows:"
@@ -260,19 +260,19 @@ function btask.PrepareSource.run () {
     _get_source
 
     if [ "$Target" = "cu" ]; then
-        _compil_unix_cli
-        _compil_unix_gui
+        _unix_cli
+        _unix_gui
     fi
     if [ "$Target" = "cw" ]; then
-        _compil_windows
+        _windows
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
-        _compil_unix_cli
-        _compil_unix_gui
-        _compil_windows
+        _unix_cli
+        _unix_gui
+        _windows
         _source_package
     fi
     

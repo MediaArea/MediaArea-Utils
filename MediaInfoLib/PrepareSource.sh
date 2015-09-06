@@ -49,7 +49,7 @@ function _get_source () {
 
 }
 
-function _compil_unix () {
+function _unix () {
 
     echo
     echo "Generate the MIL directory for compilation under Unix:"
@@ -115,7 +115,7 @@ function _compil_unix () {
 
 }
 
-function _compil_windows () {
+function _windows () {
 
     echo
     echo "Generate the MIL directory for compilation under Windows:"
@@ -201,17 +201,17 @@ function btask.PrepareSource.run () {
     _get_source
 
     if [ "$Target" = "cu" ]; then
-        _compil_unix
+        _unix
     fi
     if [ "$Target" = "cw" ]; then
-        _compil_windows
+        _windows
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
-        _compil_unix
-        _compil_windows
+        _unix
+        _windows
         _source_package
     fi
 
