@@ -9,7 +9,7 @@
 # tree.
 
 # This script requires: bang.sh UpgradeVersion.sh PrepareSource.sh 
-#                        ssh gawk
+#                        ssh mawk osc rpm-common
 
 function load_options () {
 
@@ -64,7 +64,7 @@ function displayHelp () {
 function update_DSC () {
 
     # Arguments :
-    # update_DSC $Path_to_obs_repo $Archive $DSC
+    # update_DSC $Path_to_obs_project $Archive $DSC
     
     local OBSPath=$1 Archive=$2 DSC=$3
     
@@ -134,8 +134,10 @@ function run () {
         if b.opt.has_flag? --snapshot; then
             Snapshot="yes"
             Version_new="${Version_old}.$Date"
+            OBS_Project="home:MediaArea_net:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
+            OBS_Project="home:MediaArea_net"
         else
             echo
             echo "If you don't ask a snapshot, you must provide"
@@ -226,7 +228,8 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v Snapshot Target WDir SDir CleanUp Log Script
+        unset -v Snapshot OBS_Project Target WDir SDir
+        unset -v CleanUp Log Script
     fi
 }
 

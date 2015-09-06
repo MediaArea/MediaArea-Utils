@@ -6,7 +6,7 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
-function _build_mac () {
+function _mac () {
 
     local sp RWDir
 
@@ -48,11 +48,11 @@ function _build_mac () {
 
 }
 
-function _build_mac_tmp () {
+function _mac_tmp () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
-    # successful. If not, retry to compile up to 3 times.
+    # successful. If not, retry to compile up to 10 times.
 
     local Try MultiArch
 
@@ -61,31 +61,26 @@ function _build_mac_tmp () {
     MultiArch=0
     Try=0
     touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
-    if b.opt.has_flag? --log; then
-        until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
-            _build_mac >> "$Log"/mac.log 2>&1
-            # Return 1 if MIL is compiled for i386 and x86_64,
-            # 0 otherwise
-            #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-            MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-            Try=$(($Try + 1))
-        done
-    else
-        until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
-            _build_mac
-            #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-            MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-            Try=$(($Try + 1))
-        done
-        # TODO: send a mail if the build fail
-        #if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-        #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/mac.log"
-        #fi
-    fi
+    until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 10 ]; do
+        if b.opt.has_flag? --log; then
+            _mac >> "$Log"/mac.log 2>&1
+        else
+            _mac
+        fi
+        # Return 1 if MIL is compiled for i386 and x86_64,
+        # 0 otherwise
+        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        Try=$(($Try + 1))
+    done
+    # TODO: send a mail if the build fail
+    #if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
+    #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/mac.log"
+    #fi
 
 }
 
-function _build_windows () {
+function _windows () {
 
     local sp RWDir
 
@@ -105,9 +100,9 @@ function _build_windows () {
 
 }
 
-function _build_linux () {
+function _obs () {
 
-    local OBS_Repo="home:almin/MediaInfoLib" State=1
+    local OBS_Package="$OBS_Project/MediaInfoLib"
 
     cd "$MIL_tmp"
 
@@ -115,27 +110,75 @@ function _build_linux () {
     echo "Initialize OBS files..."
     echo
 
-    osc checkout $OBS_Repo
+    osc checkout $OBS_Package
 
     # Clean up
-    rm -f $OBS_Repo/*
+    rm -f $OBS_Package/*
 
-    cp prepare_source/archives/libmediainfo_${Version_new}.tar.xz $OBS_Repo
-    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_Repo/libmediainfo_${Version_new}-1.tar.gz
-    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.spec $OBS_Repo
-    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
-    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_Repo
-    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.dsc $OBS_Repo/libmediainfo_${Version_new}.dsc
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.xz $OBS_Package
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_Package
 
-    update_DSC "$MIL_tmp"/$OBS_Repo libmediainfo_${Version_new}.tar.xz libmediainfo_${Version_new}.dsc
+    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.spec $OBS_Package
+    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/GNU/libmediainfo.dsc $OBS_Package/libmediainfo_${Version_new}.dsc
+    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_Package
+    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.dsc $OBS_Package/libmediainfo_${Version_new}.dsc
+    update_DSC "$MIL_tmp"/$OBS_Package libmediainfo_${Version_new}.tar.xz libmediainfo_${Version_new}.dsc
 
-    echo
-    echo "Build on OBS..."
-    echo
-
-    cd $OBS_Repo
+    cd $OBS_Package
     osc addremove *
     osc commit -n
+
+}
+
+function _obs_deb () {
+
+    # This function build the source on OBS for a specific debian
+    # version.
+
+    local debVersion="$1" Comp="$2"
+    local OBS_Package="$OBS_Project/MediaInfoLib_$debVersion"
+
+    cd "$MIL_tmp"
+
+    echo
+    echo "OBS for $OBS_Package, initialize files..."
+    echo
+
+    osc checkout $OBS_Package
+
+    # Clean up
+    rm -f $OBS_Package/*
+
+    cp prepare_source/archives/libmediainfo_${Version_new}.tar.$Comp $OBS_Package
+    cd $OBS_Package
+    tar xf libmediainfo_${Version_new}.tar.$Comp
+    rm -fr MediaInfoLib/debian
+    mv MediaInfoLib/Project/OBS/${debVersion}.debian MediaInfoLib/debian
+    if [ "$Comp" = "xz" ]; then
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f libmediainfo_${Version_new}.tar.xz MediaInfoLib)
+    elif [ "$Comp" = "gz" ]; then
+        (GZIP=-9 tar -cz --owner=root --group=root -f libmediainfo_${Version_new}.tar.gz MediaInfoLib)
+    fi
+    rm -fr MediaInfoLib
+    cd ../..
+
+    #cp prepare_source/MIL/MediaInfoLib_${Version_new}/Project/OBS/${debVersion}.dsc $OBS_Package/libmediainfo_${Version_new}.dsc
+    cp prepare_source/MIL/MediaInfoLib/Project/OBS/${debVersion}.dsc $OBS_Package/libmediainfo_${Version_new}.dsc
+    update_DSC "$MIL_tmp"/$OBS_Package libmediainfo_${Version_new}.tar.$Comp libmediainfo_${Version_new}.dsc
+
+    cd $OBS_Package
+    osc addremove *
+    osc commit -n
+
+}
+
+function _linux () {
+
+    _obs
+    _obs_deb deb6 gz
+
+    # python script to update the DB, get the binaries and
+    # generate the download webpage
 
 }
 
@@ -149,9 +192,9 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    MILB_dir="$WDir"/binary/libmediainfo0/$Date
-    MILS_dir="$WDir"/source/libmediainfo/$Date
-    MIL_tmp="$WDir"/tmp/libmediainfo/$Date
+    local MILB_dir="$WDir"/binary/libmediainfo0/$Date
+    local MILS_dir="$WDir"/source/libmediainfo/$Date
+    local MIL_tmp="$WDir"/tmp/libmediainfo/$Date
 
     echo
     echo Clean up...
@@ -186,28 +229,28 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac > "$Log"/mac.log 2>&1
+        #   _mac > "$Log"/mac.log 2>&1
         #else
-        #   _build_mac
+        #   _mac
         #fi
-        _build_mac_tmp
+        _mac_tmp
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$Log"/windows.log 2>&1
+            echo _windows > "$Log"/windows.log 2>&1
         else
-            echo _build_windows
+            echo _windows
         fi
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
     fi
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/linux.log 2>&1
+            _linux > "$Log"/linux.log 2>&1
         else
-            echo _build_linux
+            _linux
         fi
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
@@ -215,14 +258,14 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Uncomment after the resolution of the autotools bug
-            #_build_mac > "$Log"/mac.log 2>&1
-            _build_mac_tmp
-            echo _build_windows > "$Log"/windows.log 2>&1
-            echo _build_linux > "$Log"/linux.log 2>&1
+            #_mac > "$Log"/mac.log 2>&1
+            _linux > "$Log"/linux.log 2>&1
+            _mac_tmp
+            echo _windows > "$Log"/windows.log 2>&1
         else
-            _build_mac_tmp
-            echo _build_windows
-            echo _build_linux
+            _linux
+            _mac_tmp
+            echo _windows
         fi
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"

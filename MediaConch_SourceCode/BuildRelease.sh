@@ -6,7 +6,7 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
-function _build_mac_cli () {
+function _mac_cli () {
 
     local sp RWDir
 
@@ -54,7 +54,7 @@ function _build_mac_cli () {
 }
 
 
-function _build_mac_gui () {
+function _mac_gui () {
 
     local sp RWDir
 
@@ -96,11 +96,11 @@ function _build_mac_gui () {
 
 }
 
-function _build_mac_tmp () {
+function _mac_tmp () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
-    # successful. If not, retry to compile up to 3 times.
+    # successful. If not, retry to compile up to 10 times.
 
     local Try MultiArch
 
@@ -108,35 +108,29 @@ function _build_mac_tmp () {
 
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
-    if b.opt.has_flag? --log; then
-        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_cli >> "$Log"/mac-cli.log 2>&1
-            Try=$(($Try + 1))            
-        done
-    else
-        until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_cli
-            Try=$(($Try + 1))
-        done
-    fi
+    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
+        if b.opt.has_flag? --log; then
+            _mac_cli >> "$Log"/mac-cli.log 2>&1
+        else
+            _mac_cli
+        fi
+        Try=$(($Try + 1))            
+    done
 
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
-    if b.opt.has_flag? --log; then
-        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_gui >> "$Log"/mac-gui.log 2>&1
-            Try=$(($Try + 1))
-        done
-    else
-        until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
-            _build_mac_gui
-            Try=$(($Try + 1))
-        done
-    fi
+    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
+        if b.opt.has_flag? --log; then
+            _mac_gui >> "$Log"/mac-gui.log 2>&1
+        else
+            _mac_gui
+        fi
+        Try=$(($Try + 1))
+    done
 
 }
 
-function _build_windows () {
+function _windows () {
 
     local sp RWDir
 
@@ -170,9 +164,9 @@ function _build_windows () {
 
 }
 
-function _build_linux () {
+function _obs () {
 
-    local OBS_Repo="home:almin/MediaConch" State=1
+    local OBS_Package="$OBS_Project/MediaConch"
 
     cd "$MC_tmp"
 
@@ -180,27 +174,32 @@ function _build_linux () {
     echo "Initialize OBS files..."
     echo
 
-    osc checkout $OBS_Repo
+    osc checkout $OBS_Package
 
     # Clean up
-    rm -f $OBS_Repo/*
+    rm -f $OBS_Package/*
 
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_Repo
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_Repo/mediaconch_${Version_new}-1.tar.gz
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_Repo
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_Repo/mediaconch_${Version_new}.dsc
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_Repo
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_Repo/mediaconch_${Version_new}.dsc
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_Package
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_Package
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_Package
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_Package/mediaconch_${Version_new}.dsc
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_Package
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_Package/mediaconch_${Version_new}.dsc
 
-    update_DSC "$MC_tmp"/$OBS_Repo mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
+    update_DSC "$MC_tmp"/$OBS_Package mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
 
-    echo
-    echo "Build on OBS..."
-    echo
-
-    cd $OBS_Repo
+    cd $OBS_Package
     osc addremove *
     osc commit -n
+
+}
+
+function _linux () {
+
+    _obs
+
+    # python script to update the DB, get the binaries and
+    # generate the download webpage
 
 }
 
@@ -214,10 +213,10 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
 
-    MCC_dir="$WDir"/binary/mediaconch/$Date
-    MCG_dir="$WDir"/binary/mediaconch-gui/$Date
-    MCS_dir="$WDir"/source/mediaconch/$Date
-    MC_tmp="$WDir"/tmp/mediaconch/$Date
+    local MCC_dir="$WDir"/binary/mediaconch/$Date
+    local MCG_dir="$WDir"/binary/mediaconch-gui/$Date
+    local MCS_dir="$WDir"/source/mediaconch/$Date
+    local MC_tmp="$WDir"/tmp/mediaconch/$Date
 
     echo
     echo Clean up...
@@ -254,31 +253,31 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         # Uncomment after the resolution of the autotools bug
         #if b.opt.has_flag? --log; then
-        #   _build_mac_cli > "$Log"/mac-cli.log 2>&1
-        #   _build_mac_gui > "$Log"/mac-gui.log 2>&1
+        #   _mac_cli > "$Log"/mac-cli.log 2>&1
+        #   _mac_gui > "$Log"/mac-gui.log 2>&1
         #else
-        #   _build_mac_cli
-        #   _build_mac_gui
+        #   _mac_cli
+        #   _mac_gui
         #fi
-        _build_mac_tmp
+        _mac_tmp
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_windows > "$Log"/windows.log 2>&1
+            echo _windows > "$Log"/windows.log 2>&1
         else
-            echo _build_windows
+            echo _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
     fi
     
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/linux.log 2>&1
+            _linux > "$Log"/linux.log 2>&1
         else
-            echo _build_linux
+            _linux
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
@@ -286,15 +285,15 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Uncomment after the resolution of the autotools bug
-            #_build_mac_cli > "$Log"/mac-cli.log 2>&1
-            #_build_mac_gui > "$Log"/mac-gui.log 2>&1
-            _build_mac_tmp
-            echo _build_windows > "$Log"/windows.log 2>&1
-            echo _build_linux > "$Log"/linux.log 2>&1
+            #_mac_cli > "$Log"/mac-cli.log 2>&1
+            #_mac_gui > "$Log"/mac-gui.log 2>&1
+            _linux > "$Log"/linux.log 2>&1
+            _mac_tmp
+            echo _windows > "$Log"/windows.log 2>&1
         else
-            _build_mac_tmp
-            echo _build_windows
-            echo _build_linux
+            _linux
+            _mac_tmp
+            echo _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"

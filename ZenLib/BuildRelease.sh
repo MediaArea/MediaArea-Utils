@@ -6,9 +6,9 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
-function _build_linux () {
+function _obs () {
 
-    local OBS_Repo="home:almin/ZenLib" State=1
+    local OBS_Package="$OBS_Project/ZenLib"
 
     cd "$ZL_tmp"
 
@@ -16,40 +16,75 @@ function _build_linux () {
     echo "Initialize OBS files..."
     echo
 
-    osc checkout $OBS_Repo
+    osc checkout $OBS_Package
 
     # Clean up
-    rm -f $OBS_Repo/*
+    rm -f $OBS_Package/*
 
-    cp prepare_source/archives/libzen_${Version_new}.tar.xz $OBS_Repo
-    cp prepare_source/archives/libzen_${Version_new}.tar.gz $OBS_Repo/libzen_${Version_new}-1.tar.gz
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.spec $OBS_Repo
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.dsc $OBS_Repo/libzen_${Version_new}.dsc
-    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_Repo
-    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.dsc $OBS_Repo/libzen_${Version_new}.dsc
+    cp prepare_source/archives/libzen_${Version_new}.tar.xz $OBS_Package
+    cp prepare_source/archives/libzen_${Version_new}.tar.gz $OBS_Package
 
-    update_DSC "$ZL_tmp"/$OBS_Repo libzen_${Version_new}.tar.xz libzen_${Version_new}.dsc
+    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.spec $OBS_Package
+    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.dsc $OBS_Package/libzen_${Version_new}.dsc
+    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_Package
+    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.dsc $OBS_Package/libzen_${Version_new}.dsc
+    update_DSC "$ZL_tmp"/$OBS_Package libzen_${Version_new}.tar.xz libzen_${Version_new}.dsc
 
-    echo
-    echo "Build on OBS..."
-    echo
-
-    cd $OBS_Repo
+    cd $OBS_Package
     osc addremove *
     osc commit -n
 
-    #until [ $State -eq 0 ]; do
-    #    sleep 600
-    #    State=`osc results $OBS_Repo |awk '{print $3}' |grep scheduled |grep finished |grep failed |wc -l`
-    #done
+}
 
-    # At this point, each package will be either succeeded or
-    # failed : python script to update the DB, get the binaries and
+function _obs_deb () {
+
+    # This function build the source on OBS for a specific debian
+    # version.
+
+    local debVersion="$1" Comp="$2"
+    local OBS_Package="$OBS_Project/ZenLib_$debVersion"
+
+    cd "$ZL_tmp"
+
+    echo
+    echo "OBS for $OBS_Package, initialize files..."
+    echo
+
+    osc checkout $OBS_Package
+
+    # Clean up
+    rm -f $OBS_Package/*
+
+    cp prepare_source/archives/libzen_${Version_new}.tar.$Comp $OBS_Package
+    cd $OBS_Package
+    tar xf libzen_${Version_new}.tar.$Comp
+    rm -fr ZenLib/debian
+    mv ZenLib/Project/OBS/${debVersion}.debian ZenLib/debian
+    if [ "$Comp" = "xz" ]; then
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f libzen_${Version_new}.tar.xz ZenLib)
+    elif [ "$Comp" = "gz" ]; then
+        (GZIP=-9 tar -cz --owner=root --group=root -f libzen_${Version_new}.tar.gz ZenLib)
+    fi
+    rm -fr ZenLib
+    cd ../..
+
+    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/OBS/${debVersion}.dsc $OBS_Package/libzen_${Version_new}.dsc
+    cp prepare_source/ZL/ZenLib/Project/OBS/${debVersion}.dsc $OBS_Package/libzen_${Version_new}.dsc
+    update_DSC "$ZL_tmp"/$OBS_Package libzen_${Version_new}.tar.$Comp libzen_${Version_new}.dsc
+
+    cd $OBS_Package
+    osc addremove *
+    osc commit -n
+
+}
+
+function _linux () {
+
+    _obs
+    _obs_deb deb6 gz
+
+    # python script to update the DB, get the binaries and
     # generate the download webpage
-    # Will use :
-    #osc results $OBS_Repo |awk '{print $1,$3}' |grep succeeded
-    #osc results $OBS_Repo |awk '{print $1,$3}' |grep failed
-    #osc getbinaries Debian_7.0 i586
 
 }
 
@@ -63,9 +98,9 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    ZLB_dir="$WDir"/binary/libzen0/$Date
-    ZLS_dir="$WDir"/source/libzen/$Date
-    ZL_tmp="$WDir"/tmp/libzen/$Date
+    local ZLB_dir="$WDir"/binary/libzen0/$Date
+    local ZLS_dir="$WDir"/source/libzen/$Date
+    local ZL_tmp="$WDir"/tmp/libzen/$Date
 
     echo
     echo Clean up...
@@ -99,11 +134,11 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            echo _build_linux > "$Log"/linux.log 2>&1
+            _linux > "$Log"/linux.log 2>&1
         else
-            echo _build_linux
+            _linux
         fi
-    cp "$ZL_tmp"/prepare_source/archives/libzen_${Version_new}.* "$ZLS_dir"
+        mv "$ZL_tmp"/prepare_source/archives/libzen_${Version_new}.* "$ZLS_dir"
     fi
 
     if $CleanUp; then
