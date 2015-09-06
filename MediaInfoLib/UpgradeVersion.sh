@@ -28,12 +28,13 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version with dots..."
     index=0
     MIL_files[((index++))]="Source/MediaInfo/MediaInfo_Config.cpp"
-    MIL_files[((index++))]="Project/GNU/libmediainfo.dsc"
-    MIL_files[((index++))]="Project/GNU/libmediainfo.spec"
-    MIL_files[((index++))]="Project/Solaris/mkpkg"
-    MIL_files[((index++))]="debian/changelog"
-    MIL_files[((index++))]="debian/control"
     MIL_files[((index++))]="Project/GNU/Library/configure.ac"
+    MIL_files[((index++))]="Project/GNU/libmediainfo.spec"
+    MIL_files[((index++))]="Project/GNU/libmediainfo.dsc"
+    MIL_files[((index++))]="debian/changelog"
+    MIL_files[((index++))]="Project/OBS/deb6.dsc"
+    MIL_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    MIL_files[((index++))]="Project/Solaris/mkpkg"
 
     # Replace old version by new version
     for MIL_file in ${MIL_files[@]}
@@ -64,7 +65,7 @@ function btask.UpgradeVersion.run () {
     for MIL_file in ${MIL_files[@]}
     do
 
-        echo ${MIL_source}/${MIL_file}
+        echo "${MIL_source}/${MIL_file}"
 
         # If $Version_old_build is set = it's already include in
         # $Version_old_escaped, so we will try to replace
@@ -98,8 +99,6 @@ function btask.UpgradeVersion.run () {
     updateFile "set(MediaInfoLib_PATCH_VERSION $Version_old_patch)" \
         "set(MediaInfoLib_PATCH_VERSION $Version_new_patch)" \
         "${MIL_source}/Project/CMake/CMakeLists.txt"
-
-
 
     echo
     echo "Update Source/Install/MediaInfo_DLL_Windows_i386.nsi ..."

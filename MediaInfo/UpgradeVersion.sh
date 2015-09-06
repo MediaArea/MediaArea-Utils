@@ -28,25 +28,45 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version with dots..."
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"
-    MI_files[((index++))]="Project/GNU/mediainfo.dsc"
-    MI_files[((index++))]="Project/GNU/mediainfo.spec"
-    MI_files[((index++))]="Project/Solaris/mkpkg"
-    MI_files[((index++))]="debian/changelog"
-    MI_files[((index++))]="debian/control"
-    MI_files[((index++))]="Project/OBS/obs_mediainfo"
-    MI_files[((index++))]="Project/GNU/CLI/configure.ac"
-    MI_files[((index++))]="Project/GNU/GUI/configure.ac"
+    MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
     MI_files[((index++))]="Project/Mac/mkdmg_CLI"
     MI_files[((index++))]="Project/Mac/mkdmg_GUI"
-    MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
+    MI_files[((index++))]="Project/GNU/CLI/configure.ac"
+    MI_files[((index++))]="Project/GNU/GUI/configure.ac"
+    MI_files[((index++))]="debian/changelog"
+    MI_files[((index++))]="Project/OBS/deb7.debian/changelog"
+    MI_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    MI_files[((index++))]="Project/OBS/obs_mediainfo"
+    MI_files[((index++))]="Project/Solaris/mkpkg"
 
     # Replace old version by new version
     for MI_file in ${MI_files[@]}
     do
-        echo ${MI_source}/${MI_file}
+        echo "${MI_source}/${MI_file}"
         updateFile "$Version_old_escaped" $Version_new "${MI_source}/${MI_file}"
-
     done
+
+    echo
+    echo "Update ${MI_source}/Project/GNU/mediainfo.spec"
+    updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
+    #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
+    echo
+
+    echo "Update ${MI_source}/Project/GNU/mediainfo.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
+    # sed will take the last of the longuest strings first and
+    # will replace the 3 lines
+    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
+    
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb7.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb7.dsc
+    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb7.dsc
+
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb6.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb6.dsc
+    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb6.dsc
 
     echo
     echo "Passage for major.minor.patch.build..."
@@ -66,7 +86,7 @@ function btask.UpgradeVersion.run () {
     for MI_file in ${MI_files[@]}
     do
 
-        echo ${MI_source}/${MI_file}
+        echo "${MI_source}/${MI_file}"
 
         # If $Version_old_build is set = it's already include in
         # $Version_old_escaped, so we will try to replace

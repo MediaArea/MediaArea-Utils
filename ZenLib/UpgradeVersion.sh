@@ -27,12 +27,13 @@ function btask.UpgradeVersion.run () {
 
     echo "Passage for version with dots..."
     index=0
-    ZL_files[((index++))]="Project/GNU/libzen.dsc"
-    ZL_files[((index++))]="Project/GNU/libzen.spec"
-    ZL_files[((index++))]="Project/Solaris/mkpkg"
-    ZL_files[((index++))]="debian/changelog"
-    ZL_files[((index++))]="debian/control"
     ZL_files[((index++))]="Project/GNU/Library/configure.ac"
+    ZL_files[((index++))]="Project/GNU/libzen.spec"
+    ZL_files[((index++))]="Project/GNU/libzen.dsc"
+    ZL_files[((index++))]="debian/changelog"
+    ZL_files[((index++))]="Project/OBS/deb6.dsc"
+    ZL_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    ZL_files[((index++))]="Project/Solaris/mkpkg"
 
     # Replace old version by new version
     for ZL_file in ${ZL_files[@]}

@@ -27,18 +27,27 @@ function btask.UpgradeVersion.run () {
 
     echo "Passage for version YY.MM ..."
     index=0
-    MC_files[((index++))]="Project/GNU/mediaconch.dsc" 
-    MC_files[((index++))]="Project/GNU/mediaconch.spec" 
+    MC_files[((index++))]="Source/CLI/Help.cpp" 
     MC_files[((index++))]="Project/Mac/mkdmg_GUI" 
     MC_files[((index++))]="Project/Mac/mkdmg_CLI" 
     MC_files[((index++))]="debian/changelog" 
-    MC_files[((index++))]="Source/CLI/Help.cpp" 
 
     for MC_file in ${MC_files[@]}
     do
-        echo ${MC_source}/${MC_file}
+        echo "${MC_source}/${MC_file}"
         updateFile "$Version_old_escaped" $Version_new "${MC_source}/${MC_file}"
     done
+
+    echo
+    echo "Update ${MC_source}/Project/GNU/mediaconch.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
+    # sed will take the last of the longuest strings first and
+    # will replace the 3 lines
+    updateFile "00000000000000000000000000000000 000000 mediaconch_$Version_old_escaped" "00000000000000000000000000000000 000000 mediaconch_$Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
+
+    echo
+    echo "Update ${MC_source}/Project/GNU/mediaconch.spec"
+    updateFile "%define mediaconch_version          $Version_old_escaped" "%define mediaconch_version          $Version_new" "${MC_source}"/Project/GNU/mediaconch.spec
 
     echo
     echo "Passage for version YY.MM.patch ..."
@@ -51,7 +60,7 @@ function btask.UpgradeVersion.run () {
 
     for MC_file in ${MC_files[@]}
     do
-        echo ${MC_source}/${MC_file}
+        echo "${MC_source}/${MC_file}"
         updateFile "$Version_old_major\.$Version_old_minor\.$Version_old_patch" $Version_new_major.$Version_new_minor.$Version_new_patch "${MC_source}/${MC_file}"
     done
 
@@ -64,7 +73,7 @@ function btask.UpgradeVersion.run () {
 
     for MC_file in ${MC_files[@]}
     do
-        echo ${MC_source}/${MC_file}
+        echo "${MC_source}/${MC_file}"
         updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch "${MC_source}/${MC_file}"
     done
 
