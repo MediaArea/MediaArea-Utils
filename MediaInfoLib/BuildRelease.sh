@@ -48,7 +48,7 @@ function _mac () {
 
 }
 
-function _mac_tmp () {
+function _mac () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
@@ -174,11 +174,18 @@ function _obs_deb () {
 
 function _linux () {
 
-    _obs
-    _obs_deb deb6 gz
+        if b.opt.has_flag? --log; then
+            _obs > "$Log"/linux.log 2>&1
+            _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib" $Version_new >> "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
 
-    # python script to update the DB, get the binaries and
-    # generate the download webpage
+        else
+            _obs
+            _obs_deb deb6 gz
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib" $Version_new > "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
+        fi
 
 }
 
@@ -192,9 +199,9 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    local MILB_dir="$WDir"/binary/libmediainfo0/$Date
-    local MILS_dir="$WDir"/source/libmediainfo/$Date
-    local MIL_tmp="$WDir"/tmp/libmediainfo/$Date
+    local MILB_dir="$WDir"/binary/libmediainfo0/$subDir
+    local MILS_dir="$WDir"/source/libmediainfo/$subDir
+    local MIL_tmp="$WDir"/tmp/libmediainfo/$subDir
 
     echo
     echo Clean up...
@@ -227,13 +234,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        # Uncomment after the resolution of the autotools bug
-        #if b.opt.has_flag? --log; then
-        #   _mac > "$Log"/mac.log 2>&1
-        #else
-        #   _mac
-        #fi
-        _mac_tmp
+        _mac
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
     fi
 
@@ -247,24 +248,18 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        if b.opt.has_flag? --log; then
-            _linux > "$Log"/linux.log 2>&1
-        else
-            _linux
-        fi
+        _linux
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            # Uncomment after the resolution of the autotools bug
-            #_mac > "$Log"/mac.log 2>&1
-            _linux > "$Log"/linux.log 2>&1
-            _mac_tmp
+            _linux
+            _mac
             echo _windows > "$Log"/windows.log 2>&1
         else
             _linux
-            _mac_tmp
+            _mac
             echo _windows
         fi
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
@@ -273,9 +268,6 @@ function btask.BuildRelease.run () {
     fi
 
     if $CleanUp; then
-        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
-        # another instance of BS.sh can be running for another
-        # project
         rm -fr "$MIL_tmp"
     fi
 

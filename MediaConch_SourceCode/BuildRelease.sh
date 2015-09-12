@@ -96,7 +96,7 @@ function _mac_gui () {
 
 }
 
-function _mac_tmp () {
+function _mac () {
 
     # This function is a temporay fix for the autotools bug under
     # mac. Check the size to know if the compilation was
@@ -196,10 +196,14 @@ function _obs () {
 
 function _linux () {
 
-    _obs
+        if b.opt.has_flag? --log; then
+            _obs > "$Log"/linux.log 2>&1
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MC_tmp/obs_dl" "$MCC_dir" "$OBS_Project/MediaConch" $Version_new >> "$Log"/linux.log 2>&1 &
 
-    # python script to update the DB, get the binaries and
-    # generate the download webpage
+        else
+            _obs
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$MC_tmp/obs_dl" "$MCC_dir" "$OBS_Project/MediaConch" $Version_new > "$Log"/linux.log 2>&1 &
+        fi
 
 }
 
@@ -213,10 +217,10 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
 
-    local MCC_dir="$WDir"/binary/mediaconch/$Date
-    local MCG_dir="$WDir"/binary/mediaconch-gui/$Date
-    local MCS_dir="$WDir"/source/mediaconch/$Date
-    local MC_tmp="$WDir"/tmp/mediaconch/$Date
+    local MCC_dir="$WDir"/binary/mediaconch/$subDir
+    local MCG_dir="$WDir"/binary/mediaconch-gui/$subDir
+    local MCS_dir="$WDir"/source/mediaconch/$subDir
+    local MC_tmp="$WDir"/tmp/mediaconch/$subDir
 
     echo
     echo Clean up...
@@ -251,15 +255,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        # Uncomment after the resolution of the autotools bug
-        #if b.opt.has_flag? --log; then
-        #   _mac_cli > "$Log"/mac-cli.log 2>&1
-        #   _mac_gui > "$Log"/mac-gui.log 2>&1
-        #else
-        #   _mac_cli
-        #   _mac_gui
-        #fi
-        _mac_tmp
+        _mac
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
     fi
@@ -274,25 +270,18 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        if b.opt.has_flag? --log; then
-            _linux > "$Log"/linux.log 2>&1
-        else
-            _linux
-        fi
+        _linux
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            # Uncomment after the resolution of the autotools bug
-            #_mac_cli > "$Log"/mac-cli.log 2>&1
-            #_mac_gui > "$Log"/mac-gui.log 2>&1
-            _linux > "$Log"/linux.log 2>&1
-            _mac_tmp
+            _linux
+            _mac
             echo _windows > "$Log"/windows.log 2>&1
         else
             _linux
-            _mac_tmp
+            _mac
             echo _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
@@ -302,9 +291,6 @@ function btask.BuildRelease.run () {
     fi
 
     if $CleanUp; then
-        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
-        # another instance of BS.sh can be running for another
-        # project
         rm -fr "$MC_tmp"
     fi
 

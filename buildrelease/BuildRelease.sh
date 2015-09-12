@@ -43,7 +43,7 @@ function load_options () {
     b.opt.add_flag --build-linux "Build only for Linux"
     b.opt.add_alias --build-linux -bl
 
-    b.opt.add_flag --all "Build all the targets for this project"
+    b.opt.add_flag --all "Build all the targets for a project"
     # Same arguments as PrepareSource.sh
     b.opt.add_alias --all -all
 
@@ -134,9 +134,11 @@ function run () {
         if b.opt.has_flag? --snapshot; then
             Snapshot="yes"
             Version_new="${Version_old}.$Date"
+            subDir="$Date"
             OBS_Project="home:MediaArea_net:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
+            subDir="$Version_new"
             OBS_Project="home:MediaArea_net"
         else
             echo
@@ -162,7 +164,7 @@ function run () {
         fi
 
         # In case --working-path is not defined
-        WDir=/tmp/snapshots
+        WDir=/tmp
         # In case it is
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
@@ -170,9 +172,7 @@ function run () {
                 echo
                 echo "The directory $WDir isn't writable : will use /tmp instead."
                 echo
-                WDir=/tmp/snapshots
-            else
-                WDir="$WDir"/snapshots
+                WDir=/tmp
             fi
         fi
 
@@ -198,6 +198,11 @@ function run () {
             mkdir -p "$WDir"
         fi
 
+        Log="$WDir"/log/$Project/$subDir
+        if ! b.path.dir? "$Log"; then
+            mkdir -p "$Log"
+        fi
+
         # TODO: possibility to run the script from anywhere
         #Script="$(b.get bang.working_dir)/../../${Project}/Release/BuildRelease.sh"
         Script="$(b.get bang.working_dir)/../${Project}/BuildRelease.sh"
@@ -207,10 +212,6 @@ function run () {
             # the corresponding task
             . $Script
             if b.opt.has_flag? --log; then
-                Log="$WDir"/log/$Project/$Date
-                if ! b.path.dir? "$Log"; then
-                    mkdir -p "$Log"
-                fi
                 b.task.run BuildRelease > "$Log"/init.log 2>&1
             else
                 echo
@@ -228,7 +229,7 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v Snapshot OBS_Project Target WDir SDir
+        unset -v Snapshot OBS_Project Target WDir subDir SDir
         unset -v CleanUp Log Script
     fi
 }

@@ -96,7 +96,7 @@ function _mac_gui () {
         mkdir "$MI_tmp"/dylib
         cd $(b.get bang.working_dir)
         $(b.get bang.src_path)/bang run BuildRelease.sh -wp "$MI_tmp"/dylib -p mil -s -o tmp -bm
-        scp -P $MacSSHPort "$MI_tmp"/dylib/snapshots/binary/libmediainfo0/$Date/MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/
+        scp -P $MacSSHPort "$MI_tmp"/dylib/snapshots/binary/libmediainfo0/$subDir/MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/
 
                 #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
         $sp "cd $RWDir/build ;
@@ -335,10 +335,10 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    local MIC_dir="$WDir"/binary/mediainfo/$Date
-    local MIG_dir="$WDir"/binary/mediainfo-gui/$Date
-    local MIS_dir="$WDir"/source/mediainfo/$Date
-    local MI_tmp="$WDir"/tmp/mediainfo/$Date
+    local MIC_dir="$WDir"/binary/mediainfo/$subDir
+    local MIG_dir="$WDir"/binary/mediainfo-gui/$subDir
+    local MIS_dir="$WDir"/source/mediainfo/$subDir
+    local MI_tmp="$WDir"/tmp/mediainfo/$subDir
 
     echo
     echo Clean up...
@@ -373,7 +373,6 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PSTarget -nc
 
     if [ "$Target" = "mac" ]; then
-        # The --log parameter is handled inside the _mac function
         _mac
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
@@ -389,17 +388,13 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        if b.opt.has_flag? --log; then
-            _linux > "$Log"/linux.log 2>&1
-        else
-            _linux
-        fi
+        _linux
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            _linux > "$Log"/linux.log 2>&1
+            _linux
             _mac
             echo _windows > "$Log"/windows.log 2>&1
         else
@@ -414,9 +409,6 @@ function btask.BuildRelease.run () {
     fi
 
     if $CleanUp; then
-        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
-        # another instance of BS.sh can be running for another
-        # project
         rm -fr "$MI_tmp"
     fi
 

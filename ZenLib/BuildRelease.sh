@@ -80,11 +80,18 @@ function _obs_deb () {
 
 function _linux () {
 
-    _obs
-    _obs_deb deb6 gz
+        if b.opt.has_flag? --log; then
+            _obs > "$Log"/linux.log 2>&1
+            _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$ZL_tmp/obs_dl" "$ZLB_dir" "$OBS_Project/ZenLib" $Version_new >> "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$ZL_tmp/obs_dl" "$ZLB_dir" "$OBS_Project/ZenLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
 
-    # python script to update the DB, get the binaries and
-    # generate the download webpage
+        else
+            _obs
+            _obs_deb deb6 gz
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$ZL_tmp/obs_dl" "$ZLB_dir" "$OBS_Project/ZenLib" $Version_new > "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py "$ZL_tmp/obs_dl" "$ZLB_dir" "$OBS_Project/ZenLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
+        fi
 
 }
 
@@ -98,9 +105,9 @@ function btask.BuildRelease.run () {
     #    mkdir -p $WDir
     # + handle a third run, etc
         
-    local ZLB_dir="$WDir"/binary/libzen0/$Date
-    local ZLS_dir="$WDir"/source/libzen/$Date
-    local ZL_tmp="$WDir"/tmp/libzen/$Date
+    local ZLB_dir="$WDir"/binary/libzen0/$subDir
+    local ZLS_dir="$WDir"/source/libzen/$subDir
+    local ZL_tmp="$WDir"/tmp/libzen/$subDir
 
     echo
     echo Clean up...
@@ -133,18 +140,11 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p zl -v $Version_new -wp "$ZL_tmp"/prepare_source -sp "$ZL_tmp"/upgrade_version/ZenLib -sa -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
-        if b.opt.has_flag? --log; then
-            _linux > "$Log"/linux.log 2>&1
-        else
-            _linux
-        fi
+        _linux
         mv "$ZL_tmp"/prepare_source/archives/libzen_${Version_new}.* "$ZLS_dir"
     fi
 
     if $CleanUp; then
-        # Can't rm $WDir/tmp/ or even $WDir/tmp/$Date, because
-        # another instance of BS.sh can be running for another
-        # project
         rm -fr "$ZL_tmp"
     fi
 
