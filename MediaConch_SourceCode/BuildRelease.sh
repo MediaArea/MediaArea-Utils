@@ -31,13 +31,12 @@ function _mac_cli () {
             tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
+            cp -r ../../libxslt . ;
             ./CLI_Compile.sh ;
             strip -u -r MediaConch/Project/GNU/CLI/mediaconch"
-            # Because the libxml2 doesn't compile in 32 bits
+            # Commented because the libxml2 doesn't compile
+            # in 32 bits
             #./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
-
-            # configure xml :
-            #./configure --disable-shared --enable-static --disable-ipv6 --without-ftp --without-http --without-html --without-c14n --without-catalog --with-xpath --without-xptr --without-xinclude --without-iconv --without-icu --without-iso8859x --without-zlib --without-lzma --without-memdebug --without-rundebug --without-regexps --without-modules --with-tree --without-writer --with-pattern --with-push --without-valid --with-sax1 --without-legacy --with-output --without-schemas --with-schematron --without-python LAGS=" -mmacosx-version-min=10.5" CXXFLAGS=" -mmacosx-version-min=10.5" LDFLAGS=" -mmacosx-version-min=10.5"
 
     echo
     echo
@@ -79,6 +78,7 @@ function _mac_gui () {
             tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
+            cp -r ../../libxslt . ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh ;
             strip -u -r MediaConch/Project/Qt/MediaConch.app/Contents/MacOS/MediaConch"
 
@@ -198,11 +198,11 @@ function _linux () {
 
         if b.opt.has_flag? --log; then
             _obs > "$Log"/linux.log 2>&1
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MC_tmp/obs_dl" "$MCC_dir" "$OBS_Project/MediaConch" $Version_new >> "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" >> "$Log"/linux.log 2>&1 &
 
         else
             _obs
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MC_tmp/obs_dl" "$MCC_dir" "$OBS_Project/MediaConch" $Version_new > "$Log"/linux.log 2>&1 &
+            python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/linux.log 2>&1 &
         fi
 
 }

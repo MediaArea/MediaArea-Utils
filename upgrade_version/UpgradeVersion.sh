@@ -42,7 +42,6 @@ function load_options () {
     #b.opt.add_alias --commit -c
 
     # Mandatory arguments
-    #b.opt.required_args --project --date --old --new
     b.opt.required_args --project --old --new
 }
 

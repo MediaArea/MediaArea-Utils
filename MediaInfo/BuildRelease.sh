@@ -316,12 +316,21 @@ function _obs_deb () {
 
 function _linux () {
 
-    _obs
-    _obs_deb deb7 xz
-    _obs_deb deb6 gz
-
-    # python script to update the DB, get the binaries and
-    # generate the download webpage
+    if b.opt.has_flag? --log; then
+        _obs > "$Log"/linux.log 2>&1
+        _obs_deb deb7 xz >> "$Log"/linux.log 2>&1
+        _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
+    else
+        _obs
+        _obs_deb deb7 xz
+        _obs_deb deb6 gz
+    fi
+    
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
+    sleep 10
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &
+    sleep 10
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb6.log 2>&1 &
 
 }
 

@@ -50,7 +50,7 @@ function load_options () {
     b.opt.add_flag --source-package "Generate the source package"
     b.opt.add_alias --source-package -sa
     
-    b.opt.add_flag --all "Prepare all the targets for this project"
+    b.opt.add_flag --all "Prepare all the targets for a project"
     # Required for the call in _get_source
     b.opt.add_alias --all -all
 

@@ -174,18 +174,17 @@ function _obs_deb () {
 
 function _linux () {
 
-        if b.opt.has_flag? --log; then
-            _obs > "$Log"/linux.log 2>&1
-            _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib" $Version_new >> "$Log"/linux.log 2>&1 &
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
+    if b.opt.has_flag? --log; then
+        _obs > "$Log"/linux.log 2>&1
+        _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
+    else
+        _obs
+        _obs_deb deb6 gz
+    fi
 
-        else
-            _obs
-            _obs_deb deb6 gz
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib" $Version_new > "$Log"/linux.log 2>&1 &
-            python $(b.get bang.working_dir)/update_Linux_DB.py "$MIL_tmp/obs_dl" "$MILB_dir" "$OBS_Project/MediaInfoLib_deb6" $Version_new >> "$Log"/linux.log 2>&1 &
-        fi
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib $Version_new "$MILB_dir" > "$Log"/obs_python.log 2>&1 &
+    sleep 10
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
 
 }
 
