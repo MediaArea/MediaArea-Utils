@@ -6,7 +6,7 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
-function _mac () {
+function _mac_mil () {
 
     local sp RWDir
 
@@ -63,9 +63,9 @@ function _mac () {
     touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 10 ]; do
         if b.opt.has_flag? --log; then
-            _mac >> "$Log"/mac.log 2>&1
+            _mac_mil >> "$Log"/mac.log 2>&1
         else
-            _mac
+            _mac_mil
         fi
         # Return 1 if MIL is compiled for i386 and x86_64,
         # 0 otherwise
