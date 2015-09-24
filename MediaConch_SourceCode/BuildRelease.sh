@@ -196,14 +196,16 @@ function _obs () {
 
 function _linux () {
 
-        if b.opt.has_flag? --log; then
-            _obs > "$Log"/linux.log 2>&1
-            python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" >> "$Log"/linux.log 2>&1 &
-
-        else
-            _obs
-            python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/linux.log 2>&1 &
-        fi
+    if b.opt.has_flag? --log; then
+        _obs > "$Log"/linux.log 2>&1
+    else
+        _obs
+    fi
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
+    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_python.log 2>&1 &
 
 }
 

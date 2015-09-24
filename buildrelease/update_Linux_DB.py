@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import MySQLdb
@@ -24,8 +24,11 @@ class mysql:
     def __init__(self):
         self.running = True
         try:
-            self.sql = MySQLdb.connect(host=MySQL_host,
-                    user=MySQL_user, passwd=MySQL_passwd, db=MySQL_db)
+            self.sql = MySQLdb.connect(
+                    host=config["MySQL_host"],
+                    user=config["MySQL_user"],
+                    passwd=config["MySQL_passwd"],
+                    db=config["MySQL_db"])
         except MySQLdb.Error, e:
             self.running = True
             print "*** MySQL Error %d: %s ***" % (e.args[0], e.args[1])
@@ -235,10 +238,16 @@ OBS_Package = sys.argv[2]
 version = sys.argv[3]
 destination = sys.argv[4]
 
-MySQL_host = "deneb"
-MySQL_user = "trololo"
-MySQL_passwd = "https://www.youtube.com/watch?v=oavMtUWDBTM"
-MySQL_db = "mautils"
+# TODO: after switching to python 3 on the server, use
+# https://docs.python.org/2/library/configparser.html instead
+# ex: https://wiki.python.org/moin/ConfigParserExamples
+config = {}
+execfile(
+        os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "update_Linux_DB.conf"),
+        config) 
+ 
 MA_Project = OBS_Project + "/" + OBS_Package
 
 if fnmatch.fnmatch(OBS_Package, "ZenLib*"):

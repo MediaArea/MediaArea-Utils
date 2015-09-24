@@ -325,7 +325,10 @@ function _linux () {
         _obs_deb deb7 xz
         _obs_deb deb6 gz
     fi
-    
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
     sleep 10
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &
