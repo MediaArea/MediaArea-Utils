@@ -30,6 +30,7 @@ function _mac_mil () {
     $sp "cd $RWDir/build ;
             tar xf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_DLL_GNU_FromSource ;
+            cp -r ../../curl . ;
             ./SO_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
 
     echo

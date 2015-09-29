@@ -32,6 +32,7 @@ function _mac_cli () {
             cd MediaConch_CLI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             cp -r ../../libxslt . ;
+            cp -r ../../curl . ;
             ./CLI_Compile.sh ;
             strip -u -r MediaConch/Project/GNU/CLI/mediaconch"
             # Commented because the libxml2 doesn't compile
@@ -79,6 +80,7 @@ function _mac_gui () {
             cd MediaConch_GUI_GNU_FromSource ;
             cp -r ../../libxml2 . ;
             cp -r ../../libxslt . ;
+            cp -r ../../curl . ;
             PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh ;
             strip -u -r MediaConch/Project/Qt/MediaConch.app/Contents/MacOS/MediaConch"
 
