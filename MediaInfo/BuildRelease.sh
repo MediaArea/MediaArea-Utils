@@ -8,133 +8,109 @@
 
 function _mac_cli () {
 
-    local sp RWDir
-
-    # SSH prefix
-    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
-    RWDir="/Users/mymac/Documents/almin"
-
     cd "$MI_tmp"
 
     # Clean up
-    $sp "cd $RWDir ;
-            test -d build || mkdir build ;
-            rm -fr build/MediaInfo_CLI*"
+    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
+            cd $MacWDir ;
+            rm -fr MediaInfo_CLI*"
 
     echo
     echo "Compile MI CLI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
+
             #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+    $SSHP "cd $MacWDir ;
             tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_CLI_GNU_FromSource ;
-            ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
-
-    echo
-    echo
-    echo "DMG stage..."
-
-            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+            MediaInfo/Project/Mac/build_CLI.sh ;
             $KeyChain ;
-            cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
+            cd MediaInfo/Project/Mac ;
             ./mkdmg.sh mi cli $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" "$MIC_dir"
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
 
 }
 
 function _mac_gui () {
 
-    local sp RWDir
-
-    # SSH prefix
-    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
-    RWDir="/Users/mymac/Documents/almin"
+    local Dylib_OK
 
     cd "$MI_tmp"
 
     # Clean up
-    $sp "cd $RWDir ;
-            test -d build || mkdir build ;
-            rm -fr build/MediaInfo_GUI*"
+    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
+            cd $MacWDir ;
+            rm -fr MediaInfo_GUI*"
 
     echo
     echo "Compile MI GUI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
+
             #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+    $SSHP "cd $MacWDir ;
             tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_GUI_GNU_FromSource ;
-            mkdir -p Shared/Source
-            cp -r ../../WxWidgets Shared/Source ;
-            ./GUI_Compile.sh --with-wx-static --enable-arch-x86_64"
-            # Because wx doesn't compile in 32 bits
-            #./GUI_Compile.sh --with-wx-static --enable-arch-x86_64 --enable-arch-i386"
-
-    echo
-    echo
-    echo "DMG stage..."
-
-            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+            MediaInfo/Project/Mac/build_GUI.sh ;
             $KeyChain ;
-            cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
+            cd MediaInfo/Project/Mac ;
             ./mkdmg.sh mi gui $Version_new"
+
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
 
     if ! b.opt.has_flag? --snapshot; then
 
-        echo
-        echo
-        echo "Preparing for the appstore..."
-    
-        rm -fr "$MI_tmp"/dylib
-        mkdir "$MI_tmp"/dylib
-        cd $(b.get bang.working_dir)
-        $(b.get bang.src_path)/bang run BuildRelease.sh -wp "$MI_tmp"/dylib -p mil -s -o tmp -bm
-        scp -P $MacSSHPort "$MI_tmp"/dylib/snapshots/binary/libmediainfo0/$subDir/MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/
+        # Return 1 if MIL is present, 0 otherwise
+        Dylib_OK=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "ls $MacWDir/dylib_for_xcode/MediaInfo_DLL_*" |wc -l`
 
-                #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-        $sp "cd $RWDir/build ;
-                cd MediaInfo_GUI_GNU_FromSource ;
-                mkdir dylib_for_xcode ;
-                mv MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz dylib_for_xcode ;
-                cd dylib_for_xcode ;
-                tar xf MediaInfo_DLL_tmp.${Date}_Mac_i386+x86_64.tar.xz ;
-                cp MediaInfoLib/libmediainfo.dylib ../MediaInfo/Source/GUI/Cocoa ;
-                cd ../MediaInfo/Source/GUI/Cocoa ;
-                install_name_tool -id @executable_path/../Resources/libmediainfo.dylib libmediainfo.dylib ;
-                rm -fr *lproj ;
-                cp -r ~/Documents/almin/xibs/* ."
+        if [ $Dylib_OK -eq 1 ]; then
+            echo
+            echo
+            echo "Preparing for Xcode..."
+            echo
+            $SSHP "cd $MacWDir/dylib_for_xcode ;
+                    rm -fr MediaInfoLib ;
+                    tar xf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz ;
+                    cd ../MediaInfo_GUI_GNU_FromSource ;
+                    MediaInfo/Project/Mac/prepare_for_xcode.sh"
+        else
+            echo
+            echo
+            echo
+            echo
+            echo "WARNING! Can’t found dylib in $MacWDir/dylib_for_xcode!"
+            echo "It’s probably because you have not run BR.sh for MIL"
+            echo "before launching BR.sh for MI."
+            echo
+            echo
+            echo
+            echo
+        fi
 
     fi
-
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" "$MIG_dir"
 
 }
 
 function _mac () {
 
-    # TODO:
-    # This function compile MIL, lauch the CLI and GUI compilation
-    # with the compiled MIL folder, and mail in case of errors.
+    # This function test the success of the compilation by testing
+    # size and multiarch. If fail, retry to compile up to 3 times.
 
-    local MultiArch Try
+    local MultiArch Try SSHP
+
+    # SSH prefix
+    SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
 
     cd "$MI_tmp"
 
-    # Temporay fix for the autotools bug under mac. Check the size
-    # to know if the compilation was successful. If not, retry to
-    # compile up to 10 times.
-    Try=0
-
     MultiArch=0
+    Try=0
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 10 ]; do
+    until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
         if b.opt.has_flag? --log; then
             _mac_cli >> "$Log"/mac-cli.log 2>&1
         else
@@ -142,8 +118,8 @@ function _mac () {
         fi
         # Return 1 if MI-cli is compiled for i386 and x86_64,
         # 0 otherwise
-        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
     # TODO: send a mail if the build fail
@@ -169,21 +145,21 @@ function _windows () {
     local sp RWDir
 
     # SSH prefix
-    sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
+    SSHP="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
     cd "$MI_tmp"
 
     # Clean up
-    $sp "c: & chdir $RWDir & rmdir /S /Q build"
-    $sp "c: & chdir $RWDir & md build"
+    $SSHP "c: & chdir $RWDir & rmdir /S /Q build"
+    $SSHP "c: & chdir $RWDir & md build"
 
     echo
     echo "Compile MI CLI for windows..."
     echo
 
     scp -P $WinSSHPort prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediainfo_${Version_new}_AllInclusive.7z
-    $sp "c: & chdir $RWDir/build & \
+    $SSHP "c: & chdir $RWDir/build & \
             c:/\"Program Files\"/7-Zip/7z x mediainfo_${Version_new}_AllInclusive.7z & \
 
 "
@@ -202,7 +178,7 @@ function _windows () {
 #
 #    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-#    $sp "cd $RWDir/build ;
+#    $SSHP "cd $RWDir/build ;
 #            tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_CLI_GNU_FromSource ;
 #            ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
@@ -213,7 +189,7 @@ function _windows () {
 #
 #    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $sp "cd $RWDir/build ;
+#    $SSHP "cd $RWDir/build ;
 #            tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_GUI_GNU_FromSource ;
 #            mkdir -p Shared/Source
@@ -228,7 +204,7 @@ function _windows () {
 #
 #            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
 #            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $sp "cd $RWDir/build ;
+#    $SSHP "cd $RWDir/build ;
 #            $KeyChain ;
 #            cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
 #            ./mkdmg.sh mi cli $Version_new ;
@@ -324,11 +300,11 @@ function _linux () {
         _obs
         _obs_deb deb7 xz
         _obs_deb deb6 gz
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
     fi
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
     sleep 10
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &

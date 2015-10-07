@@ -8,109 +8,75 @@
 
 function _mac_cli () {
 
-    local sp RWDir
-
-    # SSH prefix
-    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
-    RWDir="/Users/mymac/Documents/almin"
-
     cd "$MC_tmp"
 
     # Clean up
-    $sp "cd $RWDir ;
-            test -d build || mkdir build ;
-            rm -fr build/MediaConch_CLI*"
+    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
+            cd $MacWDir ;
+            rm -fr MediaConch_CLI*"
 
     echo
     echo "Compile MC CLI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
+
             #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+    $SSHP "cd $MacWDir ;
             tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
-            cp -r ../../libxml2 . ;
-            cp -r ../../libxslt . ;
-            cp -r ../../curl . ;
-            ./CLI_Compile.sh ;
-            strip -u -r MediaConch/Project/GNU/CLI/mediaconch"
-            # Commented because the libxml2 doesn't compile
-            # in 32 bits
-            #./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
-
-    echo
-    echo
-    echo "DMG stage..."
-
-            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+            MediaConch/Project/Mac/build_CLI.sh ;
             $KeyChain ;
-            cd MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac ;
+            cd MediaConch/Project/Mac ;
             ./mkdmg.sh mc cli $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg" "$MCC_dir"
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg "$MCC_dir"
 
 }
 
-
 function _mac_gui () {
-
-    local sp RWDir
-
-    # SSH prefix
-    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
-    RWDir="/Users/mymac/Documents/almin"
 
     cd "$MC_tmp"
 
     # Clean up
-    $sp "cd $RWDir ;
-            test -d build || mkdir build ;
-            rm -fr build/MediaConch_GUI*"
+    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
+            cd $MacWDir ;
+            rm -fr MediaConch_GUI*"
 
     echo
     echo "Compile MC GUI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
+
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+    $SSHP "cd $MacWDir ;
             tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
-            cp -r ../../libxml2 . ;
-            cp -r ../../libxslt . ;
-            cp -r ../../curl . ;
-            PATH=$PATH:~/Qt/5.3/clang_64/bin ./GUI_Compile.sh ;
-            strip -u -r MediaConch/Project/Qt/MediaConch.app/Contents/MacOS/MediaConch"
-
-    echo
-    echo
-    echo "DMG stage..."
-
-            #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+            MediaConch/Project/Mac/build_GUI.sh ;
             $KeyChain ;
-            cd MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac ;
-            PATH=$PATH:~/Qt/5.3/clang_64/bin ./mkdmg.sh mc gui $Version_new"
+            cd MediaConch/Project/Mac ;
+            ./mkdmg.sh mc gui $Version_new"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg" "$MCG_dir"
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
 }
 
 function _mac () {
 
-    # This function is a temporay fix for the autotools bug under
-    # mac. Check the size to know if the compilation was
-    # successful. If not, retry to compile up to 10 times.
+    # This function test the success of the compilation by testing
+    # the size. If fail, retry to compile up to 3 times.
 
-    local Try MultiArch
+    local Try SSHP
+
+    # SSH prefix
+    SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
 
     cd "$MC_tmp"
 
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 10 ]; do
+    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 3 ]; do
         if b.opt.has_flag? --log; then
             _mac_cli >> "$Log"/mac-cli.log 2>&1
         else
@@ -121,7 +87,7 @@ function _mac () {
 
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 10 ]; do
+    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 3 ]; do
         if b.opt.has_flag? --log; then
             _mac_gui >> "$Log"/mac-gui.log 2>&1
         else
@@ -134,16 +100,16 @@ function _mac () {
 
 function _windows () {
 
-    local sp RWDir
+    local SSHP RWDir
 
     # SSH prefix
-    sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
+    SSHP="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
     cd "$MC_tmp"
 
     # Clean up
-    $sp "c: & chdir $RWDir & rmdir /S /Q build & md build"
+    $SSHP "c: & chdir $RWDir & rmdir /S /Q build & md build"
 
     echo
     echo "Compile MC CLI for windows..."
@@ -151,7 +117,7 @@ function _windows () {
 
     scp -P $WinSSHPort prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediaconch_${Version_new}_AllInclusive.7z
             #xcopy /E /I /Q ..\\libxml2 mediaconch_${Version_new}_AllInclusive\\libxml2 & \
-    $sp "c: & chdir $RWDir/build & \
+    $SSHP "c: & chdir $RWDir/build & \
             c:/\"Program Files\"/7-Zip/7z x mediaconch_${Version_new}_AllInclusive.7z & \
             xcopy /E /I /Q ..\\libxml2 mediaconch_AllInclusive\\libxml2 & \
 
@@ -202,11 +168,11 @@ function _linux () {
         _obs > "$Log"/linux.log 2>&1
     else
         _obs
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
     fi
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_python.log 2>&1 &
 
 }

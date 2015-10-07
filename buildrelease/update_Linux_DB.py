@@ -90,7 +90,7 @@ def waiting_loop():
         # At first, check every 10mn
         if compt < 10:
             if compt == 1:
-                print "Waiting 20mn…"
+                print "Waiting 10mn…"
             else:
                 print "All builds aren’t finished yet, waiting another 10mn…"
             time.sleep(600)
@@ -238,9 +238,8 @@ OBS_Package = sys.argv[2]
 version = sys.argv[3]
 destination = sys.argv[4]
 
-# TODO: after switching to python 3 on the server, use
-# https://docs.python.org/2/library/configparser.html instead
-# ex: https://wiki.python.org/moin/ConfigParserExamples
+# We get the directory from where the python script is executed
+# with os.path.realpath(__file__)
 config = {}
 execfile(
         os.path.join(
@@ -254,41 +253,41 @@ if fnmatch.fnmatch(OBS_Package, "ZenLib*"):
     prjkind = "lib"
     binname = "libzen0"
     dbgname = "libzen"
-    if OBS_Project == "home:MediaArea_net":
-        if OBS_Package == "ZenLib":
-            table = "releases_obs_zl"
-        elif OBS_Package == "ZenLib_deb6":
-            table = "releases_obs_zl_deb6"
-    elif OBS_Project == "home:MediaArea_net:snapshots":
+    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
         if OBS_Package == "ZenLib":
             table = "snapshots_obs_zl"
         elif OBS_Package == "ZenLib_deb6":
             table = "snapshots_obs_zl_deb6"
+    else:
+        if OBS_Package == "ZenLib":
+            table = "releases_obs_zl"
+        elif OBS_Package == "ZenLib_deb6":
+            table = "releases_obs_zl_deb6"
 
 if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*"):
     prjkind = "lib"
     binname = "libmediainfo0"
     dbgname = "libmediainfo"
-    if OBS_Project == "home:MediaArea_net":
-        if OBS_Package == "MediaInfoLib":
-            table = "releases_obs_mil"
-        elif OBS_Package == "MediaInfoLib_deb6":
-            table = "releases_obs_mil_deb6"
-    elif OBS_Project == "home:MediaArea_net:snapshots":
+    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
         if OBS_Package == "MediaInfoLib":
             table = "snapshots_obs_mil"
         elif OBS_Package == "MediaInfoLib_deb6":
             table = "snapshots_obs_mil_deb6"
+    else:
+        if OBS_Package == "MediaInfoLib":
+            table = "releases_obs_mil"
+        elif OBS_Package == "MediaInfoLib_deb6":
+            table = "releases_obs_mil_deb6"
 
 if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     prjkind = "gui"
     binname = "mediaconch"
     dbgname = "mediaconch"
     destination_gui = sys.argv[5]
-    if OBS_Project == "home:MediaArea_net":
-        table = "releases_obs_mc"
-    elif OBS_Project == "home:MediaArea_net:snapshots":
+    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
         table = "snapshots_obs_mc"
+    else:
+        table = "releases_obs_mc"
 
 # Careful to not catch MediaInfoLib
 if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
@@ -296,20 +295,20 @@ if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
     binname = "mediainfo"
     dbgname = "mediainfo"
     destination_gui = sys.argv[5]
-    if OBS_Project == "home:MediaArea_net":
-        if OBS_Package == "MediaInfo":
-            table = "releases_obs_mi"
-        elif OBS_Package == "MediaInfo_deb6":
-            table = "releases_obs_mi_deb6"
-        elif OBS_Package == "MediaInfo_deb7":
-            table = "releases_obs_mi_deb7"
-    elif OBS_Project == "home:MediaArea_net:snapshots":
+    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
         if OBS_Package == "MediaInfo":
             table = "snapshots_obs_mi"
         elif OBS_Package == "MediaInfo_deb6":
             table = "snapshots_obs_mi_deb6"
         elif OBS_Package == "MediaInfo_deb7":
             table = "snapshots_obs_mi_deb7"
+    else:
+        if OBS_Package == "MediaInfo":
+            table = "releases_obs_mi"
+        elif OBS_Package == "MediaInfo_deb6":
+            table = "releases_obs_mi_deb6"
+        elif OBS_Package == "MediaInfo_deb7":
+            table = "releases_obs_mi_deb7"
 
 # The architecture names (x86_64, i586, …) are imposed by OBS
 pkginfos = {

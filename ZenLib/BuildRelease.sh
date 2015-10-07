@@ -86,11 +86,11 @@ function _linux () {
     else
         _obs
         _obs_deb deb6 gz
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
     fi
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_python.log 2>&1 &
     # To prevent
     # OSError: [Errno 17] File exists: 'destination'

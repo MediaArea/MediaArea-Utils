@@ -130,15 +130,19 @@ function run () {
 
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
 
-        Snapshot="no"
         if b.opt.has_flag? --snapshot; then
-            Snapshot="yes"
             Version_new="${Version_old}.$Date"
             subDir="$Date"
+            #MacWDir="~/Documents/almin/build/snapshots"
+            #OBS_Project="home:almin:snapshots"
+            MacWDir="~/build/snapshots"
             OBS_Project="home:MediaArea_net:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
             subDir="$Version_new"
+            #MacWDir="~/Documents/almin/build/releases"
+            #OBS_Project="home:almin"
+            MacWDir="~/build/releases"
             OBS_Project="home:MediaArea_net"
         else
             echo
@@ -229,7 +233,10 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v Snapshot OBS_Project Target WDir subDir SDir
+        unset -v OBS_Project Target PSTarget
+        unset -v WDir subDir SDir MacWDir
+        unset -v MacIP MacSSHPort MacSSHUser KeyChain
+        unset -v WinIP WinSSHPort WinSSHUser
         unset -v CleanUp Log Script
     fi
 }

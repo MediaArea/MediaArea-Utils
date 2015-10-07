@@ -8,61 +8,55 @@
 
 function _mac_mil () {
 
-    local sp RWDir
-
-    # SSH prefix
-    sp="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
-    RWDir="/Users/mymac/Documents/almin"
-
     cd "$MIL_tmp"
 
     # Clean up
-    $sp "cd $RWDir ;
-            test -d build || mkdir build ;
-            rm -fr build/MediaInfo_DLL*"
+    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
+            cd $MacWDir ;
+            rm -fr MediaInfo_DLL*"
 
     echo
     echo "Compile MIL for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $MacSSHPort prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz
+
             #cd MediaInfo_DLL_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+    $SSHP "cd $MacWDir ;
             tar xf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_DLL_GNU_FromSource ;
-            cp -r ../../curl . ;
-            ./SO_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
-
-    echo
-    echo
-    echo "Making the archive..."
-    echo
-
-            #cd MediaInfo_DLL_${Version_new}_GNU_FromSource ;
-    $sp "cd $RWDir/build ;
+            MediaInfoLib/Project/Mac/build_SO.sh ;
             $KeyChain ;
-            cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac ;
+            cd MediaInfoLib/Project/Mac ;
             ./mktarball.sh ${Version_new}"
 
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2" "$MILB_dir"
-    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" "$MILB_dir"
+    if ! b.opt.has_flag? --snapshot; then
+        $SSHP "cd $MacWDir ;
+                test -d dylib_for_xcode || mkdir dylib_for_xcode ; 
+                cp MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz dylib_for_xcode"
+    fi
+
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 "$MILB_dir"
+    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz "$MILB_dir"
 
 }
 
 function _mac () {
 
-    # This function is a temporay fix for the autotools bug under
-    # mac. Check the size to know if the compilation was
-    # successful. If not, retry to compile up to 10 times.
+    # This function test the success of the compilation by testing
+    # size and multiarch. If fail, retry to compile up to 3 times.
 
-    local Try MultiArch
+    local MultiArch Try SSHP
+
+    # SSH prefix
+    SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
 
     cd "$MIL_tmp"
 
     MultiArch=0
     Try=0
     touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
-    until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 10 ]; do
+    until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
         if b.opt.has_flag? --log; then
             _mac_mil >> "$Log"/mac.log 2>&1
         else
@@ -70,8 +64,8 @@ function _mac () {
         fi
         # Return 1 if MIL is compiled for i386 and x86_64,
         # 0 otherwise
-        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file /Users/mymac/Documents/almin/build/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_DLL_${Version_new}_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
     # TODO: send a mail if the build fail
@@ -86,14 +80,14 @@ function _windows () {
     local sp RWDir
 
     # SSH prefix
-    sp="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
+    SSHP="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
     RWDir="c:/Users/almin"
 
     cd "$MIL_tmp"
 
     # Clean up
-    $sp "c: & chdir $RWDir & rmdir /S /Q build"
-    $sp "c: & chdir $RWDir & md build"
+    $SSHP "c: & chdir $RWDir & rmdir /S /Q build"
+    $SSHP "c: & chdir $RWDir & md build"
 
     echo
     echo "Compile MIL for windows..."
@@ -181,11 +175,11 @@ function _linux () {
     else
         _obs
         _obs_deb deb6 gz
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
     fi
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib $Version_new "$MILB_dir" > "$Log"/obs_python.log 2>&1 &
     sleep 10
     python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
