@@ -64,6 +64,8 @@ function _unix () {
     cp -r $MIL_source .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
     chmod +x SO_Compile.sh
+    chmod +x MediaInfoLib/Project/GNU/Library/autogen.sh 
+    chmod +x MediaInfoLib/Project/Mac/build_SO.sh
     chmod +x MediaInfoLib/Project/Mac/mktarball.sh
 
     # Dependency : ZenLib
@@ -90,9 +92,9 @@ function _unix () {
 
     echo "3: Autotools..."
     cd ZenLib/Project/GNU/Library
-    sh autogen.sh > /dev/null 2>&1
-    cd ../../../../MediaInfoLib/Project/GNU/Library/
-    sh autogen.sh > /dev/null 2>&1
+    ./autogen.sh > /dev/null 2>&1
+    cd ../../../../MediaInfoLib/Project/GNU/Library
+    ./autogen.sh > /dev/null 2>&1
     cd ../../../..
 
     echo "4: Doxygen..."

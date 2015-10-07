@@ -64,6 +64,8 @@ function _unix_cli () {
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
+    chmod +x MediaInfo/Project/GNU/CLI/autogen.sh
+    chmod +x MediaInfo/Project/Mac/build_CLI.sh
     chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
@@ -80,9 +82,10 @@ function _unix_cli () {
         #rm -fr Release
         rm -fr debian
         cd Project
+            rm -fr GNU/GUI Mac/*_GUI.sh Mac/prepare_for_xcode.sh
+            rm -fr WxWidgets
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
-            rm -fr GNU/GUI Mac/osascript_MediaInfo_GUI.sh WxWidgets
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
         cd ..
@@ -91,7 +94,7 @@ function _unix_cli () {
 
     echo "3: Autotools..."
     cd MediaInfo/Project/GNU/CLI
-    sh autogen.sh > /dev/null 2>&1
+    ./autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -124,6 +127,9 @@ function _unix_gui () {
     cp -r $MI_source .
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
+    chmod +x MediaInfo/Project/GNU/GUI/autogen.sh
+    chmod +x MediaInfo/Project/Mac/build_GUI.sh
+    chmod +x MediaInfo/Project/Mac/prepare_for_xcode.sh
     chmod +x MediaInfo/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
@@ -142,9 +148,9 @@ function _unix_gui () {
         #rm -fr Release
         rm -fr debian
         cd Project
+            rm -fr GNU/CLI Mac/*_CLI.sh
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
-            rm -fr GNU/CLI Mac/osascript_MediaInfo_CLI.sh
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
         cd ..
@@ -153,7 +159,7 @@ function _unix_gui () {
 
     echo "3: Autotools..."
     cd MediaInfo/Project/GNU/GUI
-    sh autogen.sh > /dev/null 2>&1
+    ./autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."

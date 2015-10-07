@@ -64,6 +64,8 @@ function _unix_cli () {
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
+    chmod +x MediaConch/Project/GNU/CLI/autogen.sh
+    chmod +x MediaConch/Project/Mac/build_CLI.sh
     chmod +x MediaConch/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
@@ -82,10 +84,9 @@ function _unix_cli () {
         #rm -fr Release
         rm -fr debian
         cd Project
+            rm -fr GNU/GUI Mac/*_GUI.sh
             rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
-            #rm -fr OBS Qt
             rm -fr OBS
-            rm -fr GNU/GUI Mac/osascript_MediaConch_GUI.sh
             rm -fr MSVC2013
         cd ..
         rm -fr Source/GUI
@@ -93,7 +94,7 @@ function _unix_cli () {
 
     echo "3: Autotools..."
     cd MediaConch/Project/GNU/CLI
-    sh autogen.sh > /dev/null 2>&1
+    ./autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -126,6 +127,8 @@ function _unix_gui () {
     cp -r $MC_source MediaConch
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
+    chmod +x MediaConch/Project/Qt/prepare
+    chmod +x MediaConch/Project/Mac/build_GUI.sh
     chmod +x MediaConch/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
@@ -142,9 +145,9 @@ function _unix_gui () {
         #rm -fr Release
         rm -fr debian
         cd Project
+            rm -fr GNU/CLI Mac/*_CLI.sh
             rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
             rm -fr OBS
-            rm -fr GNU/CLI Mac/osascript_MediaConch_CLI.sh
             rm -fr MSVC2013
         cd ..
     cd ..

@@ -44,6 +44,7 @@ function _unix () {
 
     cd "$WDir"/ZL
     cp -r $ZL_source ZenLib${Version}_compilation_under_unix
+    chmod +x ZenLib${Version}_compilation_under_unix/Project/GNU/Library/autogen.sh
 
     echo "2: remove what isn't wanted..."
     cd ZenLib${Version}_compilation_under_unix
