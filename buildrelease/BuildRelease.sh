@@ -133,17 +133,9 @@ function run () {
         if b.opt.has_flag? --snapshot; then
             Version_new="${Version_old}.$Date"
             subDir="$Date"
-            #MacWDir="~/Documents/almin/build/snapshots"
-            #OBS_Project="home:almin:snapshots"
-            MacWDir="~/build/snapshots"
-            OBS_Project="home:MediaArea_net:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
             subDir="$Version_new"
-            #MacWDir="~/Documents/almin/build/releases"
-            #OBS_Project="home:almin"
-            MacWDir="~/build/releases"
-            OBS_Project="home:MediaArea_net"
         else
             echo
             echo "If you don't ask a snapshot, you must provide"
@@ -195,6 +187,7 @@ function run () {
             CleanUp=false
         fi
 
+        # Load sensible configuration we don’t want on github
         . Config.sh    
         
         # TODO: Handle exception if mkdir fail (/tmp not writable)
