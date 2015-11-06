@@ -67,16 +67,17 @@ function _mac () {
     # This function test the success of the compilation by testing
     # the size. If fail, retry to compile up to 3 times.
 
-    local Try SSHP
+    local SSHP NbTry Try
 
     # SSH prefix
     SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    NbTry=3
 
     cd "$MC_tmp"
 
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq 3 ]; do
+    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
             _mac_cli >> "$Log"/mac-cli.log 2>&1
         else
@@ -87,7 +88,7 @@ function _mac () {
 
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq 3 ]; do
+    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
             _mac_gui >> "$Log"/mac-gui.log 2>&1
         else
@@ -95,6 +96,25 @@ function _mac () {
         fi
         Try=$(($Try + 1))
     done
+
+    # Send a mail if the build fail
+    if [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 2000000 ]; then
+        xz -9e $Log/mac-cli.log
+        if ! [ -z "$MailCC" ]; then
+            echo "The log is http://url/$Log/mac-cli.log.xz" | mailx -s "[BR.sh mac] Problem building MC-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
+        else
+            echo "The log is http://url/$Log/mac-cli.log.xz" | mailx -s "[BR.sh mac] Problem building MC-cli" -a $Log/mac-cli.log.xz $Mail
+        fi
+    fi
+
+    if [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 10000000 ]; then
+        xz -9e $Log/mac-gui.log
+        if ! [ -z "$MailCC" ]; then
+            echo "The log is http://url/$Log/mac-gui.log.xz" | mailx -s "[BR.sh mac] Problem building MC-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
+        else
+            echo "The log is http://url/$Log/mac-gui.log.xz" | mailx -s "[BR.sh mac] Problem building MC-gui" -a $Log/mac-gui.log.xz $Mail
+        fi
+    fi
 
 }
 
@@ -173,7 +193,9 @@ function _linux () {
         echo the build results and download the packages...
         echo
     fi
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_python.log 2>&1 &
+
+    cd $(b.get bang.working_dir)
+    python update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_python.log 2>&1 &
 
 }
 

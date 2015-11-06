@@ -1,3 +1,7 @@
+# General
+EMail=""
+MailCC=""
+
 # Mac
 MacIP=""
 MacSSHPort=""

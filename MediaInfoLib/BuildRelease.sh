@@ -32,7 +32,8 @@ function _mac_mil () {
 
     if ! b.opt.has_flag? --snapshot; then
         $SSHP "cd $MacWDir ;
-                test -d dylib_for_xcode || mkdir dylib_for_xcode ; 
+                test -d dylib_for_xcode || mkdir dylib_for_xcode ;
+                rm -fr dylib_for_xcode/* ;
                 cp MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz dylib_for_xcode"
     fi
 
@@ -46,17 +47,18 @@ function _mac () {
     # This function test the success of the compilation by testing
     # size and multiarch. If fail, retry to compile up to 3 times.
 
-    local MultiArch Try SSHP
+    local SSHP NbTry Try MultiArch
 
     # SSH prefix
     SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    NbTry=3
 
     cd "$MIL_tmp"
 
     MultiArch=0
     Try=0
     touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
-    until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
+    until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
             _mac_mil >> "$Log"/mac.log 2>&1
         else
@@ -68,10 +70,16 @@ function _mac () {
         MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
-    # TODO: send a mail if the build fail
-    #if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-    #    mail -s "Problem building MIL" someone@mediaarea.net < "The log is http://url/"$Log"/mac.log"
-    #fi
+
+    # Send a mail if the build fail
+    if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
+        xz -9e $Log/mac.log
+        if ! [ -z "$MailCC" ]; then
+            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR.sh mac] Problem building MIL" -a $Log/mac.log -c "$MailCC" $Mail
+        else
+            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR.sh mac] Problem building MIL" -a $Log/mac.log $Mail
+        fi
+    fi
 
 }
 
@@ -180,9 +188,11 @@ function _linux () {
         echo the build results and download the packages...
         echo
     fi
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib $Version_new "$MILB_dir" > "$Log"/obs_python.log 2>&1 &
+
+    cd $(b.get bang.working_dir)
+    python update_Linux_DB.py $OBS_Project MediaInfoLib $Version_new "$MILB_dir" > "$Log"/obs_python.log 2>&1 &
     sleep 10
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
+    python update_Linux_DB.py $OBS_Project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
 
 }
 

@@ -4,11 +4,11 @@
 import MySQLdb
 import time
 import subprocess
+import sys
 import os
 import fnmatch
 import glob
 import shutil
-import sys
 
 print "\n========================================================"
 print "update_Linux_DB.py"
@@ -90,14 +90,14 @@ def waiting_loop():
         # At first, check every 10mn
         if compt < 10:
             if compt == 1:
-                print "Waiting 10mn…"
+                print "Wait 10mn…"
             else:
-                print "All builds aren’t finished yet, waiting another 10mn…"
+                print "All builds aren’t finished yet, wait another 10mn…"
             time.sleep(600)
         # Past 1h30, trigger rebuild if some distros are still in
         # scheduled state, before waiting another 20mn
         else:
-            print "All builds aren’t finished yet, trigger rebuilds and waiting 20mn…"
+            print "All builds aren’t finished yet, trigger rebuild(s) and wait 20mn…"
             for dname in Distribs.keys():
                 for arch in Distribs[dname]:
                     params = "osc results " + MA_Project \
@@ -116,6 +116,15 @@ def waiting_loop():
         # result will equal 0 when all the distros are build
         if result == "0":
             break
+        if compt > 25:
+            params = \
+                   "echo 'Problem with OBS: after more than 6 hours, all was not over. The script has quit whitout downloading anything.'" \
+                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
+            if len(config["MailCC"]) > 1:
+                params = params + " -c '" + config["MailCC"] + "'"
+            params = params + " " + config["Mail"]
+            subprocess.call(params, shell=True)
+            sys.exit(1)
 
 ##################################################################
 def update_DB():
@@ -225,12 +234,14 @@ def get_packages_on_OBS():
 
             # If the bin package is build
             if len(binname_obs_side) > 1:
-                subprocess.call(["osc api /build/" + OBS_Project \
+                params_getpackage = \
+                        "osc api /build/" + OBS_Project \
                         + "/" + dname \
                         + "/" + arch \
                         + "/" + OBS_Package \
                         + "/" + binname_obs_side \
-                        + " > " + binname_final], shell=True)
+                        + " > " + binname_final
+                subprocess.call(params_getpackage, shell=True)
 
             #################
             # Debug package #
@@ -555,8 +566,8 @@ OBS_Package = sys.argv[2]
 version = sys.argv[3]
 destination = sys.argv[4]
 
-# We get the directory from where the python script is executed
-# with os.path.realpath(__file__)
+# os.path.realpath(__file__) = the directory from where the python
+# script is executed
 config = {}
 execfile(
         os.path.join(
@@ -663,7 +674,8 @@ Distribs = {
     "Debian_6.0": ["x86_64", "i586"],
     "Debian_7.0": ["x86_64", "i586"],
     "Debian_8.0": ["x86_64", "i586"],
-    "Fedora_20": ["x86_64", "i586", "armv7l"],
+    #"Fedora_20": ["x86_64", "i586", "armv7l"],
+    "Fedora_20": ["x86_64", "i586"],
     "Fedora_21": ["x86_64", "i586"],
     "Fedora_22": ["x86_64", "i586"],
     "RHEL_5": ["x86_64", "i586"],
@@ -679,7 +691,7 @@ Distribs = {
     "openSUSE_13.1": ["x86_64", "i586"],
     "openSUSE_13.2": ["x86_64", "i586"],
     "openSUSE_Factory": ["x86_64", "i586"],
-    "openSUSE_Factory_ARM": ["armv7l"],
+    #"openSUSE_Factory_ARM": ["armv7l"],
     "openSUSE_Tumbleweed": ["x86_64", "i586"],
     "xUbuntu_12.04": ["x86_64", "i586"],
     "xUbuntu_14.04": ["x86_64", "i586"],

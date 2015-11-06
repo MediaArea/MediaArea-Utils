@@ -91,11 +91,18 @@ function _linux () {
         echo the build results and download the packages...
         echo
     fi
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_python.log 2>&1 &
-    # To prevent
-    # OSError: [Errno 17] File exists: 'destination'
+
+    # To avoid "os.getcwd() failed: No such file or directory" if
+    # $CleanUp is set (ie "$ZL_tmp", the current directory, will be
+    # deleted)
+    cd $(b.get bang.working_dir)
+
+    python update_Linux_DB.py $OBS_Project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_python.log 2>&1 &
+
+    # To avoid OSError: File exists: 'destination'
     sleep 10
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project ZenLib_deb6 $Version_new "$ZLB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
+
+    python update_Linux_DB.py $OBS_Project ZenLib_deb6 $Version_new "$ZLB_dir" > "$Log"/obs_python_deb6.log 2>&1 &
 
 }
 

@@ -65,7 +65,7 @@ function _mac_gui () {
     if ! b.opt.has_flag? --snapshot; then
 
         # Return 1 if MIL is present, 0 otherwise
-        Dylib_OK=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "ls $MacWDir/dylib_for_xcode/MediaInfo_DLL_*" |wc -l`
+        Dylib_OK=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "ls $MacWDir/dylib_for_xcode/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" |wc -l`
 
         if [ $Dylib_OK -eq 1 ]; then
             echo
@@ -100,17 +100,18 @@ function _mac () {
     # This function test the success of the compilation by testing
     # size and multiarch. If fail, retry to compile up to 3 times.
 
-    local MultiArch Try SSHP
+    local SSHP NbTry Try MultiArch
 
     # SSH prefix
     SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    NbTry=3
 
     cd "$MI_tmp"
 
     MultiArch=0
     Try=0
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq 3 ]; do
+    until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
             _mac_cli >> "$Log"/mac-cli.log 2>&1
         else
@@ -122,14 +123,10 @@ function _mac () {
         MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
-    # TODO: send a mail if the build fail
-    #if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-    #    mail -s "Problem building MI-cli" someone@mediaarea.net < "The log is http://url/"$Log"/mac-cli.log"
-    #fi
 
     Try=0
     touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq 10 ]; do
+    until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
             _mac_gui >> "$Log"/mac-gui.log 2>&1
         else
@@ -137,6 +134,26 @@ function _mac () {
         fi
         Try=$(($Try + 1))
     done
+
+    # Send a mail if the build fail
+
+    if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
+        xz -9e $Log/mac-cli.log
+        if ! [ -z "$MailCC" ]; then
+            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR.sh mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
+        else
+            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR.sh mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Mail
+        fi
+    fi
+
+    if [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] ; then
+        xz -9e $Log/mac-gui.log
+        if ! [ -z "$MailCC" ]; then
+            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR.sh mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
+        else
+            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR.sh mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Mail
+        fi
+    fi
 
 }
 
@@ -305,11 +322,13 @@ function _linux () {
         echo the build results and download the packages...
         echo
     fi
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
+
+    cd $(b.get bang.working_dir)
+    python update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
     sleep 10
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &
+    python update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &
     sleep 10
-    python $(b.get bang.working_dir)/update_Linux_DB.py $OBS_Project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb6.log 2>&1 &
+    python update_Linux_DB.py $OBS_Project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb6.log 2>&1 &
 
 }
 
