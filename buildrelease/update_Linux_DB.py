@@ -120,9 +120,9 @@ def waiting_loop():
             params = \
                    "echo 'Problem with OBS: after more than 6 hours, all was not over. The script has quit whitout downloading anything.'" \
                    + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
-            if len(config["MailCC"]) > 1:
-                params = params + " -c '" + config["MailCC"] + "'"
-            params = params + " " + config["Mail"]
+            if len(config["EMailCC"]) > 1:
+                params = params + " -c '" + config["EMailCC"] + "'"
+            params = params + " " + config["EMail"]
             subprocess.call(params, shell=True)
             sys.exit(1)
 
@@ -251,7 +251,7 @@ def get_packages_on_OBS():
                     params = \
                            "echo 'Problem with " + dname + "-" + arch + " on OBS: the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                            + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                           + " " + config["Mail"]
+                           + " " + config["EMail"]
                     subprocess.call(params, shell=True)
 
             #################
@@ -296,7 +296,7 @@ def get_packages_on_OBS():
                     params = \
                            "echo 'Problem with " + dname + "-" + arch + " on OBS: the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                            + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                           + " " + config["Mail"]
+                           + " " + config["EMail"]
                     subprocess.call(params, shell=True)
 
             ###############
@@ -344,7 +344,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["Mail"]
+                               + " " + config["EMail"]
                         subprocess.call(params, shell=True)
 
             ###############
@@ -387,7 +387,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["Mail"]
+                               + " " + config["EMail"]
                         subprocess.call(params, shell=True)
 
             ###############
@@ -434,7 +434,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the GUI package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["Mail"]
+                               + " " + config["EMail"]
                         subprocess.call(params, shell=True)
 
             ###########################
@@ -468,7 +468,7 @@ def get_packages_on_OBS():
             params = \
                    "echo 'The build have fail on OBS for " + dname + "-" + arch + ".'" \
                    + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
-            params = params + " " + config["Mail"]
+            params = params + " " + config["EMail"]
             subprocess.call(params, shell=True)
 
     cursor.close()

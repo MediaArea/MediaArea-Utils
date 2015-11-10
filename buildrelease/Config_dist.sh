@@ -1,6 +1,6 @@
 # General
 EMail=""
-MailCC=""
+EMailCC=""
 
 # Mac
 MacIP=""

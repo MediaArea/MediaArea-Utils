@@ -227,7 +227,7 @@ function run () {
 
         unset -v Project Date Version_old Version_new
         unset -v OBS_Project Target PSTarget
-        unset -v WDir subDir SDir MacWDir Mail MailCC
+        unset -v WDir subDir SDir MacWDir EMail EMailCC
         unset -v MacIP MacSSHPort MacSSHUser KeyChain
         unset -v WinIP WinSSHPort WinSSHUser
         unset -v CleanUp Log Script
