@@ -161,8 +161,11 @@ def update_DB():
     cursor = mysql()
     for dname in Distribs.keys():
         for arch in Distribs[dname]:
+            # We take "grep 'dname '" instead of "grep dname"
+            # because the name of a distrib can be included in the
+            # names of another distribs (ie SLE_11 and SLE_11_SPx)
             params = "osc results " + MA_Project \
-                   + " |grep " + dname \
+                   + " |grep '" + dname + " '"\
                    + " |grep " + arch \
                    + " |awk '{print $3}' |sed 's/*//'"
             result = subprocess.check_output(params, shell=True).strip()
@@ -174,7 +177,6 @@ def update_DB():
             if (result == "broken" or result == "unresolvable" or result == "failed"):
                 state = "2"
             cursor.execute("UPDATE " + table + " SET state='" + state + "' WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
-            # TODO: if succeeded, update the version field
     cursor.close()
 
 ##################################################################
@@ -243,6 +245,15 @@ def get_packages_on_OBS():
                         + " > " + binname_final
                 subprocess.call(params_getpackage, shell=True)
 
+                # If the bin package is build, but hasn’t been
+                # downloaded for some raison.
+                if not os.path.isfile(binname_final):
+                    params = \
+                           "echo 'Problem with " + dname + "-" + arch + " on OBS: the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                           + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
+                           + " " + config["Mail"]
+                    subprocess.call(params, shell=True)
+
             #################
             # Debug package #
             #################
@@ -270,12 +281,23 @@ def get_packages_on_OBS():
 
             # If the debug package is build
             if len(dbgname_obs_side) > 1:
-                subprocess.call(["osc api /build/" + OBS_Project \
+                params_getpackage = \
+                        "osc api /build/" + OBS_Project \
                         + "/" + dname \
                         + "/" + arch \
                         + "/" + OBS_Package \
                         + "/" + dbgname_obs_side \
-                        + " > " + dbgname_final], shell=True)
+                        + " > " + dbgname_final
+                subprocess.call(params_getpackage, shell=True)
+
+                # If the debug package is build, but hasn’t been
+                # downloaded for some raison.
+                if not os.path.isfile(dbgname_final):
+                    params = \
+                           "echo 'Problem with " + dname + "-" + arch + " on OBS: the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                           + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
+                           + " " + config["Mail"]
+                    subprocess.call(params, shell=True)
 
             ###############
             # Dev package #
@@ -307,12 +329,66 @@ def get_packages_on_OBS():
 
                 # If the dev package is build
                 if len(devname_obs_side) > 1:
-                    subprocess.call(["osc api /build/" + OBS_Project \
+                    params_getpackage = \
+                            "osc api /build/" + OBS_Project \
                             + "/" + dname \
                             + "/" + arch \
                             + "/" + OBS_Package \
                             + "/" + devname_obs_side \
-                            + " > " + devname_final], shell=True)
+                            + " > " + devname_final
+                    subprocess.call(params_getpackage, shell=True)
+
+                    # If the debug package is build, but hasn’t
+                    # been downloaded for some raison.
+                    if not os.path.isfile(devname_final):
+                        params = \
+                               "echo 'Problem with " + dname + "-" + arch + " on OBS: the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                               + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
+                               + " " + config["Mail"]
+                        subprocess.call(params, shell=True)
+
+            ###############
+            # Doc package #
+            ###############
+
+                # name-doc[_|-]version-1[_|.]arch.[deb|rpm]
+                docname_wanted = dbgname + "-doc" \
+                        + pkginfos[pkgtype]["dash"] + version \
+                        + "-1" \
+                        + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
+                        + "." + dname \
+                        + "." + pkgtype
+                docname_final = os.path.join(destination, docname_wanted)
+    
+                docname_obs_side = "0"
+                # Fetch the name of the package on OBS
+                params = "osc api /build/" + OBS_Project \
+                       + "/" + dname \
+                       + "/" + arch \
+                       + "/" + OBS_Package \
+                       + " |grep 'rpm\|deb'" \
+                       + " |grep doc |grep -v src |awk -F '\"' '{print $2}'"
+                docname_obs_side = subprocess.check_output(params, shell=True).strip()
+    
+                # If the doc package is build
+                if len(docname_obs_side) > 1:
+                    params_getpackage = \
+                            "osc api /build/" + OBS_Project \
+                            + "/" + dname \
+                            + "/" + arch \
+                            + "/" + OBS_Package \
+                            + "/" + docname_obs_side \
+                            + " > " + docname_final
+                    subprocess.call(params_getpackage, shell=True)
+    
+                    # If the doc package is build, but hasn’t been
+                    # downloaded for some raison.
+                    if not os.path.isfile(docname_final):
+                        params = \
+                               "echo 'Problem with " + dname + "-" + arch + " on OBS: the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                               + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
+                               + " " + config["Mail"]
+                        subprocess.call(params, shell=True)
 
             ###############
             # GUI package #
@@ -343,12 +419,23 @@ def get_packages_on_OBS():
 
                 # If the GUI package is build
                 if len(guiname_obs_side) > 1:
-                    subprocess.call(["osc api /build/" + OBS_Project \
-                    + "/" + dname \
-                    + "/" + arch \
-                    + "/" + OBS_Package \
-                    + "/" + guiname_obs_side \
-                    + " > " + guiname_final], shell=True)
+                    params_getpackage = \
+                            "osc api /build/" + OBS_Project \
+                            + "/" + dname \
+                            + "/" + arch \
+                            + "/" + OBS_Package \
+                            + "/" + guiname_obs_side \
+                            + " > " + guiname_final
+                    subprocess.call(params_getpackage, shell=True)
+
+                    # If the GUI package is build, but hasn’t
+                    # been downloaded for some raison.
+                    if not os.path.isfile(guiname_final):
+                        params = \
+                               "echo 'Problem with " + dname + "-" + arch + " on OBS: the GUI package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                               + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
+                               + " " + config["Mail"]
+                        subprocess.call(params, shell=True)
 
             ###########################
             # Put the filenames in DB #
@@ -377,8 +464,12 @@ def get_packages_on_OBS():
                             + " AND arch = '" + arch + "';")
 
         # state == 2 if build failed
-        #elif state == 2:
-            #TODO: send a mail
+        elif state == 2:
+            params = \
+                   "echo 'The build have fail on OBS for " + dname + "-" + arch + ".'" \
+                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
+            params = params + " " + config["Mail"]
+            subprocess.call(params, shell=True)
 
     cursor.close()
 
@@ -697,6 +788,7 @@ Distribs = {
     "xUbuntu_14.04": ["x86_64", "i586"],
     "xUbuntu_14.10": ["x86_64", "i586"],
     "xUbuntu_15.04": ["x86_64", "i586"],
+    #"xUbuntu_15.10": ["x86_64", "i586"],
 }
 
 #
