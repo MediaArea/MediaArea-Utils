@@ -136,9 +136,12 @@ function run () {
         if b.opt.has_flag? --snapshot; then
             Version_new="${Version_old}.$Date"
             subDir="$Date"
+            MacWDir="${MacWDir}/snapshots"
+            OBS_Project="${OBS_Project}:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
             subDir="$Version_new"
+            MacWDir="${MacWDir}/releases"
         else
             echo
             echo "If you don't ask a snapshot, you must provide"

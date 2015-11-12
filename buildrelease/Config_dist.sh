@@ -1,5 +1,6 @@
-# General
-EMail=""
+# The email addresses in To: receive detailed informations
+EMailTo=""
+# The email addresses in CC: receive outlines
 EMailCC=""
 
 # Mac
@@ -7,18 +8,10 @@ MacIP=""
 MacSSHPort=""
 MacSSHUser=""
 KeyChain=""
-if b.opt.has_flag? --snapshot; then
-    MacWDir=""
-elif [ $(b.opt.get_opt --new) ]; then
-    MacWDir=""
-fi
+MacWDir=""
 
 # OBS
-if b.opt.has_flag? --snapshot; then
-    OBS_Project=""
-elif [ $(b.opt.get_opt --new) ]; then
-    OBS_Project=""
-fi
+OBS_Project=""
 
 # Windows
 WinIP=""
