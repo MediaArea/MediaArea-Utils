@@ -9,6 +9,7 @@ import os
 import fnmatch
 import glob
 import shutil
+import time
 
 print "\n========================================================"
 print "update_Linux_DB.py"
@@ -122,7 +123,7 @@ def waiting_loop():
                    + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
             if len(config["EMailCC"]) > 1:
                 params = params + " -c '" + config["EMailCC"] + "'"
-            params = params + " " + config["EMail"]
+            params = params + " " + config["EMailTo"]
             subprocess.call(params, shell=True)
             sys.exit(1)
 
@@ -213,6 +214,9 @@ def get_packages_on_OBS():
             # Bin package #
             ###############
 
+            # bin = the library package in case of a library, or
+            # the cli package otherwise
+
             # The wanted name for the package, under the form:
             # name[_|-]version-1[_|.]arch.[deb|rpm]
             binname_wanted = binname \
@@ -245,13 +249,21 @@ def get_packages_on_OBS():
                         + " > " + binname_final
                 subprocess.call(params_getpackage, shell=True)
 
+                # This is potentially a spam tank, but I leave the
+                # mails here because:
+                # 1. it allows to have the command that have
+                # failed = more convenient to understand the issue
+                # 2. because of the multiple runs for the
+                # multiple OBS repos (Project_debX), the final test
+                # can miss some download errors.
+
                 # If the bin package is build, but hasn’t been
                 # downloaded for some raison.
                 if not os.path.isfile(binname_final):
                     params = \
                            "echo 'Problem with " + dname + "-" + arch + " on OBS: the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                            + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                           + " " + config["EMail"]
+                           + " " + config["EMailTo"]
                     subprocess.call(params, shell=True)
 
             #################
@@ -296,7 +308,7 @@ def get_packages_on_OBS():
                     params = \
                            "echo 'Problem with " + dname + "-" + arch + " on OBS: the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                            + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                           + " " + config["EMail"]
+                           + " " + config["EMailTo"]
                     subprocess.call(params, shell=True)
 
             ###############
@@ -344,7 +356,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["EMail"]
+                               + " " + config["EMailTo"]
                         subprocess.call(params, shell=True)
 
             ###############
@@ -387,7 +399,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["EMail"]
+                               + " " + config["EMailTo"]
                         subprocess.call(params, shell=True)
 
             ###############
@@ -434,7 +446,7 @@ def get_packages_on_OBS():
                         params = \
                                "echo 'Problem with " + dname + "-" + arch + " on OBS: the GUI package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
-                               + " " + config["EMail"]
+                               + " " + config["EMailTo"]
                         subprocess.call(params, shell=True)
 
             ###########################
@@ -463,15 +475,191 @@ def get_packages_on_OBS():
                             + " WHERE platform = '" + dname + "'" \
                             + " AND arch = '" + arch + "';")
 
+    cursor.close()
+
+##################################################################
+def verify_states_and_files():
+
+    cursor = mysql()
+    cursor.execute("SELECT * FROM " + table)
+    dist_cursor = cursor.fetchall()
+    cursor.close()
+
+    nb_succeeded = 0
+    dists_failed = []
+
+    for dist in dist_cursor:
+
+        dname = dist[0]
+        arch = dist[1]
+        state = dist[2]
+
+        # state == 1 if build succeeded
+        if state == 1:
+            nb_succeeded = nb_succeeded + 1
+
         # state == 2 if build failed
-        elif state == 2:
+        if state == 2:
+            dists_failed.append(dist)
+
+    ################
+    # Bin packages #
+    ################
+
+    nb_bin = 0
+    params = "ls " + destination + "/" + binname + "?" + version + "*" \
+           + " |grep 'rpm\|deb'" \
+           + " |wc -l"
+    nb_bin = subprocess.check_output(params, shell=True).strip()
+
+    if nb_bin < nb_succeeded:
+        params = \
+               "echo 'The number of downloaded bin packages is lower than the number of succeeded bin packages on OBS:\n" \
+               + str(nb_succeeded) + " succeeded and " + str(nb_bin) + "downloaded.'" \
+               + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
+               + " " + config["EMailTo"]
+        subprocess.call(params, shell=True)
+
+    ##################
+    # Debug packages #
+    ##################
+
+    nb_dbg = 0
+    params = "ls " + destination + "/" + dbgname + "*" \
+           + " |grep 'rpm\|deb'" \
+           + " |grep 'dbg\|debug'" \
+           + " |wc -l"
+    nb_dbg = subprocess.check_output(params, shell=True).strip()
+
+    # Debug packages aren’t perfectly handled on OBS
+    #if nb_dbg < nb_succeeded:
+    #    params = \
+    #           "echo 'The number of downloaded debug packages is lower than the number of succeeded debug packages on OBS:\n" \
+    #           + str(nb_succeeded) + " succeeded and " + str(nb_dbg) + "downloaded.'" \
+    #           + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
+    #           + " " + config["EMailTo"]
+    #    subprocess.call(params, shell=True)
+
+    ################
+    # Dev packages #
+    ################
+
+    if prjkind == "lib":
+        params = "ls " + destination + "/" + dbgname + "*" \
+               + " |grep 'rpm\|deb'" \
+               + " |grep 'dev\|devel'" \
+               + " |wc -l"
+        nb_dev = subprocess.check_output(params, shell=True).strip()
+
+        nb_dev = 0
+        if nb_dev < nb_succeeded:
             params = \
-                   "echo 'The build have fail on OBS for " + dname + "-" + arch + ".'" \
-                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'"
-            params = params + " " + config["EMail"]
+                   "echo 'The number of downloaded dev packages is lower than the number of succeeded dev packages on OBS:\n" \
+                   + str(nb_succeeded) + " succeeded and " + str(nb_dev) + "downloaded.'" \
+                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
+                   + " " + config["EMailTo"]
             subprocess.call(params, shell=True)
 
-    cursor.close()
+        ################
+        # Doc packages #
+        ################
+    
+        nb_doc = 0
+        params = "ls " + destination + "/" + dbgname + "-doc*" \
+               + " |grep 'rpm\|deb'" \
+               + " |wc -l"
+        nb_doc = subprocess.check_output(params, shell=True).strip()
+
+        if nb_doc < nb_succeeded:
+            params = \
+                   "echo 'The number of downloaded doc packages is lower than the number of succeeded doc packages on OBS:\n" \
+                   + str(nb_succeeded) + " succeeded and " + str(nb_doc) + "downloaded.'" \
+                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
+                   + " " + config["EMailTo"]
+            subprocess.call(params, shell=True)
+
+    ################
+    # GUI packages #
+    ################
+
+    if prjkind == "gui":
+        nb_gui = 0
+        params = "ls " + destination_gui + "/" + binname + "-gui" + "?" + version + "*" \
+               + " |grep 'rpm\|deb'" \
+               + " |wc -l"
+        nb_gui = subprocess.check_output(params, shell=True).strip()
+
+        if nb_gui < nb_succeeded:
+            params = \
+                   "echo 'The number of downloaded GUI packages is lower than the number of succeeded GUI packages on OBS:\n" \
+                   + str(nb_succeeded) + " succeeded and " + str(nb_gui) + "downloaded.'" \
+                   + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
+                   + " " + config["EMailTo"]
+            subprocess.call(params, shell=True)
+
+    ###################
+    # Failed packages #
+    ###################
+
+    if len(dists_failed) > 0:
+
+        fail_list = ""
+        for dist in dists_failed:
+            fail_list = fail_list + "* " + str(dist[0]) + " (" + str(dist[1]) + ")\n"
+
+        params = \
+               "echo 'The build have fail on OBS for:\n\n" + fail_list + "'" \
+               + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
+               + " " + config["EMailTo"]
+        subprocess.call(params, shell=True)
+
+    # Confirmation mails
+
+    q,s = divmod(time.time()-time_start, 60)
+    h,m = divmod(q, 60)
+    if h < 10:
+        time_total = "0" + str("%d" % h)
+    else:
+        time_total = str("%d" % h)
+    time_total = time_total + ":"
+    if m < 10:
+        time_total = time_total + "0" + str("%d" % m)
+    else:
+        time_total = time_total + str("%d" % m)
+    time_total = time_total + ":"
+    if s < 10:
+        time_total = time_total + "0" + str("%d" % s)
+    else:
+        time_total = time_total + str("%d" % s)
+
+    if prjkind == "lib":
+        # We use >= and not =, because there may be other repos
+        # which have ran into the same directory (Project_debX).
+        if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_dev >= nb_succeeded) and (nb_doc >= nb_succeeded):
+            params = \
+                   "echo 'All is good with the linux task for the " + version + " version:\n\n" \
+                   + "* " + str(nb_succeeded) + " builds succeeded;\n" \
+                   + "* " + str(nb_bin) + " bin (" + binname + ") packages downloaded;\n" \
+                   + "* " + str(nb_dev) + " dev packages downloaded;\n" \
+                   + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(nb_doc) + " doc packages downloaded.\n\n" \
+                   + "update_Linux_DB.py has run during: " + time_total + "'" \
+                   + " |mailx -s '[BR.sh linux] Success building " + OBS_Package + "'" \
+                   + " " + config["EMailTo"]
+            subprocess.call(params, shell=True)
+    
+    if prjkind == "gui":
+        if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_gui >= nb_succeeded):
+            params = \
+                   "echo 'All is good with the linux task for the " + version + " version:\n\n" \
+                   + "* " + str(nb_succeeded) + " builds succeeded;\n" \
+                   + "* " + str(nb_bin) + " bin (CLI) packages downloaded;\n" \
+                   + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(nb_gui) + " GUI packages downloaded.\n\n" \
+                   + "update_Linux_DB.py has run during: " + time_total + "'" \
+                   + " |mailx -s '[BR.sh linux] Success building " + OBS_Package + "'" \
+                   + " " + config["EMailTo"]
+            subprocess.call(params, shell=True)
 
 ##################################################################
 def update_dl_pages():
@@ -640,6 +828,8 @@ def update_dl_pages():
 
 ##################################################################
 # Main
+
+time_start = time.time()
 
 # arguments :
 # 1 $OBS_Project (home:MediaArea_net[:snapshots])
@@ -811,6 +1001,10 @@ update_DB()
 
 # Then, fetch the packages.
 get_packages_on_OBS()
+
+# Send a confirmation mail if everything is ok, or else notify when
+# a build has failed or a succeeded package has not been downloaded
+verify_states_and_files()
 
 # If we run for MC or MI, and this is a release
 if (prjkind == "gui") and (len(dlpages_table) > 1):

@@ -130,6 +130,9 @@ function run () {
 
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
 
+        # Load sensible configuration we don’t want on github
+        . Config.sh    
+
         if b.opt.has_flag? --snapshot; then
             Version_new="${Version_old}.$Date"
             subDir="$Date"
@@ -186,9 +189,6 @@ function run () {
         if b.opt.has_flag? --no-cleanup; then
             CleanUp=false
         fi
-
-        # Load sensible configuration we don’t want on github
-        . Config.sh    
         
         # TODO: Handle exception if mkdir fail (/tmp not writable)
         if ! b.path.dir? "$WDir"; then
@@ -227,7 +227,7 @@ function run () {
 
         unset -v Project Date Version_old Version_new
         unset -v OBS_Project Target PSTarget
-        unset -v WDir subDir SDir MacWDir EMail EMailCC
+        unset -v WDir subDir SDir MacWDir EMailTo EMailCC
         unset -v MacIP MacSSHPort MacSSHUser KeyChain
         unset -v WinIP WinSSHPort WinSSHUser
         unset -v CleanUp Log Script
