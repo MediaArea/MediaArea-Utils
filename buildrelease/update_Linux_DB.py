@@ -655,7 +655,7 @@ def verify_states_and_files():
                    + " " + config["EMailTo"]
             subprocess.call(params, shell=True)
     
-    if prjkind == "lib" and not fnmatch.fnmatch(OBS_Package, "*_deb?"):
+    if prjkind == "gui" and not fnmatch.fnmatch(OBS_Package, "*_deb?"):
         if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_gui >= nb_succeeded):
             params = \
                    "echo 'All is good with the linux task for the " + version + " version:\n\n" \
