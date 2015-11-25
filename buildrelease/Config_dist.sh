@@ -1,21 +1,21 @@
-# You can specify several addresses for EMailTo and EMailCC,
+# You can specify several addresses for Email_to and Email_CC,
 # separated by commas.
-# The email addresses in To: receive detailed informations
-EMailTo=""
-# The email addresses in CC: receive outlines
-EMailCC=""
+# This addresses receive detailed informations
+Email_to=""
+# This addresses receive outlines
+Email_CC=""
 
 # Mac
-MacIP=""
-MacSSHPort=""
-MacSSHUser=""
-KeyChain=""
-MacWDir=""
+Mac_IP=""
+Mac_SSH_port=""
+Mac_SSH_user=""
+Key_chain=""
+Mac_working_dir=""
 
 # OBS
-OBS_Project=""
+OBS_project=""
 
 # Windows
-WinIP=""
-WinSSHPort=""
-WinSSHUser=""
+Win_IP=""
+Win_SSH_port=""
+Win_SSH_user=""
