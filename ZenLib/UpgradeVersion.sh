@@ -33,6 +33,8 @@ function btask.UpgradeVersion.run () {
     ZL_files[((index++))]="debian/changelog"
     ZL_files[((index++))]="Project/OBS/deb6.dsc"
     ZL_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    ZL_files[((index++))]="Project/OBS/deb9.dsc"
+    ZL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     ZL_files[((index++))]="Project/Solaris/mkpkg"
 
     # Replace old version by new version

@@ -12,7 +12,7 @@ import shutil
 import time
 
 print "\n========================================================"
-print "update_Linux_DB.py"
+print "Handle_OBS_results.py"
 print "Copyright (c) MediaArea.net SARL. All Rights Reserved."
 print "Use of this source code is governed by a BSD-style"
 print "license that can be found in the License.txt file in the"
@@ -192,23 +192,31 @@ def get_packages_on_OBS():
         dname = dist[0]
         arch = dist[1]
         state = dist[2]
-        if fnmatch.fnmatch(dname, "Debian*") or \
-                fnmatch.fnmatch(dname, "xUbuntu*"):
-            pkgtype = "deb"
-        if fnmatch.fnmatch(dname, "RHEL*") or \
-                fnmatch.fnmatch(dname, "CentOS*") or \
-                fnmatch.fnmatch(dname, "Fedora*"):
-            pkgtype = "rpm"
-            pkginfos[pkgtype]["i586"] = "i686"
-        if fnmatch.fnmatch(dname, "SLE*") or \
-                fnmatch.fnmatch(dname, "openSUSE*"):
-            pkgtype = "rpm"
-            pkginfos[pkgtype]["i586"] = "i586"
-        #if fnmatch.fnmatch(dname, "Arch*"):
-        #    pkgtype = "pkg.tar.xz"
 
         # state == 1 if build succeeded
         if state == 1:
+
+            print
+            print "API commands for " + dname + " (" + arch + ")"
+            print
+
+            # Initialization depending on the distrib’s family
+            revision = ""
+            if fnmatch.fnmatch(dname, "Debian*") or \
+                    fnmatch.fnmatch(dname, "xUbuntu*"):
+                pkgtype = "deb"
+                revision = "-1"
+            if fnmatch.fnmatch(dname, "RHEL*") or \
+                    fnmatch.fnmatch(dname, "CentOS*") or \
+                    fnmatch.fnmatch(dname, "Fedora*"):
+                pkgtype = "rpm"
+                pkginfos[pkgtype]["i586"] = "i686"
+            if fnmatch.fnmatch(dname, "SLE*") or \
+                    fnmatch.fnmatch(dname, "openSUSE*"):
+                pkgtype = "rpm"
+                pkginfos[pkgtype]["i586"] = "i586"
+            #if fnmatch.fnmatch(dname, "Arch*"):
+            #    pkgtype = "pkg.tar.xz"
 
             ###############
             # Bin package #
@@ -218,10 +226,10 @@ def get_packages_on_OBS():
             # the cli package otherwise
 
             # The wanted name for the package, under the form:
-            # name[_|-]version-1[_|.]arch.[deb|rpm]
+            # name[_|-]version[-1][_|.]arch.[deb|rpm]
             binname_wanted = binname \
                     + pkginfos[pkgtype]["dash"] + version \
-                    + "-1" \
+                    + revision \
                     + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
                     + "." + dname \
                     + "." + pkgtype
@@ -236,6 +244,8 @@ def get_packages_on_OBS():
                    + " |grep 'rpm\|deb'" \
                    + " |grep " + binname + pkginfos[pkgtype]["dash"] + version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+            print "Name of the bin package on OBS:"
+            print params
             binname_obs_side = subprocess.check_output(params, shell=True).strip()
 
             # If the bin package is build
@@ -247,6 +257,9 @@ def get_packages_on_OBS():
                         + "/" + OBS_Package \
                         + "/" + binname_obs_side \
                         + " > " + binname_final
+                print "Command to fetch the bin package:"
+                print params_getpackage
+                print
                 subprocess.call(params_getpackage, shell=True)
 
                 # This is potentially a spam tank, but I leave the
@@ -270,11 +283,11 @@ def get_packages_on_OBS():
             # Debug package #
             #################
 
-            # name-[dbg|debuginfo][_|-]version-1[_|.]arch.[deb|rpm]
+            # name-[dbg|debuginfo][_|-]version[-1][_|.]arch.[deb|rpm]
             dbgname_wanted = dbgname \
                     + pkginfos[pkgtype]["debugsuffix"] \
                     + pkginfos[pkgtype]["dash"] + version \
-                    + "-1" \
+                    + revision \
                     + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
                     + "." + dname \
                     + "." + pkgtype
@@ -289,6 +302,8 @@ def get_packages_on_OBS():
                    + " |grep 'rpm\|deb'" \
                    + " |grep " + dbgname + pkginfos[pkgtype]["debugsuffix"] + pkginfos[pkgtype]["dash"] + version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+            print "Name of the debug package on OBS:"
+            print params
             dbgname_obs_side = subprocess.check_output(params, shell=True).strip()
 
             # If the debug package is build
@@ -300,6 +315,9 @@ def get_packages_on_OBS():
                         + "/" + OBS_Package \
                         + "/" + dbgname_obs_side \
                         + " > " + dbgname_final
+                print "Command to fetch the debug package:"
+                print params_getpackage
+                print
                 subprocess.call(params_getpackage, shell=True)
 
                 # If the debug package is build, but hasn’t been
@@ -310,6 +328,8 @@ def get_packages_on_OBS():
                            + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
                            + " " + config["EMailTo"]
                     subprocess.call(params, shell=True)
+            else:
+                print
 
             ###############
             # Dev package #
@@ -317,11 +337,11 @@ def get_packages_on_OBS():
 
             if prjkind == "lib":
 
-                # name-dev[el][_|-]version-1[_|.]arch.[deb|rpm]
+                # name-dev[el][_|-]version[-1][_|.]arch.[deb|rpm]
                 devname_wanted = dbgname \
                         + pkginfos[pkgtype]["devsuffix"] \
                         + pkginfos[pkgtype]["dash"] + version \
-                        + "-1" \
+                        + revision \
                         + pkginfos[pkgtype]["separator"] \
                         + pkginfos[pkgtype][arch] \
                         + "." + dname \
@@ -337,6 +357,9 @@ def get_packages_on_OBS():
                        + " |grep 'rpm\|deb'" \
                        + " |grep " + dbgname + pkginfos[pkgtype]["devsuffix"] + pkginfos[pkgtype]["dash"] + version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+                print "Name of the dev package on OBS:"
+                print params
+                print
                 devname_obs_side = subprocess.check_output(params, shell=True).strip()
 
                 # If the dev package is build
@@ -348,6 +371,9 @@ def get_packages_on_OBS():
                             + "/" + OBS_Package \
                             + "/" + devname_obs_side \
                             + " > " + devname_final
+                    print "Command to fetch the dev package:"
+                    print params_getpackage
+                    print
                     subprocess.call(params_getpackage, shell=True)
 
                     # If the debug package is build, but hasn’t
@@ -363,10 +389,10 @@ def get_packages_on_OBS():
             # Doc package #
             ###############
 
-                # name-doc[_|-]version-1[_|.]arch.[deb|rpm]
+                # name-doc[_|-]version[-1][_|.]arch.[deb|rpm]
                 docname_wanted = dbgname + "-doc" \
                         + pkginfos[pkgtype]["dash"] + version \
-                        + "-1" \
+                        + revision \
                         + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
                         + "." + dname \
                         + "." + pkgtype
@@ -380,6 +406,8 @@ def get_packages_on_OBS():
                        + "/" + OBS_Package \
                        + " |grep 'rpm\|deb'" \
                        + " |grep doc |grep -v src |awk -F '\"' '{print $2}'"
+                print "Name of the doc package on OBS:"
+                print params
                 docname_obs_side = subprocess.check_output(params, shell=True).strip()
     
                 # If the doc package is build
@@ -391,6 +419,9 @@ def get_packages_on_OBS():
                             + "/" + OBS_Package \
                             + "/" + docname_obs_side \
                             + " > " + docname_final
+                    print "Command to fetch the doc package:"
+                    print params_getpackage
+                    print
                     subprocess.call(params_getpackage, shell=True)
     
                     # If the doc package is build, but hasn’t been
@@ -408,10 +439,10 @@ def get_packages_on_OBS():
 
             if prjkind == "gui":
 
-                # name-gui[_|-]version-1[_|.]arch.[deb|rpm]
+                # name-gui[_|-]version[-1][_|.]arch.[deb|rpm]
                 guiname_wanted = binname + "-gui" \
                         + pkginfos[pkgtype]["dash"] + version \
-                        + "-1" \
+                        + revision \
                         + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
                         + "." + dname \
                         + "." + pkgtype
@@ -426,10 +457,11 @@ def get_packages_on_OBS():
                        + " |grep 'rpm\|deb'" \
                        + " |grep " + binname + "-gui" + pkginfos[pkgtype]["dash"] + version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+                print "Name of the gui package on OBS:"
+                print params
                 guiname_obs_side = subprocess.check_output(params, shell=True).strip()
 
-
-                # If the GUI package is build
+                # If the gui package is build
                 if len(guiname_obs_side) > 1:
                     params_getpackage = \
                             "osc api /build/" + OBS_Project \
@@ -438,13 +470,16 @@ def get_packages_on_OBS():
                             + "/" + OBS_Package \
                             + "/" + guiname_obs_side \
                             + " > " + guiname_final
+                    print "Command to fetch the gui package:"
+                    print params_getpackage
+                    print
                     subprocess.call(params_getpackage, shell=True)
 
-                    # If the GUI package is build, but hasn’t
+                    # If the gui package is build, but hasn’t
                     # been downloaded for some raison.
                     if not os.path.isfile(guiname_final):
                         params = \
-                               "echo 'Problem with " + dname + "-" + arch + " on OBS: the GUI package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                               "echo 'Problem with " + dname + "-" + arch + " on OBS: the gui package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
                                + " |mailx -s '[BR.sh linux] Problem downloading " + OBS_Package + "'" \
                                + " " + config["EMailTo"]
                         subprocess.call(params, shell=True)
@@ -453,6 +488,7 @@ def get_packages_on_OBS():
             # Put the filenames in DB #
             ###########################
 
+            # If we run for a release
             if len(dlpages_table) > 1:
 
                 # For MC/MI
@@ -474,6 +510,8 @@ def get_packages_on_OBS():
                             + " libnamedev = '" + devname_wanted + "'" \
                             + " WHERE platform = '" + dname + "'" \
                             + " AND arch = '" + arch + "';")
+
+            print "-----------------------"
 
     cursor.close()
 
@@ -505,6 +543,11 @@ def verify_states_and_files():
     ################
     # Bin packages #
     ################
+
+    # Careful: if multiple instances run at the same time (debX)
+    # and one of them doesn’t download its packages, the problem
+    # may not be detected. Because the packages downloaded by other
+    # instances will be counted in nb_succeeded.
 
     nb_bin = 0
     params = "ls " + destination + "/" + binname + "?" + version + "*" \
@@ -597,7 +640,7 @@ def verify_states_and_files():
 
         if nb_gui < nb_succeeded:
             params = \
-                   "echo 'The number of downloaded GUI packages is lower than the number of succeeded GUI packages on OBS:\n" \
+                   "echo 'The number of downloaded gui packages is lower than the number of succeeded gui packages on OBS:\n" \
                    + str(nb_succeeded) + " succeeded and " + str(nb_gui) + " downloaded.'" \
                    + " |mailx -s '[BR.sh linux] Problem building " + OBS_Package + "'" \
                    + " " + config["EMailTo"]
@@ -650,7 +693,7 @@ def verify_states_and_files():
                    + "* " + str(nb_dev) + " dev packages downloaded;\n" \
                    + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
                    + "* " + str(nb_doc) + " doc packages downloaded.\n\n" \
-                   + "update_Linux_DB.py has run during: " + time_total + "'" \
+                   + "Handle_OBS_results.py has run during: " + time_total + "'" \
                    + " |mailx -s '[BR.sh linux] Success building " + OBS_Package + "'" \
                    + " " + config["EMailTo"]
             subprocess.call(params, shell=True)
@@ -662,8 +705,8 @@ def verify_states_and_files():
                    + "* " + str(nb_succeeded) + " builds succeeded;\n" \
                    + "* " + str(nb_bin) + " bin (CLI) packages downloaded;\n" \
                    + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
-                   + "* " + str(nb_gui) + " GUI packages downloaded.\n\n" \
-                   + "update_Linux_DB.py has run during: " + time_total + "'" \
+                   + "* " + str(nb_gui) + " gui packages downloaded.\n\n" \
+                   + "Handle_OBS_results.py has run during: " + time_total + "'" \
                    + " |mailx -s '[BR.sh linux] Success building " + OBS_Package + "'" \
                    + " " + config["EMailTo"]
             subprocess.call(params, shell=True)
@@ -757,7 +800,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/mediaconch\/" + version + "\/" + cliname + "\\\">v" + version \
                    + "/\" " + file_to_update
-            print "Params pour la CLI :"
+            print "Params for the CLI :"
             print params
             subprocess.call(params, shell=True)
 
@@ -771,7 +814,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/mediaconch-gui\/" + version + "\/" + guiname + "\\\">v" + version \
                    + "/\" " + file_to_update
-            print "Params pour la GUI :"
+            print "Params for the gui :"
             print params
             subprocess.call(params, shell=True)
 
@@ -786,7 +829,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/libmediainfo0\/" + mil_version + "\/" + mil_libname + "\\\">v" + mil_version \
                    + "/\" " + file_to_update
-            print "Params pour MIL :"
+            print "Params for MIL :"
             print params
             subprocess.call(params, shell=True)
 
@@ -800,7 +843,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/libmediainfo0\/" + mil_version + "\/" + mil_libnamedev + "\\\">devel" \
                    + "/\" " + file_to_update
-            print "Params pour MIL-dev :"
+            print "Params for MIL-dev :"
             print params
             subprocess.call(params, shell=True)
 
@@ -812,7 +855,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/libzen0\/" + zl_version + "\/" + zl_libname + "\\\">v" + zl_version \
                    + "/\" " + file_to_update
-            print "Params pour ZL :"
+            print "Params for ZL :"
             print params
             subprocess.call(params, shell=True)
 
@@ -826,7 +869,7 @@ def update_dl_pages():
                    + "/" \
                    + "https:\/\/mediaarea.net\/download\/binary\/libzen0\/" + zl_version + "\/" + zl_libnamedev + "\\\">devel" \
                    + "/\" " + file_to_update
-            print "Params pour ZL-dev :"
+            print "Params for ZL-dev :"
             print params
             subprocess.call(params, shell=True)
 
@@ -860,7 +903,7 @@ config = {}
 execfile(
         os.path.join(
                 os.path.dirname(os.path.realpath(__file__)),
-                "update_Linux_DB.conf"),
+                "Handle_OBS_results.conf"),
         config) 
  
 MA_Project = OBS_Project + "/" + OBS_Package
@@ -875,12 +918,18 @@ if fnmatch.fnmatch(OBS_Package, "ZenLib*"):
             table = "snapshots_obs_zl"
         elif OBS_Package == "ZenLib_deb6":
             table = "snapshots_obs_zl_deb6"
+        elif OBS_Package == "ZenLib_deb9":
+            table = "snapshots_obs_zl_deb9"
+            binname = "libzen0v5"
     else:
         dlpages_table = "releases_dlpages_zl"
         if OBS_Package == "ZenLib":
             table = "releases_obs_zl"
         elif OBS_Package == "ZenLib_deb6":
             table = "releases_obs_zl_deb6"
+        elif OBS_Package == "ZenLib_deb9":
+            table = "releases_obs_zl_deb9"
+            binname = "libzen0v5"
 
 if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*"):
     prjkind = "lib"
@@ -891,12 +940,18 @@ if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*
             table = "snapshots_obs_mil"
         elif OBS_Package == "MediaInfoLib_deb6":
             table = "snapshots_obs_mil_deb6"
+        elif OBS_Package == "MediaInfoLib_deb9":
+            table = "snapshots_obs_mil_deb9"
+            binname = "libmediainfo0v5"
     else:
         dlpages_table = "releases_dlpages_mil"
         if OBS_Package == "MediaInfoLib":
             table = "releases_obs_mil"
         elif OBS_Package == "MediaInfoLib_deb6":
             table = "releases_obs_mil_deb6"
+        elif OBS_Package == "MediaInfoLib_deb9":
+            table = "releases_obs_mil_deb9"
+            binname = "libmediainfo0v5"
 
 if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     prjkind = "gui"
@@ -904,10 +959,16 @@ if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     dbgname = "mediaconch"
     destination_gui = sys.argv[5]
     if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
-        table = "snapshots_obs_mc"
+        if OBS_Package == "MediaConch":
+            table = "snapshots_obs_mc"
+        if OBS_Package == "MediaConch_deb9":
+            table = "snapshots_obs_mc_deb9"
     else:
         dlpages_table = "releases_dlpages_mc"
-        table = "releases_obs_mc"
+        if OBS_Package == "MediaConch":
+            table = "releases_obs_mc"
+        if OBS_Package == "MediaConch_deb9":
+            table = "releases_obs_mc_deb9"
 
 # Careful to not catch MediaInfoLib
 if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
@@ -922,6 +983,8 @@ if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
             table = "snapshots_obs_mi_deb6"
         elif OBS_Package == "MediaInfo_deb7":
             table = "snapshots_obs_mi_deb7"
+        elif OBS_Package == "MediaInfo_deb9":
+            table = "snapshots_obs_mi_deb9"
     else:
         dlpages_table = "releases_dlpages_mi"
         if OBS_Package == "MediaInfo":
@@ -930,6 +993,8 @@ if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
             table = "releases_obs_mi_deb6"
         elif OBS_Package == "MediaInfo_deb7":
             table = "releases_obs_mi_deb7"
+        elif OBS_Package == "MediaInfo_deb9":
+            table = "releases_obs_mi_deb9"
 
 # The architecture names (x86_64, i586, …) are imposed by OBS
 pkginfos = {
@@ -966,6 +1031,7 @@ Distribs = {
     "Fedora_20": ["x86_64", "i586"],
     "Fedora_21": ["x86_64", "i586"],
     "Fedora_22": ["x86_64", "i586"],
+    #"Fedora_23": ["x86_64", "i586"],
     "RHEL_5": ["x86_64", "i586"],
     "RHEL_6": ["x86_64", "i586"],
     "RHEL_7": ["x86_64", "ppc64"],
@@ -980,12 +1046,13 @@ Distribs = {
     "openSUSE_13.2": ["x86_64", "i586"],
     "openSUSE_Factory": ["x86_64", "i586"],
     #"openSUSE_Factory_ARM": ["armv7l"],
+    "openSUSE_Leap_42.1": ["x86_64"],
     "openSUSE_Tumbleweed": ["x86_64", "i586"],
     "xUbuntu_12.04": ["x86_64", "i586"],
     "xUbuntu_14.04": ["x86_64", "i586"],
     "xUbuntu_14.10": ["x86_64", "i586"],
     "xUbuntu_15.04": ["x86_64", "i586"],
-    #"xUbuntu_15.10": ["x86_64", "i586"],
+    "xUbuntu_15.10": ["x86_64", "i586"],
 }
 
 #

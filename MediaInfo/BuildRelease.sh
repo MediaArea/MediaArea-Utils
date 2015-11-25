@@ -11,26 +11,26 @@ function _mac_cli () {
     cd "$MI_tmp"
 
     # Clean up
-    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
-            cd $MacWDir ;
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
+            cd $Mac_working_dir ;
             rm -fr MediaInfo_CLI*"
 
     echo
     echo "Compile MI CLI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
 
             #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-    $SSHP "cd $MacWDir ;
+    $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_CLI_GNU_FromSource ;
             MediaInfo/Project/Mac/build_CLI.sh ;
-            $KeyChain ;
+            $Key_chain ;
             cd MediaInfo/Project/Mac ;
             ./mkdmg.sh mi cli $Version_new"
 
-    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
 
 }
 
@@ -41,38 +41,38 @@ function _mac_gui () {
     cd "$MI_tmp"
 
     # Clean up
-    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
-            cd $MacWDir ;
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
+            cd $Mac_working_dir ;
             rm -fr MediaInfo_GUI*"
 
     echo
     echo "Compile MI GUI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
 
             #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-    $SSHP "cd $MacWDir ;
+    $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_GUI_GNU_FromSource ;
             MediaInfo/Project/Mac/build_GUI.sh ;
-            $KeyChain ;
+            $Key_chain ;
             cd MediaInfo/Project/Mac ;
             ./mkdmg.sh mi gui $Version_new"
 
-    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
 
     if ! b.opt.has_flag? --snapshot; then
 
         # Return 1 if MIL is present, 0 otherwise
-        Dylib_OK=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "ls $MacWDir/dylib_for_xcode/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" |wc -l`
+        Dylib_OK=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "ls $Mac_working_dir/dylib_for_xcode/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" |wc -l`
 
         if [ $Dylib_OK -eq 1 ]; then
             echo
             echo
             echo "Preparing for Xcode..."
             echo
-            $SSHP "cd $MacWDir/dylib_for_xcode ;
+            $SSHP "cd $Mac_working_dir/dylib_for_xcode ;
                     rm -fr MediaInfoLib ;
                     tar xf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz ;
                     cd ../MediaInfo_GUI_GNU_FromSource ;
@@ -82,7 +82,7 @@ function _mac_gui () {
             echo
             echo
             echo
-            echo "WARNING! Can’t found dylib in $MacWDir/dylib_for_xcode!"
+            echo "WARNING! Can’t found dylib in $Mac_working_dir/dylib_for_xcode!"
             echo "It’s probably because you have not run BR.sh for MIL"
             echo "before launching BR.sh for MI."
             echo
@@ -103,7 +103,7 @@ function _mac () {
     local SSHP NbTry Try MultiArch
 
     # SSH prefix
-    SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    SSHP="ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP"
     NbTry=3
 
     cd "$MI_tmp"
@@ -119,8 +119,8 @@ function _mac () {
         fi
         # Return 1 if MI-cli is compiled for i386 and x86_64,
         # 0 otherwise
-        #MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
-        MultiArch=`ssh -x -p $MacSSHPort $MacSSHUser@$MacIP "file $MacWDir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        #MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
+        MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
 
@@ -159,24 +159,24 @@ function _mac () {
 
 function _windows () {
 
-    local sp RWDir
+    local sp RWorking_dir
 
     # SSH prefix
-    SSHP="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
-    RWDir="c:/Users/almin"
+    SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
+    RWorking_dir="c:/Users/almin"
 
     cd "$MI_tmp"
 
     # Clean up
-    $SSHP "c: & chdir $RWDir & rmdir /S /Q build"
-    $SSHP "c: & chdir $RWDir & md build"
+    $SSHP "c: & chdir $RWorking_dir & rmdir /S /Q build"
+    $SSHP "c: & chdir $RWorking_dir & md build"
 
     echo
     echo "Compile MI CLI for windows..."
     echo
 
-    scp -P $WinSSHPort prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediainfo_${Version_new}_AllInclusive.7z
-    $SSHP "c: & chdir $RWDir/build & \
+    scp -P $Win_SSH_port prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z $Win_SSH_user@$Win_IP:$RWorking_dir/build/mediainfo_${Version_new}_AllInclusive.7z
+    $SSHP "c: & chdir $RWorking_dir/build & \
             c:/\"Program Files\"/7-Zip/7z x mediainfo_${Version_new}_AllInclusive.7z & \
 
 "
@@ -193,9 +193,9 @@ function _windows () {
 #    echo "Compile MI CLI for mac..."
 #    echo
 #
-#    scp -P $MacSSHPort prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
+#    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWDir/build ;
+#    $SSHP "cd $RWorking_dir/build ;
 #            tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_CLI_GNU_FromSource ;
 #            ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
@@ -204,9 +204,9 @@ function _windows () {
 #    echo "Compile MI GUI for mac..."
 #    echo
 #
-#    scp -P $MacSSHPort prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
+#    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
 #            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWDir/build ;
+#    $SSHP "cd $RWorking_dir/build ;
 #            tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
 #            cd MediaInfo_GUI_GNU_FromSource ;
 #            mkdir -p Shared/Source
@@ -221,22 +221,22 @@ function _windows () {
 #
 #            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
 #            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWDir/build ;
-#            $KeyChain ;
+#    $SSHP "cd $RWorking_dir/build ;
+#            $Key_chain ;
 #            cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
 #            ./mkdmg.sh mi cli $Version_new ;
 #            cd - > /dev/null ;
 #            cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
 #            ./mkdmg.sh mi gui $Version_new"
 #
-#    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" mac
-#    scp -P $MacSSHPort "$MacSSHUser@$MacIP:$RWDir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" mac
+#    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" mac
+#    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" mac
 
 }
 
 function _obs () {
 
-    local OBS_Package="$OBS_Project/MediaInfo"
+    local OBS_package="$OBS_project/MediaInfo"
 
     cd "$MI_tmp"
 
@@ -244,22 +244,31 @@ function _obs () {
     echo "Initialize OBS files..."
     echo
 
-    osc checkout $OBS_Package
+    osc checkout $OBS_package
 
     # Clean up
-    rm -f $OBS_Package/*
+    rm -f $OBS_package/*
 
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_Package
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_Package
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_package/mediainfo_${Version_new}.orig.tar.xz
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
 
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.spec $OBS_Package
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.dsc $OBS_Package/mediainfo_${Version_new}.dsc
-    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_Package
-    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_Package/mediainfo_${Version_new}.dsc
+    cd $OBS_package
+    tar xf mediainfo_${Version_new}.orig.tar.xz
+    mv MediaInfo/debian .
+    rm -fr MediaInfo
+    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}-1.debian.tar.xz debian)
+    rm -fr debian
+    cd ../..
 
-    update_DSC "$MI_tmp"/$OBS_Package mediainfo_${Version_new}.tar.xz mediainfo_${Version_new}.dsc
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.spec $OBS_package
+    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_package
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
+    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
 
-    cd $OBS_Package
+    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
+    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}-1.debian.tar.xz mediainfo_${Version_new}-1.dsc
+
+    cd $OBS_package
     osc addremove *
     osc commit -n
 
@@ -270,38 +279,75 @@ function _obs_deb () {
     # This function build the source on OBS for a specific debian
     # version.
 
-    local debVersion="$1" Comp="$2"
-    local OBS_Package="$OBS_Project/MediaInfo_$debVersion"
+    local Deb_version="$1"
+    local OBS_package="$OBS_project/MediaInfo_$Deb_version"
 
     cd "$MI_tmp"
 
     echo
-    echo "OBS for $OBS_Package, initialize files..."
+    echo "OBS for $OBS_package, initialize files..."
     echo
 
-    osc checkout $OBS_Package
+    osc checkout $OBS_package
 
     # Clean up
-    rm -f $OBS_Package/*
+    rm -f $OBS_package/*
 
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.$Comp $OBS_Package
-    cd $OBS_Package
-    tar xf mediainfo_${Version_new}.tar.$Comp
-    rm -fr MediaInfo/debian
-    mv MediaInfo/Project/OBS/${debVersion}.debian MediaInfo/debian
-    if [ "$Comp" = "xz" ]; then
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}.tar.xz MediaInfo)
-    elif [ "$Comp" = "gz" ]; then
-        (GZIP=-9 tar -cz --owner=root --group=root -f mediainfo_${Version_new}.tar.gz MediaInfo)
-    fi
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_package
+    cd $OBS_package
+    tar xf mediainfo_${Version_new}.tar.xz
+    rm -fr mediainfo_${Version_new}.tar.xz
+    rm -fr MediaInfo/debian ; mv MediaInfo/Project/OBS/${Deb_version}.debian MediaInfo/debian
+    cp -r MediaInfo/debian .
+    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}.orig.tar.xz MediaInfo)
+    rm -fr MediaInfo
+    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}-1.debian.tar.xz debian)
+    rm -fr debian
+    cd ../..
+
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/OBS/${Deb_version}.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
+    cp prepare_source/MI/MediaInfo/Project/OBS/${Deb_version}.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
+
+    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
+    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}-1.debian.tar.xz mediainfo_${Version_new}-1.dsc
+
+    cd $OBS_package
+    osc addremove *
+    osc commit -n
+
+}
+
+function _obs_deb6 () {
+
+    # This function build the source on OBS for Debian 6.
+
+    local OBS_package="$OBS_project/MediaInfo_deb6"
+
+    cd "$MI_tmp"
+
+    echo
+    echo "OBS for $OBS_package, initialize files..."
+    echo
+
+    osc checkout $OBS_package
+
+    # Clean up
+    rm -f $OBS_package/*
+
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
+    cd $OBS_package
+    tar xf mediainfo_${Version_new}.tar.gz
+    rm -fr MediaInfo/debian ; mv MediaInfo/Project/OBS/deb6.debian MediaInfo/debian
+    (GZIP=-9 tar -cz --owner=root --group=root -f mediainfo_${Version_new}.tar.gz MediaInfo)
     rm -fr MediaInfo
     cd ../..
 
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/OBS/${debVersion}.dsc $OBS_Package/mediainfo_${Version_new}.dsc
-    cp prepare_source/MI/MediaInfo/Project/OBS/${debVersion}.dsc $OBS_Package/mediainfo_${Version_new}.dsc
-    update_DSC "$MI_tmp"/$OBS_Package mediainfo_${Version_new}.tar.$Comp mediainfo_${Version_new}.dsc
+    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/OBS/deb6.dsc $OBS_package/mediainfo_${Version_new}.dsc
+    cp prepare_source/MI/MediaInfo/Project/OBS/deb6.dsc $OBS_package/mediainfo_${Version_new}.dsc
 
-    cd $OBS_Package
+    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.tar.gz mediainfo_${Version_new}.dsc
+
+    cd $OBS_package
     osc addremove *
     osc commit -n
 
@@ -311,12 +357,14 @@ function _linux () {
 
     if b.opt.has_flag? --log; then
         _obs > "$Log"/linux.log 2>&1
-        _obs_deb deb7 xz >> "$Log"/linux.log 2>&1
-        _obs_deb deb6 gz >> "$Log"/linux.log 2>&1
+        _obs_deb deb9 >> "$Log"/linux.log 2>&1
+        _obs_deb deb7 >> "$Log"/linux.log 2>&1
+        _obs_deb6 >> "$Log"/linux.log 2>&1
     else
         _obs
-        _obs_deb deb7 xz
-        _obs_deb deb6 gz
+        _obs_deb deb9
+        _obs_deb deb7
+        _obs_deb6
         echo
         echo Launch in background the python script which check
         echo the build results and download the packages...
@@ -324,11 +372,13 @@ function _linux () {
     fi
 
     cd $(b.get bang.working_dir)
-    python update_Linux_DB.py $OBS_Project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python.log 2>&1 & 
+    python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_main.log 2>&1 & 
     sleep 10
-    python update_Linux_DB.py $OBS_Project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb7.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb9.log 2>&1 &
     sleep 10
-    python update_Linux_DB.py $OBS_Project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_python_deb6.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb7.log 2>&1 &
+    sleep 10
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb6.log 2>&1 &
 
 }
 
@@ -336,16 +386,16 @@ function btask.BuildRelease.run () {
 
     # TODO: incremental snapshots if multiple execution in the
     # same day eg. AAAAMMJJ-X
-    #if b.path.dir? $WDir/`date +%Y%m%d`; then
-    #    mv $WDir/`date +%Y%m%d` $WDir/`date +%Y%m%d`-1
-    #    WDir=$WDir/`date +%Y%m%d`-2
-    #    mkdir -p $WDir
+    #if b.path.dir? $Working_dir/`date +%Y%m%d`; then
+    #    mv $Working_dir/`date +%Y%m%d` $Working_dir/`date +%Y%m%d`-1
+    #    Working_dir=$Working_dir/`date +%Y%m%d`-2
+    #    mkdir -p $Working_dir
     # + handle a third run, etc
         
-    local MIC_dir="$WDir"/binary/mediainfo/$subDir
-    local MIG_dir="$WDir"/binary/mediainfo-gui/$subDir
-    local MIS_dir="$WDir"/source/mediainfo/$subDir
-    local MI_tmp="$WDir"/tmp/mediainfo/$subDir
+    local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
+    local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
+    local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
+    local MI_tmp="$Working_dir"/tmp/mediainfo/$Sub_dir
 
     echo
     echo Clean up...
@@ -369,15 +419,15 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$SDir" "$MI_tmp"/upgrade_version/MediaInfo
+        cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
     else
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
-    # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PSTarget -nc
+    # Do NOT remove -nc, mandatory for the .dsc and .spec
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
     if [ "$Target" = "mac" ]; then
         _mac
@@ -415,7 +465,7 @@ function btask.BuildRelease.run () {
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
 
-    if $CleanUp; then
+    if $Clean_up; then
         rm -fr "$MI_tmp"
     fi
 

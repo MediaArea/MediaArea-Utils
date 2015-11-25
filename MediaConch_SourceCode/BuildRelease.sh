@@ -11,26 +11,26 @@ function _mac_cli () {
     cd "$MC_tmp"
 
     # Clean up
-    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
-            cd $MacWDir ;
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
+            cd $Mac_working_dir ;
             rm -fr MediaConch_CLI*"
 
     echo
     echo "Compile MC CLI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $Mac_SSH_port prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
 
             #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
-    $SSHP "cd $MacWDir ;
+    $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
             MediaConch/Project/Mac/build_CLI.sh ;
-            $KeyChain ;
+            $Key_chain ;
             cd MediaConch/Project/Mac ;
             ./mkdmg.sh mc cli $Version_new"
 
-    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg "$MCC_dir"
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg "$MCC_dir"
 
 }
 
@@ -39,26 +39,26 @@ function _mac_gui () {
     cd "$MC_tmp"
 
     # Clean up
-    $SSHP "test -d $MacWDir || mkdir $MacWDir ;
-            cd $MacWDir ;
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
+            cd $Mac_working_dir ;
             rm -fr MediaConch_GUI*"
 
     echo
     echo "Compile MC GUI for mac..."
     echo
 
-    scp -P $MacSSHPort prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $MacSSHUser@$MacIP:$MacWDir/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $Mac_SSH_port prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
 
             #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
-    $SSHP "cd $MacWDir ;
+    $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
             MediaConch/Project/Mac/build_GUI.sh ;
-            $KeyChain ;
+            $Key_chain ;
             cd MediaConch/Project/Mac ;
             ./mkdmg.sh mc gui $Version_new"
 
-    scp -P $MacSSHPort $MacSSHUser@$MacIP:$MacWDir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
 }
 
@@ -70,7 +70,7 @@ function _mac () {
     local SSHP NbTry Try
 
     # SSH prefix
-    SSHP="ssh -x -p $MacSSHPort $MacSSHUser@$MacIP"
+    SSHP="ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP"
     NbTry=3
 
     cd "$MC_tmp"
@@ -120,24 +120,24 @@ function _mac () {
 
 function _windows () {
 
-    local SSHP RWDir
+    local SSHP RWorking_dir
 
     # SSH prefix
-    SSHP="ssh -x -p $WinSSHPort $WinSSHUser@$WinIP"
-    RWDir="c:/Users/almin"
+    SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
+    RWorking_dir="c:/Users/almin"
 
     cd "$MC_tmp"
 
     # Clean up
-    $SSHP "c: & chdir $RWDir & rmdir /S /Q build & md build"
+    $SSHP "c: & chdir $RWorking_dir & rmdir /S /Q build & md build"
 
     echo
     echo "Compile MC CLI for windows..."
     echo
 
-    scp -P $WinSSHPort prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $WinSSHUser@$WinIP:$RWDir/build/mediaconch_${Version_new}_AllInclusive.7z
+    scp -P $Win_SSH_port prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $Win_SSH_user@$Win_IP:$RWorking_dir/build/mediaconch_${Version_new}_AllInclusive.7z
             #xcopy /E /I /Q ..\\libxml2 mediaconch_${Version_new}_AllInclusive\\libxml2 & \
-    $SSHP "c: & chdir $RWDir/build & \
+    $SSHP "c: & chdir $RWorking_dir/build & \
             c:/\"Program Files\"/7-Zip/7z x mediaconch_${Version_new}_AllInclusive.7z & \
             xcopy /E /I /Q ..\\libxml2 mediaconch_AllInclusive\\libxml2 & \
 
@@ -154,7 +154,7 @@ function _windows () {
 
 function _obs () {
 
-    local OBS_Package="$OBS_Project/MediaConch"
+    local OBS_package="$OBS_project/MediaConch"
 
     cd "$MC_tmp"
 
@@ -162,21 +162,21 @@ function _obs () {
     echo "Initialize OBS files..."
     echo
 
-    osc checkout $OBS_Package
+    osc checkout $OBS_package
 
     # Clean up
-    rm -f $OBS_Package/*
+    rm -f $OBS_package/*
 
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_Package
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_Package
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_Package
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_Package/mediaconch_${Version_new}.dsc
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_Package
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_Package/mediaconch_${Version_new}.dsc
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_package
+    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_package
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_package
+    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_package/mediaconch_${Version_new}.dsc
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_package
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_package/mediaconch_${Version_new}.dsc
 
-    update_DSC "$MC_tmp"/$OBS_Package mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
+    update_DSC "$MC_tmp"/$OBS_package mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
 
-    cd $OBS_Package
+    cd $OBS_package
     osc addremove *
     osc commit -n
 
@@ -195,7 +195,7 @@ function _linux () {
     fi
 
     cd $(b.get bang.working_dir)
-    python update_Linux_DB.py $OBS_Project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_python.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_main.log 2>&1 &
 
 }
 
@@ -203,16 +203,16 @@ function btask.BuildRelease.run () {
 
     # TODO: incremental snapshots if multiple execution in the
     # same day eg. AAAAMMJJ-X
-    #if b.path.dir? $WDir/`date +%Y%m%d`; then
-    #    mv $WDir/`date +%Y%m%d` $WDir/`date +%Y%m%d`-1
-    #    WDir=$WDir/`date +%Y%m%d`-2
-    #    mkdir -p $WDir
+    #if b.path.dir? $Working_dir/`date +%Y%m%d`; then
+    #    mv $Working_dir/`date +%Y%m%d` $Working_dir/`date +%Y%m%d`-1
+    #    Working_dir=$Working_dir/`date +%Y%m%d`-2
+    #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local MCC_dir="$WDir"/binary/mediaconch/$subDir
-    local MCG_dir="$WDir"/binary/mediaconch-gui/$subDir
-    local MCS_dir="$WDir"/source/mediaconch/$subDir
-    local MC_tmp="$WDir"/tmp/mediaconch/$subDir
+    local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
+    local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
+    local MCS_dir="$Working_dir"/source/mediaconch/$Sub_dir
+    local MC_tmp="$Working_dir"/tmp/mediaconch/$Sub_dir
 
     echo
     echo Clean up...
@@ -236,15 +236,15 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$SDir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+        cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
     else
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$MC_tmp"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
-    # TODO: final version = remove -nc
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PSTarget -nc
+    # Do NOT remove -nc, mandatory for the .dsc and .spec
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 
     if [ "$Target" = "mac" ]; then
         _mac
@@ -282,7 +282,7 @@ function btask.BuildRelease.run () {
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
 
-    if $CleanUp; then
+    if $Clean_up; then
         rm -fr "$MC_tmp"
     fi
 

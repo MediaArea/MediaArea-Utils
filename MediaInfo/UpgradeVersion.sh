@@ -34,6 +34,7 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
     MI_files[((index++))]="debian/changelog"
+    MI_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb7.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb6.debian/changelog"
     MI_files[((index++))]="Project/OBS/obs_mediainfo"
@@ -56,17 +57,22 @@ function btask.UpgradeVersion.run () {
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
     # sed will take the last of the longuest strings first and
     # will replace the 3 lines
-    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
     
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb9.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb9.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb9.dsc
+
     echo
     echo "Update ${MI_source}/Project/OBS/deb7.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb7.dsc
-    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb7.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb7.dsc
 
     echo
     echo "Update ${MI_source}/Project/OBS/deb6.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb6.dsc
-    updateFile "00000000000000000000000000000000 0000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 0000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb6.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb6.dsc
 
     echo
     echo "Passage for major.minor.patch.build..."

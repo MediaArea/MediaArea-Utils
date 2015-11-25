@@ -135,13 +135,13 @@ function run () {
 
         if b.opt.has_flag? --snapshot; then
             Version_new="${Version_old}.$Date"
-            subDir="$Date"
-            MacWDir="${MacWDir}/snapshots"
-            OBS_Project="${OBS_Project}:snapshots"
+            Sub_dir="$Date"
+            Mac_working_dir="${Mac_working_dir}/snapshots"
+            OBS_project="${OBS_project}:snapshots"
         elif [ $(b.opt.get_opt --new) ]; then
             Version_new=$(sanitize_arg $(b.opt.get_opt --new))
-            subDir="$Version_new"
-            MacWDir="${MacWDir}/releases"
+            Sub_dir="$Version_new"
+            Mac_working_dir="${Mac_working_dir}/releases"
         else
             echo
             echo "If you don't ask a snapshot, you must provide"
@@ -151,54 +151,54 @@ function run () {
         fi
 
         Target="all"
-        PSTarget="-all"
+        PS_target="-all"
         if b.opt.has_flag? --build-mac; then
             Target="mac"
-            PSTarget="-cu"
+            PS_target="-cu"
         fi
         if b.opt.has_flag? --build-windows; then
             Target="windows"
-            PSTarget="-cw"
+            PS_target="-cw"
         fi
         if b.opt.has_flag? --build-linux; then
             Target="linux"
-            PSTarget="-sa"
+            PS_target="-sa"
         fi
 
         # In case --working-path is not defined
-        WDir=/tmp
+        Working_dir=/tmp
         # In case it is
         if [ $(b.opt.get_opt --working-path) ]; then
-            WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? "$WDir" && ! b.path.writable? "$WDir"; then
+            Working_dir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? "$Working_dir" && ! b.path.writable? "$Working_dir"; then
                 echo
-                echo "The directory $WDir isn't writable : will use /tmp instead."
+                echo "The directory $Working_dir isn't writable : will use /tmp instead."
                 echo
-                WDir=/tmp
+                Working_dir=/tmp
             fi
         fi
 
         if [ $(b.opt.get_opt --source-path) ]; then
-            SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
-            if ! b.path.dir? "$SDir"; then
+            Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
+            if ! b.path.dir? "$Source_dir"; then
                 echo
-                echo "The directory $SDir doesn't exist!"
+                echo "The directory $Source_dir doesn't exist!"
                 echo
                 exit
             fi
         fi
 
-        CleanUp=true
+        Clean_up=true
         if b.opt.has_flag? --no-cleanup; then
-            CleanUp=false
+            Clean_up=false
         fi
         
         # TODO: Handle exception if mkdir fail (/tmp not writable)
-        if ! b.path.dir? "$WDir"; then
-            mkdir -p "$WDir"
+        if ! b.path.dir? "$Working_dir"; then
+            mkdir -p "$Working_dir"
         fi
 
-        Log="$WDir"/log/$Project/$subDir
+        Log="$Working_dir"/log/$Project/$Sub_dir
         if ! b.path.dir? "$Log"; then
             mkdir -p "$Log"
         fi
@@ -229,11 +229,12 @@ function run () {
         fi
 
         unset -v Project Date Version_old Version_new
-        unset -v OBS_Project Target PSTarget
-        unset -v WDir subDir SDir MacWDir EMailTo EMailCC
-        unset -v MacIP MacSSHPort MacSSHUser KeyChain
-        unset -v WinIP WinSSHPort WinSSHUser
-        unset -v CleanUp Log Script
+        unset -v OBS_project Target PS_target
+        unset -v Working_dir Source_dir Sub_dir
+        unset -v Mac_working_dir Email_to Email_CC
+        unset -v Mac_IP Mac_SSH_port Mac_SSH_user Key_chain
+        unset -v Win_IP Win_SSH_port Win_SSH_user
+        unset -v Clean_up Log Script
     fi
 }
 
