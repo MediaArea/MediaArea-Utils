@@ -241,7 +241,7 @@ def get_packages_on_OBS():
                    + "/" + dname \
                    + "/" + arch \
                    + "/" + OBS_Package \
-                   + " |grep 'rpm\|deb'" \
+                   + " |grep 'rpm\"\|deb\"'" \
                    + " |grep " + binname + pkginfos[pkgtype]["dash"] + version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
             print "Name of the bin package on OBS:"
@@ -299,7 +299,7 @@ def get_packages_on_OBS():
                    + "/" + dname \
                    + "/" + arch \
                    + "/" + OBS_Package \
-                   + " |grep 'rpm\|deb'" \
+                   + " |grep 'rpm\"\|deb\"'" \
                    + " |grep " + dbgname + pkginfos[pkgtype]["debugsuffix"] + pkginfos[pkgtype]["dash"] + version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
             print "Name of the debug package on OBS:"
@@ -354,7 +354,7 @@ def get_packages_on_OBS():
                        + "/" + dname \
                        + "/" + arch \
                        + "/" + OBS_Package \
-                       + " |grep 'rpm\|deb'" \
+                       + " |grep 'rpm\"\|deb\"'" \
                        + " |grep " + dbgname + pkginfos[pkgtype]["devsuffix"] + pkginfos[pkgtype]["dash"] + version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the dev package on OBS:"
@@ -404,7 +404,7 @@ def get_packages_on_OBS():
                        + "/" + dname \
                        + "/" + arch \
                        + "/" + OBS_Package \
-                       + " |grep 'rpm\|deb'" \
+                       + " |grep 'rpm\"\|deb\"'" \
                        + " |grep doc |grep -v src |awk -F '\"' '{print $2}'"
                 print "Name of the doc package on OBS:"
                 print params
@@ -454,7 +454,7 @@ def get_packages_on_OBS():
                        + "/" + dname \
                        + "/" + arch \
                        + "/" + OBS_Package \
-                       + " |grep 'rpm\|deb'" \
+                       + " |grep 'rpm\"\|deb\"'" \
                        + " |grep " + binname + "-gui" + pkginfos[pkgtype]["dash"] + version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the gui package on OBS:"
