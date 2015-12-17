@@ -49,6 +49,7 @@ function makeWindows () {
     wget -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${mc}/MediaConch_CLI_${mc}_Windows_x64.zip"
 
     echo "Create Windows package"
+    cp License*.html tmp/
     zip -q -j exec01-$date.zip tmp/*
 
     rm -rf tmp
@@ -66,6 +67,7 @@ function makeMacOS () {
     wget -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${mc}/MediaConch_CLI_${mc}_Mac.dmg"
 
     echo "Create Mac OS package"
+    cp License*.html tmp/
     zip -q -j exec05-$date.zip tmp/*
 
     rm -rf tmp
@@ -131,6 +133,7 @@ function makeUbuntu () {
     wget -q -P tmp "https://mediaarea.net/download/binary/libzen0/${zl}/libzen0_${zl}-1_amd64.xUbuntu_12.04.deb"
 
     echo "Create Ubuntu package"
+    cp License*.html tmp/
     zip -q -j exec09-$date.zip tmp/*
 
     rm -rf tmp
@@ -185,6 +188,7 @@ function makeFedora () {
     wget -q -P tmp "https://mediaarea.net/download/binary/libzen0/${zl}/libzen0-${zl}.x86_64.Fedora_20.rpm"
 
     echo "Create Fedora package"
+    cp License*.html tmp/
     zip -q -j exec13-$date.zip tmp/*
 
     rm -rf tmp
@@ -219,6 +223,7 @@ function makeDebian () {
     wget -q -P tmp "https://mediaarea.net/download/binary/libzen0/${zl}/libzen0_${zl}-1_amd64.Debian_7.0.deb"
 
     echo "Create Debian package"
+    cp License*.html tmp/
     zip -q -j exec17-$date.zip tmp/*
 
     rm -rf tmp
@@ -288,6 +293,7 @@ function makeSuse () {
     wget -q -P tmp "https://mediaarea.net/download/binary/libzen0/${zl}/libzen0-${zl}.x86_64.openSUSE_11.4.rpm"
 
     echo "Create Suse package"
+    cp License*.html tmp/
     zip -q -j exec21-$date.zip tmp/*
 
     rm -rf tmp
@@ -307,6 +313,8 @@ function makeSources () {
     echo "Create Sources package"
     cd tmp
     7za x mediaconch_${mc}_AllInclusive.7z
+    cp ../License*.html mediaconch_AllInclusive/
+    rm -rf mediaconch_AllInclusive/zlib
     zip -q -r ../src01-$date.zip mediaconch_AllInclusive
     cd ../
     cp src01-$date.zip src05-$date.zip
@@ -316,6 +324,22 @@ function makeSources () {
     cp src01-$date.zip src21-$date.zip
 
     rm -rf tmp
+}
+
+function getLicensesFiles () {
+    echo "Download licenses files"
+    if ! b.path.file? "License.html"; then
+        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.html"
+    fi
+
+    if ! b.path.file? "License.GPLv3.html"; then
+        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.GPLv3.html"
+    fi
+
+    if ! b.path.file? "License.MPLv2.html"; then
+        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.MPLv2.html"
+    fi
+
 }
 
 function run () {
@@ -335,6 +359,7 @@ function run () {
         date=$(sanitize_arg $(b.opt.get_opt --date))
 
         # Run all functions to create zip files
+        getLicensesFiles
         makeWindows
         makeMacOS
         makeUbuntu
