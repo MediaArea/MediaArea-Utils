@@ -13,7 +13,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --repo) ]; then
         RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        RepoURL="https://github.com/MediaArea/"
+        RepoURL="https://github.com/MediaArea/MediaInfoLib"
     fi
 
     cd "$WDir"
@@ -25,11 +25,11 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         MIL_source="$SDir"
     else
-        getRepo MediaInfoLib $RepoURL "$WDir"/repos
         MIL_source="$WDir"/repos/MediaInfoLib
+        getRepo "$RepoURL" "$MIL_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
-            cd $MIL_source
+            cd "$MIL_source"
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
@@ -41,7 +41,7 @@ function _get_source () {
 
     # Dependency : ZenLib
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" -r $RepoURL $ZL_gs -${Target} -na
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" $ZL_gs -${Target} -na
 
     # Dependency : zlib
     cd "$WDir"/repos
@@ -61,7 +61,7 @@ function _unix () {
     mkdir MediaInfo_DLL_GNU_FromSource
     cd MediaInfo_DLL_GNU_FromSource
 
-    cp -r $MIL_source .
+    cp -r "$MIL_source" .
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
     chmod +x SO_Compile.sh
     chmod +x MediaInfoLib/Project/GNU/Library/autogen.sh 
@@ -127,7 +127,7 @@ function _windows () {
     mkdir libmediainfo${Version}_AllInclusive
     cd libmediainfo${Version}_AllInclusive
 
-    cp -r $MIL_source .
+    cp -r "$MIL_source" .
 
     # Dependency : ZenLib
     cp -r "$WDir"/ZL/ZenLib_compilation_under_windows ZenLib
@@ -164,7 +164,7 @@ function _source_package () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MIL
-    cp -r $MIL_source .
+    cp -r "$MIL_source" .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfoLib

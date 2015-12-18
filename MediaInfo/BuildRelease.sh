@@ -140,18 +140,18 @@ function _mac () {
     if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
         xz -9e $Log/mac-cli.log
         if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR.sh mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
+            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
         else
-            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR.sh mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Mail
+            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Mail
         fi
     fi
 
     if [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] ; then
         xz -9e $Log/mac-gui.log
         if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR.sh mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
+            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
         else
-            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR.sh mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Mail
+            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Mail
         fi
     fi
 

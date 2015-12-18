@@ -72,20 +72,19 @@ function displayHelp () {
 
 function getRepo () {
     # Arguments :
-    # getRepo $Project $RepoURL $Path
+    # getRepo $RepoURL $Path
 
-    local Project="$1" RepoURL="$2" Path="$3"
+    local RepoURL="$1" Path="$2"
 
-    # TODO: if $RepoURL use the git protocol, we must remove the
-    # last / if present because the git protocol doesn't handle //
-    # ie. git://github.com/MediaArea>>>//<<<ZenLib fail
-
-    cd $Path
-    rm -fr $Project
+    # We ensure the parent directories are created, but not the
+    # destination directory itself, because git clone will fail if
+    # the destination directory already exist
+    mkdir -p "$Path"
+    rm -fr "$Path"
     # TODO: if $Path isn't writable, or if no network is available,
-    # or if the repository url is wrong, ask for --source-path and
+    # or if the repository url is wrong: ask for --source-path and
     # exit
-    git clone "$RepoURL/$Project"
+    git clone "$RepoURL" "$Path"
 }
 
 function run () {

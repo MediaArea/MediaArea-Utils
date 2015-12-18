@@ -166,7 +166,8 @@ function btask.BuildRelease.run () {
     #    Working_dir=$Working_dir/`date +%Y%m%d`-2
     #    mkdir -p $Working_dir
     # + handle a third run, etc
-        
+
+    local Repo
     local ZLB_dir="$Working_dir"/binary/libzen0/$Sub_dir
     local ZLS_dir="$Working_dir"/source/libzen/$Sub_dir
     local ZL_tmp="$Working_dir"/tmp/libzen/$Sub_dir
@@ -189,12 +190,18 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
+    Repo=""
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="-r $(sanitize_arg $(b.opt.get_opt --repo))"
+    fi
+
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
+		# Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$ZL_tmp"/upgrade_version/ZenLib
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -o $Version_old -n $Version_new -sp "$ZL_tmp"/upgrade_version/ZenLib
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -o $Version_old -n $Version_new -wp "$ZL_tmp"/upgrade_version
+        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -o $Version_old -n $Version_new $Repo -wp "$ZL_tmp"/upgrade_version
     fi
 
     cd $(b.get bang.working_dir)/../prepare_source
