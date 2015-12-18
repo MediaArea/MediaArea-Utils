@@ -313,8 +313,23 @@ function makeSources () {
     echo "Create Sources package"
     cd tmp
     7za x mediaconch_${mc}_AllInclusive.7z
+
+    # Copy license files
     cp ../License*.html mediaconch_AllInclusive/
+    cp ../License.*.html mediaconch_AllInclusive/MediaInfoLib
+    cp ../License.*.html mediaconch_AllInclusive/ZenLib
+
+    # Remove zlib directory
     rm -rf mediaconch_AllInclusive/zlib
+
+    # Replace "BSD" by "GPL v3+ and MPL v2+" in file headers
+    grep -rlZ "Use of this source code is governed by a BSD-style license that" | xargs -0 sed -i "s/Use of this source code is governed by a BSD-style license that/Use of this source code is governed by a GPL v3+ and MPL v2+ license that/g"
+    grep -rlZ "This program is freeware under BSD-2-Clause license conditions" | xargs -0 sed -i "s/This program is freeware under BSD-2-Clause license conditions/This program is freeware under GPL v3+ and MPL v2+ license conditions/g"
+
+    # Replace "zlib" by "GPL v3+ and MPL v2+" in file headers
+    grep -rlZ "Use of this source code is governed by a zlib-style license that" | xargs -0 sed -i "s/Use of this source code is governed by a zlib-style license that/Use of this source code is governed by a GPL v3+ and MPL v2+ license that/g"
+    grep -rlZ "This program is freeware under zlib license conditions" | xargs -0 sed -i "s/This program is freeware under zlib license conditions/This program is freeware under GPL v3+ and MPL v2+ license conditions/g"
+
     zip -q -r ../src01-$date.zip mediaconch_AllInclusive
     cd ../
     cp src01-$date.zip src05-$date.zip
