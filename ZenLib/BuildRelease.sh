@@ -197,7 +197,7 @@ function btask.BuildRelease.run () {
 
     cd $(b.get bang.working_dir)/../upgrade_version
     if [ $(b.opt.get_opt --source-path) ]; then
-		# Made a copy, because UV.sh -sp modify the files in place
+        # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$ZL_tmp"/upgrade_version/ZenLib
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -o $Version_old -n $Version_new -sp "$ZL_tmp"/upgrade_version/ZenLib
     else

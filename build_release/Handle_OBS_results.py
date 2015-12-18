@@ -88,17 +88,16 @@ def waiting_loop():
     # Python definitely lack an until statement
     while True:
         compt = compt + 1
-        # At first, check every 10mn
-        if compt < 10:
+        # At first, check every 10mn during 3h20
+        if compt < 20:
             if compt == 1:
                 print "Wait 10mn…"
             else:
                 print "All builds aren’t finished yet, wait another 10mn…"
             time.sleep(600)
-        # Past 1h30, trigger rebuild if some distros are still in
-        # scheduled state, before waiting another 20mn
+        # Past 3h30, trigger rebuilds
         else:
-            print "All builds aren’t finished yet, trigger rebuild(s) and wait 20mn…"
+            print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn…"
             for dname in Distribs.keys():
                 for arch in Distribs[dname]:
                     params = "osc results " + MA_Project \
@@ -117,9 +116,10 @@ def waiting_loop():
         # result will equal 0 when all the distros are build
         if result == "0":
             break
-        if compt > 25:
+        # If we are waiting for more than 9h: (600*20)+(1200*17)
+        if compt > 37:
             params = \
-                   "echo 'After more than 6 hours, the builds weren’t over. The script has quit whitout downloading anything.'" \
+                   "echo 'After more than 9 hours, the builds weren’t over. The script has quit whitout downloading anything.'" \
                    + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'"
             if len(config["Email_CC"]) > 1:
                 params = params + " -c '" + config["Email_CC"] + "'"
