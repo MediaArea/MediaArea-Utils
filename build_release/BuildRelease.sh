@@ -34,6 +34,15 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -sp
 
+    b.opt.add_opt --repo "Source repository URL"
+    b.opt.add_alias --repo -r
+
+    b.opt.add_opt --git-state "Ask for a specific git state of the current project"
+    b.opt.add_alias --git-state -gs
+
+    b.opt.add_opt --mil-gs "Ask for a specific git state for the MIL dependency"
+    b.opt.add_opt --zl-gs "Ask for a specific git state for the ZL dependency"
+
     b.opt.add_flag --build-mac "Build only for Mac"
     b.opt.add_alias --build-mac -bm
 

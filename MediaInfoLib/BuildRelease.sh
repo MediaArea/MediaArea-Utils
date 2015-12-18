@@ -75,9 +75,9 @@ function _mac () {
     if [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
         xz -9e $Log/mac.log
         if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR.sh mac] Problem building MIL" -a $Log/mac.log -c "$MailCC" $Mail
+            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR mac] Problem building MIL" -a $Log/mac.log -c "$MailCC" $Mail
         else
-            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR.sh mac] Problem building MIL" -a $Log/mac.log $Mail
+            echo "The log is http://url/$Log/mac.log" | mailx -s "[BR mac] Problem building MIL" -a $Log/mac.log $Mail
         fi
     fi
 

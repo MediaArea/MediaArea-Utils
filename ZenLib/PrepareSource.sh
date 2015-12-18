@@ -13,7 +13,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --repo) ]; then
         RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        RepoURL="https://github.com/MediaArea/"
+        RepoURL="https://github.com/MediaArea/ZenLib"
     fi
 
     cd "$WDir"
@@ -25,11 +25,11 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         ZL_source="$SDir"
     else
-        getRepo ZenLib $RepoURL "$WDir"/repos
         ZL_source="$WDir"/repos/ZenLib
+        getRepo $RepoURL "$ZL_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
-            cd $ZL_source
+            cd "$ZL_source"
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
@@ -43,7 +43,7 @@ function _unix () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r $ZL_source ZenLib${Version}_compilation_under_unix
+    cp -r "$ZL_source" ZenLib${Version}_compilation_under_unix
     chmod +x ZenLib${Version}_compilation_under_unix/Project/GNU/Library/autogen.sh
 
     echo "2: remove what isn't wanted..."
@@ -68,7 +68,7 @@ function _windows () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r $ZL_source ZenLib${Version}_compilation_under_windows
+    cp -r "$ZL_source" ZenLib${Version}_compilation_under_windows
 
     echo "2: remove what isn't wanted..."
     cd ZenLib${Version}_compilation_under_windows
@@ -90,7 +90,7 @@ function _source_package () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r $ZL_source .
+    cp -r "$ZL_source" .
 
     echo "2: remove what isn't wanted..."
     cd ZenLib

@@ -13,7 +13,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --repo) ]; then
         RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        RepoURL="https://github.com/MediaArea/"
+        RepoURL="https://github.com/MediaArea/MediaInfo"
     fi
 
     cd "$WDir"
@@ -25,11 +25,11 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         MI_source="$SDir"
     else
-        getRepo MediaInfo $RepoURL "$WDir"/repos
         MI_source="$WDir"/repos/MediaInfo
+        getRepo "$RepoURL" "$MI_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
-            cd $MI_source
+            cd "$MI_source"
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
@@ -45,7 +45,7 @@ function _get_source () {
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" -r $RepoURL $MIL_gs $ZL_gs -${Target} -na
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
 
 }
 
@@ -61,7 +61,7 @@ function _unix_cli () {
     mkdir MediaInfo_CLI_GNU_FromSource
     cd MediaInfo_CLI_GNU_FromSource
 
-    cp -r $MI_source .
+    cp -r "$MI_source" .
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
     chmod +x MediaInfo/Project/GNU/CLI/autogen.sh
@@ -124,7 +124,7 @@ function _unix_gui () {
     mkdir MediaInfo_GUI_GNU_FromSource
     cd MediaInfo_GUI_GNU_FromSource
 
-    cp -r $MI_source .
+    cp -r "$MI_source" .
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x MediaInfo/Project/GNU/GUI/autogen.sh
@@ -189,7 +189,7 @@ function _windows () {
     mkdir mediainfo_AllInclusive
     cd mediainfo_AllInclusive
 
-    cp -r $MI_source .
+    cp -r "$MI_source" .
 
     # Dependencies
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
@@ -227,7 +227,7 @@ function _source_package () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MI
-    cp -r $MI_source .
+    cp -r "$MI_source" .
 
     echo "2: remove what isn't wanted..."
     cd MediaInfo

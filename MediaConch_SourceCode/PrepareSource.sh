@@ -13,7 +13,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --repo) ]; then
         RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        RepoURL="https://github.com/MediaArea/"
+        RepoURL="https://github.com/MediaArea/MediaConch_SourceCode"
     fi
 
     cd "$WDir"
@@ -25,11 +25,11 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         MC_source="$SDir"
     else
-        getRepo MediaConch_SourceCode $RepoURL "$WDir"/repos
         MC_source="$WDir"/repos/MediaConch_SourceCode
+        getRepo "$RepoURL" "$MC_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
-            cd $MC_source
+            cd "$MC_source"
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
@@ -45,7 +45,7 @@ function _get_source () {
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd $(b.get bang.working_dir)
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" -r $RepoURL $MIL_gs $ZL_gs -${Target} -na
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
 
 }
 
@@ -61,7 +61,7 @@ function _unix_cli () {
     mkdir MediaConch_CLI_GNU_FromSource
     cd MediaConch_CLI_GNU_FromSource
 
-    cp -r $MC_source MediaConch
+    cp -r "$MC_source" MediaConch
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
     chmod +x MediaConch/Project/GNU/CLI/autogen.sh
@@ -124,7 +124,7 @@ function _unix_gui () {
     mkdir MediaConch_GUI_GNU_FromSource
     cd MediaConch_GUI_GNU_FromSource
 
-    cp -r $MC_source MediaConch
+    cp -r "$MC_source" MediaConch
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x MediaConch/Project/Qt/prepare
@@ -180,7 +180,7 @@ function _windows () {
     mkdir mediaconch_AllInclusive
     cd mediaconch_AllInclusive
 
-    cp -r $MC_source MediaConch
+    cp -r "$MC_source" MediaConch
 
     # MediaInfoLib and ZenLib
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
@@ -220,7 +220,7 @@ function _source_package () {
 
     cd "$WDir"/MC
 
-    cp -r $MC_source MediaConch
+    cp -r "$MC_source" MediaConch
 
     echo "2: remove what isn't wanted..."
     cd MediaConch
