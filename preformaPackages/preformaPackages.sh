@@ -36,6 +36,16 @@ function displayHelp () {
     b.opt.show_usage
 }
 
+# Do not display pushd info
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+# Do not display popd info
+popd () {
+    command popd "$@" > /dev/null
+}
+
 function makeWindows () {
     if b.path.dir? tmp; then
         rm -f tmp/*;
@@ -357,6 +367,135 @@ function getLicensesFiles () {
 
 }
 
+function makeFedoraBuildEnv () {
+    echo "Download Fedora BuildEnv files"
+    repo='http://download.fedoraproject.org/pub/fedora/linux'
+
+    releasever='21'
+    arch='i386'
+    getFedoraAllPackages
+    arch='x86_64'
+    getFedoraAllPackages
+
+    releasever='22'
+    arch='i386'
+    getFedoraAllPackages
+    arch='x86_64'
+    getFedoraAllPackages
+
+    releasever='23'
+    arch='i386'
+    getFedoraAllPackages
+    arch='x86_64'
+    getFedoraAllPackages
+
+    echo "Create Fedora BuildEnv package"
+    cp License*.html tmp/
+    pushd tmp
+    zip -q -r ../buildenv13-$date.zip *
+    popd
+}
+
+function getFedoraRepoFile () {
+    if ! b.path.dir? tmpRepo; then
+        mkdir tmpRepo
+    fi
+
+    pushd tmpRepo
+    if wget -q "$1/repodata/repomd.xml"; then
+        repoFile=$(grep "\-primary.xml.gz" repomd.xml | cut -d\" -f2)
+        repoName=$(echo $repoFile | awk -F/ '{print $NF}' | cut -d. -f -2)
+        rm -f repomd.xml
+        if ! wget -q "$1/${repoFile}" || ! b.path.file? "${repoName}.gz"; then
+            echo "Error downloading repo file : $1/${repoFile}"
+            exit 2
+        fi
+        gunzip -f "${repoName}.gz"
+
+        echo "tmpRepo/$repoName"
+    else
+        echo "Error downloading repomd file : $1/repodata/repomd.xml"
+        exit 2
+    fi
+    popd
+}
+
+function getFedoraPackages () {
+    if [ "${arch}" = "i386" ]; then
+        dlArch="i686"
+    else
+        dlArch=${arch}
+    fi
+
+    while read -r package || [[ -n "$package" ]]; do
+        packagePartUrl=$(grep -A 100 "<name>${package}</name>" $repoFile | grep "location" | egrep -m1 "${dlArch}|noarch" | cut -d\" -f2)
+        packageUrl="${repo}/releases/${releasever}/Everything/${arch}/os/${packagePartUrl}"
+        packageName=$(echo $packagePartUrl | awk -F/ '{print $NF}')
+        if ! b.path.file? "$tmp/$packageName"; then
+            if ! wget -q -N -P $tmp "${packageUrl}" || ! b.path.file? "$tmp/$packageName"; then
+                echo "Error downloading \"${package}\" : ${packageUrl}"
+                rm -f "$tmp/index.html"
+            fi
+        fi
+    done < "$packagesListFile"
+}
+
+function getFedoraUpdatedPackages () {
+    if [ "${arch}" = "i386" ]; then
+        dlArch="i686"
+    else
+        dlArch=${arch}
+    fi
+
+    while read -r package || [[ -n "$package" ]]; do
+        packagePartUrl=$(grep -A 100 "<name>${package}</name>" $repoFileUpdate | grep "location" | egrep -m1 "${dlArch}|noarch" | cut -d\" -f2)
+        if [ "$packagePartUrl" != "" ]; then
+            packageUrl="${repo}/updates/${releasever}/${arch}/${packagePartUrl}"
+            packageName=$(echo $packagePartUrl | awk -F/ '{print $NF}')
+            if ! b.path.file? "$tmp/$packageName"; then
+                if ! wget -q -N -P $tmp "${packageUrl}" || ! b.path.file? "$tmp/$packageName"; then
+                    echo "Error downloading \"${package}\" : ${packageUrl}"
+                    rm -f "$tmp/index.html"
+                fi
+            fi
+        else
+            packagePartUrl=$(grep -A 100 "<name>${package}</name>" $repoFile | grep "location" | egrep -m1 "${dlArch}|noarch" | cut -d\" -f2)
+            packageUrl="${repo}/releases/${releasever}/Everything/${arch}/os/${packagePartUrl}"
+            packageName=$(echo $packagePartUrl | awk -F/ '{print $NF}')
+            if ! b.path.file? "$tmp/$packageName"; then
+                if ! wget -q -N -P $tmp "${packageUrl}" || ! b.path.file? "$tmp/$packageName"; then
+                    echo "Error downloading \"${package}\" : ${packageUrl}"
+                    rm -f "$tmp/index.html"
+                fi
+            fi
+        fi
+    done < "$packagesListFile"
+}
+
+function getFedoraAllPackages () {
+    packagesListFile="packagesList/Fedora-${releasever}.txt"
+
+    # Download vanilia packages
+    repoFile=$(getFedoraRepoFile "${repo}/releases/${releasever}/Everything/${arch}/os")
+
+    tmp="tmp/Fedora-${releasever}-${arch}"
+    if ! b.path.dir? $tmp; then
+        mkdir -p $tmp
+    fi
+
+    getFedoraPackages
+
+    # Download updated packages and vanilia packages when none
+    repoFileUpdate=$(getFedoraRepoFile "${repo}/updates/${releasever}/${arch}")
+
+    tmp="tmp/Fedora-updates-${date}-${releasever}-${arch}"
+    if ! b.path.dir? $tmp; then
+        mkdir -p $tmp
+    fi
+
+    getFedoraUpdatedPackages
+}
+
 function run () {
     load_options
     b.opt.init "$@"
@@ -382,6 +521,7 @@ function run () {
         makeDebian
         makeSuse
         makeSources
+        makeFedoraBuildEnv
 
     fi
 }
