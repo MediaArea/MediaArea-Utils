@@ -29,8 +29,6 @@ function btask.UpgradeVersion.run () {
     index=0
     MC_files[((index++))]="License.html"
     MC_files[((index++))]="Source/CLI/Help.cpp"
-    MC_files[((index++))]="Project/Mac/mkdmg_GUI"
-    MC_files[((index++))]="Project/Mac/mkdmg_CLI"
     MC_files[((index++))]="debian/changelog"
 
     for MC_file in ${MC_files[@]}

@@ -65,8 +65,8 @@ function _unix () {
     mv MediaInfoLib/Project/GNU/Library/AddThisToRoot_DLL_compile.sh SO_Compile.sh
     chmod +x SO_Compile.sh
     chmod +x MediaInfoLib/Project/GNU/Library/autogen.sh 
-    chmod +x MediaInfoLib/Project/Mac/build_SO.sh
-    chmod +x MediaInfoLib/Project/Mac/mktarball.sh
+    chmod +x MediaInfoLib/Project/Mac/BR_extension_SO.sh
+    chmod +x MediaInfoLib/Project/Mac/Make_tarball.sh
 
     # Dependency : ZenLib
     cp -r "$WDir"/ZL/ZenLib_compilation_under_unix ZenLib

@@ -65,8 +65,8 @@ function _unix_cli () {
     mv MediaInfo/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
     chmod +x MediaInfo/Project/GNU/CLI/autogen.sh
-    chmod +x MediaInfo/Project/Mac/build_CLI.sh
-    chmod +x MediaInfo/Project/Mac/mkdmg.sh
+    chmod +x MediaInfo/Project/Mac/BR_extension_CLI.sh
+    chmod +x MediaInfo/Project/Mac/Make_MI_dmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -82,7 +82,7 @@ function _unix_cli () {
         #rm -fr Release
         rm -fr debian
         cd Project
-            rm -fr GNU/GUI Mac/*_GUI.sh Mac/prepare_for_xcode.sh
+            rm -fr GNU/GUI Mac/*_GUI.sh Mac/Prepare_for_Xcode.sh
             rm -fr WxWidgets
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
             rm -fr OBS Solaris
@@ -128,9 +128,9 @@ function _unix_gui () {
     mv MediaInfo/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x MediaInfo/Project/GNU/GUI/autogen.sh
-    chmod +x MediaInfo/Project/Mac/build_GUI.sh
-    chmod +x MediaInfo/Project/Mac/prepare_for_xcode.sh
-    chmod +x MediaInfo/Project/Mac/mkdmg.sh
+    chmod +x MediaInfo/Project/Mac/BR_extension_GUI.sh
+    chmod +x MediaInfo/Project/Mac/Prepare_for_Xcode.sh
+    chmod +x MediaInfo/Project/Mac/Make_MI_dmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .

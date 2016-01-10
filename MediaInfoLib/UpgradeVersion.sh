@@ -34,6 +34,8 @@ function btask.UpgradeVersion.run () {
     MIL_files[((index++))]="debian/changelog"
     MIL_files[((index++))]="Project/OBS/deb6.dsc"
     MIL_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    MIL_files[((index++))]="Project/OBS/u12.04.dsc"
+    MIL_files[((index++))]="Project/OBS/u12.04.debian/changelog"
     MIL_files[((index++))]="Project/OBS/deb9.dsc"
     MIL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MIL_files[((index++))]="Project/Solaris/mkpkg"

@@ -65,8 +65,8 @@ function _unix_cli () {
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
     chmod +x MediaConch/Project/GNU/CLI/autogen.sh
-    chmod +x MediaConch/Project/Mac/build_CLI.sh
-    chmod +x MediaConch/Project/Mac/mkdmg.sh
+    chmod +x MediaConch/Project/Mac/BR_extension_CLI.sh
+    chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -128,8 +128,8 @@ function _unix_gui () {
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x MediaConch/Project/Qt/prepare
-    chmod +x MediaConch/Project/Mac/build_GUI.sh
-    chmod +x MediaConch/Project/Mac/mkdmg.sh
+    chmod +x MediaConch/Project/Mac/BR_extension_GUI.sh
+    chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .

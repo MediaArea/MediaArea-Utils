@@ -29,8 +29,6 @@ function btask.UpgradeVersion.run () {
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
-    MI_files[((index++))]="Project/Mac/mkdmg_CLI"
-    MI_files[((index++))]="Project/Mac/mkdmg_GUI"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
     MI_files[((index++))]="debian/changelog"
