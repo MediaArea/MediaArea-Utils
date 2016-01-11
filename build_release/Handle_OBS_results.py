@@ -860,7 +860,14 @@ if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
         elif OBS_Package == "MediaInfo_deb9":
             table = "releases_obs_mi_deb9"
 
-# The architecture names (x86_64, i586, …) are imposed by OBS
+# The architecture names (x86_64, i586, …) are imposed by OBS.
+#
+# If an architecture is actived on OBS, but not listed here, 
+# pkginfos[pkgtype][arch] will raise a KeyError.
+#
+# In the declaration of a dictionary, you MUST put spaces after the
+# commas, if not python can behave strangely.
+#
 pkginfos = {
     "deb": {
         "devsuffix": "-dev", "debugsuffix": "-dbg",
@@ -871,13 +878,15 @@ pkginfos = {
         "devsuffix": "-devel", "debugsuffix": "-debuginfo",
         "dash": "-", "separator": ".",
         "x86_64": "x86_64", "i586": "i686", "ppc64": "ppc64",
-        "armv7l": "armv7l"
-    },
+        "aarch64": "aarch64", "armv7l": "armv7l",
+        "armv6l": "armv6l"
+    }
+    #},
     # Arch isn’t handled yet
     #"pkg.tar.xz": {
     #    "devsuffix": "", "dash": "", "separator": "",
     #    "x86_64": "", "i586": ""
-    #},
+    #}
 }
 
 # TODO: automaticaly build the dictionnary from the active distros
@@ -907,6 +916,7 @@ Distribs = {
     "openSUSE_13.1": ["x86_64", "i586"],
     "openSUSE_13.2": ["x86_64", "i586"],
     "openSUSE_Factory": ["x86_64", "i586"],
+    "openSUSE_Factory_ARM": ["aarch64", "armv7l", "armv6l"],
     "openSUSE_Leap_42.1": ["x86_64"],
     "openSUSE_Tumbleweed": ["x86_64", "i586"],
     "xUbuntu_12.04": ["x86_64", "i586"],
@@ -915,7 +925,6 @@ Distribs = {
     "xUbuntu_15.04": ["x86_64", "i586"],
     "xUbuntu_15.10": ["x86_64", "i586"],
 }
-    #"openSUSE_Factory_ARM": ["aarch64", "armv6l", "armv7l"],
     #"Arch_Core": ["x86_64", "i586"],
     #"Arch_Extra": ["x86_64", "i586"],
 
