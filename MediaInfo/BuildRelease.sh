@@ -25,10 +25,10 @@ function _mac_cli () {
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_CLI_GNU_FromSource ;
-            MediaInfo/Project/Mac/build_CLI.sh ;
+            MediaInfo/Project/Mac/BR_extension_CLI.sh ;
             $Key_chain ;
             cd MediaInfo/Project/Mac ;
-            ./mkdmg.sh mi cli $Version_new"
+            ./Make_MI_dmg.sh cli $Version_new"
 
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
 
@@ -55,16 +55,18 @@ function _mac_gui () {
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_GUI_GNU_FromSource ;
-            MediaInfo/Project/Mac/build_GUI.sh ;
+            mkdir -p Shared/Source
+            cp -r ~/Documents/almin/WxWidgets Shared/Source
+            MediaInfo/Project/Mac/BR_extension_GUI.sh ;
             $Key_chain ;
             cd MediaInfo/Project/Mac ;
-            ./mkdmg.sh mi gui $Version_new"
+            ./Make_MI_dmg.sh gui $Version_new"
 
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
 
     if ! b.opt.has_flag? --snapshot; then
 
-        # Return 1 if MIL is present, 0 otherwise
+        # Return 1 if the dylib is present, 0 otherwise
         Dylib_OK=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "ls $Mac_working_dir/dylib_for_xcode/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz" |wc -l`
 
         if [ $Dylib_OK -eq 1 ]; then
@@ -76,13 +78,13 @@ function _mac_gui () {
                     rm -fr MediaInfoLib ;
                     tar xf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz ;
                     cd ../MediaInfo_GUI_GNU_FromSource ;
-                    MediaInfo/Project/Mac/prepare_for_xcode.sh"
+                    MediaInfo/Project/Mac/Prepare_for_Xcode.sh"
         else
             echo
             echo
             echo
             echo
-            echo "WARNING! Can’t found dylib in $Mac_working_dir/dylib_for_xcode!"
+            echo "WARNING! Can’t found the dylib in $Mac_working_dir/dylib_for_xcode!"
             echo "It’s probably because you have not run BR.sh for MIL"
             echo "before launching BR.sh for MI."
             echo
@@ -159,7 +161,7 @@ function _mac () {
 
 function _windows () {
 
-    local sp RWorking_dir
+    local SSHP RWorking_dir
 
     # SSH prefix
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"

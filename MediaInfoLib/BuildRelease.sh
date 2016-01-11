@@ -25,12 +25,16 @@ function _mac_mil () {
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_DLL_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_DLL_GNU_FromSource ;
-            MediaInfoLib/Project/Mac/build_SO.sh ;
+            MediaInfoLib/Project/Mac/BR_extension_SO.sh ;
             $Key_chain ;
             cd MediaInfoLib/Project/Mac ;
-            ./mktarball.sh ${Version_new}"
+            ./Make_tarball.sh ${Version_new}"
 
     if ! b.opt.has_flag? --snapshot; then
+        echo
+        echo
+        echo "Preparing the dylib for Xcode..."
+        echo
         $SSHP "cd $Mac_working_dir ;
                 test -d dylib_for_xcode || mkdir dylib_for_xcode ;
                 rm -fr dylib_for_xcode/* ;
@@ -228,10 +232,12 @@ function _linux () {
         _obs > "$Log"/linux.log 2>&1
         _obs_deb6 >> "$Log"/linux.log 2>&1
         _obs_deb deb9 >> "$Log"/linux.log 2>&1
+        _obs_deb u12.04 >> "$Log"/linux.log 2>&1
     else
         _obs
         _obs_deb6
         _obs_deb deb9
+        _obs_deb u12.04
         echo
         echo Launch in background the python script which check
         echo the build results and download the packages...
@@ -244,6 +250,8 @@ function _linux () {
     python Handle_OBS_results.py $OBS_project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_deb6.log 2>&1 &
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfoLib_deb9 $Version_new "$MILB_dir" > "$Log"/obs_deb9.log 2>&1 &
+    sleep 10
+    python Handle_OBS_results.py $OBS_project MediaInfoLib_u12.04 $Version_new "$MILB_dir" > "$Log"/obs_u12.04.log 2>&1 &
 
 }
 

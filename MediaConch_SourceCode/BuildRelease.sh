@@ -25,10 +25,10 @@ function _mac_cli () {
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
-            MediaConch/Project/Mac/build_CLI.sh ;
+            MediaConch/Project/Mac/BR_extension_CLI.sh ;
             $Key_chain ;
             cd MediaConch/Project/Mac ;
-            ./mkdmg.sh mc cli $Version_new"
+            ./Make_MC_dmg.sh cli $Version_new"
 
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg "$MCC_dir"
 
@@ -53,10 +53,10 @@ function _mac_gui () {
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
-            MediaConch/Project/Mac/build_GUI.sh ;
+            MediaConch/Project/Mac/BR_extension_GUI.sh ;
             $Key_chain ;
             cd MediaConch/Project/Mac ;
-            ./mkdmg.sh mc gui $Version_new"
+            ./Make_MC_dmg.sh gui $Version_new"
 
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
