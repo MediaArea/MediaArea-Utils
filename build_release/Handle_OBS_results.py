@@ -916,7 +916,6 @@ Distribs = {
     "openSUSE_13.1": ["x86_64", "i586"],
     "openSUSE_13.2": ["x86_64", "i586"],
     "openSUSE_Factory": ["x86_64", "i586"],
-    "openSUSE_Factory_ARM": ["aarch64", "armv7l", "armv6l"],
     "openSUSE_Leap_42.1": ["x86_64"],
     "openSUSE_Tumbleweed": ["x86_64", "i586"],
     "xUbuntu_12.04": ["x86_64", "i586"],
@@ -925,6 +924,7 @@ Distribs = {
     "xUbuntu_15.04": ["x86_64", "i586"],
     "xUbuntu_15.10": ["x86_64", "i586"],
 }
+    #"openSUSE_Factory_ARM": ["aarch64", "armv7l", "armv6l"],
     #"Arch_Core": ["x86_64", "i586"],
     #"Arch_Extra": ["x86_64", "i586"],
 
