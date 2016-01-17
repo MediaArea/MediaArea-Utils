@@ -214,7 +214,7 @@ function _windows () {
 #            mkdir -p Shared/Source
 #            cp -r ../../WxWidgets Shared/Source ;
 #            ./GUI_Compile.sh --with-wx-static --enable-arch-x86_64"
-#            # Because wx doesn't compile in 32 bits
+#            # Because wx doesn’t compile in 32 bits
 #            #./GUI_Compile.sh --with-wx-static --enable-arch-x86_64 --enable-arch-i386"
 #
 #    echo

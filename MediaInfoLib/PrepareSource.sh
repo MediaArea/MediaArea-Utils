@@ -75,7 +75,7 @@ function _unix () {
     mkdir -p Shared/Project/zlib
     mv MediaInfoLib/Project/zlib/Compile.sh Shared/Project/zlib
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
         #rm -fr Release
@@ -137,7 +137,7 @@ function _windows () {
     rm -fr zlib/.git zlib/contrib zlib/examples zlib/doc
     mv MediaInfoLib/Project/zlib/projects zlib
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfoLib
         rm -f .cvsignore .gitignore
         rm -fr .git
@@ -166,7 +166,7 @@ function _source_package () {
     cd "$WDir"/MIL
     cp -r "$MIL_source" .
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
         #rm -fr Release

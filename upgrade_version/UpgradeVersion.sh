@@ -33,7 +33,7 @@ function load_options () {
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
-    # WDir and SDir aren't used togheter at the same time :
+    # WDir and SDir aren’t used togheter at the same time :
     # WDir is used for git, SDir for modify a local repertory
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -sp
@@ -105,7 +105,7 @@ function run () {
         Version_new=$(sanitize_arg $(b.opt.get_opt --new))
         # For the first loop : in the files with version with
         # commas, to avoid the replacement of X,Y,ZZ by X.Y.ZZ we
-        # need to specify \. instead of . (because it's a regexp)
+        # need to specify \. instead of . (because it’s a regexp)
         Version_old_escaped=$(b.str.replace_all Version_old '.' '\.')
         # For the second loop : version with commas
         Version_old_comma=$(b.str.replace_all Version_old '.' ',')
@@ -149,7 +149,7 @@ function run () {
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
             if b.path.dir? $WDir && ! b.path.writable? $WDir; then
                 echo
-                echo "The directory $WDir isn't writable : will use /tmp instead."
+                echo "The directory $WDir isn’t writable : will use /tmp instead."
                 WDir=/tmp/
             else
                 # TODO: Handle exception if mkdir fail
@@ -163,7 +163,7 @@ function run () {
             SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$SDir"; then
                 echo
-                echo "The directory $SDir doesn't exist!"
+                echo "The directory $SDir doesn’t exist!"
                 echo
                 exit
             fi
@@ -184,7 +184,7 @@ function run () {
         else
             echo "Error : no task found for $Project!"
             echo
-            echo "Warning : you must be in UpgradeVersion.sh's directory to launch it."
+            echo "Warning : you must be in UpgradeVersion.sh’s directory to launch it."
             echo "e.g. /path/to/MediaArea-Utils/upgrade_version"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
         fi

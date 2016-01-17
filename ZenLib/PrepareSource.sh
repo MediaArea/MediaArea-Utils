@@ -46,7 +46,7 @@ function _unix () {
     cp -r "$ZL_source" ZenLib${Version}_compilation_under_unix
     chmod +x ZenLib${Version}_compilation_under_unix/Project/GNU/Library/autogen.sh
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd ZenLib${Version}_compilation_under_unix
         rm -fr .cvsignore .git*
         #rm -fr Release
@@ -70,7 +70,7 @@ function _windows () {
     cd "$WDir"/ZL
     cp -r "$ZL_source" ZenLib${Version}_compilation_under_windows
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd ZenLib${Version}_compilation_under_windows
         rm -fr .cvsignore .git*
         #rm -fr Release
@@ -92,7 +92,7 @@ function _source_package () {
     cd "$WDir"/ZL
     cp -r "$ZL_source" .
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd ZenLib
         rm -fr .cvsignore .git*
         #rm -fr Release

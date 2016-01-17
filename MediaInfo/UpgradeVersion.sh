@@ -92,9 +92,9 @@ function btask.UpgradeVersion.run () {
 
         echo "${MI_source}/${MI_file}"
 
-        # If $Version_old_build is set = it's already include in
+        # If $Version_old_build is set = it’s already include in
         # $Version_old_escaped, so we will try to replace
-        # major.minor.patch.build.build, and that doesn't exist in
+        # major.minor.patch.build.build, and that doesn’t exist in
         # the file
         if [ "$Version_old_build" = "0" ] && [ "$Version_new_build" != "0" ]; then
             updateFile "$Version_old_escaped"\.0 $Version_new "${MI_source}/${MI_file}"

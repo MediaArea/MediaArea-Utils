@@ -75,7 +75,7 @@ function _unix_cli () {
     # Dependency : zlib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -fr .cvsignore .git*
         rm -f History_GUI.txt
@@ -141,7 +141,7 @@ function _unix_gui () {
     # Dependency : wxWidgets
     mv MediaInfo/Project/WxWidgets Shared/Project
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -fr .cvsignore .git*
         rm -f History_CLI.txt
@@ -196,7 +196,7 @@ function _windows () {
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -f .cvsignore .gitignore
         rm -fr .git
@@ -229,7 +229,7 @@ function _source_package () {
     cd "$WDir"/MI
     cp -r "$MI_source" .
 
-    echo "2: remove what isn't wanted..."
+    echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -fr .cvsignore .git*
         #rm -fr Release
