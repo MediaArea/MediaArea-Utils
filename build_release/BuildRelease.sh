@@ -58,7 +58,7 @@ function load_options () {
 
     b.opt.add_flag --log "Log the output in a file instead of display it"
 
-    b.opt.add_flag --no-cleanup "Don't erase the temporary directories"
+    b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
 
     # Mandatory arguments
@@ -153,7 +153,7 @@ function run () {
             Mac_working_dir="${Mac_working_dir}/releases"
         else
             echo
-            echo "If you don't ask a snapshot, you must provide"
+            echo "If you don’t ask a snapshot, you must provide"
             echo "the new version of the release (with --new)"
             echo
             exit
@@ -181,7 +181,7 @@ function run () {
             Working_dir="$(sanitize_arg $(b.opt.get_opt --working-path))"
             if b.path.dir? "$Working_dir" && ! b.path.writable? "$Working_dir"; then
                 echo
-                echo "The directory $Working_dir isn't writable : will use /tmp instead."
+                echo "The directory $Working_dir isn’t writable : will use /tmp instead."
                 echo
                 Working_dir=/tmp
             fi
@@ -191,7 +191,7 @@ function run () {
             Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$Source_dir"; then
                 echo
-                echo "The directory $Source_dir doesn't exist!"
+                echo "The directory $Source_dir doesn’t exist!"
                 echo
                 exit
             fi
@@ -231,7 +231,7 @@ function run () {
             echo
             echo "Error : no task found for $Project!"
             echo
-            echo "Warning : you must be in BuildRelease.sh's directory to launch it."
+            echo "Warning : you must be in BuildRelease.sh’s directory to launch it."
             echo "e.g. /path/to/MediaArea-Utils/buildrelease"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
             echo

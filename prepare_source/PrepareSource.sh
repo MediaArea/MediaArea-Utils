@@ -54,10 +54,10 @@ function load_options () {
     # Required for the call in _get_source
     b.opt.add_alias --all -all
 
-    b.opt.add_flag --no-cleanup "Don't erase the temporary directories"
+    b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
 
-    b.opt.add_flag --no-archives "Don't create the archives"
+    b.opt.add_flag --no-archives "Don’t create the archives"
     b.opt.add_alias --no-archives --no-archive
     b.opt.add_alias --no-archives -na
 
@@ -81,7 +81,7 @@ function getRepo () {
     # the destination directory already exist
     mkdir -p "$Path"
     rm -fr "$Path"
-    # TODO: if $Path isn't writable, or if no network is available,
+    # TODO: if $Path isn’t writable, or if no network is available,
     # or if the repository url is wrong: ask for --source-path and
     # exit
     git clone "$RepoURL" "$Path"
@@ -115,9 +115,10 @@ function run () {
 
         Version=""
         if [ $(b.opt.get_opt --version) ]; then
-            # We put an _ in $Version, this way if the user doesn't give
-            # an --version argument, we don't generate directories and
-            # archives with __ (e.g. MediaInfo_GUI__GNU_FromSource)
+            # We put an _ in $Version, this way if the user doesn’t
+            # give an --version argument, we don’t generate
+            # directories and archives with __
+            # (e.g. MediaInfo_GUI__GNU_FromSource)
             Version="_$(sanitize_arg $(b.opt.get_opt --version))"
         fi
 
@@ -137,7 +138,7 @@ function run () {
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
             if b.path.dir? "$WDir" && ! b.path.writable? "$WDir"; then
                 echo
-                echo "The directory $WDir isn't writable : will use /tmp instead."
+                echo "The directory $WDir isn’t writable : will use /tmp instead."
                 echo
                 WDir=/tmp/
             else
@@ -152,7 +153,7 @@ function run () {
             SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$SDir"; then
                 echo
-                echo "The directory $SDir doesn't exist!"
+                echo "The directory $SDir doesn’t exist!"
                 echo
                 exit
             fi
@@ -183,7 +184,7 @@ function run () {
         else
             echo "Error : no task found for $Project!"
             echo
-            echo "Warning : you must be in PrepareSource.sh's directory to launch it."
+            echo "Warning : you must be in PrepareSource.sh’s directory to launch it."
             echo "e.g. /path/to/MediaArea-Utils/prepare_source"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
         fi

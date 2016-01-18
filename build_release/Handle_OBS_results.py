@@ -551,7 +551,7 @@ def verify_states_and_files():
     # Careful: if multiple instances run at the same time (debX)
     # and one of them doesn’t download its packages, the problem
     # may not be detected. Because the packages downloaded by other
-    # instances will be counted in nb_succeeded.
+    # instances will be counted in nb_bin.
 
     nb_bin = 0
     params = "ls " + destination + "/" + binname + "*" + version + "*" \
@@ -915,7 +915,6 @@ Distribs = {
     "openSUSE_11.4": ["x86_64", "i586"],
     "openSUSE_13.1": ["x86_64", "i586"],
     "openSUSE_13.2": ["x86_64", "i586"],
-    "openSUSE_Factory": ["x86_64", "i586"],
     "openSUSE_Leap_42.1": ["x86_64"],
     "openSUSE_Tumbleweed": ["x86_64", "i586"],
     "xUbuntu_12.04": ["x86_64", "i586"],
@@ -924,6 +923,7 @@ Distribs = {
     "xUbuntu_15.04": ["x86_64", "i586"],
     "xUbuntu_15.10": ["x86_64", "i586"],
 }
+    #"openSUSE_Factory": ["x86_64", "i586"],
     #"openSUSE_Factory_ARM": ["aarch64", "armv7l", "armv6l"],
     #"Arch_Core": ["x86_64", "i586"],
     #"Arch_Extra": ["x86_64", "i586"],

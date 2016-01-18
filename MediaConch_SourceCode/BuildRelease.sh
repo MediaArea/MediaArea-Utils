@@ -34,6 +34,34 @@ function _mac_cli () {
 
 }
 
+function _mac_daemon () {
+
+    cd "$MC_tmp"
+
+    # Clean up
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
+            cd $Mac_working_dir ;
+            rm -fr MediaConch_Daemon*"
+
+    echo
+    echo "Compile MC daemon for mac..."
+    echo
+
+    scp -P $Mac_SSH_port prepare_source/archives/MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz
+
+            #cd MediaConch_Daemon_${Version_new}_GNU_FromSource ;
+    $SSHP "cd $Mac_working_dir ;
+            tar xf MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz ;
+            cd MediaConch_Daemon_GNU_FromSource ;
+            MediaConch/Project/Mac/BR_extension_Daemon.sh ;
+            $Key_chain ;
+            cd MediaConch/Project/Mac ;
+            ./Make_MC_dmg.sh daemon $Version_new"
+
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Daemon_GNU_FromSource/MediaConch/Project/Mac/MediaConch_Daemon_${Version_new}_Mac.dmg "$MCC_dir"
+
+}
+
 function _mac_gui () {
 
     cd "$MC_tmp"
@@ -83,7 +111,18 @@ function _mac () {
         else
             _mac_cli
         fi
-        Try=$(($Try + 1))            
+        Try=$(($Try + 1))
+    done
+
+    Try=0
+    touch "$MCC_dir"/MediaConch_Daemon_${Version_new}_Mac.dmg
+    until [ `ls -l "$MCC_dir"/MediaConch_Daemon_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
+        if b.opt.has_flag? --log; then
+            _mac_daemon >> "$Log"/mac-daemon.log 2>&1
+        else
+            _mac_daemon
+        fi
+        Try=$(($Try + 1))
     done
 
     Try=0
