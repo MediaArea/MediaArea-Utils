@@ -34,31 +34,31 @@ function _mac_cli () {
 
 }
 
-function _mac_daemon () {
+function _mac_server () {
 
     cd "$MC_tmp"
 
     # Clean up
     $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir ;
             cd $Mac_working_dir ;
-            rm -fr MediaConch_Daemon*"
+            rm -fr MediaConch_Server*"
 
     echo
-    echo "Compile MC daemon for mac..."
+    echo "Compile MC server for mac..."
     echo
 
-    scp -P $Mac_SSH_port prepare_source/archives/MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz
+    scp -P $Mac_SSH_port prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaConch_Daemon_${Version_new}_GNU_FromSource ;
+            #cd MediaConch_Server_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
-            tar xf MediaConch_Daemon_${Version_new}_GNU_FromSource.tar.xz ;
-            cd MediaConch_Daemon_GNU_FromSource ;
-            MediaConch/Project/Mac/BR_extension_Daemon.sh ;
+            tar xf MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz ;
+            cd MediaConch_Server_GNU_FromSource ;
+            MediaConch/Project/Mac/BR_extension_Server.sh ;
             $Key_chain ;
             cd MediaConch/Project/Mac ;
-            ./Make_MC_dmg.sh daemon $Version_new"
+            ./Make_MC_dmg.sh server $Version_new"
 
-    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Daemon_GNU_FromSource/MediaConch/Project/Mac/MediaConch_Daemon_${Version_new}_Mac.dmg "$MCC_dir"
+    scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Server_GNU_FromSource/MediaConch/Project/Mac/MediaConch_Server_${Version_new}_Mac.dmg "$MCD_dir"
 
 }
 
@@ -115,12 +115,12 @@ function _mac () {
     done
 
     Try=0
-    touch "$MCC_dir"/MediaConch_Daemon_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCC_dir"/MediaConch_Daemon_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
+    touch "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg
+    until [ `ls -l "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
         if b.opt.has_flag? --log; then
-            _mac_daemon >> "$Log"/mac-daemon.log 2>&1
+            _mac_server >> "$Log"/mac-server.log 2>&1
         else
-            _mac_daemon
+            _mac_server
         fi
         Try=$(($Try + 1))
     done
@@ -234,7 +234,7 @@ function _linux () {
     fi
 
     cd $(b.get bang.working_dir)
-    python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCG_dir" > "$Log"/obs_main.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" > "$Log"/obs_main.log 2>&1 &
 
 }
 
@@ -249,6 +249,7 @@ function btask.BuildRelease.run () {
     # + handle a third run, etc
 
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
+    local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
     local MCS_dir="$Working_dir"/source/mediaconch/$Sub_dir
     local MC_tmp="$Working_dir"/tmp/mediaconch/$Sub_dir
@@ -258,11 +259,13 @@ function btask.BuildRelease.run () {
     echo
 
     rm -fr "$MCC_dir"
+    rm -fr "$MCD_dir"
     rm -fr "$MCG_dir"
     rm -fr "$MCS_dir"
     rm -fr "$MC_tmp"
 
     mkdir -p "$MCC_dir"
+    mkdir -p "$MCD_dir"
     mkdir -p "$MCG_dir"
     mkdir -p "$MCS_dir"
     mkdir -p "$MC_tmp"
@@ -288,6 +291,7 @@ function btask.BuildRelease.run () {
     if [ "$Target" = "mac" ]; then
         _mac
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
     fi
 
@@ -316,6 +320,7 @@ function btask.BuildRelease.run () {
             echo _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
+        mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"

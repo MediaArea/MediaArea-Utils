@@ -91,13 +91,13 @@ def waiting_loop():
         # At first, check every 10mn during 3h20
         if compt < 20:
             if compt == 1:
-                print "Wait 10mn…"
+                print "Wait 10mn..."
             else:
-                print "All builds aren’t finished yet, wait another 10mn…"
+                print "All builds aren’t finished yet, wait another 10mn..."
             time.sleep(600)
         # Past 3h30, trigger rebuilds
         else:
-            print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn…"
+            print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn..."
             for dname in Distribs.keys():
                 for arch in Distribs[dname]:
                     params = "osc results " + MA_Project \
@@ -485,22 +485,63 @@ def get_packages_on_OBS():
                                + " " + config["Email_to"]
                         subprocess.call(params, shell=True)
 
+            ##################
+            # Server package #
+            ##################
+
+            if binname == "mediaconch":
+
+                # name-server[_|-]version[-1][_|.]arch.[deb|rpm]
+                servername_wanted = binname + "-server" \
+                        + pkginfos[pkgtype]["dash"] + version \
+                        + revision \
+                        + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
+                        + "." + dname \
+                        + "." + pkgtype
+                servername_final = os.path.join(destination_server, servername_wanted)
+
+                servername_obs_side = "0"
+                # Fetch the name of the package on OBS
+                params = "osc api /build/" + OBS_Project \
+                       + "/" + dname \
+                       + "/" + arch \
+                       + "/" + OBS_Package \
+                       + " |grep 'rpm\"\|deb\"'" \
+                       + " |grep " + binname + "-server" + pkginfos[pkgtype]["dash"] + version \
+                       + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+                print "Name of the server package on OBS:"
+                print params
+                servername_obs_side = subprocess.check_output(params, shell=True).strip()
+
+                # If the server package is build
+                if len(servername_obs_side) > 1:
+                    params_getpackage = \
+                            "osc api /build/" + OBS_Project \
+                            + "/" + dname \
+                            + "/" + arch \
+                            + "/" + OBS_Package \
+                            + "/" + servername_obs_side \
+                            + " > " + servername_final
+                    print "Command to fetch the server package:"
+                    print params_getpackage
+                    print
+                    subprocess.call(params_getpackage, shell=True)
+
+                    # If the server package is build, but hasn’t
+                    # been downloaded for some raison.
+                    if not os.path.isfile(servername_final):
+                        params = \
+                               "echo '" + dname + " (" + arch + "): the server package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
+                               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
+                               + " " + config["Email_to"]
+                        subprocess.call(params, shell=True)
+
             ###########################
             # Put the filenames in DB #
             ###########################
 
             # If we run for a release
             if len(dlpages_table) > 1:
-
-                # For MC/MI
-                if prjkind == "gui":
-                    cursor.execute("UPDATE " + dlpages_table + " SET"\
-                            + " version = '" + version + "'," \
-                            + " cliname = '" + binname_wanted + "'," \
-                            + " clinamedbg = '" + dbgname_wanted + "'," \
-                            + " guiname = '" + guiname_wanted + "'" \
-                            + " WHERE platform = '" + dname + "'" \
-                            + " AND arch = '" + arch + "';")
 
                 # For the libs
                 if prjkind == "lib":
@@ -511,6 +552,28 @@ def get_packages_on_OBS():
                             + " libnamedev = '" + devname_wanted + "'" \
                             + " WHERE platform = '" + dname + "'" \
                             + " AND arch = '" + arch + "';")
+
+                # For MC
+                if binname == "mediaconch":
+                    cursor.execute("UPDATE " + dlpages_table + " SET"\
+                            + " version = '" + version + "'," \
+                            + " cliname = '" + binname_wanted + "'," \
+                            + " clinamedbg = '" + dbgname_wanted + "'," \
+                            + " servername = '" + servername_wanted + "'" \
+                            + " guiname = '" + guiname_wanted + "'" \
+                            + " WHERE platform = '" + dname + "'" \
+                            + " AND arch = '" + arch + "';")
+
+                # For MI
+                if binname == "mediainfo":
+                    cursor.execute("UPDATE " + dlpages_table + " SET"\
+                            + " version = '" + version + "'," \
+                            + " cliname = '" + binname_wanted + "'," \
+                            + " clinamedbg = '" + dbgname_wanted + "'," \
+                            + " guiname = '" + guiname_wanted + "'" \
+                            + " WHERE platform = '" + dname + "'" \
+                            + " AND arch = '" + arch + "';")
+
 
             print "-----------------------"
 
@@ -641,6 +704,28 @@ def verify_states_and_files():
                    + " " + config["Email_to"]
             subprocess.call(params, shell=True)
 
+    ###################
+    # Server packages #
+    ###################
+
+    if binname == "mediaconch":
+        nb_server = 0
+        params = "ls " + destination_server + "/" + binname + "-server" + "?" + version + "*" \
+               + " |grep 'rpm\|deb'" \
+               + " |wc -l"
+        result = subprocess.check_output(params, shell=True).strip()
+        nb_server = int(result)
+        
+        print "server: " + str(nb_server)
+
+        if nb_server < nb_succeeded:
+            params = \
+                   "echo 'The number of downloaded server packages is lower than the number of succeeded server packages on OBS:\n" \
+                   + str(nb_succeeded) + " succeeded and " + str(nb_server) + " downloaded.'" \
+                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
+                   + " " + config["Email_to"]
+            subprocess.call(params, shell=True)
+
     ################
     # GUI packages #
     ################
@@ -751,7 +836,8 @@ time_start = time.time()
 # 2 $OBS_Package (ZenLib, MediaInfoLib, …)
 # 3 version
 # 4 destination for the packages
-# [optional: 5 destination for the GUI packages]
+# For MC: 5 destination for the server packages and 6 for the GUI
+# For MI: 5 destination for the GUI packages
 
 #
 # Handle the variables
@@ -761,14 +847,11 @@ OBS_Project = sys.argv[1]
 OBS_Package = sys.argv[2]
 version = sys.argv[3]
 destination = sys.argv[4]
+# The directory from where the python script is executed
+script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-# os.path.realpath(__file__) = the directory from where the python
-# script is executed
 config = {}
-execfile( os.path.join(
-                os.path.dirname(os.path.realpath(__file__)),
-                "Handle_OBS_results.conf"),
-          config)
+execfile( os.path.join( script_emplacement, "Handle_OBS_results.conf"), config)
  
 MA_Project = OBS_Project + "/" + OBS_Package
 dlpages_table = "0"
@@ -821,7 +904,8 @@ if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     prjkind = "gui"
     binname = "mediaconch"
     dbgname = "mediaconch"
-    destination_gui = sys.argv[5]
+    destination_server = sys.argv[5]
+    destination_gui = sys.argv[6]
     if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
         if OBS_Package == "MediaConch":
             table = "snapshots_obs_mc"
@@ -934,6 +1018,9 @@ Distribs = {
 
 if not os.path.exists(destination):
     os.makedirs(destination)
+if binname == "mediaconch":
+    if not os.path.exists(destination_server):
+        os.makedirs(destination_server)
 if prjkind == "gui":
     if not os.path.exists(destination_gui):
         os.makedirs(destination_gui)
@@ -955,6 +1042,4 @@ verify_states_and_files()
 
 # If we run for MC or MI, and this is a release
 #if (prjkind == "gui") and (len(dlpages_table) > 1):
-#    execfile( os.path.join(
-#                      os.path.dirname(os.path.realpath(__file__)),
-#                    "Generate_dl_pages.py"))
+#    execfile( os.path.join( script_emplacement, "Generate_dl_pages.py" ))

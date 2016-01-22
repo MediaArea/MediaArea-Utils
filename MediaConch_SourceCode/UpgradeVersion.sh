@@ -53,6 +53,7 @@ function btask.UpgradeVersion.run () {
     unset -v MC_files
     index=0
     MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
+    MC_files[((index++))]="Project/GNU/Server/configure.ac" 
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
     MC_files[((index++))]="Project/OBS/obs_mediaconch" 
