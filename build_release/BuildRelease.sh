@@ -81,7 +81,7 @@ function update_DSC () {
 
     if [ $# -lt 3 ]; then
         echo "Insuffisent parameters for update_DSC"
-        exit
+        exit 1
     fi
     
     Size=`ls -l "$OBSPath"/$Archive |awk '{print $5}'`
@@ -116,7 +116,7 @@ function run () {
     # Display help
     if b.opt.has_flag? --help; then
         b.opt.show_usage
-        exit
+        exit 1
     fi
     
     if b.opt.check_required_args; then
@@ -156,7 +156,7 @@ function run () {
             echo "If you don’t ask a snapshot, you must provide"
             echo "the new version of the release (with --new)"
             echo
-            exit
+            exit 1
         fi
 
         Target="all"
@@ -193,7 +193,7 @@ function run () {
                 echo
                 echo "The directory $Source_dir doesn’t exist!"
                 echo
-                exit
+                exit 1
             fi
         fi
 

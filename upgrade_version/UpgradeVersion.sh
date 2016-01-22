@@ -82,7 +82,7 @@ function run () {
     # Display help
     if b.opt.has_flag? --help; then
         b.opt.show_usage
-        exit
+        exit 1
     fi
     
     if b.opt.check_required_args; then
@@ -165,7 +165,7 @@ function run () {
                 echo
                 echo "The directory $SDir doesn’t exist!"
                 echo
-                exit
+                exit 1
             fi
         fi
 
@@ -193,7 +193,7 @@ function run () {
         echo
 
         #unset -v Project Release_date Script
-        unset -v Project Script SDir
+        unset -v Project Script WDir SDir
         unset -v Version_old Version_new
         unset -v Version_old_escaped Version_old_comma Version_new_comma
         unset -v Version_old_array Version_new_array 

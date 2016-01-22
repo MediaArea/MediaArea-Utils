@@ -112,24 +112,24 @@ function _unix_cli () {
 
 }
 
-function _unix_daemon () {
+function _unix_server () {
 
     echo
-    echo "Generate the MC daemon directory for compilation under Unix:"
+    echo "Generate the MC server directory for compilation under Unix:"
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MC
-    #mkdir MediaConch_Daemon${Version}_GNU_FromSource
-    #cd MediaConch_Daemon${Version}_GNU_FromSource
-    mkdir MediaConch_Daemon_GNU_FromSource
-    cd MediaConch_Daemon_GNU_FromSource
+    #mkdir MediaConch_Server${Version}_GNU_FromSource
+    #cd MediaConch_Server${Version}_GNU_FromSource
+    mkdir MediaConch_Server_GNU_FromSource
+    cd MediaConch_Server_GNU_FromSource
 
     cp -r "$MC_source" MediaConch
-    mv MediaConch/Project/GNU/Daemon/AddThisToRoot_Daemon_compile.sh Daemon_Compile.sh
-    chmod +x Daemon_Compile.sh
-    chmod +x MediaConch/Project/GNU/Daemon/autogen.sh
-    #chmod +x MediaConch/Project/Mac/BR_extension_Daemon.sh
-    #chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
+    mv MediaConch/Project/GNU/Server/AddThisToRoot_Server_compile.sh Server_Compile.sh
+    chmod +x Server_Compile.sh
+    chmod +x MediaConch/Project/GNU/Server/autogen.sh
+    chmod +x MediaConch/Project/Mac/BR_extension_Server.sh
+    chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -155,7 +155,7 @@ function _unix_daemon () {
     cd ..
 
     echo "3: Autotools..."
-    cd MediaConch/Project/GNU/Daemon
+    cd MediaConch/Project/GNU/Server
     ./autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
@@ -164,12 +164,12 @@ function _unix_daemon () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.gz MediaConch_Daemon${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.bz2 MediaConch_Daemon${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.xz MediaConch_Daemon${Version}_GNU_FromSource)
-        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.gz MediaConch_Daemon_GNU_FromSource)
-        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.bz2 MediaConch_Daemon_GNU_FromSource)
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Daemon${Version}_GNU_FromSource.tar.xz MediaConch_Daemon_GNU_FromSource)
+        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.gz MediaConch_Server${Version}_GNU_FromSource)
+        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.bz2 MediaConch_Server${Version}_GNU_FromSource)
+        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.xz MediaConch_Server${Version}_GNU_FromSource)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.gz MediaConch_Server_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.bz2 MediaConch_Server_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.xz MediaConch_Server_GNU_FromSource)
     fi
 
 }
@@ -322,7 +322,7 @@ function btask.PrepareSource.run () {
 
     if [ "$Target" = "cu" ]; then
         _unix_cli
-        _unix_daemon
+        _unix_server
         _unix_gui
     fi
     if [ "$Target" = "cw" ]; then
@@ -333,7 +333,7 @@ function btask.PrepareSource.run () {
     fi
     if [ "$Target" = "all" ]; then
         _unix_cli
-        _unix_daemon
+        _unix_server
         _unix_gui
         _windows
         _source_package

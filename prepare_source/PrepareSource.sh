@@ -94,7 +94,7 @@ function run () {
     # Display help
     if b.opt.has_flag? --help; then
         b.opt.show_usage
-        exit
+        exit 1
     fi
     
     if b.opt.check_required_args; then
@@ -155,7 +155,7 @@ function run () {
                 echo
                 echo "The directory $SDir doesn’t exist!"
                 echo
-                exit
+                exit 1
             fi
         fi
 
