@@ -13,7 +13,7 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        Repo="https://github.com/MediaArea/MediaInfoLib.git"
+        Repo="https://github.com/MediaArea/MediaInfoLib"
     fi
 
     if [ $(b.opt.get_opt --source-path) ]; then
@@ -21,7 +21,6 @@ function btask.UpgradeVersion.run () {
     else
         getRepo $Repo "$WDir"
         MIL_source="$WDir"/MediaInfoLib
-        # For lisibility after git
         echo
     fi
 
@@ -40,7 +39,6 @@ function btask.UpgradeVersion.run () {
     MIL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MIL_files[((index++))]="Project/Solaris/mkpkg"
 
-    # Replace old version by new version
     for MIL_file in ${MIL_files[@]}
     do
         echo "${MIL_source}/${MIL_file}"
@@ -51,21 +49,19 @@ function btask.UpgradeVersion.run () {
     echo "Passage for major.minor.patch.build..."
     unset -v MIL_files
     index=0
-    MIL_files[((index++))]="Project/MSVC2005/DLL/MediaInfo.rc"
-    MIL_files[((index++))]="Project/MSVC2012/Dll/MediaInfo.rc"
-    MIL_files[((index++))]="Project/MSVC2012/Example/HowToUse.rc"
-    MIL_files[((index++))]="Project/MSVC2012/ShellExtension/MediaInfoShellExt.rc"
     MIL_files[((index++))]="Project/MSVC2010/Dll/MediaInfo.rc"
     MIL_files[((index++))]="Project/MSVC2010/Example/HowToUse.rc"
     MIL_files[((index++))]="Project/MSVC2010/ShellExtension/MediaInfoShellExt.rc"
-    MIL_files[((index++))]="Project/MSVC2008/Dll/MediaInfo.rc"
-    MIL_files[((index++))]="Project/MSVC2008/Example/HowToUse.rc"
-    MIL_files[((index++))]="Project/MSVC2008/ShellExtension/MediaInfoShellExt.rc"
+    MIL_files[((index++))]="Project/MSVC2012/Dll/MediaInfo.rc"
+    MIL_files[((index++))]="Project/MSVC2012/Example/HowToUse.rc"
+    MIL_files[((index++))]="Project/MSVC2012/ShellExtension/MediaInfoShellExt.rc"
     MIL_files[((index++))]="Project/MSVC2013/Dll/MediaInfo.rc"
     MIL_files[((index++))]="Project/MSVC2013/Example/HowToUse.rc"
     MIL_files[((index++))]="Project/MSVC2013/ShellExtension/MediaInfoShellExt.rc"
+    MIL_files[((index++))]="Project/MSVC2015/Dll/MediaInfo.rc"
+    MIL_files[((index++))]="Project/MSVC2015/Example/HowToUse.rc"
+    MIL_files[((index++))]="Project/MSVC2015/ShellExtension/MediaInfoShellExt.rc"
 
-    # Replace old version by new version
     for MIL_file in ${MIL_files[@]}
     do
 

@@ -13,7 +13,7 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo=$(sanitize_arg $(b.opt.get_opt --repo))
     else
-        Repo="https://github.com/MediaArea/ZenLib.git"
+        Repo="https://github.com/MediaArea/ZenLib"
     fi
    
     if [ $(b.opt.get_opt --source-path) ]; then
@@ -37,7 +37,7 @@ function btask.UpgradeVersion.run () {
     ZL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     ZL_files[((index++))]="Project/Solaris/mkpkg"
 
-    # Replace old version by new version
+    # Make the replacements
     for ZL_file in ${ZL_files[@]}
     do
         echo "${ZL_source}/${ZL_file}"
