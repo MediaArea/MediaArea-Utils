@@ -28,6 +28,7 @@ function btask.UpgradeVersion.run () {
     index=0
     MC_files[((index++))]="License.html"
     MC_files[((index++))]="Source/CLI/Help.cpp"
+    MC_files[((index++))]="Source/Daemon/Daemon.cpp"
     MC_files[((index++))]="Project/GNU/mediaconch.spec"
     MC_files[((index++))]="Project/GNU/mediaconch.dsc"
     MC_files[((index++))]="debian/changelog"
