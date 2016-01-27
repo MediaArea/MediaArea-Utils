@@ -135,12 +135,12 @@ def update_DB():
     cursor = mysql()
     for dname in Distribs.keys():
         for arch in Distribs[dname]:
-            cursor.execute("SELECT * FROM " + table + " WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
+            cursor.execute("SELECT * FROM `" + table + "` WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
             check = cursor.fetchone()
             # If the couple (dname, arch) isn't already in the
             # table, we insert it
             if check is None:
-                cursor.execute("INSERT INTO " + table + " (distrib, arch) VALUES ('" + dname + "', '" + arch + "');")
+                cursor.execute("INSERT INTO `" + table + "` (distrib, arch) VALUES ('" + dname + "', '" + arch + "');")
     cursor.close()
     
     # If this is for a release
@@ -150,12 +150,12 @@ def update_DB():
         cursor = mysql()
         for dname in Distribs.keys():
             for arch in Distribs[dname]:
-                cursor.execute("SELECT * FROM " + dlpages_table + " WHERE platform ='" + dname + "' AND arch ='" + arch + "';")
+                cursor.execute("SELECT * FROM `" + dlpages_table + "` WHERE platform ='" + dname + "' AND arch ='" + arch + "';")
                 check = cursor.fetchone()
                 # If the couple (dname, arch) isn't already in the
                 # table, we insert it
                 if check is None:
-                    cursor.execute("INSERT INTO " + dlpages_table + " (platform, arch) VALUES ('" + dname + "', '" + arch + "');")
+                    cursor.execute("INSERT INTO `" + dlpages_table + "` (platform, arch) VALUES ('" + dname + "', '" + arch + "');")
         cursor.close()
 
     # Then we update the table with the results of the build
@@ -177,14 +177,14 @@ def update_DB():
                 state = "1"
             if (result == "broken" or result == "unresolvable" or result == "failed"):
                 state = "2"
-            cursor.execute("UPDATE " + table + " SET state='" + state + "' WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
+            cursor.execute("UPDATE `" + table + "` SET state='" + state + "' WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
     cursor.close()
 
 ##################################################################
 def get_packages_on_OBS():
 
     cursor = mysql()
-    cursor.execute("SELECT * FROM " + table)
+    cursor.execute("SELECT * FROM `" + table + "`")
     dist_cursor = cursor.fetchall()
 
     for dist in dist_cursor:
@@ -545,7 +545,7 @@ def get_packages_on_OBS():
 
                 # For the libs
                 if prjkind == "lib":
-                    cursor.execute("UPDATE " + dlpages_table + " SET"\
+                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
                             + " version = '" + version + "'," \
                             + " libname = '" + binname_wanted + "'," \
                             + " libnamedbg = '" + dbgname_wanted + "'," \
@@ -555,7 +555,7 @@ def get_packages_on_OBS():
 
                 # For MC
                 if binname == "mediaconch":
-                    cursor.execute("UPDATE " + dlpages_table + " SET"\
+                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
                             + " version = '" + version + "'," \
                             + " cliname = '" + binname_wanted + "'," \
                             + " clinamedbg = '" + dbgname_wanted + "'," \
@@ -566,7 +566,7 @@ def get_packages_on_OBS():
 
                 # For MI
                 if binname == "mediainfo":
-                    cursor.execute("UPDATE " + dlpages_table + " SET"\
+                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
                             + " version = '" + version + "'," \
                             + " cliname = '" + binname_wanted + "'," \
                             + " clinamedbg = '" + dbgname_wanted + "'," \
@@ -583,7 +583,7 @@ def get_packages_on_OBS():
 def verify_states_and_files():
 
     cursor = mysql()
-    cursor.execute("SELECT * FROM " + table)
+    cursor.execute("SELECT * FROM `" + table + "`")
     dist_cursor = cursor.fetchall()
     cursor.close()
 
