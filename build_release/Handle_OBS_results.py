@@ -559,7 +559,7 @@ def get_packages_on_OBS():
                             + " version = '" + version + "'," \
                             + " cliname = '" + binname_wanted + "'," \
                             + " clinamedbg = '" + dbgname_wanted + "'," \
-                            + " servername = '" + servername_wanted + "'" \
+                            + " servername = '" + servername_wanted + "'," \
                             + " guiname = '" + guiname_wanted + "'" \
                             + " WHERE platform = '" + dname + "'" \
                             + " AND arch = '" + arch + "';")
