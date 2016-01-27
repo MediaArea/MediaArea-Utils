@@ -890,6 +890,8 @@ if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*
         elif OBS_Package == "MediaInfoLib_deb9":
             table = "snapshots_obs_mil_deb9"
             binname = "libmediainfo0v5"
+        elif OBS_Package == "MediaInfoLib_u12.04":
+            table = "snapshots_obs_mil_u12.04"
     else:
         dlpages_table = "releases_dlpages_mil"
         if OBS_Package == "MediaInfoLib":
@@ -899,6 +901,8 @@ if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*
         elif OBS_Package == "MediaInfoLib_deb9":
             table = "releases_obs_mil_deb9"
             binname = "libmediainfo0v5"
+        elif OBS_Package == "MediaInfoLib_u12.04":
+            table = "releases_obs_mil_u12.04"
 
 if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     prjkind = "gui"
