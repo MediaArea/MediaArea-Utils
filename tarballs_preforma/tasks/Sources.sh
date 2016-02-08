@@ -9,25 +9,25 @@
 function btask.Sources.run () {
 
     if b.path.dir? tmp; then
-        rm -f tmp/*;
+        rm -fr tmp/*;
     else
         mkdir tmp
     fi
 
     echo "Download Sources files"
-    wget -q -P tmp "https://mediaarea.net/download/source/mediaconch/${mc}/mediaconch_${mc}_AllInclusive.7z"
+    wget -nd -q -P tmp "https://mediaarea.net/download/source/mediaconch/${mc}/mediaconch_${mc}_AllInclusive.7z"
 
     echo "Create Sources package"
     cd tmp
-    7za x mediaconch_${mc}_AllInclusive.7z
+    7za x mediaconch_${mc}_AllInclusive.7z > /dev/null
 
     # Copy license files
-    cp ../License*.html mediaconch_AllInclusive/
-    cp ../License.*.html mediaconch_AllInclusive/MediaInfoLib
-    cp ../License.*.html mediaconch_AllInclusive/ZenLib
+    cp ../MediaArea/MediaConch_SourceCode/master/License*.html mediaconch_AllInclusive/
+    cp ../MediaArea/MediaConch_SourceCode/master/License.*.html mediaconch_AllInclusive/MediaInfoLib
+    cp ../MediaArea/MediaConch_SourceCode/master/License.*.html mediaconch_AllInclusive/ZenLib
 
     # Remove zlib directory
-    rm -rf mediaconch_AllInclusive/zlib
+    rm -fr mediaconch_AllInclusive/zlib
 
     # Replace "BSD" by "GPL v3+ and MPL v2+" in file headers
     grep -rlZ "Use of this source code is governed by a BSD-style license that" | xargs -0 sed -i "s/Use of this source code is governed by a BSD-style license that/Use of this source code is governed by a GPL v3+ and MPL v2+ license that/g"
@@ -45,6 +45,6 @@ function btask.Sources.run () {
     cp src01-$Date.zip src17-$Date.zip
     cp src01-$Date.zip src21-$Date.zip
 
-    rm -rf tmp
+    rm -fr tmp
 
 }
