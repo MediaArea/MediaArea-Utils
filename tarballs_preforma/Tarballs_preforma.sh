@@ -95,9 +95,9 @@ function run () {
 
     if b.opt.check_required_args; then
 
-        zl=$(sanitize_arg $(b.opt.get_opt --zl-version))
-        mil=$(sanitize_arg $(b.opt.get_opt --mil-version))
-        mc=$(sanitize_arg $(b.opt.get_opt --mc-version))
+        ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
+        MIL_version=$(sanitize_arg $(b.opt.get_opt --mil-version))
+        MC_version=$(sanitize_arg $(b.opt.get_opt --mc-version))
 
         if [ $(b.opt.get_opt --date) ]; then
             Date="$(sanitize_arg $(b.opt.get_opt --date))"
@@ -133,14 +133,17 @@ function run () {
 
         b.task.run Sources
 
-        b.task.run Buildenv_fedora
-        b.task.run Buildenv_debian
-        b.task.run Buildenv_ubuntu
-        b.task.run Buildenv_opensuse
+        #b.task.run Buildenv_fedora
+        #b.task.run Buildenv_debian
+        #b.task.run Buildenv_ubuntu
+        #b.task.run Buildenv_opensuse
 
         echo
 
-        unset -v zl mil mc
+		# Clean up
+		rm -fr MediaArea
+
+        unset -v ZL_version MIL_version MC_version
         unset -v Date Working_dir
 
     fi
