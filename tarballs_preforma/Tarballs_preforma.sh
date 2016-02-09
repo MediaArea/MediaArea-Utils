@@ -133,18 +133,19 @@ function run () {
 
         b.task.run Sources
 
-        #b.task.run Buildenv_fedora
-        #b.task.run Buildenv_debian
-        #b.task.run Buildenv_ubuntu
-        #b.task.run Buildenv_opensuse
+        b.task.run Buildenv_fedora
+        b.task.run Buildenv_debian
+        b.task.run Buildenv_ubuntu
+        b.task.run Buildenv_opensuse
 
-        echo
-
-		# Clean up
-		rm -fr MediaArea
+        # Clean up
+        rm -fr MediaArea
 
         unset -v ZL_version MIL_version MC_version
         unset -v Date Working_dir
+
+        echo
+        echo
 
     fi
 }

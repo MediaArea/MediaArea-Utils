@@ -78,6 +78,7 @@ function Fedora_get_packages () {
         exit 1
     fi
     Repo_file=$(grep "\-primary.xml.gz" repomd.xml | cut -d\" -f2 | cut -d\/ -f2 | cut -d. -f -2)
+    rm -f repomd.xml
 
     # Get the primary.xml file for this version and architecture
     rm -f $Repo_file.gz *primary.xml
@@ -118,6 +119,8 @@ function Fedora_get_packages () {
     # Verbose mode
     #echo
 
+    rm -f $Repo_file
+
 }
 
 function Fedora_handle_version () {
@@ -140,16 +143,15 @@ function btask.Buildenv_fedora.run () {
 
     echo
     echo "Generate Fedora build environment..."
-    echo
 
     #Fedora_handle_version 22
     Fedora_handle_version 23
 
-    echo
     echo "Create Fedora package (buildenv13)..."
-    echo
+
     cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv13
     zip -q -r buildenv13-$Date.zip buildenv13
+    rm -fr buildenv13
 
     unset -v Version Mirror
 

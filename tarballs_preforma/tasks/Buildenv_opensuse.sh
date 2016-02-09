@@ -36,6 +36,7 @@ function Opensuse_get_packages () {
         exit 1
     fi
     Repo_file=$(grep "\-primary.xml.gz" repomd.xml | cut -d\" -f2 | cut -d\/ -f2 | cut -d. -f -2)
+    rm -f repomd.xml
 
     # Get the primary.xml file for this version and architecture
     rm -f $Repo_file.gz *primary.xml
@@ -76,6 +77,8 @@ function Opensuse_get_packages () {
     # Verbose mode
     #echo
 
+    rm -f $Repo_file
+
 }
 
 function Opensuse_handle_version () {
@@ -108,16 +111,15 @@ function btask.Buildenv_opensuse.run () {
 
     echo
     echo "Generate Opensuse build environment..."
-    echo
 
     #Opensuse_handle_version "13.2"
     Opensuse_handle_version "42.1"
 
-    echo
     echo "Create the Opensuse package (buildenv21)..."
-    echo
+
     cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv21
     zip -q -r buildenv21-$Date.zip buildenv21
+    rm -fr buildenv21
 
     unset -v Version Mirror
 

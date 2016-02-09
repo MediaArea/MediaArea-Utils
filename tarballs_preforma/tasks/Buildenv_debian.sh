@@ -76,6 +76,8 @@ function Debian_get_packages () {
     # Verbose mode
     #echo
 
+    rm -f Packages-$Version-$Arch
+
 }
 
 function Debian_handle_version () {
@@ -101,7 +103,6 @@ function btask.Buildenv_debian.run () {
 
     echo
     echo "Generate Debian build environment..."
-    echo
 
     declare -a Debian_names
     Debian_names[7]="wheezy"
@@ -111,11 +112,11 @@ function btask.Buildenv_debian.run () {
     #Debian_handle_version 7
     Debian_handle_version 8
 
-    echo
     echo "Create Debian package (buildenv17)..."
-    echo
+
     cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv17
     zip -q -r buildenv17-$Date.zip buildenv17
+    rm -fr buildenv17
 
     unset -v Version Debian_names Debian_name
     unset -v Mirror Packages_file_URL_part

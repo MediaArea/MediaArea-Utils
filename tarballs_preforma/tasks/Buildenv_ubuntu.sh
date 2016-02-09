@@ -67,6 +67,8 @@ function Ubuntu_get_packages () {
     # Verbose mode
     #echo
 
+    rm -fr Packages-$Version-$Arch
+
 }
 
 function Ubuntu_handle_version () {
@@ -93,7 +95,6 @@ function btask.Buildenv_ubuntu.run () {
 
     echo
     echo "Generate Ubuntu build environment..."
-    echo
 
     declare -A Ubuntu_names
     Ubuntu_names[14.04]="trusty"
@@ -103,11 +104,11 @@ function btask.Buildenv_ubuntu.run () {
     Ubuntu_handle_version 14.04
     Ubuntu_handle_version 15.10
 
-    echo
     echo "Create Ubuntu package (buildenv09)..."
-    echo
+
     cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv09
     zip -q -r buildenv09-$Date.zip buildenv09
+    rm -fr buildenv09
 
     unset -v Version Ubuntu_names Ubuntu_name
     unset -v Mirror Packages_file_URL_part

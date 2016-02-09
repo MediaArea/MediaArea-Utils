@@ -15,11 +15,11 @@ function btask.Sources.run () {
     fi
 
     echo "Download Sources files"
-    wget -nd -q -P tmp "https://mediaarea.net/download/source/mediaconch/${mc}/mediaconch_${mc}_AllInclusive.7z"
+    wget -nd -q -P tmp "https://mediaarea.net/download/source/mediaconch/${MC_version}/mediaconch_${MC_version}_AllInclusive.7z"
 
     echo "Create Sources package"
     cd tmp
-    7za x mediaconch_${mc}_AllInclusive.7z > /dev/null
+    7za x mediaconch_${MC_version}_AllInclusive.7z > /dev/null
 
     # Copy license files
     cp ../MediaArea/MediaConch_SourceCode/master/License*.html mediaconch_AllInclusive/
