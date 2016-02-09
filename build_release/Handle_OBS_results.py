@@ -797,8 +797,8 @@ def verify_states_and_files():
         if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_dev >= nb_succeeded) and (nb_doc >= nb_succeeded):
             params = \
                    "echo 'OBS project: " + OBS_Project + "\n" \
-                    + "OBS package: " + OBS_Package + "\n" \
-                    + "Version: " + version + "\n\n" \
+                   + "OBS package: " + OBS_Package + "\n" \
+                   + "Version: " + version + "\n\n" \
                    + "SUCCESS\n\n" \
                    + "* " + str(nb_succeeded) + " builds succeeded;\n" \
                    + "* " + str(nb_bin) + " bin (" + binname + ") packages downloaded;\n" \
@@ -814,8 +814,8 @@ def verify_states_and_files():
         if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_gui >= nb_succeeded):
             params = \
                    "echo 'OBS project: " + OBS_Project + "\n" \
-                    + "OBS package: " + OBS_Package + "\n" \
-                    + "Version: " + version + "\n\n" \
+                   + "OBS package: " + OBS_Package + "\n" \
+                   + "Version: " + version + "\n\n" \
                    + "SUCCESS\n\n" \
                    + "* " + str(nb_succeeded) + " builds succeeded;\n" \
                    + "* " + str(nb_bin) + " bin (CLI) packages downloaded;\n" \
@@ -890,8 +890,9 @@ if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*
         elif OBS_Package == "MediaInfoLib_deb9":
             table = "snapshots_obs_mil_deb9"
             binname = "libmediainfo0v5"
-        elif OBS_Package == "MediaInfoLib_u12.04":
-            table = "snapshots_obs_mil_u12.04"
+        # Since TinyXML2 is back as buildin for deb distribs
+        #elif OBS_Package == "MediaInfoLib_u12.04":
+        #    table = "snapshots_obs_mil_u12.04"
     else:
         dlpages_table = "releases_dlpages_mil"
         if OBS_Package == "MediaInfoLib":
@@ -901,8 +902,9 @@ if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*
         elif OBS_Package == "MediaInfoLib_deb9":
             table = "releases_obs_mil_deb9"
             binname = "libmediainfo0v5"
-        elif OBS_Package == "MediaInfoLib_u12.04":
-            table = "releases_obs_mil_u12.04"
+        # Since TinyXML2 is back as buildin for deb distribs
+        #elif OBS_Package == "MediaInfoLib_u12.04":
+        #    table = "releases_obs_mil_u12.04"
 
 if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
     prjkind = "gui"
