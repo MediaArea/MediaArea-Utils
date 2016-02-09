@@ -232,12 +232,14 @@ function _linux () {
         _obs > "$Log"/linux.log 2>&1
         _obs_deb6 >> "$Log"/linux.log 2>&1
         _obs_deb deb9 >> "$Log"/linux.log 2>&1
-        _obs_deb u12.04 >> "$Log"/linux.log 2>&1
+        # Since TinyXML2 is back as buildin for deb distribs
+        #_obs_deb u12.04 >> "$Log"/linux.log 2>&1
     else
         _obs
         _obs_deb6
         _obs_deb deb9
-        _obs_deb u12.04
+        # Since TinyXML2 is back as buildin for deb distribs
+        #_obs_deb u12.04
         echo
         echo Launch in background the python script which check
         echo the build results and download the packages...
@@ -250,8 +252,9 @@ function _linux () {
     python Handle_OBS_results.py $OBS_project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_deb6.log 2>&1 &
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfoLib_deb9 $Version_new "$MILB_dir" > "$Log"/obs_deb9.log 2>&1 &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfoLib_u12.04 $Version_new "$MILB_dir" > "$Log"/obs_u12.04.log 2>&1 &
+    # Since TinyXML2 is back as buildin for deb distribs
+    #sleep 10
+    #python Handle_OBS_results.py $OBS_project MediaInfoLib_u12.04 $Version_new "$MILB_dir" > "$Log"/obs_u12.04.log 2>&1 &
 
 }
 
