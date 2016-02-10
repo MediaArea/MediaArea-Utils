@@ -53,6 +53,33 @@ function btask.UpgradeVersion.run () {
     done
 
     echo
+    echo "Update ${MI_source}/Project/GNU/mediainfo.spec"
+    updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
+    #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
+    echo
+    
+    echo "Update ${MI_source}/Project/GNU/mediainfo.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
+    # sed will take the last of the longuest strings first and
+    # will replace the 3 lines
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
+    
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb9.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb9.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb9.dsc
+    
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb7.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb7.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb7.dsc
+    
+    echo
+    echo "Update ${MI_source}/Project/OBS/deb6.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb6.dsc
+    updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb6.dsc
+
+    echo
     echo "Passage for major.minor.patch.build..."
     unset -v MI_files
     index=0

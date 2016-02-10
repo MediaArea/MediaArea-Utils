@@ -40,17 +40,26 @@ function btask.UpgradeVersion.run () {
     done
 
     echo
+    echo "Update ${MC_source}/Project/GNU/mediaconch.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
+    # sed will take the last of the longuest strings first and
+    # will replace the 3 lines
+    updateFile "00000000000000000000000000000000 000000 mediaconch_$Version_old_escaped" "00000000000000000000000000000000 000000 mediaconch_$Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
+    
+    echo
+    echo "Update ${MC_source}/Project/GNU/mediaconch.spec"
+    updateFile "%define mediaconch_version          $Version_old_escaped" "%define mediaconch_version          $Version_new" "${MC_source}"/Project/GNU/mediaconch.spec
+
+    echo
     echo "Passage for version YY.MM.patch ..."
     unset -v MC_files
     index=0
     MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
     MC_files[((index++))]="Project/GNU/Server/configure.ac" 
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    #MC_files[((index++))]="Project/MSVC2013/Server/MediaConch_Server.rc" 
     MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc" 
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc" 
-    #MC_files[((index++))]="Project/MSVC2015/Server/MediaConch_Server.rc" 
     MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc" 
     MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/OBS/obs_mediaconch" 
@@ -66,11 +75,9 @@ function btask.UpgradeVersion.run () {
     unset -v MC_files
     index=0
     MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    #MC_files[((index++))]="Project/MSVC2013/Server/MediaConch_Server.rc" 
     MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc" 
     MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
     MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc" 
-    #MC_files[((index++))]="Project/MSVC2015/Server/MediaConch_Server.rc" 
     MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc" 
     MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc" 
 
