@@ -56,8 +56,6 @@ function _unix_cli () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MI
-    #mkdir MediaInfo_CLI${Version}_GNU_FromSource
-    #cd MediaInfo_CLI${Version}_GNU_FromSource
     mkdir MediaInfo_CLI_GNU_FromSource
     cd MediaInfo_CLI_GNU_FromSource
 
@@ -102,9 +100,6 @@ function _unix_cli () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.gz MediaInfo_CLI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.gz MediaInfo_CLI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.bz2 MediaInfo_CLI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_CLI${Version}_GNU_FromSource.tar.xz MediaInfo_CLI_GNU_FromSource)
@@ -119,8 +114,6 @@ function _unix_gui () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MI
-    #mkdir MediaInfo_GUI${Version}_GNU_FromSource
-    #cd MediaInfo_GUI${Version}_GNU_FromSource
     mkdir MediaInfo_GUI_GNU_FromSource
     cd MediaInfo_GUI_GNU_FromSource
 
@@ -167,9 +160,6 @@ function _unix_gui () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.gz MediaInfo_GUI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz2 MediaInfo_GUI${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.xz MediaInfo_GUI${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.gz MediaInfo_GUI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.bz2 MediaInfo_GUI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_GUI${Version}_GNU_FromSource.tar.xz MediaInfo_GUI_GNU_FromSource)
@@ -184,8 +174,6 @@ function _windows () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MI
-    #mkdir mediainfo${Version}_AllInclusive
-    #cd mediainfo${Version}_AllInclusive
     mkdir mediainfo_AllInclusive
     cd mediainfo_AllInclusive
 
@@ -214,7 +202,6 @@ function _windows () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #7za a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo${Version}_AllInclusive >/dev/null
         7za a -t7z -mx=9 -bd ../archives/mediainfo${Version}_AllInclusive.7z mediainfo_AllInclusive >/dev/null
     fi
 

@@ -56,8 +56,6 @@ function _unix_cli () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MC
-    #mkdir MediaConch_CLI${Version}_GNU_FromSource
-    #cd MediaConch_CLI${Version}_GNU_FromSource
     mkdir MediaConch_CLI_GNU_FromSource
     cd MediaConch_CLI_GNU_FromSource
 
@@ -102,9 +100,6 @@ function _unix_cli () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.gz MediaConch_CLI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.bz2 MediaConch_CLI${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.xz MediaConch_CLI${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.gz MediaConch_CLI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.bz2 MediaConch_CLI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_CLI${Version}_GNU_FromSource.tar.xz MediaConch_CLI_GNU_FromSource)
@@ -119,8 +114,6 @@ function _unix_server () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MC
-    #mkdir MediaConch_Server${Version}_GNU_FromSource
-    #cd MediaConch_Server${Version}_GNU_FromSource
     mkdir MediaConch_Server_GNU_FromSource
     cd MediaConch_Server_GNU_FromSource
 
@@ -164,9 +157,6 @@ function _unix_server () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.gz MediaConch_Server${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.bz2 MediaConch_Server${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.xz MediaConch_Server${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.gz MediaConch_Server_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.bz2 MediaConch_Server_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_Server${Version}_GNU_FromSource.tar.xz MediaConch_Server_GNU_FromSource)
@@ -181,8 +171,6 @@ function _unix_gui () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MC
-    #mkdir MediaConch_GUI${Version}_GNU_FromSource
-    #cd MediaConch_GUI${Version}_GNU_FromSource
     mkdir MediaConch_GUI_GNU_FromSource
     cd MediaConch_GUI_GNU_FromSource
 
@@ -220,9 +208,6 @@ function _unix_gui () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.gz MediaConch_GUI${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.bz2 MediaConch_GUI${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.xz MediaConch_GUI${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.gz MediaConch_GUI_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.bz2 MediaConch_GUI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_GUI${Version}_GNU_FromSource.tar.xz MediaConch_GUI_GNU_FromSource)
@@ -230,45 +215,24 @@ function _unix_gui () {
 
 }
 
-function _windows () {
+function _all_inclusive () {
 
     echo
-    echo "Generate the MC directory for compilation under Windows:"
-    echo "1: copy what is wanted..."
+    echo "Generate the MC all inclusive tarball:"
+    echo "1: get the sources..."
 
     cd "$WDir"/MC
-    #mkdir mediaconch${Version}_AllInclusive
-    #cd mediaconch${Version}_AllInclusive
     mkdir mediaconch_AllInclusive
     cd mediaconch_AllInclusive
 
-    cp -r "$MC_source" MediaConch
-
-    # MediaInfoLib and ZenLib
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
-
-    # Dependency : zlib
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
-
-    echo "2: remove what isn’t wanted..."
-    cd MediaConch
-        rm -f .cvsignore .gitignore
-        rm -fr .git
-        #rm -fr Release
-        rm -fr debian
-        cd Project
-            rm -fr GNU Mac OBS
-        cd ..
-    cd ..
+    git clone https://github.com/MediaArea/MediaConch-AllInOne .
 
     if $MakeArchives; then
-        echo "3: compressing..."
+        echo "2: compressing..."
         cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #7za a -t7z -mx=9 -bd ../archives/mediaconch${Version}_AllInclusive.7z mediaconch${Version}_AllInclusive >/dev/null
         7za a -t7z -mx=9 -bd ../archives/mediaconch${Version}_AllInclusive.7z mediaconch_AllInclusive >/dev/null
     fi
 
@@ -318,7 +282,11 @@ function btask.PrepareSource.run () {
     rm -fr MC
     mkdir MC
 
-    _get_source
+    # No need to get the source normally if we want the all
+    # inclusive tarball.
+    if ! [ "$Target" = "ai" ]; then
+        _get_source
+    fi
 
     if [ "$Target" = "cu" ]; then
         _unix_cli
@@ -326,7 +294,7 @@ function btask.PrepareSource.run () {
         _unix_gui
     fi
     if [ "$Target" = "cw" ]; then
-        _windows
+        _all_inclusive
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
@@ -335,7 +303,7 @@ function btask.PrepareSource.run () {
         _unix_cli
         _unix_server
         _unix_gui
-        _windows
+        _all_inclusive
         _source_package
     fi
     

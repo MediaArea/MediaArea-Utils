@@ -56,8 +56,6 @@ function _unix () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MIL
-    #mkdir MediaInfo_DLL${Version}_GNU_FromSource
-    #cd MediaInfo_DLL${Version}_GNU_FromSource
     mkdir MediaInfo_DLL_GNU_FromSource
     cd MediaInfo_DLL_GNU_FromSource
 
@@ -107,9 +105,6 @@ function _unix () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        #(GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.gz MediaInfo_DLL${Version}_GNU_FromSource)
-        #(BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.bz2 MediaInfo_DLL${Version}_GNU_FromSource)
-        #(XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.xz MediaInfo_DLL${Version}_GNU_FromSource)
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.gz MediaInfo_DLL_GNU_FromSource)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.bz2 MediaInfo_DLL_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaInfo_DLL${Version}_GNU_FromSource.tar.xz MediaInfo_DLL_GNU_FromSource)

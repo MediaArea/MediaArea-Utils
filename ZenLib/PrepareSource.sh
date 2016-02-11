@@ -43,11 +43,11 @@ function _unix () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r "$ZL_source" ZenLib${Version}_compilation_under_unix
-    chmod +x ZenLib${Version}_compilation_under_unix/Project/GNU/Library/autogen.sh
+    cp -r "$ZL_source" ZenLib_compilation_under_unix
+    chmod +x ZenLib_compilation_under_unix/Project/GNU/Library/autogen.sh
 
     echo "2: remove what isn’t wanted..."
-    cd ZenLib${Version}_compilation_under_unix
+    cd ZenLib_compilation_under_unix
         rm -fr .cvsignore .git*
         #rm -fr Release
         rm -fr debian
@@ -68,10 +68,10 @@ function _windows () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r "$ZL_source" ZenLib${Version}_compilation_under_windows
+    cp -r "$ZL_source" ZenLib_compilation_under_windows
 
     echo "2: remove what isn’t wanted..."
-    cd ZenLib${Version}_compilation_under_windows
+    cd ZenLib_compilation_under_windows
         rm -fr .cvsignore .git*
         #rm -fr Release
         rm -fr debian
