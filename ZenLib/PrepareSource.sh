@@ -49,7 +49,6 @@ function _unix () {
     echo "2: remove what isn’t wanted..."
     cd ZenLib_compilation_under_unix
         rm -fr .cvsignore .git*
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -f GNU/libzen.dsc GNU/libzen.spec
@@ -61,19 +60,18 @@ function _unix () {
 
 }
 
-function _windows () {
+function _all_inclusive () {
 
     echo
-    echo "Generate the ZL directory for compilation under Windows:"
+    echo "Generate the ZL all inclusive tarball:"
     echo "1: copy what is wanted..."
 
     cd "$WDir"/ZL
-    cp -r "$ZL_source" ZenLib_compilation_under_windows
+    cp -r "$ZL_source" ZenLib_AllInclusive
 
     echo "2: remove what isn’t wanted..."
-    cd ZenLib_compilation_under_windows
+    cd ZenLib_AllInclusive
         rm -fr .cvsignore .git*
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -f GNU/libzen.dsc GNU/libzen.spec
@@ -95,7 +93,6 @@ function _source_package () {
     echo "2: remove what isn’t wanted..."
     cd ZenLib
         rm -fr .cvsignore .git*
-        #rm -fr Release
     cd ..
     if $MakeArchives; then
         echo "3: compressing..."
@@ -127,15 +124,15 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cu" ]; then
         _unix
     fi
-    if [ "$Target" = "cw" ]; then
-        _windows
+    if [ "$Target" = "ai" ]; then
+        _all_inclusive
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
         _unix
-        _windows
+        _all_inclusive
         _source_package
     fi
 

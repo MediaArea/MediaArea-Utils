@@ -76,7 +76,6 @@ function _unix () {
     echo "2: remove what isn’t wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -f GNU/libmediainfo.dsc GNU/libmediainfo.spec
@@ -112,10 +111,10 @@ function _unix () {
 
 }
 
-function _windows () {
+function _all_inclusive () {
 
     echo
-    echo "Generate the MIL directory for compilation under Windows:"
+    echo "Generate the MIL all inclusive tarball:"
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MIL
@@ -125,7 +124,7 @@ function _windows () {
     cp -r "$MIL_source" .
 
     # Dependency : ZenLib
-    cp -r "$WDir"/ZL/ZenLib_compilation_under_windows ZenLib
+    cp -r "$WDir"/ZL/ZenLib_AllInclusive ZenLib
 
     # Dependency : zlib
     cp -r "$WDir"/repos/zlib .
@@ -136,7 +135,6 @@ function _windows () {
     cd MediaInfoLib
         rm -f .cvsignore .gitignore
         rm -fr .git
-        #rm -fr Release
         rm -fr debian
         rm -fr Project/Solaris Project/zlib
     cd ..
@@ -164,7 +162,6 @@ function _source_package () {
     echo "2: remove what isn’t wanted..."
     cd MediaInfoLib
         rm -fr .cvsignore .git*
-        #rm -fr Release
     cd ..
 
     if $MakeArchives; then
@@ -200,15 +197,15 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cu" ]; then
         _unix
     fi
-    if [ "$Target" = "cw" ]; then
-        _windows
+    if [ "$Target" = "ai" ]; then
+        _all_inclusive
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
     fi
     if [ "$Target" = "all" ]; then
         _unix
-        _windows
+        _all_inclusive
         _source_package
     fi
 

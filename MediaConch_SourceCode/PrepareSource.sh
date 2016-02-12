@@ -79,7 +79,6 @@ function _unix_cli () {
     cd MediaConch
         rm -fr .cvsignore .git*
         rm -f History_GUI.txt
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr GNU/GUI Mac/*_GUI.sh
@@ -135,7 +134,6 @@ function _unix_server () {
     cd MediaConch
         rm -fr .cvsignore .git*
         rm -f History_GUI.txt
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
@@ -192,7 +190,6 @@ function _unix_gui () {
     cd MediaConch
         rm -fr .cvsignore .git*
         rm -f History_CLI.txt
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
@@ -203,7 +200,7 @@ function _unix_gui () {
     cd ..
 
     if $MakeArchives; then
-        echo "4: compressing..."
+        echo "3: compressing..."
         cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
@@ -225,10 +222,13 @@ function _all_inclusive () {
     mkdir mediaconch_AllInclusive
     cd mediaconch_AllInclusive
 
-    git clone https://github.com/MediaArea/MediaConch-AllInOne .
+    git clone --recursive https://github.com/MediaArea/MediaConch-AllInOne .
+
+    echo "2: remove what isn’t wanted..."
+    rm -fr .git*
 
     if $MakeArchives; then
-        echo "2: compressing..."
+        echo "3: compressing..."
         cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
@@ -251,7 +251,6 @@ function _source_package () {
     echo "2: remove what isn’t wanted..."
     cd MediaConch
         rm -fr .cvsignore .git*
-        #rm -fr Release
     cd ..
 
     if $MakeArchives; then
@@ -293,7 +292,7 @@ function btask.PrepareSource.run () {
         _unix_server
         _unix_gui
     fi
-    if [ "$Target" = "cw" ]; then
+    if [ "$Target" = "ai" ]; then
         _all_inclusive
     fi
     if [ "$Target" = "sa" ]; then

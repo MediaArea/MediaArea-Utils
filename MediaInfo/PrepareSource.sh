@@ -77,7 +77,6 @@ function _unix_cli () {
     cd MediaInfo
         rm -fr .cvsignore .git*
         rm -f History_GUI.txt
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr GNU/GUI Mac/*_GUI.sh Mac/Prepare_for_Xcode.sh
@@ -138,7 +137,6 @@ function _unix_gui () {
     cd MediaInfo
         rm -fr .cvsignore .git*
         rm -f History_CLI.txt
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
@@ -167,10 +165,10 @@ function _unix_gui () {
 
 }
 
-function _windows () {
+function _all_inclusive () {
 
     echo
-    echo "Generate the MI directory for compilation under Windows:"
+    echo "Generate the MI all inclusive tarball:"
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MI
@@ -188,7 +186,6 @@ function _windows () {
     cd MediaInfo
         rm -f .cvsignore .gitignore
         rm -fr .git
-        #rm -fr Release
         rm -fr debian
         cd Project
             rm -fr OBS Mac Solaris
@@ -219,7 +216,6 @@ function _source_package () {
     echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -fr .cvsignore .git*
-        #rm -fr Release
     cd ..
 
     if $MakeArchives; then
@@ -256,8 +252,8 @@ function btask.PrepareSource.run () {
         _unix_cli
         _unix_gui
     fi
-    if [ "$Target" = "cw" ]; then
-        _windows
+    if [ "$Target" = "ai" ]; then
+        _all_inclusive
     fi
     if [ "$Target" = "sa" ]; then
         _source_package
@@ -265,7 +261,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "all" ]; then
         _unix_cli
         _unix_gui
-        _windows
+        _all_inclusive
         _source_package
     fi
     
