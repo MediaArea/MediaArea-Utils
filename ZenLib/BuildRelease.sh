@@ -142,6 +142,9 @@ function _linux () {
         echo Launch in background the python script which check
         echo the build results and download the packages...
         echo
+        echo The command line is:
+        echo python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_main.log 2>&1 &
+        echo
     fi
 
     # To avoid "os.getcwd() failed: No such file or directory" if

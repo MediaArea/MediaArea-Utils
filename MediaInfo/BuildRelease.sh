@@ -371,6 +371,10 @@ function _linux () {
         echo Launch in background the python script which check
         echo the build results and download the packages...
         echo
+        echo The command line is:
+        echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_main.log 2>&1 & 
+        echo
+
     fi
 
     cd $(b.get bang.working_dir)
