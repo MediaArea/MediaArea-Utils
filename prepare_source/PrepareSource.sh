@@ -44,8 +44,8 @@ function load_options () {
     b.opt.add_flag --compil-unix "Generate the archive for compilation under Unix"
     b.opt.add_alias --compil-unix -cu
 
-    b.opt.add_flag --compil-windows "Generate the archive for compilation under Windows"
-    b.opt.add_alias --compil-windows -cw
+    b.opt.add_flag --all-inclusive "Generate the archive for compilation under Windows"
+    b.opt.add_alias --all-inclusive -ai
 
     b.opt.add_flag --source-package "Generate the source package"
     b.opt.add_alias --source-package -sa
@@ -126,8 +126,8 @@ function run () {
         if b.opt.has_flag? --compil-unix; then
             Target="cu"
         fi
-        if b.opt.has_flag? --compil-windows; then
-            Target="cw"
+        if b.opt.has_flag? --all-inclusive; then
+            Target="ai"
         fi
         if b.opt.has_flag? --source-package; then
             Target="sa"
