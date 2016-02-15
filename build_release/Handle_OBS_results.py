@@ -78,20 +78,6 @@ def Initialize_DB():
 
     Cursor = mysql()
 
-    # Is the table exist?
-    Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema ='" + Config["MySQL_db"] + "' AND table_name ='" + Table + "';")
-
-
-    Result = None
-    Result = Cursor.rowcount()
-    #Result = Cursor.fetchone()
-
-
-    # If not, create it
-    if Result is None:
-        Cursor.execute("INSERT INTO `" + Table + "` (distrib, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
-
-
     # To be sure that the table used to fetch the packages have all
     # the distributions presents on OBS
     for Distrib_name in Distribs.keys():
