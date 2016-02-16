@@ -78,6 +78,12 @@ def Initialize_DB():
 
     Cursor = mysql()
 
+    # Is the table exist?
+    Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema ='" + Config["MySQL_db"] + "' AND table_name ='" + Table + "';")
+
+    Result = 0
+    Result = Cursor.rowcount()
+
     # To be sure that the table used to fetch the packages have all
     # the distributions presents on OBS
     for Distrib_name in Distribs.keys():
@@ -151,6 +157,7 @@ def Waiting_loop():
         # and all the distros aren’t build. This while loop will
         # exit at the next iteration, and in the error mail we
         # specify that the timeout was reached.
+        Timeout = False
         if Compt == 37:
             Timeout = True
 
@@ -179,7 +186,7 @@ def Update_DB():
             #    State = "2"
             #if Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
             #    State = "3"
-            if Result == "broken" or Result == "unresolvable" or Result == "failed" Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
+            if Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
                 State = "2"
             Cursor.execute("UPDATE `" + Table + "` SET state='" + State + "' WHERE distrib ='" + Distrib_name + "' AND arch ='" + Arch + "';")
 
@@ -581,18 +588,18 @@ def Get_packages_on_OBS():
                             + " version = '" + Version + "'," \
                             + " cliname = '" + Bin_name_wanted + "'," \
                             + " clinamedbg = '" + Debug_name_wanted + "'," \
-                            + " Server_name = '" + Server_name_wanted + "'," \
-                            + " Gui_name = '" + Gui_name_wanted + "'" \
+                            + " servername = '" + Server_name_wanted + "'," \
+                            + " guiname = '" + Gui_name_wanted + "'" \
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
                 # For MI
                 if Bin_name == "mediainfo":
                     Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                            + " Version = '" + Version + "'," \
+                            + " version = '" + Version + "'," \
                             + " cliname = '" + Bin_name_wanted + "'," \
                             + " clinamedbg = '" + Debug_name_wanted + "'," \
-                            + " Gui_name = '" + Gui_name_wanted + "'" \
+                            + " guiname = '" + Gui_name_wanted + "'" \
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
@@ -627,7 +634,7 @@ def Verify_states_and_files():
             Dists_failed.append(Dist)
 
     print "(In case the mails can’t be send:)"
-    print "succeeded: " + str(Number_succeeded) \
+    print "succeeded: " + str(Number_succeeded)
 
     ################
     # Bin packages #
@@ -796,7 +803,7 @@ def Verify_states_and_files():
 
         Failed_list = ""
         for Dist in Dists_failed:
-            Failed_list = Failed_list + "* " + str(Dist[0]) + " (" + str(Dist[1]) + ")\n"
+            Failed_list = Failed_list + "* " + str(Distrib_name) + " (" + str(Arch) + ")\n"
 
         print "\nFailed:\n" + Failed_list
 
@@ -812,6 +819,7 @@ def Verify_states_and_files():
                + "The build have fail on OBS for:\n" + Failed_list + "'" \
                + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
                + " " + Config["Email_to"]
+        print Params
         subprocess.call(Params, shell=True)
 
     # Confirmation mails
@@ -1017,7 +1025,7 @@ Package_infos = {
         "devsuffix": "-devel", "debugsuffix": "-debuginfo",
         "dash": "-", "separator": ".",
         "x86_64": "x86_64", "i586": "i686", "ppc64": "ppc64",
-        "aArch64": "aArch64", "armv7l": "armv7l",
+        "aarch64": "aarch64", "armv7l": "armv7l",
         "armv6l": "armv6l"
     }
     #},
@@ -1085,7 +1093,7 @@ Initialize_DB()
 
 # Once the initialisation of this script is done, the first thing
 # to do is wait until everything is build on OBS.
-#Waiting_loop()
+Waiting_loop()
 
 # At this point, each enabled distros will be either in succeeded
 # or failed state. We can update the DB.
@@ -1098,6 +1106,7 @@ Get_packages_on_OBS()
 # a build has failed or a succeeded package has not been downloaded
 Verify_states_and_files()
 
-# If we run for MC or MI, and this is a release
+# If we run for MC or MI (no DL pages for ZL and MIL, so we test
+# Project_kind), and this is a release
 #if Project_kind == "gui" and Release == True:
 #    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py" ))
