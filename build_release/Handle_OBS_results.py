@@ -78,37 +78,72 @@ def Initialize_DB():
 
     Cursor = mysql()
 
-    # Is the table exist?
-    Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema ='" + Config["MySQL_db"] + "' AND table_name ='" + Table + "';")
-
+    # If the tables doesn’t exist, create it
+    Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema = '" + Config["MySQL_db"] + "' AND table_name = '" + Table + "';")
     Result = 0
     Result = Cursor.rowcount()
+    if Result == 0:
+        Cursor.execute("CREATE TABLE IF NOT EXISTS " + Table
+                        + """
+                            (
+                                distrib varchar(50),
+                                arch varchar(10),
+                                state tinyint(4)
+                            )
+                            DEFAULT CHARACTER SET utf8
+                            DEFAULT COLLATE utf8_general_ci;
+                        """)
 
-    # To be sure that the table used to fetch the packages have all
-    # the distributions presents on OBS
-    for Distrib_name in Distribs.keys():
-        for Arch in Distribs[Distrib_name]:
-            Cursor.execute("SELECT * FROM `" + Table + "` WHERE distrib ='" + Distrib_name + "' AND Arch ='" + Arch + "';")
-            Result = None
-            Result = Cursor.fetchone()
-            # If the couple (Distrib_name, Arch) isn't already in
-            # the table, we insert it
-            if Result is None:
-                Cursor.execute("INSERT INTO `" + Table + "` (distrib, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
-    
-    # If this is for a release
     if Release == True:
-        # To be sure that the table used to update the download
-        # pages have all the distributions presents on OBS
-        for Distrib_name in Distribs.keys():
-            for Arch in Distribs[Distrib_name]:
-                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform ='" + Distrib_name + "' AND Arch ='" + Arch + "';")
-                Result = None
-                Result = Cursor.fetchone()
-                # If the couple (Distrib_name, Arch) isn't already
-                # in the table, we insert it
-                if Result is None:
+        Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema = '" + Config["MySQL_db"] + "' AND table_name = '" + DL_pages_table + "';")
+        Result = 0
+        Result = Cursor.rowcount()
+        if Result == 0:
+            Cursor.execute("CREATE TABLE IF NOT EXISTS " + DL_pages_table
+                            + "("
+                            + DB_structure
+                            + ") DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;")
+
+    # Ensure that all the distribs in the dictionary are presents
+    # in the DB
+
+    for Distrib_name in Distribs.keys():
+
+        for Arch in Distribs[Distrib_name]:
+
+            Cursor.execute("SELECT * FROM `" + Table + "` WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+            Result = 0
+            Result = Cursor.rowcount()
+            # If the couple (Distrib_name, Arch) isn't already
+            # in the table, we insert it
+            if Result == 0:
+                Cursor.execute("INSERT INTO `" + Table + "` (distrib, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+
+            if Release == True:
+                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+                Result = 0
+                Result = Cursor.rowcount()
+                if Result == 0:
                     Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+
+    # Ensure that the DB doesn’t keep distribs the distros which
+    # are no longer in the dictionary. The DL_pages_table is not
+    # affected since a distrib can be removed from builds but still
+    # wanted in the download tables.
+
+    Cursor.execute("SELECT * FROM `" + Table + "`")
+    DB_distribs = Cursor.fetchall()
+
+    for DB_dist in DB_distribs:
+        DB_distrib_name = DB_dist[0]
+        DB_arch = DB_dist[1]
+        if Distribs.has_key(DB_distrib_name):
+            # If the distribs is present, but an arch has been
+            # removed
+            if Distribs[DB_distrib_name].count(DB_arch) == 0:
+                Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
+        else:
+            Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
 
     Cursor.close()
 
@@ -188,7 +223,7 @@ def Update_DB():
             #    State = "3"
             if Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
                 State = "2"
-            Cursor.execute("UPDATE `" + Table + "` SET state='" + State + "' WHERE distrib ='" + Distrib_name + "' AND arch ='" + Arch + "';")
+            Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
     Cursor.close()
 
@@ -197,13 +232,13 @@ def Get_packages_on_OBS():
 
     Cursor = mysql()
     Cursor.execute("SELECT * FROM `" + Table + "`")
-    Dist_cursor = Cursor.fetchall()
+    DB_distribs = Cursor.fetchall()
 
-    for Dist in Dist_cursor:
+    for DB_dist in DB_distribs:
 
-        Distrib_name = Dist[0]
-        Arch = Dist[1]
-        State = Dist[2]
+        Distrib_name = DB_dist[0]
+        Arch = DB_dist[1]
+        State = DB_dist[2]
 
         # State == 1 if build succeeded
         if State == 1:
@@ -613,17 +648,17 @@ def Verify_states_and_files():
 
     Cursor = mysql()
     Cursor.execute("SELECT * FROM `" + Table + "`")
-    Dist_cursor = Cursor.fetchall()
+    DB_distribs = Cursor.fetchall()
     Cursor.close()
 
     Number_succeeded = 0
     Dists_failed = []
 
-    for Dist in Dist_cursor:
+    for DB_dist in DB_distribs:
 
-        Distrib_name = Dist[0]
-        Arch = Dist[1]
-        State = Dist[2]
+        Distrib_name = DB_dist[0]
+        Arch = DB_dist[1]
+        State = DB_dist[2]
 
         # State == 1 if build succeeded
         if State == 1:
@@ -908,6 +943,7 @@ execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
  
 MA_project = OBS_project + "/" + OBS_package
 DL_pages_table = "0"
+DB_structure = ""
 
 if fnmatch.fnmatch(OBS_package, "ZenLib*"):
     Project_kind = "lib"
@@ -923,6 +959,13 @@ if fnmatch.fnmatch(OBS_package, "ZenLib*"):
             Bin_name = "libzen0v5"
     else:
         DL_pages_table = "releases_dlpages_zl"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            libname varchar(120),
+            libnamedbg varchar(120),
+            libnamedev varchar(120)"""
         if OBS_package == "ZenLib":
             Table = "releases_obs_zl"
         elif OBS_package == "ZenLib_deb6":
@@ -948,6 +991,13 @@ if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*
         #    Table = "snapshots_obs_mil_u12.04"
     else:
         DL_pages_table = "releases_dlpages_mil"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            libname varchar(120),
+            libnamedbg varchar(120),
+            libnamedev varchar(120)"""
         if OBS_package == "MediaInfoLib":
             Table = "releases_obs_mil"
         elif OBS_package == "MediaInfoLib_deb6":
@@ -972,6 +1022,16 @@ if fnmatch.fnmatch(OBS_package, "MediaConch*"):
             Table = "snapshots_obs_mc_deb9"
     else:
         DL_pages_table = "releases_dlpages_mc"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            servername varchar(120),
+            servernamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
         if OBS_package == "MediaConch":
             Table = "releases_obs_mc"
         if OBS_package == "MediaConch_deb9":
@@ -994,6 +1054,14 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
             Table = "snapshots_obs_mi_deb9"
     else:
         DL_pages_table = "releases_dlpages_mi"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
         if OBS_package == "MediaInfo":
             Table = "releases_obs_mi"
         elif OBS_package == "MediaInfo_deb6":
@@ -1088,7 +1156,7 @@ if Project_kind == "gui":
     if not os.path.exists(Destination_gui):
         os.makedirs(Destination_gui)
 
-# ensure that the DB is synchronous with OBS.
+# Ensure that the DB is synchronous with OBS.
 Initialize_DB()
 
 # Once the initialisation of this script is done, the first thing
