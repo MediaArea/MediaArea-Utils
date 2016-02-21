@@ -50,6 +50,7 @@ class mysql:
         print "-------------------------------------------"
         self.cursor = self.sql.cursor()
         self.cursor.execute(query)
+        self.sql.commit()
         self.open = True
 
     def rowcount(self):
@@ -75,8 +76,6 @@ class mysql:
 
 ##################################################################
 def Initialize_DB():
-
-    Cursor = mysql()
 
     # If the tables doesn’t exist, create it
     Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema = '" + Config["MySQL_db"] + "' AND table_name = '" + Table + "';")
@@ -117,14 +116,14 @@ def Initialize_DB():
             # If the couple (Distrib_name, Arch) isn't already
             # in the table, we insert it
             if Result == 0:
-                Cursor.execute("INSERT INTO `" + Table + "` (distrib, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+                Cursor.execute("INSERT INTO `" + Table + "` (distrib, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
             if Release == True:
                 Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
                 Result = 0
                 Result = Cursor.rowcount()
                 if Result == 0:
-                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, Arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
     # Ensure that the DB doesn’t keep distribs the distros which
     # are no longer in the dictionary. The DL_pages_table is not
@@ -138,14 +137,12 @@ def Initialize_DB():
         DB_distrib_name = DB_dist[0]
         DB_arch = DB_dist[1]
         if Distribs.has_key(DB_distrib_name):
-            # If the distribs is present, but an arch has been
+            # If the distrib is present, but this arch has been
             # removed
             if Distribs[DB_distrib_name].count(DB_arch) == 0:
                 Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
         else:
             Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
-
-    Cursor.close()
 
 ##################################################################
 def Waiting_loop():
@@ -199,8 +196,6 @@ def Waiting_loop():
 ##################################################################
 def Update_DB():
 
-    Cursor = mysql()
-
     # We update the table with the results of the build
     for Distrib_name in Distribs.keys():
         for Arch in Distribs[Distrib_name]:
@@ -217,20 +212,13 @@ def Update_DB():
             State = "0"
             if Result == "succeeded":
                 State = "1"
-            #if Result == "broken" or Result == "unresolvable" or Result == "failed":
-            #    State = "2"
-            #if Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
-            #    State = "3"
             if Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
                 State = "2"
             Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
-    Cursor.close()
-
 ##################################################################
 def Get_packages_on_OBS():
 
-    Cursor = mysql()
     Cursor.execute("SELECT * FROM `" + Table + "`")
     DB_distribs = Cursor.fetchall()
 
@@ -641,15 +629,11 @@ def Get_packages_on_OBS():
 
             print "-----------------------"
 
-    Cursor.close()
-
 ##################################################################
 def Verify_states_and_files():
 
-    Cursor = mysql()
     Cursor.execute("SELECT * FROM `" + Table + "`")
     DB_distribs = Cursor.fetchall()
-    Cursor.close()
 
     Number_succeeded = 0
     Dists_failed = []
@@ -666,7 +650,7 @@ def Verify_states_and_files():
 
         # State == 2 if build failed
         if State == 2:
-            Dists_failed.append(Dist)
+            Dists_failed.append(DB_dist)
 
     print "(In case the mails can’t be send:)"
     print "succeeded: " + str(Number_succeeded)
@@ -838,6 +822,8 @@ def Verify_states_and_files():
 
         Failed_list = ""
         for Dist in Dists_failed:
+            Distrib_name = Dist[0]
+            Arch = Dist[1]
             Failed_list = Failed_list + "* " + str(Distrib_name) + " (" + str(Arch) + ")\n"
 
         print "\nFailed:\n" + Failed_list
@@ -854,7 +840,6 @@ def Verify_states_and_files():
                + "The build have fail on OBS for:\n" + Failed_list + "'" \
                + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
                + " " + Config["Email_to"]
-        print Params
         subprocess.call(Params, shell=True)
 
     # Confirmation mails
@@ -942,8 +927,14 @@ Config = {}
 execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
  
 MA_project = OBS_project + "/" + OBS_package
+
+# Various initializations
 DL_pages_table = "0"
 DB_structure = ""
+Release = False
+Timeout = False
+Compt = 0
+Result = 0
 
 if fnmatch.fnmatch(OBS_package, "ZenLib*"):
     Project_kind = "lib"
@@ -1071,7 +1062,6 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
         elif OBS_package == "MediaInfo_deb9":
             Table = "releases_obs_mi_deb9"
 
-Release = False
 if len(DL_pages_table) > 1:
     Release = True
 
@@ -1156,6 +1146,9 @@ if Project_kind == "gui":
     if not os.path.exists(Destination_gui):
         os.makedirs(Destination_gui)
 
+# Open the access to the DB
+Cursor = mysql()
+
 # Ensure that the DB is synchronous with OBS.
 Initialize_DB()
 
@@ -1173,6 +1166,9 @@ Get_packages_on_OBS()
 # Send a confirmation mail if everything is ok, or else notify when
 # a build has failed or a succeeded package has not been downloaded
 Verify_states_and_files()
+
+# Close the access to the DB
+Cursor.close()
 
 # If we run for MC or MI (no DL pages for ZL and MIL, so we test
 # Project_kind), and this is a release
