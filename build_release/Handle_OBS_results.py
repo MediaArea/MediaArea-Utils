@@ -26,15 +26,23 @@ class mysql:
         self.running = True
         try:
             self.sql = MySQLdb.connect(
-                    host=config["MySQL_host"],
-                    user=config["MySQL_user"],
-                    passwd=config["MySQL_passwd"],
-                    db=config["MySQL_db"])
+                    host=Config["MySQL_host"],
+                    user=Config["MySQL_user"],
+                    passwd=Config["MySQL_passwd"],
+                    db=Config["MySQL_db"])
         except MySQLdb.Error, e:
             self.running = True
             print "*** MySQL Error %d: %s ***" % (e.args[0], e.args[1])
             print "*** FATAL: quitting ***"
             sys.exit(1)
+
+    def close(self):
+        if self.open:
+            self.sql.commit()
+            return self.cursor.close()
+        else:
+            print "*** close: No DB cursor is open! ***"
+            return 0
 
     def execute(self, query):
         print "---------------- SQL QUERY ----------------"
@@ -42,6 +50,7 @@ class mysql:
         print "-------------------------------------------"
         self.cursor = self.sql.cursor()
         self.cursor.execute(query)
+        self.sql.commit()
         self.open = True
 
     def rowcount(self):
@@ -65,203 +74,229 @@ class mysql:
             print "*** fetchall: No DB cursor is open! ***"
             return 0
 
-    def closecursor(self):
-        if self.open:
-            self.sql.commit()
-            return self.cursor.close()
-        else:
-            print "*** close: No DB cursor is open! ***"
-            return 0
+##################################################################
+def Initialize_DB():
 
-    def close(self):
-        if self.open:
-            self.sql.commit()
-            return self.cursor.close()
+    # If the tables doesn’t exist, create it
+    Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema = '" + Config["MySQL_db"] + "' AND table_name = '" + Table + "';")
+    Result = 0
+    Result = Cursor.rowcount()
+    if Result == 0:
+        Cursor.execute("CREATE TABLE IF NOT EXISTS " + Table
+                        + """
+                            (
+                                distrib varchar(50),
+                                arch varchar(10),
+                                state tinyint(4)
+                            )
+                            DEFAULT CHARACTER SET utf8
+                            DEFAULT COLLATE utf8_general_ci;
+                        """)
+
+    if Release == True:
+        Cursor.execute("SELECT * FROM information_schema.tables WHERE table_schema = '" + Config["MySQL_db"] + "' AND table_name = '" + DL_pages_table + "';")
+        Result = 0
+        Result = Cursor.rowcount()
+        if Result == 0:
+            Cursor.execute("CREATE TABLE IF NOT EXISTS " + DL_pages_table
+                            + "("
+                            + DB_structure
+                            + ") DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;")
+
+    # Ensure that all the distribs in the dictionary are presents
+    # in the DB
+
+    for Distrib_name in Distribs.keys():
+
+        for Arch in Distribs[Distrib_name]:
+
+            Cursor.execute("SELECT * FROM `" + Table + "` WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+            Result = 0
+            Result = Cursor.rowcount()
+            # If the couple (Distrib_name, Arch) isn't already
+            # in the table, we insert it
+            if Result == 0:
+                Cursor.execute("INSERT INTO `" + Table + "` (distrib, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+
+            if Release == True:
+                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+                Result = 0
+                Result = Cursor.rowcount()
+                if Result == 0:
+                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+
+    # Ensure that the DB doesn’t keep distribs the distros which
+    # are no longer in the dictionary. The DL_pages_table is not
+    # affected since a distrib can be removed from builds but still
+    # wanted in the download tables.
+
+    Cursor.execute("SELECT * FROM `" + Table + "`")
+    DB_distribs = Cursor.fetchall()
+
+    for DB_dist in DB_distribs:
+        DB_distrib_name = DB_dist[0]
+        DB_arch = DB_dist[1]
+        if Distribs.has_key(DB_distrib_name):
+            # If the distrib is present, but this arch has been
+            # removed
+            if Distribs[DB_distrib_name].count(DB_arch) == 0:
+                Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
         else:
-            print "*** close: No DB cursor is open! ***"
-            return 0
+            Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
 
 ##################################################################
-def waiting_loop():
+def Waiting_loop():
 
-    compt = 0
-    # Python definitely lack an until statement
-    while True:
-        compt = compt + 1
+    Compt = 0
+
+    # We wait for max 9h (600*20)+(1200*17)
+    while Compt < 38:
+
+        Compt = Compt + 1
+
         # At first, check every 10mn during 3h20
-        if compt < 20:
-            if compt == 1:
+        if Compt < 20:
+            if Compt == 1:
                 print "Wait 10mn..."
             else:
                 print "All builds aren’t finished yet, wait another 10mn..."
             time.sleep(600)
+
         # Past 3h30, trigger rebuilds
         else:
             print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn..."
-            for dname in Distribs.keys():
-                for arch in Distribs[dname]:
-                    params = "osc results " + MA_Project \
-                           + " |grep " + dname \
-                           + " |grep " + arch \
+            for Distrib_name in Distribs.keys():
+                for Arch in Distribs[Distrib_name]:
+                    Params = "osc results " + MA_project \
+                           + " |grep " + Distrib_name \
+                           + " |grep " + Arch \
                            + " |awk '{print $3}' |sed 's/*//'"
-                    result = subprocess.check_output(params, shell=True).strip()
-                    if result == "scheduled":
-                        print "Trigger rebuild for " + dname + " (" + arch + ")"
-                        subprocess.call(["osc", "rebuild", MA_Project, dname, arch])
+                    Result = subprocess.check_output(Params, shell=True).strip()
+                    if Result == "scheduled":
+                        print "Trigger rebuild for " + Distrib_name + " (" + Arch + ")"
+                        subprocess.call(["osc", "rebuild", MA_project, Distrib_name, Arch])
                         
             time.sleep(1200)
-        params = "osc results " + MA_Project \
+        Params = "osc results " + MA_project \
                + " |awk '{print $3}' |sed 's/*//' |grep -v 'excluded\|disabled\|broken\|unresolvable\|failed\|succeeded' |wc -l"
-        result = subprocess.check_output(params, shell=True).strip()
-        # result will equal 0 when all the distros are build
-        if result == "0":
+        Result = subprocess.check_output(Params, shell=True).strip()
+
+        # When all the distros are build, Result will equal 0
+        if Result == "0":
             break
-        # If we are waiting for more than 9h: (600*20)+(1200*17)
-        if compt > 37:
-            params = \
-                   "echo 'After more than 9 hours, the builds weren’t over. The script has quit whitout downloading anything.'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'"
-            if len(config["Email_CC"]) > 1:
-                params = params + " -c '" + config["Email_CC"] + "'"
-            params = params + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
-            sys.exit(1)
+
+        # If Result ≠ 0 and Compt = 37, then we have wait for 9h
+        # and all the distros aren’t build. This while loop will
+        # exit at the next iteration, and in the error mail we
+        # specify that the timeout was reached.
+        Timeout = False
+        if Compt == 37:
+            Timeout = True
 
 ##################################################################
-def update_DB():
+def Update_DB():
 
-    # To be sure that the table used to fetch the packages have all
-    # the distributions presents on OBS
-    cursor = mysql()
-    for dname in Distribs.keys():
-        for arch in Distribs[dname]:
-            cursor.execute("SELECT * FROM `" + table + "` WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
-            check = cursor.fetchone()
-            # If the couple (dname, arch) isn't already in the
-            # table, we insert it
-            if check is None:
-                cursor.execute("INSERT INTO `" + table + "` (distrib, arch) VALUES ('" + dname + "', '" + arch + "');")
-    cursor.close()
-    
-    # If this is for a release
-    if len(dlpages_table) > 1:
-        # To be sure that the table used to update the download
-        # pages have all the distributions presents on OBS
-        cursor = mysql()
-        for dname in Distribs.keys():
-            for arch in Distribs[dname]:
-                cursor.execute("SELECT * FROM `" + dlpages_table + "` WHERE platform ='" + dname + "' AND arch ='" + arch + "';")
-                check = cursor.fetchone()
-                # If the couple (dname, arch) isn't already in the
-                # table, we insert it
-                if check is None:
-                    cursor.execute("INSERT INTO `" + dlpages_table + "` (platform, arch) VALUES ('" + dname + "', '" + arch + "');")
-        cursor.close()
-
-    # Then we update the table with the results of the build
-    cursor = mysql()
-    for dname in Distribs.keys():
-        for arch in Distribs[dname]:
-            # We take "grep 'dname '" instead of "grep dname"
+    # We update the table with the results of the build
+    for Distrib_name in Distribs.keys():
+        for Arch in Distribs[Distrib_name]:
+            # We take "grep 'Distrib_name '" instead of "grep Distrib_name"
             # because the name of a distrib can be included in the
             # names of another distribs (ie SLE_11 and SLE_11_SPx)
-            params = "osc results " + MA_Project \
-                   + " |grep '" + dname + " '"\
-                   + " |grep " + arch \
+            Params = "osc results " + MA_project \
+                   + " |grep '" + Distrib_name + " '"\
+                   + " |grep " + Arch \
                    + " |awk '{print $3}' |sed 's/*//'"
-            result = subprocess.check_output(params, shell=True).strip()
+            Result = subprocess.check_output(Params, shell=True).strip()
             # First case : if the state is disabled, excluded or
             # unknown
-            state = "0"
-            if result == "succeeded":
-                state = "1"
-            if (result == "broken" or result == "unresolvable" or result == "failed"):
-                state = "2"
-            cursor.execute("UPDATE `" + table + "` SET state='" + state + "' WHERE distrib ='" + dname + "' AND arch ='" + arch + "';")
-    cursor.close()
+            State = "0"
+            if Result == "succeeded":
+                State = "1"
+            if Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
+                State = "2"
+            Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
 ##################################################################
-def get_packages_on_OBS():
+def Get_packages_on_OBS():
 
-    cursor = mysql()
-    cursor.execute("SELECT * FROM `" + table + "`")
-    dist_cursor = cursor.fetchall()
+    Cursor.execute("SELECT * FROM `" + Table + "`")
+    DB_distribs = Cursor.fetchall()
 
-    for dist in dist_cursor:
+    for DB_dist in DB_distribs:
 
-        dname = dist[0]
-        arch = dist[1]
-        state = dist[2]
+        Distrib_name = DB_dist[0]
+        Arch = DB_dist[1]
+        State = DB_dist[2]
 
-        # state == 1 if build succeeded
-        if state == 1:
+        # State == 1 if build succeeded
+        if State == 1:
 
             print
-            print "API commands for " + dname + " (" + arch + ")"
+            print "API commands for " + Distrib_name + " (" + Arch + ")"
             print
 
             # Initialization depending on the distrib’s family
-            revision = ""
-            if fnmatch.fnmatch(dname, "Debian*") or \
-                    fnmatch.fnmatch(dname, "xUbuntu*"):
-                pkgtype = "deb"
-                revision = "-1"
-            if fnmatch.fnmatch(dname, "RHEL*") or \
-                    fnmatch.fnmatch(dname, "CentOS*") or \
-                    fnmatch.fnmatch(dname, "Fedora*"):
-                pkgtype = "rpm"
-                pkginfos[pkgtype]["i586"] = "i686"
-            if fnmatch.fnmatch(dname, "SLE*") or \
-                    fnmatch.fnmatch(dname, "openSUSE*"):
-                pkgtype = "rpm"
-                pkginfos[pkgtype]["i586"] = "i586"
-            #if fnmatch.fnmatch(dname, "Arch*"):
-            #    pkgtype = "pkg.tar.xz"
+            Revision = ""
+            if fnmatch.fnmatch(Distrib_name, "Debian*") or \
+                    fnmatch.fnmatch(Distrib_name, "xUbuntu*"):
+                Package_type = "deb"
+                Revision = "-1"
+            if fnmatch.fnmatch(Distrib_name, "RHEL*") or \
+                    fnmatch.fnmatch(Distrib_name, "CentOS*") or \
+                    fnmatch.fnmatch(Distrib_name, "Fedora*"):
+                Package_type = "rpm"
+                Package_infos[Package_type]["i586"] = "i686"
+            if fnmatch.fnmatch(Distrib_name, "SLE*") or \
+                    fnmatch.fnmatch(Distrib_name, "openSUSE*"):
+                Package_type = "rpm"
+                Package_infos[Package_type]["i586"] = "i586"
+            #if fnmatch.fnmatch(Distrib_name, "Arch*"):
+            #    Package_type = "pkg.tar.xz"
 
             ###############
             # Bin package #
             ###############
 
-            # bin = the library package in case of a library, or
+            # Bin = the library package in case of a library, or
             # the cli package otherwise
 
             # The wanted name for the package, under the form:
-            # name[_|-]version[-1][_|.]arch.[deb|rpm]
-            binname_wanted = binname \
-                    + pkginfos[pkgtype]["dash"] + version \
-                    + revision \
-                    + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
-                    + "." + dname \
-                    + "." + pkgtype
-            binname_final = os.path.join(destination, binname_wanted)
+            # name[_|-]version[-1][_|.]Arch.[deb|rpm]
+            Bin_name_wanted = Bin_name \
+                    + Package_infos[Package_type]["dash"] + Version \
+                    + Revision \
+                    + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                    + "." + Distrib_name \
+                    + "." + Package_type
+            Bin_name_final = os.path.join(Destination, Bin_name_wanted)
 
-            binname_obs_side = "0"
+            Bin_name_obs_side = "0"
             # Fetch the name of the package on OBS
             # We take “ deb" ” to avoid the *.debian.txz files
-            params = "osc api /build/" + OBS_Project \
-                   + "/" + dname \
-                   + "/" + arch \
-                   + "/" + OBS_Package \
+            Params = "osc api /build/" + OBS_project \
+                   + "/" + Distrib_name \
+                   + "/" + Arch \
+                   + "/" + OBS_package \
                    + " |grep 'rpm\"\|deb\"'" \
-                   + " |grep " + binname + pkginfos[pkgtype]["dash"] + version \
+                   + " |grep " + Bin_name + Package_infos[Package_type]["dash"] + Version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
             print "Name of the bin package on OBS:"
-            print params
-            binname_obs_side = subprocess.check_output(params, shell=True).strip()
+            print Params
+            Bin_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
             # If the bin package is build
-            if len(binname_obs_side) > 1:
-                params_getpackage = \
-                        "osc api /build/" + OBS_Project \
-                        + "/" + dname \
-                        + "/" + arch \
-                        + "/" + OBS_Package \
-                        + "/" + binname_obs_side \
-                        + " > " + binname_final
+            if len(Bin_name_obs_side) > 1:
+                Params_getpackage = \
+                        "osc api /build/" + OBS_project \
+                        + "/" + Distrib_name \
+                        + "/" + Arch \
+                        + "/" + OBS_package \
+                        + "/" + Bin_name_obs_side \
+                        + " > " + Bin_name_final
                 print "Command to fetch the bin package:"
-                print params_getpackage
+                print Params_getpackage
                 print
-                subprocess.call(params_getpackage, shell=True)
+                subprocess.call(Params_getpackage, shell=True)
 
                 # This is potentially a spam tank, but I leave the
                 # mails here because:
@@ -273,339 +308,352 @@ def get_packages_on_OBS():
 
                 # If the bin package is build, but hasn’t been
                 # downloaded for some raison.
-                if not os.path.isfile(binname_final):
-                    params = \
-                           "echo '" + dname + " (" + arch + "): the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                           + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                           + " " + config["Email_to"]
-                    subprocess.call(params, shell=True)
+                if not os.path.isfile(Bin_name_final):
+                    Params = \
+                           "echo '" + Distrib_name + " (" + Arch + "): the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                           + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                           + " " + Config["Email_to"]
+                    subprocess.call(Params, shell=True)
+            else:
+                print "ERROR: fail to get the name of the bin package on OBS."
+                print
 
             #################
             # Debug package #
             #################
 
-            # name-[dbg|debuginfo][_|-]version[-1][_|.]arch.[deb|rpm]
-            dbgname_wanted = dbgname \
-                    + pkginfos[pkgtype]["debugsuffix"] \
-                    + pkginfos[pkgtype]["dash"] + version \
-                    + revision \
-                    + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
-                    + "." + dname \
-                    + "." + pkgtype
-            dbgname_final = os.path.join(destination, dbgname_wanted)
+            # name-[dbg|debuginfo][_|-]version[-1][_|.]Arch.[deb|rpm]
+            Debug_name_wanted = Debug_name \
+                    + Package_infos[Package_type]["debugsuffix"] \
+                    + Package_infos[Package_type]["dash"] + Version \
+                    + Revision \
+                    + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                    + "." + Distrib_name \
+                    + "." + Package_type
+            Debug_name_final = os.path.join(Destination, Debug_name_wanted)
 
-            dbgname_obs_side = "0"
+            Debug_name_obs_side = "0"
             # Fetch the name of the package on OBS
-            params = "osc api /build/" + OBS_Project \
-                   + "/" + dname \
-                   + "/" + arch \
-                   + "/" + OBS_Package \
+            Params = "osc api /build/" + OBS_project \
+                   + "/" + Distrib_name \
+                   + "/" + Arch \
+                   + "/" + OBS_package \
                    + " |grep 'rpm\"\|deb\"'" \
-                   + " |grep " + dbgname + pkginfos[pkgtype]["debugsuffix"] + pkginfos[pkgtype]["dash"] + version \
+                   + " |grep " + Debug_name + Package_infos[Package_type]["debugsuffix"] + Package_infos[Package_type]["dash"] + Version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
             print "Name of the debug package on OBS:"
-            print params
-            dbgname_obs_side = subprocess.check_output(params, shell=True).strip()
+            print Params
+            Debug_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
             # If the debug package is build
-            if len(dbgname_obs_side) > 1:
-                params_getpackage = \
-                        "osc api /build/" + OBS_Project \
-                        + "/" + dname \
-                        + "/" + arch \
-                        + "/" + OBS_Package \
-                        + "/" + dbgname_obs_side \
-                        + " > " + dbgname_final
+            if len(Debug_name_obs_side) > 1:
+                Params_getpackage = \
+                        "osc api /build/" + OBS_project \
+                        + "/" + Distrib_name \
+                        + "/" + Arch \
+                        + "/" + OBS_package \
+                        + "/" + Debug_name_obs_side \
+                        + " > " + Debug_name_final
                 print "Command to fetch the debug package:"
-                print params_getpackage
+                print Params_getpackage
                 print
-                subprocess.call(params_getpackage, shell=True)
+                subprocess.call(Params_getpackage, shell=True)
 
                 # If the debug package is build, but hasn’t been
                 # downloaded for some raison.
-                if not os.path.isfile(dbgname_final):
-                    params = \
-                           "echo '" + dname + " (" + arch + "): the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                           + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                           + " " + config["Email_to"]
-                    subprocess.call(params, shell=True)
+                if not os.path.isfile(Debug_name_final):
+                    Params = \
+                           "echo '" + Distrib_name + " (" + Arch + "): the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                           + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                           + " " + Config["Email_to"]
+                    subprocess.call(Params, shell=True)
             else:
+                # Debug packages aren’t perfectly handled on OBS
+                #print "ERROR: fail to get the name of the debug package on OBS."
                 print
 
             ###############
             # Dev package #
             ###############
 
-            if prjkind == "lib":
+            if Project_kind == "lib":
 
-                # name-dev[el][_|-]version[-1][_|.]arch.[deb|rpm]
-                devname_wanted = dbgname \
-                        + pkginfos[pkgtype]["devsuffix"] \
-                        + pkginfos[pkgtype]["dash"] + version \
-                        + revision \
-                        + pkginfos[pkgtype]["separator"] \
-                        + pkginfos[pkgtype][arch] \
-                        + "." + dname \
-                        + "." + pkgtype
-                devname_final = os.path.join(destination, devname_wanted)
+                # name-dev[el][_|-]version[-1][_|.]Arch.[deb|rpm]
+                Dev_name_wanted = Debug_name \
+                        + Package_infos[Package_type]["devsuffix"] \
+                        + Package_infos[Package_type]["dash"] + Version \
+                        + Revision \
+                        + Package_infos[Package_type]["separator"] \
+                        + Package_infos[Package_type][Arch] \
+                        + "." + Distrib_name \
+                        + "." + Package_type
+                Dev_name_final = os.path.join(Destination, Dev_name_wanted)
 
-                devname_obs_side = "0"
+                Dev_name_obs_side = "0"
                 # Fetch the name of the package on OBS
-                params = "osc api /build/" + OBS_Project \
-                       + "/" + dname \
-                       + "/" + arch \
-                       + "/" + OBS_Package \
+                Params = "osc api /build/" + OBS_project \
+                       + "/" + Distrib_name \
+                       + "/" + Arch \
+                       + "/" + OBS_package \
                        + " |grep 'rpm\"\|deb\"'" \
-                       + " |grep " + dbgname + pkginfos[pkgtype]["devsuffix"] + pkginfos[pkgtype]["dash"] + version \
+                       + " |grep " + Debug_name + Package_infos[Package_type]["devsuffix"] + Package_infos[Package_type]["dash"] + Version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the dev package on OBS:"
-                print params
+                print Params
                 print
-                devname_obs_side = subprocess.check_output(params, shell=True).strip()
+                Dev_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
                 # If the dev package is build
-                if len(devname_obs_side) > 1:
-                    params_getpackage = \
-                            "osc api /build/" + OBS_Project \
-                            + "/" + dname \
-                            + "/" + arch \
-                            + "/" + OBS_Package \
-                            + "/" + devname_obs_side \
-                            + " > " + devname_final
+                if len(Dev_name_obs_side) > 1:
+                    Params_getpackage = \
+                            "osc api /build/" + OBS_project \
+                            + "/" + Distrib_name \
+                            + "/" + Arch \
+                            + "/" + OBS_package \
+                            + "/" + Dev_name_obs_side \
+                            + " > " + Dev_name_final
                     print "Command to fetch the dev package:"
-                    print params_getpackage
+                    print Params_getpackage
                     print
-                    subprocess.call(params_getpackage, shell=True)
+                    subprocess.call(Params_getpackage, shell=True)
 
-                    # If the debug package is build, but hasn’t
+                    # If the dev package is build, but hasn’t
                     # been downloaded for some raison.
-                    if not os.path.isfile(devname_final):
-                        params = \
-                               "echo '" + dname + " (" + arch + "): the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                               + " " + config["Email_to"]
-                        subprocess.call(params, shell=True)
+                    if not os.path.isfile(Dev_name_final):
+                        Params = \
+                               "echo '" + Distrib_name + " (" + Arch + "): the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                               + " " + Config["Email_to"]
+                        subprocess.call(Params, shell=True)
+                else:
+                    print "ERROR: fail to get the name of the dev package on OBS."
+                    print
 
             ###############
             # Doc package #
             ###############
 
-                # name-doc[_|-]version[-1][_|.]arch.[deb|rpm]
-                docname_wanted = dbgname + "-doc" \
-                        + pkginfos[pkgtype]["dash"] + version \
-                        + revision \
-                        + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
-                        + "." + dname \
-                        + "." + pkgtype
-                docname_final = os.path.join(destination, docname_wanted)
+                # name-doc[_|-]version[-1][_|.]Arch.[deb|rpm]
+                Doc_name_wanted = Debug_name + "-doc" \
+                        + Package_infos[Package_type]["dash"] + Version \
+                        + Revision \
+                        + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                        + "." + Distrib_name \
+                        + "." + Package_type
+                Doc_name_final = os.path.join(Destination, Doc_name_wanted)
     
-                docname_obs_side = "0"
+                Doc_name_obs_side = "0"
                 # Fetch the name of the package on OBS
-                params = "osc api /build/" + OBS_Project \
-                       + "/" + dname \
-                       + "/" + arch \
-                       + "/" + OBS_Package \
+                Params = "osc api /build/" + OBS_project \
+                       + "/" + Distrib_name \
+                       + "/" + Arch \
+                       + "/" + OBS_package \
                        + " |grep 'rpm\"\|deb\"'" \
                        + " |grep doc |grep -v src |awk -F '\"' '{print $2}'"
                 print "Name of the doc package on OBS:"
-                print params
-                docname_obs_side = subprocess.check_output(params, shell=True).strip()
+                print Params
+                Doc_name_obs_side = subprocess.check_output(Params, shell=True).strip()
     
                 # If the doc package is build
-                if len(docname_obs_side) > 1:
-                    params_getpackage = \
-                            "osc api /build/" + OBS_Project \
-                            + "/" + dname \
-                            + "/" + arch \
-                            + "/" + OBS_Package \
-                            + "/" + docname_obs_side \
-                            + " > " + docname_final
+                if len(Doc_name_obs_side) > 1:
+                    Params_getpackage = \
+                            "osc api /build/" + OBS_project \
+                            + "/" + Distrib_name \
+                            + "/" + Arch \
+                            + "/" + OBS_package \
+                            + "/" + Doc_name_obs_side \
+                            + " > " + Doc_name_final
                     print "Command to fetch the doc package:"
-                    print params_getpackage
+                    print Params_getpackage
                     print
-                    subprocess.call(params_getpackage, shell=True)
+                    subprocess.call(Params_getpackage, shell=True)
     
                     # If the doc package is build, but hasn’t been
                     # downloaded for some raison.
-                    if not os.path.isfile(docname_final):
-                        params = \
-                               "echo '" + dname + " (" + arch + "): the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                               + " " + config["Email_to"]
-                        subprocess.call(params, shell=True)
+                    if not os.path.isfile(Doc_name_final):
+                        Params = \
+                               "echo '" + Distrib_name + " (" + Arch + "): the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                               + " " + Config["Email_to"]
+                        subprocess.call(Params, shell=True)
+                else:
+                    print "ERROR: fail to get the name of the doc package on OBS."
+                    print
 
             ###############
             # GUI package #
             ###############
 
-            if prjkind == "gui":
+            if Project_kind == "gui":
 
-                # name-gui[_|-]version[-1][_|.]arch.[deb|rpm]
-                guiname_wanted = binname + "-gui" \
-                        + pkginfos[pkgtype]["dash"] + version \
-                        + revision \
-                        + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
-                        + "." + dname \
-                        + "." + pkgtype
-                guiname_final = os.path.join(destination_gui, guiname_wanted)
+                # name-gui[_|-]version[-1][_|.]Arch.[deb|rpm]
+                Gui_name_wanted = Bin_name + "-gui" \
+                        + Package_infos[Package_type]["dash"] + Version \
+                        + Revision \
+                        + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                        + "." + Distrib_name \
+                        + "." + Package_type
+                Gui_name_final = os.path.join(Destination_gui, Gui_name_wanted)
 
-                guiname_obs_side = "0"
+                Gui_name_obs_side = "0"
                 # Fetch the name of the package on OBS
-                params = "osc api /build/" + OBS_Project \
-                       + "/" + dname \
-                       + "/" + arch \
-                       + "/" + OBS_Package \
+                Params = "osc api /build/" + OBS_project \
+                       + "/" + Distrib_name \
+                       + "/" + Arch \
+                       + "/" + OBS_package \
                        + " |grep 'rpm\"\|deb\"'" \
-                       + " |grep " + binname + "-gui" + pkginfos[pkgtype]["dash"] + version \
+                       + " |grep " + Bin_name + "-gui" + Package_infos[Package_type]["dash"] + Version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the gui package on OBS:"
-                print params
-                guiname_obs_side = subprocess.check_output(params, shell=True).strip()
+                print Params
+                Gui_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
                 # If the gui package is build
-                if len(guiname_obs_side) > 1:
-                    params_getpackage = \
-                            "osc api /build/" + OBS_Project \
-                            + "/" + dname \
-                            + "/" + arch \
-                            + "/" + OBS_Package \
-                            + "/" + guiname_obs_side \
-                            + " > " + guiname_final
+                if len(Gui_name_obs_side) > 1:
+                    Params_getpackage = \
+                            "osc api /build/" + OBS_project \
+                            + "/" + Distrib_name \
+                            + "/" + Arch \
+                            + "/" + OBS_package \
+                            + "/" + Gui_name_obs_side \
+                            + " > " + Gui_name_final
                     print "Command to fetch the gui package:"
-                    print params_getpackage
+                    print Params_getpackage
                     print
-                    subprocess.call(params_getpackage, shell=True)
+                    subprocess.call(Params_getpackage, shell=True)
 
                     # If the gui package is build, but hasn’t
                     # been downloaded for some raison.
-                    if not os.path.isfile(guiname_final):
-                        params = \
-                               "echo '" + dname + " (" + arch + "): the gui package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                               + " " + config["Email_to"]
-                        subprocess.call(params, shell=True)
+                    if not os.path.isfile(Gui_name_final):
+                        Params = \
+                               "echo '" + Distrib_name + " (" + Arch + "): the gui package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                               + " " + Config["Email_to"]
+                        subprocess.call(Params, shell=True)
+                else:
+                    print "ERROR: fail to get the name of the gui package on OBS."
+                    print
 
             ##################
             # Server package #
             ##################
 
-            if binname == "mediaconch":
+            if Bin_name == "mediaconch":
 
-                # name-server[_|-]version[-1][_|.]arch.[deb|rpm]
-                servername_wanted = binname + "-server" \
-                        + pkginfos[pkgtype]["dash"] + version \
-                        + revision \
-                        + pkginfos[pkgtype]["separator"] + pkginfos[pkgtype][arch] \
-                        + "." + dname \
-                        + "." + pkgtype
-                servername_final = os.path.join(destination_server, servername_wanted)
+                # name-server[_|-]version[-1][_|.]Arch.[deb|rpm]
+                Server_name_wanted = Bin_name + "-server" \
+                        + Package_infos[Package_type]["dash"] + Version \
+                        + Revision \
+                        + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                        + "." + Distrib_name \
+                        + "." + Package_type
+                Server_name_final = os.path.join(Destination_server, Server_name_wanted)
 
-                servername_obs_side = "0"
+                Server_name_obs_side = "0"
                 # Fetch the name of the package on OBS
-                params = "osc api /build/" + OBS_Project \
-                       + "/" + dname \
-                       + "/" + arch \
-                       + "/" + OBS_Package \
+                Params = "osc api /build/" + OBS_project \
+                       + "/" + Distrib_name \
+                       + "/" + Arch \
+                       + "/" + OBS_package \
                        + " |grep 'rpm\"\|deb\"'" \
-                       + " |grep " + binname + "-server" + pkginfos[pkgtype]["dash"] + version \
+                       + " |grep " + Bin_name + "-server" + Package_infos[Package_type]["dash"] + Version \
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the server package on OBS:"
-                print params
-                servername_obs_side = subprocess.check_output(params, shell=True).strip()
+                print Params
+                Server_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
                 # If the server package is build
-                if len(servername_obs_side) > 1:
-                    params_getpackage = \
-                            "osc api /build/" + OBS_Project \
-                            + "/" + dname \
-                            + "/" + arch \
-                            + "/" + OBS_Package \
-                            + "/" + servername_obs_side \
-                            + " > " + servername_final
+                if len(Server_name_obs_side) > 1:
+                    Params_getpackage = \
+                            "osc api /build/" + OBS_project \
+                            + "/" + Distrib_name \
+                            + "/" + Arch \
+                            + "/" + OBS_package \
+                            + "/" + Server_name_obs_side \
+                            + " > " + Server_name_final
                     print "Command to fetch the server package:"
-                    print params_getpackage
+                    print Params_getpackage
                     print
-                    subprocess.call(params_getpackage, shell=True)
+                    subprocess.call(Params_getpackage, shell=True)
 
                     # If the server package is build, but hasn’t
                     # been downloaded for some raison.
-                    if not os.path.isfile(servername_final):
-                        params = \
-                               "echo '" + dname + " (" + arch + "): the server package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + params_getpackage + "'" \
-                               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                               + " " + config["Email_to"]
-                        subprocess.call(params, shell=True)
+                    if not os.path.isfile(Server_name_final):
+                        Params = \
+                               "echo '" + Distrib_name + " (" + Arch + "): the server package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
+                               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                               + " " + Config["Email_to"]
+                        subprocess.call(Params, shell=True)
+                else:
+                    print "ERROR: fail to get the name of the server package on OBS."
+                    print
 
             ###########################
             # Put the filenames in DB #
             ###########################
 
             # If we run for a release
-            if len(dlpages_table) > 1:
+            if Release == True:
 
                 # For the libs
-                if prjkind == "lib":
-                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
-                            + " version = '" + version + "'," \
-                            + " libname = '" + binname_wanted + "'," \
-                            + " libnamedbg = '" + dbgname_wanted + "'," \
-                            + " libnamedev = '" + devname_wanted + "'" \
-                            + " WHERE platform = '" + dname + "'" \
-                            + " AND arch = '" + arch + "';")
+                if Project_kind == "lib":
+                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                            + " version = '" + Version + "'," \
+                            + " libname = '" + Bin_name_wanted + "'," \
+                            + " libnamedbg = '" + Debug_name_wanted + "'," \
+                            + " libnamedev = '" + Dev_name_wanted + "'" \
+                            + " WHERE platform = '" + Distrib_name + "'" \
+                            + " AND arch = '" + Arch + "';")
 
                 # For MC
-                if binname == "mediaconch":
-                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
-                            + " version = '" + version + "'," \
-                            + " cliname = '" + binname_wanted + "'," \
-                            + " clinamedbg = '" + dbgname_wanted + "'," \
-                            + " servername = '" + servername_wanted + "'," \
-                            + " guiname = '" + guiname_wanted + "'" \
-                            + " WHERE platform = '" + dname + "'" \
-                            + " AND arch = '" + arch + "';")
+                if Bin_name == "mediaconch":
+                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                            + " version = '" + Version + "'," \
+                            + " cliname = '" + Bin_name_wanted + "'," \
+                            + " clinamedbg = '" + Debug_name_wanted + "'," \
+                            + " servername = '" + Server_name_wanted + "'," \
+                            + " guiname = '" + Gui_name_wanted + "'" \
+                            + " WHERE platform = '" + Distrib_name + "'" \
+                            + " AND arch = '" + Arch + "';")
 
                 # For MI
-                if binname == "mediainfo":
-                    cursor.execute("UPDATE `" + dlpages_table + "` SET"\
-                            + " version = '" + version + "'," \
-                            + " cliname = '" + binname_wanted + "'," \
-                            + " clinamedbg = '" + dbgname_wanted + "'," \
-                            + " guiname = '" + guiname_wanted + "'" \
-                            + " WHERE platform = '" + dname + "'" \
-                            + " AND arch = '" + arch + "';")
+                if Bin_name == "mediainfo":
+                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                            + " version = '" + Version + "'," \
+                            + " cliname = '" + Bin_name_wanted + "'," \
+                            + " clinamedbg = '" + Debug_name_wanted + "'," \
+                            + " guiname = '" + Gui_name_wanted + "'" \
+                            + " WHERE platform = '" + Distrib_name + "'" \
+                            + " AND arch = '" + Arch + "';")
 
 
             print "-----------------------"
 
-    cursor.close()
-
 ##################################################################
-def verify_states_and_files():
+def Verify_states_and_files():
 
-    cursor = mysql()
-    cursor.execute("SELECT * FROM `" + table + "`")
-    dist_cursor = cursor.fetchall()
-    cursor.close()
+    Cursor.execute("SELECT * FROM `" + Table + "`")
+    DB_distribs = Cursor.fetchall()
 
-    nb_succeeded = 0
-    dists_failed = []
+    Number_succeeded = 0
+    Dists_failed = []
 
-    for dist in dist_cursor:
+    for DB_dist in DB_distribs:
 
-        dname = dist[0]
-        arch = dist[1]
-        state = dist[2]
+        Distrib_name = DB_dist[0]
+        Arch = DB_dist[1]
+        State = DB_dist[2]
 
-        # state == 1 if build succeeded
-        if state == 1:
-            nb_succeeded = nb_succeeded + 1
+        # State == 1 if build succeeded
+        if State == 1:
+            Number_succeeded = Number_succeeded + 1
 
-        # state == 2 if build failed
-        if state == 2:
-            dists_failed.append(dist)
+        # State == 2 if build failed
+        if State == 2:
+            Dists_failed.append(DB_dist)
 
     print "(In case the mails can’t be send:)"
-    print "succeeded: " + str(nb_succeeded) \
+    print "succeeded: " + str(Number_succeeded)
 
     ################
     # Bin packages #
@@ -614,351 +662,418 @@ def verify_states_and_files():
     # Careful: if multiple instances run at the same time (debX)
     # and one of them doesn’t download its packages, the problem
     # may not be detected. Because the packages downloaded by other
-    # instances will be counted in nb_bin.
+    # instances will be counted in Number_bin.
 
-    nb_bin = 0
-    params = "ls " + destination + "/" + binname + "*" + version + "*" \
+    Number_bin = 0
+    Params = "ls " + Destination + "/" + Bin_name + "*" + Version + "*" \
            + " |grep 'rpm\|deb'" \
            + " |grep -v 'dbg\|debug'" \
            + " |wc -l"
-    result = subprocess.check_output(params, shell=True).strip()
-    nb_bin = int(result)
+    Result = subprocess.check_output(Params, shell=True).strip()
+    Number_bin = int(Result)
 
     # It’s not a good idea to put it before the previous line, as
-    # in some case result is an int, and other time it’s a str…
-    print "bin: " + str(nb_bin)
+    # in some case Result is an int, and other time it’s a str…
+    print "bin: " + str(Number_bin)
 
-    if nb_bin < nb_succeeded:
-        params = \
-               "echo 'The number of downloaded bin packages is lower than the number of succeeded bin packages on OBS:\n" \
-               + str(nb_succeeded) + " succeeded and " + str(nb_bin) + " downloaded.'" \
-               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-               + " " + config["Email_to"]
-        subprocess.call(params, shell=True)
+    if Number_bin < Number_succeeded:
+        Params = \
+               "echo 'OBS project: " + OBS_project + "\n" \
+               + "OBS package: " + OBS_package + "\n" \
+               + "Version: " + Version + "\n\n" \
+               + "The number of downloaded bin packages is lower than the number of succeeded bin packages on OBS:\n" \
+               + str(Number_succeeded) + " succeeded and " + str(Number_bin) + " downloaded.'" \
+               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+               + " " + Config["Email_to"]
+        subprocess.call(Params, shell=True)
 
     ##################
     # Debug packages #
     ##################
 
-    nb_dbg = 0
-    params = "ls " + destination + "/" + dbgname + "*" \
+    Number_debug = 0
+    Params = "ls " + Destination + "/" + Debug_name + "*" \
            + " |grep 'rpm\|deb'" \
            + " |grep 'dbg\|debug'" \
            + " |wc -l"
-    result = subprocess.check_output(params, shell=True).strip()
-    nb_dbg = int(result)
+    Result = subprocess.check_output(Params, shell=True).strip()
+    Number_debug = int(Result)
 
-    print "dbg: " + str(nb_dbg)
+    print "dbg: " + str(Number_debug)
 
     # Debug packages aren’t perfectly handled on OBS
-    #if nb_dbg < nb_succeeded:
-    #    params = \
-    #           "echo 'The number of downloaded debug packages is lower than the number of succeeded debug packages on OBS:\n" \
-    #           + str(nb_succeeded) + " succeeded and " + str(nb_dbg) + " downloaded.'" \
-    #           + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'"
-    #           + " " + config["Email_to"]
-    #    subprocess.call(params, shell=True)
+    #if Number_debug < Number_succeeded:
+    #    Params = \
+    #           "echo 'OBS project: " + OBS_project + "\n" \
+    #           + "OBS package: " + OBS_package + "\n" \
+    #           + "Version: " + Version + "\n\n" \
+    #           "The number of downloaded debug packages is lower than the number of succeeded debug packages on OBS:\n" \
+    #           + str(Number_succeeded) + " succeeded and " + str(Number_debug) + " downloaded.'" \
+    #           + " |mailx -s '[BR lin] Problem with " + OBS_package + "'"
+    #           + " " + Config["Email_to"]
+    #    subprocess.call(Params, shell=True)
 
     ################
     # Dev packages #
     ################
 
-    if prjkind == "lib":
-        nb_dev = 0
-        params = "ls " + destination + "/" + dbgname + "*" \
+    if Project_kind == "lib":
+        Number_dev = 0
+        Params = "ls " + Destination + "/" + Debug_name + "*" \
                + " |grep 'rpm\|deb'" \
                + " |grep 'dev\|devel'" \
                + " |wc -l"
-        result = subprocess.check_output(params, shell=True).strip()
-        nb_dev = int(result)
+        Result = subprocess.check_output(Params, shell=True).strip()
+        Number_dev = int(Result)
         
-        print "dev: " + str(nb_dev)
+        print "dev: " + str(Number_dev)
 
-        if nb_dev < nb_succeeded:
-            params = \
-                   "echo 'The number of downloaded dev packages is lower than the number of succeeded dev packages on OBS:\n" \
-                   + str(nb_succeeded) + " succeeded and " + str(nb_dev) + " downloaded.'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+        if Number_dev < Number_succeeded:
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
+                   "The number of downloaded dev packages is lower than the number of succeeded dev packages on OBS:\n" \
+                   + str(Number_succeeded) + " succeeded and " + str(Number_dev) + " downloaded.'" \
+                   + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
 
         ################
         # Doc packages #
         ################
     
-        nb_doc = 0
-        params = "ls " + destination + "/" + dbgname + "-doc*" \
+        Number_doc = 0
+        Params = "ls " + Destination + "/" + Debug_name + "-doc*" \
                + " |grep 'rpm\|deb'" \
                + " |wc -l"
-        result = subprocess.check_output(params, shell=True).strip()
-        nb_doc = int(result)
+        Result = subprocess.check_output(Params, shell=True).strip()
+        Number_doc = int(Result)
 
-        print "doc: " + str(nb_doc)
+        print "doc: " + str(Number_doc)
 
         # Doc packages aren’t generated by OBS on debX repo
-        if nb_doc < nb_succeeded and not fnmatch.fnmatch(OBS_Package, "*_deb?"):
-            params = \
-                   "echo 'The number of downloaded doc packages is lower than the number of succeeded doc packages on OBS:\n" \
-                   + str(nb_succeeded) + " succeeded and " + str(nb_doc) + " downloaded.'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+        if Number_doc < Number_succeeded and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
+                   "The number of downloaded doc packages is lower than the number of succeeded doc packages on OBS:\n" \
+                   + str(Number_succeeded) + " succeeded and " + str(Number_doc) + " downloaded.'" \
+                   + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
 
     ###################
     # Server packages #
     ###################
 
-    if binname == "mediaconch":
-        nb_server = 0
-        params = "ls " + destination_server + "/" + binname + "-server" + "?" + version + "*" \
+    if Bin_name == "mediaconch":
+        Number_server = 0
+        Params = "ls " + Destination_server + "/" + Bin_name + "-server" + "?" + Version + "*" \
                + " |grep 'rpm\|deb'" \
                + " |wc -l"
-        result = subprocess.check_output(params, shell=True).strip()
-        nb_server = int(result)
+        Result = subprocess.check_output(Params, shell=True).strip()
+        Number_server = int(Result)
         
-        print "server: " + str(nb_server)
+        print "server: " + str(Number_server)
 
-        if nb_server < nb_succeeded:
-            params = \
-                   "echo 'The number of downloaded server packages is lower than the number of succeeded server packages on OBS:\n" \
-                   + str(nb_succeeded) + " succeeded and " + str(nb_server) + " downloaded.'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+        if Number_server < Number_succeeded:
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
+                   "The number of downloaded server packages is lower than the number of succeeded server packages on OBS:\n" \
+                   + str(Number_succeeded) + " succeeded and " + str(Number_server) + " downloaded.'" \
+                   + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
 
     ################
     # GUI packages #
     ################
 
-    if prjkind == "gui":
-        nb_gui = 0
-        params = "ls " + destination_gui + "/" + binname + "-gui" + "?" + version + "*" \
+    if Project_kind == "gui":
+        Number_gui = 0
+        Params = "ls " + Destination_gui + "/" + Bin_name + "-gui" + "?" + Version + "*" \
                + " |grep 'rpm\|deb'" \
                + " |wc -l"
-        result = subprocess.check_output(params, shell=True).strip()
-        nb_gui = int(result)
+        Result = subprocess.check_output(Params, shell=True).strip()
+        Number_gui = int(Result)
         
-        print "gui: " + str(nb_gui)
+        print "gui: " + str(Number_gui)
 
-        if nb_gui < nb_succeeded:
-            params = \
-                   "echo 'The number of downloaded gui packages is lower than the number of succeeded gui packages on OBS:\n" \
-                   + str(nb_succeeded) + " succeeded and " + str(nb_gui) + " downloaded.'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+        if Number_gui < Number_succeeded:
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
+                   "The number of downloaded gui packages is lower than the number of succeeded gui packages on OBS:\n" \
+                   + str(Number_succeeded) + " succeeded and " + str(Number_gui) + " downloaded.'" \
+                   + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
 
     ###################
     # Failed packages #
     ###################
 
-    if len(dists_failed) > 0:
+    if len(Dists_failed) > 0:
 
-        fail_list = ""
-        for dist in dists_failed:
-            fail_list = fail_list + "* " + str(dist[0]) + " (" + str(dist[1]) + ")\n"
+        Failed_list = ""
+        for Dist in Dists_failed:
+            Distrib_name = Dist[0]
+            Arch = Dist[1]
+            Failed_list = Failed_list + "* " + str(Distrib_name) + " (" + str(Arch) + ")\n"
 
-        print "\nFailed:\n" + fail_list
+        print "\nFailed:\n" + Failed_list
 
-        params = \
-               "echo 'OBS project: " + OBS_Project + "\n" \
-               + "OBS package: " + OBS_Package + "\n" \
-               + "Version: " + version + "\n\n" \
-               + "The build have fail on OBS for:\n" + fail_list + "'" \
-               + " |mailx -s '[BR lin] Problem with " + OBS_Package + "'" \
-               + " " + config["Email_to"]
-        subprocess.call(params, shell=True)
+        Timeout_message = ""
+        if Timeout:
+            Timeout_message = "After more than 9 hours, the builds weren’t over. The script will download whatever is available.\n\n"
+
+        Params = \
+               "echo 'OBS project: " + OBS_project + "\n" \
+               + "OBS package: " + OBS_package + "\n" \
+               + "Version: " + Version + "\n\n" \
+               + Timeout_message \
+               + "The build have fail on OBS for:\n" + Failed_list + "'" \
+               + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
+               + " " + Config["Email_to"]
+        subprocess.call(Params, shell=True)
 
     # Confirmation mails
 
-    q,s = divmod(time.time()-time_start, 60)
-    h,m = divmod(q, 60)
-    if h < 10:
-        time_total = "0" + str("%d" % h)
+    Quotient, Seconds = divmod(time.time()-Time_start, 60)
+    Hours, Minutes = divmod(Quotient, 60)
+    if Hours < 10:
+        Total_time = "0" + str("%d" % Hours)
     else:
-        time_total = str("%d" % h)
-    time_total = time_total + ":"
-    if m < 10:
-        time_total = time_total + "0" + str("%d" % m)
+        Total_time = str("%d" % Hours)
+    Total_time = Total_time + ":"
+    if Minutes < 10:
+        Total_time = Total_time + "0" + str("%d" % Minutes)
     else:
-        time_total = time_total + str("%d" % m)
-    time_total = time_total + ":"
-    if s < 10:
-        time_total = time_total + "0" + str("%d" % s)
+        Total_time = Total_time + str("%d" % Minutes)
+    Total_time = Total_time + ":"
+    if Seconds < 10:
+        Total_time = Total_time + "0" + str("%d" % Seconds)
     else:
-        time_total = time_total + str("%d" % s)
+        Total_time = Total_time + str("%d" % Seconds)
 
-    print "\nHandle_OBS_results.py has run during: " + time_total
+    print "\nHandle_OBS_results.py has run during: " + Total_time
 
     # Don’t send a confirmation mail for the debX repo
-    if prjkind == "lib" and not fnmatch.fnmatch(OBS_Package, "*_deb?"):
-        # We use >= and not =, because there may be other repos
+    if Project_kind == "lib" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+        # We use >= and not ==, because there may be other repos
         # which have ran into the same directory (Project_debX).
-        if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_dev >= nb_succeeded) and (nb_doc >= nb_succeeded):
-            params = \
-                   "echo 'OBS project: " + OBS_Project + "\n" \
-                   + "OBS package: " + OBS_Package + "\n" \
-                   + "Version: " + version + "\n\n" \
+        if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_dev >= Number_succeeded and Number_doc >= Number_succeeded:
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
                    + "SUCCESS\n\n" \
-                   + "* " + str(nb_succeeded) + " builds succeeded;\n" \
-                   + "* " + str(nb_bin) + " bin (" + binname + ") packages downloaded;\n" \
-                   + "* " + str(nb_dev) + " dev packages downloaded;\n" \
-                   + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
-                   + "* " + str(nb_doc) + " doc packages downloaded.\n\n" \
-                   + "Handle_OBS_results.py has run during: " + time_total + "'" \
-                   + " |mailx -s '[BR lin] OK for " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+                   + "* " + str(Number_succeeded) + " builds succeeded;\n" \
+                   + "* " + str(Number_bin) + " bin (" + Bin_name + ") packages downloaded;\n" \
+                   + "* " + str(Number_dev) + " dev packages downloaded;\n" \
+                   + "* " + str(Number_debug) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(Number_doc) + " doc packages downloaded.\n\n" \
+                   + "Handle_OBS_results.py has run during: " + Total_time + "'" \
+                   + " |mailx -s '[BR lin] OK for " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
     
-    if prjkind == "gui" and not fnmatch.fnmatch(OBS_Package, "*_deb?"):
-        if (len(dists_failed) == 0) and (nb_bin >= nb_succeeded) and (nb_gui >= nb_succeeded):
-            params = \
-                   "echo 'OBS project: " + OBS_Project + "\n" \
-                   + "OBS package: " + OBS_Package + "\n" \
-                   + "Version: " + version + "\n\n" \
+    if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+        if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_gui >= Number_succeeded:
+            Params = \
+                   "echo 'OBS project: " + OBS_project + "\n" \
+                   + "OBS package: " + OBS_package + "\n" \
+                   + "Version: " + Version + "\n\n" \
                    + "SUCCESS\n\n" \
-                   + "* " + str(nb_succeeded) + " builds succeeded;\n" \
-                   + "* " + str(nb_bin) + " bin (CLI) packages downloaded;\n" \
-                   + "* " + str(nb_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
-                   + "* " + str(nb_gui) + " gui packages downloaded.\n\n" \
-                   + "Handle_OBS_results.py has run during: " + time_total + "'" \
-                   + " |mailx -s '[BR lin] OK for " + OBS_Package + "'" \
-                   + " " + config["Email_to"]
-            subprocess.call(params, shell=True)
+                   + "* " + str(Number_succeeded) + " builds succeeded;\n" \
+                   + "* " + str(Number_bin) + " bin (CLI) packages downloaded;\n" \
+                   + "* " + str(Number_debug) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(Number_gui) + " gui packages downloaded.\n\n" \
+                   + "Handle_OBS_results.py has run during: " + Total_time + "'" \
+                   + " |mailx -s '[BR lin] OK for " + OBS_package + "'" \
+                   + " " + Config["Email_to"]
+            subprocess.call(Params, shell=True)
 
 ##################################################################
 # Main
 
-time_start = time.time()
+Time_start = time.time()
 
 # arguments :
-# 1 $OBS_Project (home:MediaArea_net[:snapshots])
-# 2 $OBS_Package (ZenLib, MediaInfoLib, …)
-# 3 version
-# 4 destination for the packages
-# For MC: 5 destination for the server packages and 6 for the GUI
-# For MI: 5 destination for the GUI packages
+# 1 $OBS_project (home:MediaArea_net[:snapshots])
+# 2 $OBS_package (ZenLib, MediaInfoLib, …)
+# 3 Version
+# 4 Destination for the packages
+# For MC: 5 Destination for the server packages and 6 for the GUI
+# For MI: 5 Destination for the GUI packages
 
 #
 # Handle the variables
 #
 
-OBS_Project = sys.argv[1]
-OBS_Package = sys.argv[2]
-version = sys.argv[3]
-destination = sys.argv[4]
+OBS_project = sys.argv[1]
+OBS_package = sys.argv[2]
+Version = sys.argv[3]
+Destination = sys.argv[4]
 # The directory from where the python script is executed
-script_emplacement = os.path.dirname(os.path.realpath(__file__))
+Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-config = {}
-execfile( os.path.join( script_emplacement, "Handle_OBS_results.conf"), config)
+Config = {}
+execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
  
-MA_Project = OBS_Project + "/" + OBS_Package
-dlpages_table = "0"
+MA_project = OBS_project + "/" + OBS_package
 
-if fnmatch.fnmatch(OBS_Package, "ZenLib*"):
-    prjkind = "lib"
-    binname = "libzen0"
-    dbgname = "libzen"
-    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
-        if OBS_Package == "ZenLib":
-            table = "snapshots_obs_zl"
-        elif OBS_Package == "ZenLib_deb6":
-            table = "snapshots_obs_zl_deb6"
-        elif OBS_Package == "ZenLib_deb9":
-            table = "snapshots_obs_zl_deb9"
-            binname = "libzen0v5"
+# Various initializations
+DL_pages_table = "0"
+DB_structure = ""
+Release = False
+Timeout = False
+Compt = 0
+Result = 0
+
+if fnmatch.fnmatch(OBS_package, "ZenLib*"):
+    Project_kind = "lib"
+    Bin_name = "libzen0"
+    Debug_name = "libzen"
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        if OBS_package == "ZenLib":
+            Table = "snapshots_obs_zl"
+        elif OBS_package == "ZenLib_deb6":
+            Table = "snapshots_obs_zl_deb6"
+        elif OBS_package == "ZenLib_deb9":
+            Table = "snapshots_obs_zl_deb9"
+            Bin_name = "libzen0v5"
     else:
-        dlpages_table = "releases_dlpages_zl"
-        if OBS_Package == "ZenLib":
-            table = "releases_obs_zl"
-        elif OBS_Package == "ZenLib_deb6":
-            table = "releases_obs_zl_deb6"
-        elif OBS_Package == "ZenLib_deb9":
-            table = "releases_obs_zl_deb9"
-            binname = "libzen0v5"
+        DL_pages_table = "releases_dlpages_zl"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            libname varchar(120),
+            libnamedbg varchar(120),
+            libnamedev varchar(120)"""
+        if OBS_package == "ZenLib":
+            Table = "releases_obs_zl"
+        elif OBS_package == "ZenLib_deb6":
+            Table = "releases_obs_zl_deb6"
+        elif OBS_package == "ZenLib_deb9":
+            Table = "releases_obs_zl_deb9"
+            Bin_name = "libzen0v5"
 
-if OBS_Package == "MediaInfoLib" or fnmatch.fnmatch(OBS_Package, "MediaInfoLib_*"):
-    prjkind = "lib"
-    binname = "libmediainfo0"
-    dbgname = "libmediainfo"
-    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
-        if OBS_Package == "MediaInfoLib":
-            table = "snapshots_obs_mil"
-        elif OBS_Package == "MediaInfoLib_deb6":
-            table = "snapshots_obs_mil_deb6"
-        elif OBS_Package == "MediaInfoLib_deb9":
-            table = "snapshots_obs_mil_deb9"
-            binname = "libmediainfo0v5"
+if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*"):
+    Project_kind = "lib"
+    Bin_name = "libmediainfo0"
+    Debug_name = "libmediainfo"
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        if OBS_package == "MediaInfoLib":
+            Table = "snapshots_obs_mil"
+        elif OBS_package == "MediaInfoLib_deb6":
+            Table = "snapshots_obs_mil_deb6"
+        elif OBS_package == "MediaInfoLib_deb9":
+            Table = "snapshots_obs_mil_deb9"
+            Bin_name = "libmediainfo0v5"
         # Since TinyXML2 is back as buildin for deb distribs
-        #elif OBS_Package == "MediaInfoLib_u12.04":
-        #    table = "snapshots_obs_mil_u12.04"
+        #elif OBS_package == "MediaInfoLib_u12.04":
+        #    Table = "snapshots_obs_mil_u12.04"
     else:
-        dlpages_table = "releases_dlpages_mil"
-        if OBS_Package == "MediaInfoLib":
-            table = "releases_obs_mil"
-        elif OBS_Package == "MediaInfoLib_deb6":
-            table = "releases_obs_mil_deb6"
-        elif OBS_Package == "MediaInfoLib_deb9":
-            table = "releases_obs_mil_deb9"
-            binname = "libmediainfo0v5"
+        DL_pages_table = "releases_dlpages_mil"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            libname varchar(120),
+            libnamedbg varchar(120),
+            libnamedev varchar(120)"""
+        if OBS_package == "MediaInfoLib":
+            Table = "releases_obs_mil"
+        elif OBS_package == "MediaInfoLib_deb6":
+            Table = "releases_obs_mil_deb6"
+        elif OBS_package == "MediaInfoLib_deb9":
+            Table = "releases_obs_mil_deb9"
+            Bin_name = "libmediainfo0v5"
         # Since TinyXML2 is back as buildin for deb distribs
-        #elif OBS_Package == "MediaInfoLib_u12.04":
-        #    table = "releases_obs_mil_u12.04"
+        #elif OBS_package == "MediaInfoLib_u12.04":
+        #    Table = "releases_obs_mil_u12.04"
 
-if fnmatch.fnmatch(OBS_Package, "MediaConch*"):
-    prjkind = "gui"
-    binname = "mediaconch"
-    dbgname = "mediaconch"
-    destination_server = sys.argv[5]
-    destination_gui = sys.argv[6]
-    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
-        if OBS_Package == "MediaConch":
-            table = "snapshots_obs_mc"
-        if OBS_Package == "MediaConch_deb9":
-            table = "snapshots_obs_mc_deb9"
+if fnmatch.fnmatch(OBS_package, "MediaConch*"):
+    Project_kind = "gui"
+    Bin_name = "mediaconch"
+    Debug_name = "mediaconch"
+    Destination_server = sys.argv[5]
+    Destination_gui = sys.argv[6]
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        if OBS_package == "MediaConch":
+            Table = "snapshots_obs_mc"
+        if OBS_package == "MediaConch_deb9":
+            Table = "snapshots_obs_mc_deb9"
     else:
-        dlpages_table = "releases_dlpages_mc"
-        if OBS_Package == "MediaConch":
-            table = "releases_obs_mc"
-        if OBS_Package == "MediaConch_deb9":
-            table = "releases_obs_mc_deb9"
+        DL_pages_table = "releases_dlpages_mc"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            servername varchar(120),
+            servernamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        if OBS_package == "MediaConch":
+            Table = "releases_obs_mc"
+        if OBS_package == "MediaConch_deb9":
+            Table = "releases_obs_mc_deb9"
 
 # Careful to not catch MediaInfoLib
-if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
-    prjkind = "gui"
-    binname = "mediainfo"
-    dbgname = "mediainfo"
-    destination_gui = sys.argv[5]
-    if fnmatch.fnmatch(OBS_Project, "*:snapshots"):
-        if OBS_Package == "MediaInfo":
-            table = "snapshots_obs_mi"
-        elif OBS_Package == "MediaInfo_deb6":
-            table = "snapshots_obs_mi_deb6"
-        elif OBS_Package == "MediaInfo_deb7":
-            table = "snapshots_obs_mi_deb7"
-        elif OBS_Package == "MediaInfo_deb9":
-            table = "snapshots_obs_mi_deb9"
+if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
+    Project_kind = "gui"
+    Bin_name = "mediainfo"
+    Debug_name = "mediainfo"
+    Destination_gui = sys.argv[5]
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        if OBS_package == "MediaInfo":
+            Table = "snapshots_obs_mi"
+        elif OBS_package == "MediaInfo_deb6":
+            Table = "snapshots_obs_mi_deb6"
+        elif OBS_package == "MediaInfo_deb7":
+            Table = "snapshots_obs_mi_deb7"
+        elif OBS_package == "MediaInfo_deb9":
+            Table = "snapshots_obs_mi_deb9"
     else:
-        dlpages_table = "releases_dlpages_mi"
-        if OBS_Package == "MediaInfo":
-            table = "releases_obs_mi"
-        elif OBS_Package == "MediaInfo_deb6":
-            table = "releases_obs_mi_deb6"
-        elif OBS_Package == "MediaInfo_deb7":
-            table = "releases_obs_mi_deb7"
-        elif OBS_Package == "MediaInfo_deb9":
-            table = "releases_obs_mi_deb9"
+        DL_pages_table = "releases_dlpages_mi"
+        DB_structure = """ 
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        if OBS_package == "MediaInfo":
+            Table = "releases_obs_mi"
+        elif OBS_package == "MediaInfo_deb6":
+            Table = "releases_obs_mi_deb6"
+        elif OBS_package == "MediaInfo_deb7":
+            Table = "releases_obs_mi_deb7"
+        elif OBS_package == "MediaInfo_deb9":
+            Table = "releases_obs_mi_deb9"
+
+if len(DL_pages_table) > 1:
+    Release = True
 
 # The architecture names (x86_64, i586, …) are imposed by OBS.
 #
 # If an architecture is actived on OBS, but not listed here, 
-# pkginfos[pkgtype][arch] will raise a KeyError.
+# Package_infos[Package_type][Arch] will raise a KeyError.
 #
 # In the declaration of a dictionary, you MUST put spaces after the
 # commas, if not python can behave strangely.
 #
-pkginfos = {
+Package_infos = {
     "deb": {
         "devsuffix": "-dev", "debugsuffix": "-dbg",
         "dash": "_" , "separator": "_",
@@ -1022,30 +1137,40 @@ Distribs = {
 # Handle the directories
 #
 
-if not os.path.exists(destination):
-    os.makedirs(destination)
-if binname == "mediaconch":
-    if not os.path.exists(destination_server):
-        os.makedirs(destination_server)
-if prjkind == "gui":
-    if not os.path.exists(destination_gui):
-        os.makedirs(destination_gui)
+if not os.path.exists(Destination):
+    os.makedirs(Destination)
+if Bin_name == "mediaconch":
+    if not os.path.exists(Destination_server):
+        os.makedirs(Destination_server)
+if Project_kind == "gui":
+    if not os.path.exists(Destination_gui):
+        os.makedirs(Destination_gui)
+
+# Open the access to the DB
+Cursor = mysql()
+
+# Ensure that the DB is synchronous with OBS.
+Initialize_DB()
 
 # Once the initialisation of this script is done, the first thing
 # to do is wait until everything is build on OBS.
-waiting_loop()
+Waiting_loop()
 
 # At this point, each enabled distros will be either in succeeded
 # or failed state. We can update the DB.
-update_DB()
+Update_DB()
 
 # Then, fetch the packages.
-get_packages_on_OBS()
+Get_packages_on_OBS()
 
 # Send a confirmation mail if everything is ok, or else notify when
 # a build has failed or a succeeded package has not been downloaded
-verify_states_and_files()
+Verify_states_and_files()
 
-# If we run for MC or MI, and this is a release
-#if (prjkind == "gui") and (len(dlpages_table) > 1):
-#    execfile( os.path.join( script_emplacement, "Generate_dl_pages.py" ))
+# Close the access to the DB
+Cursor.close()
+
+# If we run for MC or MI (no DL pages for ZL and MIL, so we test
+# Project_kind), and this is a release
+#if Project_kind == "gui" and Release == True:
+#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py" ))
