@@ -34,9 +34,7 @@ function _obs () {
     rm -fr debian
     cd ../..
 
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.spec $OBS_package
     cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_package
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/GNU/libzen.dsc $OBS_package/libzen_${Version_new}-1.dsc
     cp prepare_source/ZL/ZenLib/Project/GNU/libzen.dsc $OBS_package/libzen_${Version_new}-1.dsc
 
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
@@ -80,7 +78,6 @@ function _obs_deb () {
     rm -fr debian
     cd ../..
 
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/OBS/${Deb_version}.dsc $OBS_package/libzen_${Version_new}-1.dsc
     cp prepare_source/ZL/ZenLib/Project/OBS/${Deb_version}.dsc $OBS_package/libzen_${Version_new}-1.dsc
 
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
@@ -117,7 +114,6 @@ function _obs_deb6 () {
     rm -fr ZenLib
     cd ../..
 
-    #cp prepare_source/ZL/ZenLib_${Version_new}/Project/OBS/deb6.dsc $OBS_package/libzen_${Version_new}.dsc
     cp prepare_source/ZL/ZenLib/Project/OBS/deb6.dsc $OBS_package/libzen_${Version_new}.dsc
 
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.tar.gz libzen_${Version_new}.dsc
@@ -143,7 +139,7 @@ function _linux () {
         echo the build results and download the packages...
         echo
         echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_main.log 2>&1 &
+        echo python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir"
         echo
     fi
 
@@ -152,7 +148,8 @@ function _linux () {
     # be deleted)
     cd $(b.get bang.working_dir)
     python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_main.log 2>&1 &
-    # To avoid OSError: File exists: 'destination'
+    # The sleep is here to avoid
+    # OSError: File exists: 'destination'
     sleep 10
     python Handle_OBS_results.py $OBS_project ZenLib_deb6 $Version_new "$ZLB_dir" > "$Log"/obs_deb6.log 2>&1 &
     sleep 10

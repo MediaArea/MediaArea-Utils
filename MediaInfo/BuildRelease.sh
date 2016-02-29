@@ -21,7 +21,6 @@ function _mac_cli () {
 
     scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_CLI_GNU_FromSource ;
@@ -51,7 +50,6 @@ function _mac_gui () {
 
     scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaInfo_GUI_GNU_FromSource ;
@@ -121,7 +119,6 @@ function _mac () {
         fi
         # Return 1 if MI-cli is compiled for i386 and x86_64,
         # 0 otherwise
-        #MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_CLI_${Version_new}_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
         Try=$(($Try + 1))
     done
@@ -137,23 +134,41 @@ function _mac () {
         Try=$(($Try + 1))
     done
 
-    # Send a mail if the build fail
+    # Send a mail if a build fail
 
-    if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] || [ $MultiArch -eq 0 ]; then
-        xz -9e $Log/mac-cli.log
-        if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
+    # If the CLI dmg is less than 5 Mo
+    if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 5000000 ] || [ $MultiArch -eq 0 ]; then
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-cli.log
+            if ! [ -z "$Email_CC" ]; then
+                echo "The CLI dmg is less than 5 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$Email_CC" $Email_to
+            else
+                echo "The CLI dmg is less than 5 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Email_to
+            fi
         else
-            echo "The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Mail
+            if ! [ -z "$Email_CC" ]; then
+                echo "The CLI dmg is less than 5 Mo" | mailx -s "[BR mac] Problem building MI-cli" -c "$Email_CC" $Email_to
+            else
+                echo "The CLI dmg is less than 5 Mo" | mailx -s "[BR mac] Problem building MI-cli" $Email_to
+            fi
         fi
     fi
 
+    # If the GUI dmg is less than 4 Mo
     if [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] ; then
-        xz -9e $Log/mac-gui.log
-        if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-gui.log
+            if ! [ -z "$Email_CC" ]; then
+                echo "The GUI dmg is less than 4 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$Email_CC" $Email_to
+            else
+                echo "The GUI dmg is less than 4 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Email_to
+            fi
         else
-            echo "The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Mail
+            if ! [ -z "$Email_CC" ]; then
+                echo "The GUI dmg is less than 4 Mo" | mailx -s "[BR mac] Problem building MI-gui" -c "$Email_CC" $Email_to
+            else
+                echo "The GUI dmg is less than 4 Mo" | mailx -s "[BR mac] Problem building MI-gui" $Email_to
+            fi
         fi
     fi
 
@@ -262,9 +277,7 @@ function _obs () {
     rm -fr debian
     cd ../..
 
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.spec $OBS_package
     cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_package
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
     cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
 
     update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
@@ -307,7 +320,6 @@ function _obs_deb () {
     rm -fr debian
     cd ../..
 
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/OBS/${Deb_version}.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
     cp prepare_source/MI/MediaInfo/Project/OBS/${Deb_version}.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
 
     update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
@@ -344,7 +356,6 @@ function _obs_deb6 () {
     rm -fr MediaInfo
     cd ../..
 
-    #cp prepare_source/MI/MediaInfo_${Version_new}/Project/OBS/deb6.dsc $OBS_package/mediainfo_${Version_new}.dsc
     cp prepare_source/MI/MediaInfo/Project/OBS/deb6.dsc $OBS_package/mediainfo_${Version_new}.dsc
 
     update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.tar.gz mediainfo_${Version_new}.dsc
@@ -372,7 +383,7 @@ function _linux () {
         echo the build results and download the packages...
         echo
         echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_main.log 2>&1 & 
+        echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
         echo
 
     fi
