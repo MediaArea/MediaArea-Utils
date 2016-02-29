@@ -21,7 +21,6 @@ function _mac_cli () {
 
     scp -P $Mac_SSH_port prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaConch_CLI_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_CLI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_CLI_GNU_FromSource ;
@@ -49,7 +48,6 @@ function _mac_server () {
 
     scp -P $Mac_SSH_port prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaConch_Server_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_Server_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_Server_GNU_FromSource ;
@@ -77,7 +75,6 @@ function _mac_gui () {
 
     scp -P $Mac_SSH_port prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz
 
-            #cd MediaConch_GUI_${Version_new}_GNU_FromSource ;
     $SSHP "cd $Mac_working_dir ;
             tar xf MediaConch_GUI_${Version_new}_GNU_FromSource.tar.xz ;
             cd MediaConch_GUI_GNU_FromSource ;
@@ -136,22 +133,59 @@ function _mac () {
         Try=$(($Try + 1))
     done
 
-    # Send a mail if the build fail
-    if [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 2000000 ]; then
-        xz -9e $Log/mac-cli.log
-        if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-cli.log.xz" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz -c "$MailCC" $Mail
+    # Send a mail if a build fail
+
+    # If the CLI dmg is less than 3 Mo
+    if [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 3000000 ]; then
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-cli.log
+            if ! [ -z "$Email_CC" ]; then
+                echo "The CLI dmg is less than 3 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz -c "$Email_CC" $Email_to
+            else
+                echo "The CLI dmg is less than 3 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz $Email_to
+            fi
         else
-            echo "The log is http://url/$Log/mac-cli.log.xz" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz $Mail
+            if ! [ -z "$Email_CC" ]; then
+                echo "The CLI dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-cli" -c "$Email_CC" $Email_to
+            else
+                echo "The CLI dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-cli" $Email_to
+            fi
         fi
     fi
 
-    if [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 10000000 ]; then
-        xz -9e $Log/mac-gui.log
-        if ! [ -z "$MailCC" ]; then
-            echo "The log is http://url/$Log/mac-gui.log.xz" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz -c "$MailCC" $Mail
+    # If the server dmg is less than 3 Mo
+    if [ `ls -l "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 3000000 ]; then
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-server.log
+            if ! [ -z "$Email_CC" ]; then
+                echo "The server dmg is less than 3 Mo. The log is http://url/$Log/mac-server.log" | mailx -s "[BR mac] Problem building MC-server" -a $Log/mac-server.log.xz -c "$Email_CC" $Email_to
+            else
+                echo "The server dmg is less than 3 Mo. The log is http://url/$Log/mac-server.log" | mailx -s "[BR mac] Problem building MC-server" -a $Log/mac-server.log.xz $Email_to
+            fi
         else
-            echo "The log is http://url/$Log/mac-gui.log.xz" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz $Mail
+            if ! [ -z "$Email_CC" ]; then
+                echo "The server dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-server" -c "$Email_CC" $Email_to
+            else
+                echo "The server dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-server" $Email_to
+            fi
+        fi
+    fi
+
+    # If the GUI dmg is less than 20 Mo
+    if [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 20000000 ]; then
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-gui.log
+            if ! [ -z "$Email_CC" ]; then
+                echo "The GUI dmg is less than 20 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz -c "$Email_CC" $Email_to
+            else
+                echo "The GUI dmg is less than 20 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz $Email_to
+            fi
+        else
+            if ! [ -z "$Email_CC" ]; then
+                echo "The GUI dmg is less than 20 Mo" | mailx -s "[BR mac] Problem building MC-gui" -c "$Email_CC" $Email_to
+            else
+                echo "The GUI dmg is less than 20 Mo" | mailx -s "[BR mac] Problem building MC-gui" $Email_to
+            fi
         fi
     fi
 
@@ -175,7 +209,6 @@ function _windows () {
     echo
 
     scp -P $Win_SSH_port prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $Win_SSH_user@$Win_IP:$RWorking_dir/build/mediaconch_${Version_new}_AllInclusive.7z
-            #xcopy /E /I /Q ..\\libxml2 mediaconch_${Version_new}_AllInclusive\\libxml2 & \
     $SSHP "c: & chdir $RWorking_dir/build & \
             c:/\"Program Files\"/7-Zip/7z x mediaconch_${Version_new}_AllInclusive.7z & \
             xcopy /E /I /Q ..\\libxml2 mediaconch_AllInclusive\\libxml2 & \
@@ -208,8 +241,6 @@ function _obs () {
 
     cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_package
     cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_package
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.spec $OBS_package
-    #cp prepare_source/MC/MediaConch_${Version_new}/Project/GNU/mediaconch.dsc $OBS_package/mediaconch_${Version_new}.dsc
     cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_package
     cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_package/mediaconch_${Version_new}.dsc
 
@@ -268,6 +299,7 @@ function btask.BuildRelease.run () {
     rm -fr "$MC_tmp"
 
     mkdir -p "$MCC_dir"
+    # $MCS_dir is already taken for MediaConch Source
     mkdir -p "$MCD_dir"
     mkdir -p "$MCG_dir"
     mkdir -p "$MCS_dir"
