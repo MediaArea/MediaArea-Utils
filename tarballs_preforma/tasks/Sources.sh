@@ -22,12 +22,16 @@ function btask.Sources.run () {
     7za x mediaconch_${MC_version}_AllInclusive.7z > /dev/null
 
     # Copy license files
-    cp ../MediaArea/MediaConch_SourceCode/master/License*.html mediaconch_AllInclusive/
-    cp ../MediaArea/MediaConch_SourceCode/master/License.*.html mediaconch_AllInclusive/MediaInfoLib
-    cp ../MediaArea/MediaConch_SourceCode/master/License.*.html mediaconch_AllInclusive/ZenLib
+    cp ../License*.html mediaconch_AllInclusive/
+    cp ../License.*.html mediaconch_AllInclusive/MediaInfoLib
+    cp ../License.*.html mediaconch_AllInclusive/ZenLib
 
-    # Remove zlib directory
+    # Keep only MediaArea sources (ZL/MIL/MC)
     rm -fr mediaconch_AllInclusive/zlib
+    rm -fr mediaconch_AllInclusive/jansson
+    rm -fr mediaconch_AllInclusive/libevent
+    rm -fr mediaconch_AllInclusive/libxml2
+    rm -fr mediaconch_AllInclusive/libxslt
 
     # Replace "BSD" by "GPL v3+ and MPL v2+" in file headers
     grep -rlZ "Use of this source code is governed by a BSD-style license that" | xargs -0 sed -i "s/Use of this source code is governed by a BSD-style license that/Use of this source code is governed by a GPL v3+ and MPL v2+ license that/g"
@@ -38,12 +42,12 @@ function btask.Sources.run () {
     grep -rlZ "This program is freeware under zlib license conditions" | xargs -0 sed -i "s/This program is freeware under zlib license conditions/This program is freeware under GPL v3+ and MPL v2+ license conditions/g"
 
     zip -q -r ../src01-$Date.zip mediaconch_AllInclusive
-    cd ../
-    cp src01-$Date.zip src05-$Date.zip
-    cp src01-$Date.zip src09-$Date.zip
-    cp src01-$Date.zip src13-$Date.zip
-    cp src01-$Date.zip src17-$Date.zip
-    cp src01-$Date.zip src21-$Date.zip
+    cd ..
+    ln src01-$Date.zip src05-$Date.zip
+    ln src01-$Date.zip src09-$Date.zip
+    ln src01-$Date.zip src13-$Date.zip
+    ln src01-$Date.zip src17-$Date.zip
+    ln src01-$Date.zip src21-$Date.zip
 
     rm -fr tmp
 

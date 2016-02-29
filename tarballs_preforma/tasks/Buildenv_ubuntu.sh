@@ -106,7 +106,7 @@ function btask.Buildenv_ubuntu.run () {
 
     echo "Create Ubuntu package (buildenv09)..."
 
-    cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv09
+    cp License*.html buildenv09
     zip -q -r buildenv09-$Date.zip buildenv09
     rm -fr buildenv09
 

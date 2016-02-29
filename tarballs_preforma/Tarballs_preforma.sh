@@ -10,7 +10,9 @@
 
 # This script requires: bang.sh, wget, zip and p7zip
 
-# For A/V
+# For A/V (p. 43)
+# Windows [exec,src,buildenv]01-AAAA-MM-JJ.zip
+# Mac [exec,src,buildenv]05-AAAA-MM-JJ.zip
 # Ubuntu [exec,src,buildenv]09-AAAA-MM-JJ.zip
 # Fedora [exec,src,buildenv]13-AAAA-MM-JJ.zip
 # Debian [exec,src,buildenv]17-AAAA-MM-JJ.zip
@@ -70,15 +72,15 @@ function getLicensesFiles () {
     echo
 
     if ! b.path.file? "License.html"; then
-        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.html"
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.html"
     fi
 
     if ! b.path.file? "License.GPLv3.html"; then
-        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.GPLv3.html"
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.GPLv3.html"
     fi
 
     if ! b.path.file? "License.MPLv2.html"; then
-        wget -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.MPLv2.html"
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/License.MPLv2.html"
     fi
 
 }
@@ -137,6 +139,7 @@ function run () {
         b.task.run Buildenv_debian
         b.task.run Buildenv_ubuntu
         b.task.run Buildenv_opensuse
+        b.task.run Buildenv_winmac
 
         # Clean up
         rm -fr MediaArea
