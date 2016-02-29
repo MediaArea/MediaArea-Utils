@@ -149,7 +149,7 @@ function btask.Buildenv_fedora.run () {
 
     echo "Create Fedora package (buildenv13)..."
 
-    cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv13
+    cp License*.html buildenv13
     zip -q -r buildenv13-$Date.zip buildenv13
     rm -fr buildenv13
 

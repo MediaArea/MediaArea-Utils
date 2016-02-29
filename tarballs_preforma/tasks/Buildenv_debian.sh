@@ -114,7 +114,7 @@ function btask.Buildenv_debian.run () {
 
     echo "Create Debian package (buildenv17)..."
 
-    cp MediaArea/MediaConch_SourceCode/master/License*.html buildenv17
+    cp License*.html buildenv17
     zip -q -r buildenv17-$Date.zip buildenv17
     rm -fr buildenv17
 
