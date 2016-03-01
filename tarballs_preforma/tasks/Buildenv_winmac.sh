@@ -16,8 +16,7 @@ function btask.Buildenv_winmac.run () {
 
     echo
     echo "Generate win/mac build environment..."
-    #wget -nd -q -P tmp "https://mediaarea.net/download/source/mediaconch/${MC_version}/mediaconch_${MC_version}_AllInclusive.7z"
-    wget -nd -q -P tmp "http://leprovost.info/fichiers/ma/releases/source/mediaconch/16.02/mediaconch_16.02_AllInclusive.7z"
+    wget -nd -q -P tmp "https://mediaarea.net/download/source/mediaconch/${MC_version}/mediaconch_${MC_version}_AllInclusive.7z"
     cd tmp
     7za x mediaconch_${MC_version}_AllInclusive.7z > /dev/null
 
