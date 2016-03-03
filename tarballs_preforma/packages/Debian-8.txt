@@ -264,3 +264,16 @@ xml-core
 xorg-sgml-doctools
 xtrans-dev
 zlib1g-dev
+libevent-dev
+libevent-2.0-5
+libevent-core-2.0-5
+libevent-extra-2.0-5
+libevent-pthreads-2.0-5
+libevent-openssl-2.0-5
+liblsan0
+libtsan0
+libsqlite3-dev
+libsqlite3-0
+libjansson-dev
+libjansson4
+zip
