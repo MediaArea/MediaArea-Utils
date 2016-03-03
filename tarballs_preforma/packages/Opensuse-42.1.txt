@@ -160,3 +160,6 @@ xproto-devel
 xtrans
 xz-devel
 zlib-devel
+libjansson4
+libjansson-devel
+libevent-devel

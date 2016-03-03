@@ -184,3 +184,4 @@ xz-devel
 zip
 zlib
 zlib-devel
+libxshmfence-devel
