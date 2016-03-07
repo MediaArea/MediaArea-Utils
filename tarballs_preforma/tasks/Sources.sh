@@ -8,6 +8,8 @@
 
 function btask.Sources.run () {
 
+    rm -f src*zip
+
     if b.path.dir? tmp; then
         rm -fr tmp/*;
     else
@@ -42,12 +44,38 @@ function btask.Sources.run () {
     grep -rlZ "This program is freeware under zlib license conditions" | xargs -0 sed -i "s/This program is freeware under zlib license conditions/This program is freeware under GPL v3+ and MPL v2+ license conditions/g"
 
     zip -q -r ../src01-$Date.zip mediaconch_AllInclusive
+
+    cd mediaconch_AllInclusive/
+    rm -f *bat
+
+    chmod +x ZenLib/Project/GNU/Library/autogen.sh
+    chmod +x MediaInfoLib/Project/GNU/Library/autogen.sh
+    chmod +x MediaConch/Project/GNU/CLI/autogen.sh
+    chmod +x MediaConch/Project/GNU/Server/autogen.sh
+    cd ZenLib/Project/GNU/Library
+    ./autogen.sh > /dev/null 2>&1
+    cd ../../../../MediaInfoLib/Project/GNU/Library
+    ./autogen.sh > /dev/null 2>&1
+    cd ../../../../MediaConch/Project/GNU/CLI
+    ./autogen.sh > /dev/null 2>&1
+    cd ../../../../MediaConch/Project/GNU/Server
+    ./autogen.sh > /dev/null 2>&1
+    cd ../../../../
+    mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_compile.sh
+    mv MediaConch/Project/GNU/Server/AddThisToRoot_Server_compile.sh Server_compile.sh
+    mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_compile.sh
+    chmod +x CLI_compile.sh
+    chmod +x Server_compile.sh
+    chmod +x GUI_compile.sh
+    
     cd ..
-    ln src01-$Date.zip src05-$Date.zip
-    ln src01-$Date.zip src09-$Date.zip
-    ln src01-$Date.zip src13-$Date.zip
-    ln src01-$Date.zip src17-$Date.zip
-    ln src01-$Date.zip src21-$Date.zip
+    zip -q -r ../src05-$Date.zip mediaconch_AllInclusive
+
+    cd ..
+    ln src05-$Date.zip src09-$Date.zip
+    ln src05-$Date.zip src13-$Date.zip
+    ln src05-$Date.zip src17-$Date.zip
+    ln src05-$Date.zip src21-$Date.zip
 
     rm -fr tmp
 
