@@ -69,14 +69,23 @@ function btask.Sources.run () {
     chmod +x GUI_compile.sh
     
     cd ..
+
+    # Mac
     zip -q -r ../src05-$Date.zip mediaconch_AllInclusive
 
-    cd ..
-    ln src05-$Date.zip src09-$Date.zip
-    ln src05-$Date.zip src13-$Date.zip
-    ln src05-$Date.zip src17-$Date.zip
-    ln src05-$Date.zip src21-$Date.zip
+    cp -f $(b.get bang.working_dir)/readmes/Readme_ubuntu.txt mediaconch_AllInclusive/Read_me.txt
+    zip -q -r ../src09-$Date.zip mediaconch_AllInclusive
 
+    cp -f $(b.get bang.working_dir)/readmes/Readme_fedora.txt mediaconch_AllInclusive/Read_me.txt
+    zip -q -r ../src13-$Date.zip mediaconch_AllInclusive
+
+    cp -f $(b.get bang.working_dir)/readmes/Readme_debian.txt mediaconch_AllInclusive/Read_me.txt
+    zip -q -r ../src17-$Date.zip mediaconch_AllInclusive
+
+    cp -f $(b.get bang.working_dir)/readmes/Readme_opensuse.txt mediaconch_AllInclusive/Read_me.txt
+    zip -q -r ../src21-$Date.zip mediaconch_AllInclusive
+
+    cd ..
     rm -fr tmp
 
 }

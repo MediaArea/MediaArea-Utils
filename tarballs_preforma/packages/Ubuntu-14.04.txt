@@ -84,3 +84,15 @@ libkrb5-3
 libkrb5support0
 libldap-2.4-2
 libxml2
+libevent-2.0-5
+libevent-core-2.0-5
+libevent-dev
+libevent-extra-2.0-5
+libevent-openssl-2.0-5
+libevent-pthreads-2.0-5
+libsqlite3-dev
+libsqlite3-0
+liblzma-dev
+libgcrypt11-dev
+libgcrypt11
+libgpg-error-dev
