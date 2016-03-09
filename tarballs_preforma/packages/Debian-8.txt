@@ -276,4 +276,7 @@ libsqlite3-dev
 libsqlite3-0
 libjansson-dev
 libjansson4
-zip
+liblzma-dev
+libgcrypt20-dev
+libgcrypt20
+libgpg-error-dev
