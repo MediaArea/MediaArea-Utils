@@ -15,48 +15,58 @@
 
 function Debian_get_packages () {
 
-    local Arch=$1 Package_type=$2
+    local Arch=$1
+    local Security_mirror=http://security.debian.org/debian-security
+    local Security_Packages_gz=$Security_mirror/dists/$Debian_name/updates/main/binary-$Arch/Packages.gz
+    local Main_mirror=http://ftp.debian.org/debian
+    local Main_Packages_gz=$Main_mirror/dists/$Debian_name/main/binary-$Arch/Packages.gz
     local List_packages=$(b.get bang.working_dir)/packages/Debian-$Version.txt
-
-    # If we work with vanilla or updates packages
-    if [ -z $Package_type ]; then
-        local Destination=buildenv17/Debian-$Version-$Arch
-    else
-        local Destination=buildenv17/Debian-$Version-$Arch-$Package_type
-    fi
+    local Destination=buildenv17/Debian-$Version-$Arch
+    local Package_URL_part Package_name Package_URL
 
     echo "Debian $Version ($Debian_name) $Arch"
-    # Verbose mode
-    #echo $Mirror
 
     if b.path.dir? $Destination; then
         rm -fr $Destination
     fi
     mkdir -p $Destination
-
-    # Get the Packages file for this version and architecture
-    rm -f Packages*
-    if ! wget -nd -q $Packages_file_URL_part/binary-$Arch/Packages.gz || ! b.path.file? Packages.gz; then
+ 
+    # Get the file Packages.gz for the security repo
+    rm -f Security_packages*
+    if ! wget -nd -q $Security_Packages_gz || ! b.path.file? Packages.gz; then
         echo
-        echo "Error downloading $Packages_file_URL_part/binary-$Arch/Packages.gz"
+        echo "Error downloading $Security_Packages_gz"
         echo
         exit 1
     fi
     gzip -d Packages.gz
-    mv Packages Packages-$Version-$Arch
+    mv Packages Security_packages-$Version-$Arch
+
+    # Get the file Packages.gz for the main repo
+    rm -f Main_packages*
+    if ! wget -nd -q $Main_Packages_gz || ! b.path.file? Packages.gz; then
+        echo
+        echo "Error downloading $Main_Packages_gz"
+        echo
+        exit 1
+    fi
+    gzip -d Packages.gz
+    mv Packages Main_packages-$Version-$Arch
 
     # Download the packages
-    # The first occurrence of Package has no $ because it's an
-    # assignment.
+    # (the first occurrence of Package has no $ because it's an
+    # assignment)
     while read -r Package || [[ -n $Package ]]; do
 
-        Package_URL_part=$(grep -A 100 "^Package: $Package$" Packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
-        Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
-        Package_URL=$Mirror/$Package_URL_part
+        Package_URL_part=$(grep -A 100 "^Package: $Package$" Security_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
 
         if [[ -n $Package_URL_part ]]; then
+
+            Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
+            Package_URL=$Security_mirror/$Package_URL_part
+    
             # Verbose mode
-            #echo -n "Downloading $Package ..."
+            #echo -n "Downloading (from security repo) $Package ..."
             if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
                 echo
                 echo "Error while downloading $Package"
@@ -67,8 +77,30 @@ function Debian_get_packages () {
             #else
             #    echo " OK"
             fi
+    
         else
-            echo "$Package not found in this repository."
+
+            Package_URL_part=$(grep -A 100 "^Package: $Package$" Main_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
+            Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
+            Package_URL=$Main_mirror/$Package_URL_part
+    
+            if [[ -n $Package_URL_part ]]; then
+                # Verbose mode
+                #echo -n "Downloading $Package ..."
+                if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
+                    echo
+                    echo "Error while downloading $Package"
+                    echo "$Package_URL"
+                    echo
+                    rm -f $Destination/index.html
+                # Verbose mode
+                #else
+                #    echo " OK"
+                fi
+            else
+                echo "$Package not found neither in security or base repository."
+            fi
+
         fi
 
     done < $List_packages
@@ -76,7 +108,8 @@ function Debian_get_packages () {
     # Verbose mode
     #echo
 
-    rm -f Packages-$Version-$Arch
+    rm -f Main_packages-$Version-$Arch
+    rm -f Security_packages-$Version-$Arch
 
 }
 
@@ -85,17 +118,8 @@ function Debian_handle_version () {
     Version=$1
     Debian_name=${Debian_names[$Version]}
 
-    # Get the vanilla packages
-    Mirror=http://ftp.debian.org/debian
-    Packages_file_URL_part=$Mirror/dists/$Debian_name/main
     Debian_get_packages amd64
     Debian_get_packages i386
-
-    # Get the updates packages
-    #Mirror=http://security.debian.org/debian-security
-    #Packages_file_URL_part=$Mirror/dists/$Debian_name/updates/main
-    #Debian_get_packages amd64 updates
-    #Debian_get_packages i386 updates
 
 }
 
@@ -118,7 +142,6 @@ function btask.Buildenv_debian.run () {
     zip -q -r buildenv17-$Date.zip buildenv17
     rm -fr buildenv17
 
-    unset -v Version Debian_names Debian_name
-    unset -v Mirror Packages_file_URL_part
+    unset -v Debian_names Version Debian_name
 
 }

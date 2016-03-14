@@ -92,6 +92,8 @@ libevent-openssl-2.0-5
 libevent-pthreads-2.0-5
 libsqlite3-dev
 libsqlite3-0
+libjansson-dev
+libjansson4
 liblzma-dev
 libgcrypt11-dev
 libgcrypt11
