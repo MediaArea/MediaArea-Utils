@@ -16,10 +16,7 @@ How to install the build environnement
 
 Download and unzip the buildenv09*.zip. Enter the directory
 corresponding to your version and your architecture, and type :
-
-```sh
-dpkg -i *
-```
+sudo dpkg -i *
 
 -----------------------
 How to build MediaConch
@@ -28,17 +25,10 @@ How to build MediaConch
 Download and unzip the src09*.zip. Enter the new directory created.
 
 To build the CLI, type:
-
-```sh
 ./CLI_compile.sh
-```
 
 To build the server, type:
-```sh
 ./Server_compile.sh
-```
 
 To build the GUI, type:
-```sh
 ./GUI_compile.sh
-```
