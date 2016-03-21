@@ -62,11 +62,7 @@ function _mac () {
     Try=0
     touch "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     until [ `ls -l "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_mil >> "$Log"/mac.log 2>&1
-        else
-            _mac_mil
-        fi
+        _mac_mil
         # Return 1 if MIL is compiled for i386 and x86_64,
         # 0 otherwise
         MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.dylib" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -232,36 +228,23 @@ function _obs_deb6 () {
 
 function _linux () {
 
-    if b.opt.has_flag? --log; then
-        _obs > "$Log"/linux.log 2>&1
-        _obs_deb6 >> "$Log"/linux.log 2>&1
-        _obs_deb deb9 >> "$Log"/linux.log 2>&1
-        # Since TinyXML2 is back as buildin for deb distribs
-        #_obs_deb u12.04 >> "$Log"/linux.log 2>&1
-    else
-        _obs
-        _obs_deb6
-        _obs_deb deb9
-        # Since TinyXML2 is back as buildin for deb distribs
-        #_obs_deb u12.04
-        echo
-        echo Launch in background the python script which check
-        echo the build results and download the packages...
-        echo
-        echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project MediaInfoLib $Version_new "$MILB_dir"
-        echo
-    fi
+    _obs
+    _obs_deb6
+    _obs_deb deb9
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
+    echo The command line is:
+    echo python Handle_OBS_results.py $OBS_project MediaInfoLib $Version_new "$MILB_dir"
+    echo
 
     cd $(b.get bang.working_dir)
-    python Handle_OBS_results.py $OBS_project MediaInfoLib $Version_new "$MILB_dir" > "$Log"/obs_main.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfoLib $Version_new "$MILB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfoLib_deb6 $Version_new "$MILB_dir" > "$Log"/obs_deb6.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfoLib_deb6 $Version_new "$MILB_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
     sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfoLib_deb9 $Version_new "$MILB_dir" > "$Log"/obs_deb9.log 2>&1 &
-    #sleep 10
-    # Since TinyXML2 is back as buildin for deb distribs
-    #python Handle_OBS_results.py $OBS_project MediaInfoLib_u12.04 $Version_new "$MILB_dir" > "$Log"/obs_u12.04.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfoLib_deb9 $Version_new "$MILB_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
 
 }
 
@@ -310,13 +293,17 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PS_target -nc
 
     if [ "$Target" = "mac" ]; then
-        _mac
+        if b.opt.has_flag? --log; then
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+        else
+            _mac
+        fi
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _windows > "$Log"/windows.log 2>&1
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             echo _windows
         fi
@@ -324,19 +311,23 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        _linux
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            _linux
-            _mac
-            echo _windows > "$Log"/windows.log 2>&1
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
-            _linux
             _mac
             echo _windows
+            _linux
         fi
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"

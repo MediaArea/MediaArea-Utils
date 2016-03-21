@@ -112,11 +112,7 @@ function _mac () {
     Try=0
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_cli >> "$Log"/mac-cli.log 2>&1
-        else
-            _mac_cli
-        fi
+        _mac_cli
         # Return 1 if MI-cli is compiled for i386 and x86_64,
         # 0 otherwise
         MultiArch=`ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP "file $Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo" |grep "Mach-O universal binary with 2 architectures" |wc -l`
@@ -126,11 +122,7 @@ function _mac () {
     Try=0
     touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_gui >> "$Log"/mac-gui.log 2>&1
-        else
-            _mac_gui
-        fi
+        _mac_gui
         Try=$(($Try + 1))
     done
 
@@ -366,36 +358,59 @@ function _obs_deb6 () {
 
 }
 
+function _obs_mga () {
+
+    # This function build the source on OBS for a specific mageia
+    # version.
+
+    local Mga_version="$1"
+    local OBS_package="$OBS_project/MediaInfo_$Mga_version"
+
+    cd "$MI_tmp"
+
+    echo
+    echo "OBS for $OBS_package, initialize files..."
+    echo
+
+    osc checkout $OBS_package
+
+    # Clean up
+    rm -f $OBS_package/*
+
+    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
+    cp prepare_source/MI/MediaInfo/Project/OBS/mga5.spec $OBS_package/mediainfo.spec
+
+    cd $OBS_package
+    osc addremove *
+    osc commit -n
+
+}
+
 function _linux () {
 
-    if b.opt.has_flag? --log; then
-        _obs > "$Log"/linux.log 2>&1
-        _obs_deb deb9 >> "$Log"/linux.log 2>&1
-        _obs_deb deb7 >> "$Log"/linux.log 2>&1
-        _obs_deb6 >> "$Log"/linux.log 2>&1
-    else
-        _obs
-        _obs_deb deb9
-        _obs_deb deb7
-        _obs_deb6
-        echo
-        echo Launch in background the python script which check
-        echo the build results and download the packages...
-        echo
-        echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
-        echo
-
-    fi
+    _obs
+    _obs_deb deb9
+    _obs_deb deb7
+    _obs_deb6
+    _obs_mga mga5
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
+    echo The command line is:
+    echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
+    echo
 
     cd $(b.get bang.working_dir)
-    python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_main.log 2>&1 & 
+    python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log & 
     sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb9.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
     sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb7.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb7.log 2>"$Log"/obs_deb7-error.log &
     sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" > "$Log"/obs_deb6.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
+    sleep 10
+    python Handle_OBS_results.py $OBS_project MediaInfo_mga5 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_mga5.log 2>"$Log"/obs_mga5-error.log &
 
 }
 
@@ -447,14 +462,18 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
     if [ "$Target" = "mac" ]; then
-        _mac
+        if b.opt.has_flag? --log; then
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+        else
+            _mac
+        fi
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
     fi
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _windows > "$Log"/windows.log 2>&1
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             echo _windows
         fi
@@ -462,19 +481,23 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        _linux
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            _linux
-            _mac
-            echo _windows > "$Log"/windows.log 2>&1
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
-            _linux
             _mac
             echo _windows
+            _linux
         fi
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"

@@ -126,34 +126,27 @@ function _obs_deb6 () {
 
 function _linux () {
 
-    if b.opt.has_flag? --log; then
-        _obs > "$Log"/linux.log 2>&1
-        _obs_deb6 >> "$Log"/linux.log 2>&1
-        _obs_deb deb9 >> "$Log"/linux.log 2>&1
-    else
-        _obs
-        _obs_deb6
-        _obs_deb deb9
-        echo
-        echo Launch in background the python script which check
-        echo the build results and download the packages...
-        echo
-        echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir"
-        echo
-    fi
+    _obs
+    _obs_deb6
+    _obs_deb deb9
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
+    echo The command line is:
+    echo python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir"
+    echo
 
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$ZL_tmp", the current directory, will
     # be deleted)
     cd $(b.get bang.working_dir)
-    python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" > "$Log"/obs_main.log 2>&1 &
-    # The sleep is here to avoid
-    # OSError: File exists: 'destination'
+    python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    # The sleep is to avoid OSError: File exists: 'destination'
     sleep 10
-    python Handle_OBS_results.py $OBS_project ZenLib_deb6 $Version_new "$ZLB_dir" > "$Log"/obs_deb6.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project ZenLib_deb6 $Version_new "$ZLB_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
     sleep 10
-    python Handle_OBS_results.py $OBS_project ZenLib_deb9 $Version_new "$ZLB_dir" > "$Log"/obs_deb9.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project ZenLib_deb9 $Version_new "$ZLB_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
 
 }
 
@@ -209,7 +202,11 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p zl -v $Version_new -wp "$ZL_tmp"/prepare_source -sp "$ZL_tmp"/upgrade_version/ZenLib -sa -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
-        _linux
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
         mv "$ZL_tmp"/prepare_source/archives/libzen_${Version_new}.* "$ZLS_dir"
     fi
 

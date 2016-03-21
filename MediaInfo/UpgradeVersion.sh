@@ -53,6 +53,12 @@ function btask.UpgradeVersion.run () {
     updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     echo
+
+    echo
+    echo "Update ${MI_source}/Project/OBS/mga5.spec"
+    updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/OBS/mga5.spec
+    #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/OBS/mga5.spec
+    echo
     
     echo "Update ${MI_source}/Project/GNU/mediainfo.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc

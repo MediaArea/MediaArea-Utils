@@ -221,7 +221,7 @@ function run () {
             # the corresponding task
             . $Script
             if b.opt.has_flag? --log; then
-                b.task.run BuildRelease > "$Log"/init.log 2>&1
+                b.task.run BuildRelease > "$Log"/init.log 2> "$Log"/init-error.log
             else
                 echo
                 b.task.run BuildRelease

@@ -103,33 +103,21 @@ function _mac () {
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_cli >> "$Log"/mac-cli.log 2>&1
-        else
-            _mac_cli
-        fi
+        _mac_cli
         Try=$(($Try + 1))
     done
 
     Try=0
     touch "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg
     until [ `ls -l "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_server >> "$Log"/mac-server.log 2>&1
-        else
-            _mac_server
-        fi
+        _mac_server
         Try=$(($Try + 1))
     done
 
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq $NbTry ]; do
-        if b.opt.has_flag? --log; then
-            _mac_gui >> "$Log"/mac-gui.log 2>&1
-        else
-            _mac_gui
-        fi
+        _mac_gui
         Try=$(($Try + 1))
     done
 
@@ -254,21 +242,17 @@ function _obs () {
 
 function _linux () {
 
-    if b.opt.has_flag? --log; then
-        _obs > "$Log"/linux.log 2>&1
-    else
-        _obs
-        echo
-        echo Launch in background the python script which check
-        echo the build results and download the packages...
-        echo
-        echo The command line is:
-        echo python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
-        echo
-    fi
+    _obs
+    echo
+    echo Launch in background the python script which check
+    echo the build results and download the packages...
+    echo
+    echo The command line is:
+    echo python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
+    echo
 
     cd $(b.get bang.working_dir)
-    python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" > "$Log"/obs_main.log 2>&1 &
+    python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
@@ -324,7 +308,11 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 
     if [ "$Target" = "mac" ]; then
-        _mac
+        if b.opt.has_flag? --log; then
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+        else
+            _mac
+        fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
@@ -332,7 +320,7 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _windows > "$Log"/windows.log 2>&1
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             echo _windows
         fi
@@ -340,19 +328,23 @@ function btask.BuildRelease.run () {
     fi
     
     if [ "$Target" = "linux" ]; then
-        _linux
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
-            _linux
-            _mac
-            echo _windows > "$Log"/windows.log 2>&1
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
             _linux
-            _mac
             echo _windows
+            _mac
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
