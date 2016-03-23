@@ -20,7 +20,7 @@ On Windows: :)
 * $Mediaconch referes to https://github.com/MediaArea/MediaConch repository.
 * $MC_SC referes to https://github.com/MediaArea/MediaConch\_SourceCode repository.
 
-If you modify a copy of an original file, remmeber to change the original too.
+If you modify a copy of an original file, remember to change the original too.
 
 #### Implementation/policy checker
 
