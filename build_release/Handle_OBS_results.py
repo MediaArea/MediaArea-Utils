@@ -3,13 +3,10 @@
 
 import MySQLdb
 import time
-import subprocess
 import sys
-import os
 import fnmatch
-import glob
-import shutil
-import time
+import os
+import subprocess
 
 print "\n========================================================"
 print "Handle_OBS_results.py"
@@ -118,13 +115,6 @@ def Initialize_DB():
             if Result == 0:
                 Cursor.execute("INSERT INTO `" + Table + "` (distrib, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
-            if Release == True:
-                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
-                Result = 0
-                Result = Cursor.rowcount()
-                if Result == 0:
-                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
-
     # Ensure that the DB doesn’t keep distribs the distros which
     # are no longer in the dictionary. The DL_pages_table is not
     # affected since a distrib can be removed from builds but still
@@ -147,16 +137,16 @@ def Initialize_DB():
 ##################################################################
 def Waiting_loop():
 
-    Compt = 0
+    Count = 0
 
     # We wait for max 9h (600*20)+(1200*17)
-    while Compt < 38:
+    while Count < 38:
 
-        Compt = Compt + 1
+        Count = Count + 1
 
         # At first, check every 10mn during 3h20
-        if Compt < 20:
-            if Compt == 1:
+        if Count < 20:
+            if Count == 1:
                 print "Wait 10mn..."
             else:
                 print "All builds aren’t finished yet, wait another 10mn..."
@@ -186,12 +176,12 @@ def Waiting_loop():
         if Result == "0":
             break
 
-        # If Result ≠ 0 and Compt = 37, then we have wait for 9h
+        # If Result ≠ 0 and Count = 37, then we have wait for 9h
         # and all the distros aren’t build. This while loop will
         # exit at the next iteration, and in the error mail we’ll
         # specify that the timeout was reached.
         Timeout = False
-        if Compt == 37:
+        if Count == 37:
             Timeout = True
 
 ##################################################################
@@ -404,7 +394,6 @@ def Get_packages_on_OBS():
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the dev package on OBS:"
                 print Params
-                print
                 Dev_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
                 # If the dev package is build
@@ -598,6 +587,14 @@ def Get_packages_on_OBS():
 
             # If we run for a release
             if Release == True:
+
+                # First, ensure that all the succeeded distribs are
+                # presents in the DB
+                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+                Result = 0
+                Result = Cursor.rowcount()
+                if Result == 0:
+                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
                 # For the libs
                 if Project_kind == "lib":
@@ -908,7 +905,9 @@ def Verify_states_and_files():
 
 Time_start = time.time()
 
-# arguments :
+#
+# Arguments
+#
 # 1 $OBS_project (home:MediaArea_net[:snapshots])
 # 2 $OBS_package (ZenLib, MediaInfoLib, …)
 # 3 Version
@@ -937,7 +936,7 @@ DL_pages_table = "0"
 DB_structure = ""
 Release = False
 Timeout = False
-Compt = 0
+Count = 0
 Result = 0
 
 if fnmatch.fnmatch(OBS_package, "ZenLib*"):
@@ -1181,5 +1180,7 @@ Cursor.close()
 
 # If we run for MC or MI (no DL pages for ZL and MIL, so we test
 # Project_kind), and this is a release
-#if Project_kind == "gui" and Release == True:
-#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py" ))
+#if Bin_name == "mediaconch" and Release == True:
+#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py mc linux" ))
+#if Bin_name == "mediainfo" and Release == True:
+#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py mi linux" ))
