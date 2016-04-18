@@ -338,13 +338,13 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
             echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
             _linux
-            echo _windows
             _mac
+            echo _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"

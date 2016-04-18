@@ -491,13 +491,14 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
+            # Linux first, in order that OBS build while the mac and windows tasks are # executed
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
             echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
+            _linux
             _mac
             echo _windows
-            _linux
         fi
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
