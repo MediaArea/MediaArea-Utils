@@ -1,12 +1,12 @@
 ---
 layout: default
-permalink: downloads/fedora.html
-title: "Download MediaConch for Fedora"
+permalink: downloads/sle.html
+title: "Download MediaConch for SUSE Linux Enterprise"
 ---
 
-# Download - Fedora
+# Download - SUSE Linux Enterprise
 
-<img src="/MediaConch/images/Fedora.png" width="250" height="89"><br/>
+<img src="/MediaConch/images/Suse.png" width="165" height="100"><br />
 
 <table border="1">
 <thead>

@@ -103,7 +103,7 @@ def Initialize_DB():
     # Ensure that all the distribs in the dictionary are presents
     # in the DB
 
-    for Distrib_name in Distribs.keys():
+    for Distrib_name in Distribs:
 
         for Arch in Distribs[Distrib_name]:
 
@@ -126,7 +126,7 @@ def Initialize_DB():
     for DB_dist in DB_distribs:
         DB_distrib_name = DB_dist[0]
         DB_arch = DB_dist[1]
-        if Distribs.has_key(DB_distrib_name):
+        if DB_distrib_name in Distribs:
             # If the distrib is present, but this arch has been
             # removed
             if Distribs[DB_distrib_name].count(DB_arch) == 0:
@@ -155,7 +155,7 @@ def Waiting_loop():
         # Past 3h30, trigger rebuilds
         else:
             print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn..."
-            for Distrib_name in Distribs.keys():
+            for Distrib_name in Distribs:
                 for Arch in Distribs[Distrib_name]:
                     Params = "osc results " + MA_project \
                            + " |grep " + Distrib_name \
@@ -188,7 +188,7 @@ def Waiting_loop():
 def Update_DB():
 
     # We update the table with the results of the build
-    for Distrib_name in Distribs.keys():
+    for Distrib_name in Distribs:
         for Arch in Distribs[Distrib_name]:
             # We take "grep 'Distrib_name '" instead of "grep Distrib_name"
             # because the name of a distrib can be included in the
@@ -236,12 +236,12 @@ def Get_packages_on_OBS():
                     fnmatch.fnmatch(Distrib_name, "CentOS*") or \
                     fnmatch.fnmatch(Distrib_name, "Fedora*"):
                 Package_type = "rpm"
+                # We must reassign even if it’s the default value, in case SLE/openSUSE/Mageia came
+                # before and assign it to i586
                 Package_infos[Package_type]["i586"] = "i686"
             if fnmatch.fnmatch(Distrib_name, "SLE*") or \
-                    fnmatch.fnmatch(Distrib_name, "openSUSE*"):
-                Package_type = "rpm"
-                Package_infos[Package_type]["i586"] = "i586"
-            if fnmatch.fnmatch(Distrib_name, "Mageia*"):
+                    fnmatch.fnmatch(Distrib_name, "openSUSE*") or \
+                    fnmatch.fnmatch(Distrib_name, "Mageia*"):
                 Package_type = "rpm"
                 Package_infos[Package_type]["i586"] = "i586"
             #if fnmatch.fnmatch(Distrib_name, "Arch*"):
@@ -926,10 +926,12 @@ Destination = sys.argv[4]
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
+MA_project = OBS_project + "/" + OBS_package
+
 Config = {}
 execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
- 
-MA_project = OBS_project + "/" + OBS_package
+
+Package_infos = Config["Package_infos"]
 
 # Various initializations
 DL_pages_table = "0"
@@ -1071,35 +1073,6 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
 
 if len(DL_pages_table) > 1:
     Release = True
-
-# The architecture names (x86_64, i586, …) are imposed by OBS.
-#
-# If an architecture is actived on OBS, but not listed here, 
-# Package_infos[Package_type][Arch] will raise a KeyError.
-#
-# In the declaration of a dictionary, you MUST put spaces after the
-# commas, if not python can behave strangely.
-#
-Package_infos = {
-    "deb": {
-        "devsuffix": "-dev", "debugsuffix": "-dbg",
-        "dash": "_" , "separator": "_",
-        "x86_64": "amd64", "i586": "i386"
-    },
-    "rpm": {
-        "devsuffix": "-devel", "debugsuffix": "-debuginfo",
-        "dash": "-", "separator": ".",
-        "x86_64": "x86_64", "i586": "i686", "ppc64": "ppc64",
-        "aarch64": "aarch64", "armv7l": "armv7l",
-        "armv6l": "armv6l"
-    }
-    #},
-    # Arch isn’t handled yet
-    #"pkg.tar.xz": {
-    #    "devsuffix": "", "dash": "", "separator": "",
-    #    "x86_64": "", "i586": ""
-    #}
-}
 
 # TODO: automaticaly build the dictionnary from the active distros
 # on OBS

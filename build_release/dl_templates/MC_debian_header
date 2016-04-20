@@ -1,12 +1,12 @@
 ---
 layout: default
-permalink: downloads/sle.html
-title: "Download MediaConch for SUSE Linux Enterprise"
+permalink: downloads/debian.html
+title: "Download MediaConch for Debian"
 ---
 
-# Download - SUSE Linux Enterprise
+# Download - Debian
 
-<img src="/MediaConch/images/Suse.png" width="165" height="100"><br/>
+<img src="/MediaConch/images/Debian.png" width="229" height="61"><br />
 
 <table border="1">
 <thead>

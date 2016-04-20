@@ -1,20 +1,17 @@
 <tr>RELEASE_ROWSPAN
     <th rowspan="ARCH_ROWSPAN" id="RELEASE_TITLE.RELEASE_ARCH">RELEASE_ARCH</th>
-    <td class="table-OS" colspan="3" id="RELEASE_TITLE.RELEASE_ARCH">RELEASE_TITLE, RELEASE_ARCH</td>
-</tr>
-<tr>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MC_GUI_PACKAGE">vMC_VERSION</a></td>
+    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/GUI_PACKAGE">vMC_VERSION</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MC_CLI_PACKAGE">vMC_VERSION</a></td>
+    <td><a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/CLI_PACKAGE">vMC_VERSION</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MC_SERVER_PACKAGE">vMC_VERSION</a></td>
+    <td><a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/SERVER_PACKAGE">vMC_VERSION</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr>

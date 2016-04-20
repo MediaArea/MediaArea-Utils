@@ -1,9 +1,6 @@
 <tr>
-    <th rowspan="6">OS_TITLE_LONG</th>
-    <th rowspan="6">x86_64</th>
-    <td class="table-OS" colspan="3" id="10.5.x86_64">OS_TITLE, x86_64</td>
-</tr>
-<tr>
+    <th rowspan="5">OS_TITLE</th>
+    <th rowspan="5">x86_64</th>
     <th>GUI</th>
     <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Mac.dmg">vMC_VERSION</a></td>
     <td>&nbsp;</td>

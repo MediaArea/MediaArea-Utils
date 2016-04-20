@@ -22,10 +22,10 @@ class mysql:
         self.running = True
         try:
             self.sql = MySQLdb.connect(
-                    host=DB_config["MySQL_host"],
-                    user=DB_config["MySQL_user"],
-                    passwd=DB_config["MySQL_passwd"],
-                    db=DB_config["MySQL_db"])
+                    host=HOR_config["MySQL_host"],
+                    user=HOR_config["MySQL_user"],
+                    passwd=HOR_config["MySQL_passwd"],
+                    db=HOR_config["MySQL_db"])
         except MySQLdb.Error, e:
             self.running = True
             print "*** MySQL Error %d: %s ***" % (e.args[0], e.args[1])
@@ -94,7 +94,7 @@ def DL_pages(OS_name):
     print "Generating " + Project.upper() + " download pages for " + OS_name
     print
 
-    Skeletons_path = Script_emplacement + "/dl_skeletons/" + Project.upper() + "_" + OS_name
+    Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + OS_name
     OS_title = Config[ Project.upper() + "_" + OS_name + "_title" ]
 
     Header_file_path = Skeletons_path + "_header"
@@ -243,12 +243,27 @@ def OBS():
     Opensuse_releases[ len(Opensuse_releases): ] = Sorted_releases["openSUSE"]
     Sorted_releases["openSUSE"] = Opensuse_releases
 
+    # Verbose mode
+    print Sorted_releases
+
     for Distrib_name in Active_distribs:
         Distrib_name_lower = Distrib_name.lower()
         if Distrib_name_lower == "xubuntu":
             Distrib_name_lower = "ubuntu"
     
-        Header_file_path = Script_emplacement + "/dl_skeletons/" + Project.upper() + "_" + Distrib_name_lower + "_header"
+        # Verbose mode
+        print
+
+        if Distrib_name == "Debian" or Distrib_name == "xUbuntu":
+            Package_type = "deb"
+        if Distrib_name == "RHEL" or Distrib_name == "CentOS" or Distrib_name == "Fedora":
+            Package_type = "rpm"
+            Package_infos[Package_type]["i586"] = "i686"
+        if Distrib_name == "SLE" or Distrib_name == "openSUSE" or Distrib_name == "Mageia":
+            Package_type = "rpm"
+            Package_infos[Package_type]["i586"] = "i586"
+
+        Header_file_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + Distrib_name_lower + "_header"
         Header_file = open(Header_file_path, "r")
         Header = Header_file.read()
         Header_file.close()
@@ -271,8 +286,10 @@ def OBS():
             Release_name = Release_infos[0]
             Release_status = Release_infos[1]
             Release_in_config_file = Distrib_name_lower + "_" + Release_name.lower().replace(".", "_")
-        
             Release_title = Config[ Release_in_config_file + "_title" ]
+
+            # Verbose mode
+            print Distrib_name + " " + Release_name
 
             Release_with_server = False
             if Project == "mc":
@@ -281,11 +298,17 @@ def OBS():
                 if Result != None and Result[0] != "":
                     Release_with_server = True
 
-            # Add one row if release with server
+            Release_with_wx = False
+            if Project == "mi" and (Distrib_name == "RHEL" or Distrib_name == "CentOS"):
+                # The second if is mandatory (<distrib>_<release>_wx only exists for RHEL/CentOS).
+                if Config[ Release_in_config_file + "_wx" ] != "":
+                    Release_with_wx = True
+
+            Rowspan = 4
             if Release_with_server == True:
-                Rowspan = 5
-            else:
-                Rowspan = 4
+                Rowspan = Rowspan + 1
+            if Release_with_wx == True:
+                Rowspan = Rowspan + 1
             Arch_rowspan = str(Rowspan)
 
             Cursor.execute("SELECT arch FROM " + Table_releases_dlpages + " WHERE platform = '" + Distrib_name + "_" + Release_name + "';")
@@ -293,7 +316,11 @@ def OBS():
             DB_archs = []
             DB_archs = Result
             Number_of_archs = len(DB_archs)
-            Release_rowspan_number = str(Number_of_archs * Rowspan)
+            Release_rowspan = Number_of_archs * Rowspan
+            # For the link to RHEL7 ppc64
+            if Distrib_name + Release_name == "CentOS7":
+                Release_rowspan = Release_rowspan + 1
+            Release_rowspan_number = str(Release_rowspan)
 
             # Sort the archs : x64_64, i586, arm, ppc64
             Archs = []
@@ -317,26 +344,31 @@ def OBS():
             for Arch in Archs:
 
                 if Release_with_server == True:
-                    Template_file_path = Script_emplacement + "/dl_skeletons/MC_linux_template"
+                    Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
                 elif Project == "mc":
-                    Template_file_path = Script_emplacement + "/dl_skeletons/MC_linux_template_no_server"
+                    Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_server"
                 elif Project == "mi":
-                    Template_file_path = Script_emplacement + "/dl_skeletons/MI_linux_template"
+                    Template_file_path = Script_emplacement + "/dl_templates/MI_linux_template"
                 Template_file = open(Template_file_path, "r")
-                Template = Template_file.read()
+                Content = Template_file.read()
                 Template_file.close()
 
                 Count = Count + 1
-
                 if Count == 1:
                     Release_rowspan = "\n    <th rowspan=\"" + Release_rowspan_number + "\">" + Release_title + "</th>"
                 else:
                     Release_rowspan = ""
+                Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
                 
-                Content = Template.replace("RELEASE_ROWSPAN", Release_rowspan)
+                if Release_status == "old":
+                    Release_class = " class=\"old-files\""
+                else:
+                    Release_class = ""
+                Content = Content.replace("RELEASE_CLASS", Release_class)
+
                 Content = Content.replace("ARCH_ROWSPAN", Arch_rowspan)
                 Content = Content.replace("RELEASE_TITLE", Release_title)
-                Content = Content.replace("RELEASE_ARCH", Arch)
+                Content = Content.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
 
                 Request = "SELECT version, cliname, clinamedbg, guiname, guinamedbg"
                 if Project == "mc":
@@ -397,7 +429,20 @@ def OBS():
                     Content = Content.replace("ZL_PACKAGE", ZL_lib_name)
                     Content = Content.replace("ZL_DEV_PACKAGE", ZL_lib_name_dev)
 
-                Destination.write(Content + "\n")
+                if Release_with_wx == True:
+                    Wx_package = Config[ Release_in_config_file + "_wx" ]
+                    Wx_package = Wx_package.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
+                    Wx_package = Wx_package.replace("DISTRIB_RELEASE", Distrib_name + "_" + Release_name)
+                else:
+                    Wx_package = ""
+                Content = Content.replace("WX_PACKAGE", Wx_package)
+
+                Destination.write(Content)
+
+            # For the link to RHEL7 ppc64
+            if Distrib_name + Release_name == "CentOS7":
+                PPC_line = Config[ Project.upper() + "_" + Release_in_config_file + "_ppc64" ]
+                Destination.write(PPC_line)
 
         Destination.write("</tbody>\n</table>\n")
         if Project == "mi":
@@ -451,11 +496,13 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
         Project_version = sys.argv[3]
         MIL_version = sys.argv[4]
 
-DB_config = {}
-execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), DB_config)
-
 Config = {}
 execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
+
+HOR_config = {}
+execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), HOR_config)
+
+Package_infos = HOR_config["Package_infos"]
 
 subprocess.call(["rm -fr /tmp/" + Project + "_dl_pages"], shell=True)
 subprocess.call(["mkdir /tmp/" + Project + "_dl_pages"], shell=True)

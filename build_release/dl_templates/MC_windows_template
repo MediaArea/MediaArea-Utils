@@ -1,18 +1,12 @@
 <tr>
-    <th rowspan="12">OS_TITLE_LONG</th>
-    <th rowspan="2">Universal installer (32/64 bit)</th>
-    <td class="table-OS" colspan="3" id="i386">OS_TITLE, 32/64 bit</td>
-</tr>
-<tr>
+    <th rowspan="10">OS_TITLE</th>
+    <th>Universal installer (32/64 bit)</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION</a></td>
     <td>If you don't know which one to download, download this one<?php echo $AdSupported; ?></td>
 </tr>
 <tr>
-    <th rowspan="5">32 bit</th>
-    <td class="table-OS" colspan="3" id="i386">OS_TITLE, 32 bit</td>
-</tr>
-<tr>
+    <th rowspan="4">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small> (<a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
     <td><?php echo $AdSupported; ?></td>
@@ -33,10 +27,7 @@
     <td>Currently with the same API as libmediainfo</td>
 </tr>
 <tr>
-    <th rowspan="5">64 bit</th>
-    <td class="table-OS" colspan="3" id="x64">OS_TITLE, 64 bit</td>
-</tr>
-<tr>
+    <th rowspan="4">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small>(<a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
     <td><?php echo $AdSupported; ?></td>
