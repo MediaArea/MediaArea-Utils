@@ -204,47 +204,51 @@ def OBS():
 
     # Specific sorting for openSUSE
     Opensuse_releases = []
-    # 1. current Leap release
-    Count = 0
-    for Release_infos in Sorted_releases["openSUSE"]:
-        if Release_infos[0] == Config["opensuse_current_release"]:
-            Opensuse_releases.append(Release_infos)
-            del Sorted_releases["openSUSE"][Count]
-        Count = Count + 1
-    # 2. Tumbleweed
-    Count = 0
-    for Release_infos in Sorted_releases["openSUSE"]:
-        if Release_infos[0] == "Tumbleweed":
-            Opensuse_releases.append(Release_infos)
-            del Sorted_releases["openSUSE"][Count]
-        Count = Count + 1
-    # 3. Factory
-    Count = 0
-    for Release_infos in Sorted_releases["openSUSE"]:
-        if Release_infos[0] == "Factory":
-            Opensuse_releases.append(Release_infos)
-            del Sorted_releases["openSUSE"][Count]
-        Count = Count + 1
-    # 4. Factory ARM
-    Count = 0
-    for Release_infos in Sorted_releases["openSUSE"]:
-        if Release_infos[0] == "Factory_ARM":
-            Opensuse_releases.append(Release_infos)
-            del Sorted_releases["openSUSE"][Count]
-        Count = Count + 1
-    # 5. other Leap releases
-    Count = 0
-    for Release_infos in Sorted_releases["openSUSE"]:
-        if fnmatch.fnmatch(Release_infos[0], "Leap*"):
-            Opensuse_releases.append(Release_infos)
-            del Sorted_releases["openSUSE"][Count]
-        Count = Count + 1
-    # 6. any other number releases
-    Opensuse_releases[ len(Opensuse_releases): ] = Sorted_releases["openSUSE"]
+    for Status in ['current', 'old']:
+        # 1. current Leap release
+        Count = 0
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if Release_infos[0] == Config["opensuse_current_release"] and Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+                del Sorted_releases["openSUSE"][Count]
+            Count = Count + 1
+        # 2. Tumbleweed
+        Count = 0
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if Release_infos[0] == "Tumbleweed" and Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+                del Sorted_releases["openSUSE"][Count]
+            Count = Count + 1
+        # 3. Factory
+        Count = 0
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if Release_infos[0] == "Factory" and Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+                del Sorted_releases["openSUSE"][Count]
+            Count = Count + 1
+        # 4. Factory ARM
+        Count = 0
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if Release_infos[0] == "Factory_ARM" and Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+                del Sorted_releases["openSUSE"][Count]
+            Count = Count + 1
+        # 5. Other Leap releases
+        Count = 0
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if fnmatch.fnmatch(Release_infos[0], "Leap*") and Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+                del Sorted_releases["openSUSE"][Count]
+            Count = Count + 1
+        # 6. All other releases
+        for Release_infos in Sorted_releases["openSUSE"]:
+            if Release_infos[1] == Status:
+                Opensuse_releases.append(Release_infos)
+    # Put the sorted list back in the dictionnary
     Sorted_releases["openSUSE"] = Opensuse_releases
 
     # Verbose mode
-    print Sorted_releases
+    #print Sorted_releases
 
     for Distrib_name in Active_distribs:
         Distrib_name_lower = Distrib_name.lower()
@@ -252,7 +256,7 @@ def OBS():
             Distrib_name_lower = "ubuntu"
     
         # Verbose mode
-        print
+        #print
 
         if Distrib_name == "Debian" or Distrib_name == "xUbuntu":
             Package_type = "deb"
@@ -289,7 +293,7 @@ def OBS():
             Release_title = Config[ Release_in_config_file + "_title" ]
 
             # Verbose mode
-            print Distrib_name + " " + Release_name
+            #print Distrib_name + " " + Release_name
 
             Release_with_server = False
             if Project == "mc":
@@ -331,8 +335,14 @@ def OBS():
                 if DB_arch[0] == "i586":
                     Archs.append("i586")
             for DB_arch in DB_archs:
-                if fnmatch.fnmatch(DB_arch[0], "arm*") or DB_arch[0] == "aarch64":
-                    Archs.append(DB_arch[0])
+                if DB_arch[0] == "armv6l":
+                    Archs.append("armv6l")
+            for DB_arch in DB_archs:
+                if DB_arch[0] == "armv7l":
+                    Archs.append("armv7l")
+            for DB_arch in DB_archs:
+                if DB_arch[0] == "aarch64":
+                    Archs.append("aarch64")
             for DB_arch in DB_archs:
                 if DB_arch[0] == "ppc64":
                     Archs.append("ppc64")
@@ -431,8 +441,8 @@ def OBS():
 
                 if Release_with_wx == True:
                     Wx_package = Config[ Release_in_config_file + "_wx" ]
-                    Wx_package = Wx_package.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
                     Wx_package = Wx_package.replace("DISTRIB_RELEASE", Distrib_name + "_" + Release_name)
+                    Wx_package = Wx_package.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
                 else:
                     Wx_package = ""
                 Content = Content.replace("WX_PACKAGE", Wx_package)
@@ -442,7 +452,33 @@ def OBS():
             # For the link to RHEL7 ppc64
             if Distrib_name + Release_name == "CentOS7":
                 PPC_line = Config[ Project.upper() + "_" + Release_in_config_file + "_ppc64" ]
-                Destination.write(PPC_line)
+                Destination.write(PPC_line + "\n")
+
+        if Project == "mi":
+            Old_releases_path = Script_emplacement + "/dl_templates/MI_" + Distrib_name_lower + "_old_releases"
+            if os.path.isfile(Old_releases_path):
+                Old_releases_file = open(Old_releases_path, "r")
+                Old_releases = Old_releases_file.read()
+                Old_releases_file.close()
+
+                # Debian 6 packages for Ubuntu 12.04
+                if Distrib_name_lower == "ubuntu":
+                    Request = "SELECT version" + " FROM " + Table_releases_dlpages \
+                        + " WHERE platform = 'Debian_6.0'"
+                    Cursor.execute(Request)
+                    Result = Cursor.fetchone()
+                    if Result != None:
+                        MI_deb6_version = Result[0]
+                    Old_releases = Old_releases.replace("MI_VERSION", MI_deb6_version)
+                    Request = "SELECT version" + " FROM `releases_dlpages_zl`" \
+                        + " WHERE platform = 'Debian_6.0'"
+                    Cursor.execute(Request)
+                    Result = Cursor.fetchone()
+                    if Result != None:
+                        ZL_deb6_version = Result[0]
+                    Old_releases = Old_releases.replace("ZL_VERSION", ZL_deb6_version)
+
+                Destination.write(Old_releases)
 
         Destination.write("</tbody>\n</table>\n")
         if Project == "mi":
