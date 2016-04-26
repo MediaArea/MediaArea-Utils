@@ -223,6 +223,8 @@ function _all_inclusive () {
     cd mediaconch_AllInclusive
 
     git clone --recursive https://github.com/MediaArea/MediaConch-AllInOne .
+    # Update submodules
+    git submodule update --remote
 
     echo "2: remove what isn’t wanted..."
     rm -fr .git*
@@ -305,7 +307,7 @@ function btask.PrepareSource.run () {
         _all_inclusive
         _source_package
     fi
-    
+
     if $CleanUp; then
         cd "$WDir"
         rm -fr repos
