@@ -1,0 +1,22 @@
+---
+layout: default
+permalink: downloads/debian.html
+title: "Download MediaConch for Debian"
+---
+
+# Download - Debian
+
+<img src="/MediaConch/images/Debian.png" width="229" height="61"><br />
+
+<table border="1">
+<thead>
+<tr class="table-header">
+    <th>Version</th>
+    <th>Architecture</th>
+    <th>Interface</th>
+    <td>Version</td>
+    <td>Comment</td>
+</tr>
+</thead>
+<tbody>
+

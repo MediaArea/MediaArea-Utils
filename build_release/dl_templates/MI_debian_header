@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Download</title>
+</head>
+<body>
+<h1>Download - Debian</h1>
+<img src="/_/img/OS/Debian.png" width="229" height="61"><br />
+
+<table border="1">
+<thead>
+<tr class="table-header">
+    <th>Version</th>
+    <th>Architecture</th>
+    <th>Interface</th>
+    <td>Version</td>
+    <td>Comment</td>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+    <th colspan="3">Official distribution packages (Debian 8 AKA Jessie)<br />Search for "MediaInfo" in your package manager<br /><br />Or "apt-get install mediainfo-gui" (for GUI)<br /> or "apt-get install mediainfo" (for CLI)</th>
+    <td><a href="http://packages.debian.org/search?suite=jessie&amp;searchon=names&amp;keywords=mediainfo">Debian Jessie package database</a></td>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <th colspan="5"><br />Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"<br /><br /></th>
+</tr>
+

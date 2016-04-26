@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Download</title>
+</head>
+<body>
+<h1>Download - SUSE Linux Enterprise</h1>
+<img src="/_/img/OS/Suse.png" width="165" height="100"><br />
+
+<table border="1">
+<thead>
+<tr class="table-header">
+    <th>Version</th>
+    <th>Architecture</th>
+    <th>Interface</th>
+    <td>Version</td>
+    <td>Comment</td>
+</tr>
+</thead>
+<tbody>
+

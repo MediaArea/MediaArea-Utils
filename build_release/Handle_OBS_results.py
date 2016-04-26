@@ -3,13 +3,10 @@
 
 import MySQLdb
 import time
-import subprocess
 import sys
-import os
 import fnmatch
-import glob
-import shutil
-import time
+import os
+import subprocess
 
 print "\n========================================================"
 print "Handle_OBS_results.py"
@@ -106,7 +103,7 @@ def Initialize_DB():
     # Ensure that all the distribs in the dictionary are presents
     # in the DB
 
-    for Distrib_name in Distribs.keys():
+    for Distrib_name in Distribs:
 
         for Arch in Distribs[Distrib_name]:
 
@@ -117,13 +114,6 @@ def Initialize_DB():
             # in the table, we insert it
             if Result == 0:
                 Cursor.execute("INSERT INTO `" + Table + "` (distrib, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
-
-            if Release == True:
-                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
-                Result = 0
-                Result = Cursor.rowcount()
-                if Result == 0:
-                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
     # Ensure that the DB doesn’t keep distribs the distros which
     # are no longer in the dictionary. The DL_pages_table is not
@@ -136,7 +126,7 @@ def Initialize_DB():
     for DB_dist in DB_distribs:
         DB_distrib_name = DB_dist[0]
         DB_arch = DB_dist[1]
-        if Distribs.has_key(DB_distrib_name):
+        if DB_distrib_name in Distribs:
             # If the distrib is present, but this arch has been
             # removed
             if Distribs[DB_distrib_name].count(DB_arch) == 0:
@@ -147,16 +137,16 @@ def Initialize_DB():
 ##################################################################
 def Waiting_loop():
 
-    Compt = 0
+    Count = 0
 
     # We wait for max 9h (600*20)+(1200*17)
-    while Compt < 38:
+    while Count < 38:
 
-        Compt = Compt + 1
+        Count = Count + 1
 
         # At first, check every 10mn during 3h20
-        if Compt < 20:
-            if Compt == 1:
+        if Count < 20:
+            if Count == 1:
                 print "Wait 10mn..."
             else:
                 print "All builds aren’t finished yet, wait another 10mn..."
@@ -165,7 +155,7 @@ def Waiting_loop():
         # Past 3h30, trigger rebuilds
         else:
             print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn..."
-            for Distrib_name in Distribs.keys():
+            for Distrib_name in Distribs:
                 for Arch in Distribs[Distrib_name]:
                     Params = "osc results " + MA_project \
                            + " |grep " + Distrib_name \
@@ -186,19 +176,19 @@ def Waiting_loop():
         if Result == "0":
             break
 
-        # If Result ≠ 0 and Compt = 37, then we have wait for 9h
+        # If Result ≠ 0 and Count = 37, then we have wait for 9h
         # and all the distros aren’t build. This while loop will
         # exit at the next iteration, and in the error mail we’ll
         # specify that the timeout was reached.
         Timeout = False
-        if Compt == 37:
+        if Count == 37:
             Timeout = True
 
 ##################################################################
 def Update_DB():
 
     # We update the table with the results of the build
-    for Distrib_name in Distribs.keys():
+    for Distrib_name in Distribs:
         for Arch in Distribs[Distrib_name]:
             # We take "grep 'Distrib_name '" instead of "grep Distrib_name"
             # because the name of a distrib can be included in the
@@ -246,12 +236,12 @@ def Get_packages_on_OBS():
                     fnmatch.fnmatch(Distrib_name, "CentOS*") or \
                     fnmatch.fnmatch(Distrib_name, "Fedora*"):
                 Package_type = "rpm"
+                # We must reassign even if it’s the default value, in case SLE/openSUSE/Mageia came
+                # before and assign it to i586
                 Package_infos[Package_type]["i586"] = "i686"
             if fnmatch.fnmatch(Distrib_name, "SLE*") or \
-                    fnmatch.fnmatch(Distrib_name, "openSUSE*"):
-                Package_type = "rpm"
-                Package_infos[Package_type]["i586"] = "i586"
-            if fnmatch.fnmatch(Distrib_name, "Mageia*"):
+                    fnmatch.fnmatch(Distrib_name, "openSUSE*") or \
+                    fnmatch.fnmatch(Distrib_name, "Mageia*"):
                 Package_type = "rpm"
                 Package_infos[Package_type]["i586"] = "i586"
             #if fnmatch.fnmatch(Distrib_name, "Arch*"):
@@ -404,7 +394,6 @@ def Get_packages_on_OBS():
                        + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
                 print "Name of the dev package on OBS:"
                 print Params
-                print
                 Dev_name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
                 # If the dev package is build
@@ -598,6 +587,14 @@ def Get_packages_on_OBS():
 
             # If we run for a release
             if Release == True:
+
+                # First, ensure that all the succeeded distribs are
+                # presents in the DB
+                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+                Result = 0
+                Result = Cursor.rowcount()
+                if Result == 0:
+                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
                 # For the libs
                 if Project_kind == "lib":
@@ -908,7 +905,9 @@ def Verify_states_and_files():
 
 Time_start = time.time()
 
-# arguments :
+#
+# Arguments
+#
 # 1 $OBS_project (home:MediaArea_net[:snapshots])
 # 2 $OBS_package (ZenLib, MediaInfoLib, …)
 # 3 Version
@@ -927,17 +926,19 @@ Destination = sys.argv[4]
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
+MA_project = OBS_project + "/" + OBS_package
+
 Config = {}
 execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
- 
-MA_project = OBS_project + "/" + OBS_package
+
+Package_infos = Config["Package_infos"]
 
 # Various initializations
 DL_pages_table = "0"
 DB_structure = ""
 Release = False
 Timeout = False
-Compt = 0
+Count = 0
 Result = 0
 
 if fnmatch.fnmatch(OBS_package, "ZenLib*"):
@@ -1073,35 +1074,6 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
 if len(DL_pages_table) > 1:
     Release = True
 
-# The architecture names (x86_64, i586, …) are imposed by OBS.
-#
-# If an architecture is actived on OBS, but not listed here, 
-# Package_infos[Package_type][Arch] will raise a KeyError.
-#
-# In the declaration of a dictionary, you MUST put spaces after the
-# commas, if not python can behave strangely.
-#
-Package_infos = {
-    "deb": {
-        "devsuffix": "-dev", "debugsuffix": "-dbg",
-        "dash": "_" , "separator": "_",
-        "x86_64": "amd64", "i586": "i386"
-    },
-    "rpm": {
-        "devsuffix": "-devel", "debugsuffix": "-debuginfo",
-        "dash": "-", "separator": ".",
-        "x86_64": "x86_64", "i586": "i686", "ppc64": "ppc64",
-        "aarch64": "aarch64", "armv7l": "armv7l",
-        "armv6l": "armv6l"
-    }
-    #},
-    # Arch isn’t handled yet
-    #"pkg.tar.xz": {
-    #    "devsuffix": "", "dash": "", "separator": "",
-    #    "x86_64": "", "i586": ""
-    #}
-}
-
 # TODO: automaticaly build the dictionnary from the active distros
 # on OBS
 Distribs = {
@@ -1140,6 +1112,7 @@ Distribs = {
     "xUbuntu_14.10": ["x86_64", "i586"],
     "xUbuntu_15.04": ["x86_64", "i586"],
     "xUbuntu_15.10": ["x86_64", "i586"],
+    #"xUbuntu_16.04": ["x86_64", "i586"],
 }
 
 #
@@ -1181,5 +1154,7 @@ Cursor.close()
 
 # If we run for MC or MI (no DL pages for ZL and MIL, so we test
 # Project_kind), and this is a release
-#if Project_kind == "gui" and Release == True:
-#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py" ))
+#if Bin_name == "mediaconch" and Release == True:
+#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py mc linux" ))
+#if Bin_name == "mediainfo" and Release == True:
+#    execfile( os.path.join( Script_emplacement, "Generate_DL_pages.py mi linux" ))

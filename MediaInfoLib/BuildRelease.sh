@@ -321,13 +321,13 @@ function btask.BuildRelease.run () {
     
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
             echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
+            _linux
             _mac
             echo _windows
-            _linux
         fi
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
