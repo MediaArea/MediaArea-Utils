@@ -1,0 +1,27 @@
+ Project/MSVC2015/MediaConch.sln | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/Project/MSVC2015/MediaConch.sln b/Project/MSVC2015/MediaConch.sln
+index 9e9db96..cdf3e36 100644
+--- a/Project/MSVC2015/MediaConch.sln
++++ b/Project/MSVC2015/MediaConch.sln
+@@ -43,9 +43,7 @@ Global
+ 		{8A1AE679-131A-493C-86CA-91179B0955A4}.Debug|x64.ActiveCfg = Debug|x64
+ 		{8A1AE679-131A-493C-86CA-91179B0955A4}.Debug|x64.Build.0 = Debug|x64
+ 		{8A1AE679-131A-493C-86CA-91179B0955A4}.Release|Win32.ActiveCfg = Release|Win32
+-		{8A1AE679-131A-493C-86CA-91179B0955A4}.Release|Win32.Build.0 = Release|Win32
+ 		{8A1AE679-131A-493C-86CA-91179B0955A4}.Release|x64.ActiveCfg = Release|x64
+-		{8A1AE679-131A-493C-86CA-91179B0955A4}.Release|x64.Build.0 = Release|x64
+ 		{2D3D1642-D55D-4EF6-AEC8-B8E1B8F8B226}.Debug|Win32.ActiveCfg = Debug|Win32
+ 		{2D3D1642-D55D-4EF6-AEC8-B8E1B8F8B226}.Debug|Win32.Build.0 = Debug|Win32
+ 		{2D3D1642-D55D-4EF6-AEC8-B8E1B8F8B226}.Debug|x64.ActiveCfg = Debug|x64
+@@ -131,9 +129,7 @@ Global
+ 		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Debug|x64.ActiveCfg = Debug|x64
+ 		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Debug|x64.Build.0 = Debug|x64
+ 		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Release|Win32.ActiveCfg = Release|Win32
+-		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Release|Win32.Build.0 = Release|Win32
+ 		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Release|x64.ActiveCfg = Release|x64
+-		{66830D9C-0A1E-4664-B846-F5DAEDB574E6}.Release|x64.Build.0 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE

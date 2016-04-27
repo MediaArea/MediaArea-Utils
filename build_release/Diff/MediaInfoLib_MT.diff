@@ -1,0 +1,115 @@
+ Project/MSVC2015/Dll/MediaInfoDll.vcxproj                 | 4 ++--
+ Project/MSVC2015/Example/HowToUse_Dll.vcxproj             | 4 ++--
+ Project/MSVC2015/Library/MediaInfoLib.vcxproj             | 4 ++--
+ Project/MSVC2015/RegressionTest/RegressionTest.vcxproj    | 4 ++--
+ Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj | 2 ++
+ 5 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/Project/MSVC2015/Dll/MediaInfoDll.vcxproj b/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
+index f41b3d2..14e9457 100644
+--- a/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
++++ b/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
+@@ -103,7 +103,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <OmitFramePointers>true</OmitFramePointers>
+       <DebugInformationFormat>None</DebugInformationFormat>
+@@ -122,7 +122,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <DebugInformationFormat>None</DebugInformationFormat>
+     </ClCompile>
+diff --git a/Project/MSVC2015/Example/HowToUse_Dll.vcxproj b/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
+index 27516f3..3436262 100644
+--- a/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
++++ b/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
+@@ -118,7 +118,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../ZLib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+@@ -142,7 +142,7 @@
+     </Midl>
+     <ClCompile>
+       <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+diff --git a/Project/MSVC2015/Library/MediaInfoLib.vcxproj b/Project/MSVC2015/Library/MediaInfoLib.vcxproj
+index 6bf20ab..6964003 100644
+--- a/Project/MSVC2015/Library/MediaInfoLib.vcxproj
++++ b/Project/MSVC2015/Library/MediaInfoLib.vcxproj
+@@ -97,7 +97,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PreprocessorDefinitions>MEDIAINFO_DVDIF_ANALYZE_NO;MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+@@ -110,7 +110,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_DVDIF_ANALYZE_NO;MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
+diff --git a/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj b/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
+index 45b7568..752cfb8 100644
+--- a/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
++++ b/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
+@@ -120,7 +120,7 @@
+       </PrecompiledHeader>
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <Link>
+@@ -138,7 +138,7 @@
+       </PrecompiledHeader>
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <Link>
+diff --git a/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj b/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
+index cfa94c1..afb32c3 100644
+--- a/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
++++ b/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
+@@ -157,6 +157,7 @@
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+     </ClCompile>
+     <ResourceCompile>
+       <Culture>0x0409</Culture>
+@@ -187,6 +188,7 @@
+       <AdditionalIncludeDirectories>..\..\..\..\MediaInfoLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+     </ClCompile>
+     <ResourceCompile>
+       <Culture>0x0409</Culture>
