@@ -60,53 +60,39 @@ set Version=%Version:"=%
 rem *** MediaConch CLI and Server ***
 call:Patch_MediaConch
 cd ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
-if %ERRORLEVEL% NEQ 0 (
-    echo MSBuild failure
-    cd %OLD_CD%
-    exit /b %ERRORLEVEL%
-)
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
-if %ERRORLEVEL% NEQ 0 (
-    echo MSBuild failure
-    cd %OLD_CD%
-    exit /b %ERRORLEVEL%
-)
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
 cd %OLD_CD%
 
 rem *** MediaConch GUI ***
 call:Patch_MediaConch_GUI
-move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\MediaConch-AllInOne\
-move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\MediaConch-AllInOne\
+move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\MediaConch-AllInOne\ || exit /b 1
+move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\MediaConch-AllInOne\ || exit /b 1
 cd ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
 if %ERRORLEVEL% NEQ 0 (
-    echo MSBuild failure
-    cd %OLD_CD%
     move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
     move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
-    exit /b %ERRORLEVEL%
+    exit /b 1
 )
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
 if %ERRORLEVEL% NEQ 0 (
-    echo MSBuild failure
-    cd %OLD_CD%
     move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
     move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
-    exit /b %ERRORLEVEL%
+    exit /b 1
 )
 cd %OLD_CD%
-move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
-move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
+move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\ || exit /b 1
+move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\ || exit /b 1
 
 rem *** libcurl ***
 cd %OLD_CD%
-copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\Win32\Release\* ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\
-copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\x64\Release\* ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\
+copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\Win32\Release\* ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\ || exit /b 1
+copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\x64\Release\* ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\ || exit /b 1
 
 rem *** Signature of executables ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
-signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaConch /du http://mediaarea.net ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\MediaConch-Server.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\MediaConch-Server.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\MediaConch.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\MediaConch.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\win32\Release\MediaConch-GUI.exe
+signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaConch /du http://mediaarea.net ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\MediaConch-Server.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\MediaConch-Server.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\Win32\Release\MediaConch.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\x64\Release\MediaConch.exe ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015\win32\Release\MediaConch-GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 set CodeSigningCertificatePass=
 
 rem *** Packages ***
@@ -122,18 +108,18 @@ call Release_GUI_Windows.bat
 rem *** Signature of installers ***
 cd %OLD_CD%
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
-signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaConch /du http://mediaarea.net ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe
+signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaConch /du http://mediaarea.net ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe || set CodeSigningCertificatePass= && exit /b 1
 set CodeSigningCertificatePass=
 
 rem *** copy everything at the same place ***
 cd %OLD_CD%
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_i386.zip .\MediaConch_CLI_%Version%_Windows_i386.zip
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_x64.zip .\MediaConch_CLI_%Version%_Windows_x64.zip
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_i386_WithoutInstaller.7z
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_x64_WithoutInstaller.7z
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_i386.zip .\MediaConch_Server_%Version%_Windows_i386.zip
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_x64.zip .\MediaConch_Server_%Version%_Windows_x64.zip
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_i386.zip .\MediaConch_CLI_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_x64.zip .\MediaConch_CLI_%Version%_Windows_x64.zip || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_i386.zip .\MediaConch_Server_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_x64.zip .\MediaConch_Server_%Version%_Windows_x64.zip || exit /b 1
 
 rem *** Reset ***
 GOTO:EOF
