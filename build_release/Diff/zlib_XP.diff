@@ -1,0 +1,33 @@
+ contrib/vstudio/vc14/zlibstat.vcxproj | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/vstudio/vc14/zlibstat.vcxproj b/contrib/vstudio/vc14/zlibstat.vcxproj
+index 4e895f5..85a1faa 100644
+--- a/contrib/vstudio/vc14/zlibstat.vcxproj
++++ b/contrib/vstudio/vc14/zlibstat.vcxproj
+@@ -33,7 +33,7 @@
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithoutAsm|Win32'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+     <UseOfMfc>false</UseOfMfc>
+-    <PlatformToolset>v140</PlatformToolset>
++    <PlatformToolset>v140_xp</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+@@ -49,7 +49,7 @@
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithoutAsm|x64'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+     <UseOfMfc>false</UseOfMfc>
+-    <PlatformToolset>v140</PlatformToolset>
++    <PlatformToolset>v140_xp</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+@@ -186,6 +186,7 @@
+       <ObjectFileName>$(IntDir)</ObjectFileName>
+       <ProgramDataBaseFileName>$(OutDir)</ProgramDataBaseFileName>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
++      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+     </ClCompile>
+     <ResourceCompile>
+       <Culture>0x040c</Culture>

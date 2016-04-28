@@ -1,0 +1,31 @@
+ Project/MSVC2015/CLI/MediaInfo.vcxproj | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Project/MSVC2015/CLI/MediaInfo.vcxproj b/Project/MSVC2015/CLI/MediaInfo.vcxproj
+index ba19bda..430fa4d 100644
+--- a/Project/MSVC2015/CLI/MediaInfo.vcxproj
++++ b/Project/MSVC2015/CLI/MediaInfo.vcxproj
+@@ -23,12 +23,13 @@
+     <ProjectGuid>{8A1AE679-131A-493C-86CA-91179B0955A4}</ProjectGuid>
+     <RootNamespace>MediaInfo</RootNamespace>
+     <Keyword>Win32Proj</Keyword>
++    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+     <CharacterSet>Unicode</CharacterSet>
+-    <PlatformToolset>v140</PlatformToolset>
++    <PlatformToolset>v140_xp</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+@@ -38,7 +39,7 @@
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+     <CharacterSet>Unicode</CharacterSet>
+-    <PlatformToolset>v140</PlatformToolset>
++    <PlatformToolset>v140_xp</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
