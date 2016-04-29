@@ -13,6 +13,11 @@ rem ****************************************************************************
 rem *** Init ***
 set ERRORLEVEL=
 set BUILD_RELEASE_ERRORCODE=
+if EXIST Release\ (
+    rmdir Release\ /S /Q || exit /b 1
+    rem sometimes the mkdir just after the rmdir fails
+    timeout /t 3
+)
 
 rem *** Handling of paths for 64-bit compilation ***
 set OLD_PATH=%PATH%
