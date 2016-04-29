@@ -1,0 +1,25 @@
+ Contrib/VC14/event/event.vcxproj | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Contrib/VC14/event/event.vcxproj b/Contrib/VC14/event/event.vcxproj
+index 393e0b8..c28de3a 100644
+--- a/Contrib/VC14/event/event.vcxproj
++++ b/Contrib/VC14/event/event.vcxproj
+@@ -84,7 +84,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>..\..\..\WIN32-Code\nmake;..\..\..\include;..\..\..\compat;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <CompileAs>CompileAsC</CompileAs>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PreprocessorDefinitions>HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+@@ -97,7 +97,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>..\..\..\WIN32-Code\nmake;..\..\..\include;..\..\..\compat;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <CompileAs>CompileAsC</CompileAs>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PreprocessorDefinitions>HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>

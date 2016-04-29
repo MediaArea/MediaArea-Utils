@@ -1,0 +1,25 @@
+ contrib/vstudio/vc14/zlibstat.vcxproj | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/vstudio/vc14/zlibstat.vcxproj b/contrib/vstudio/vc14/zlibstat.vcxproj
+index 6d7a04b..66adca4 100644
+--- a/contrib/vstudio/vc14/zlibstat.vcxproj
++++ b/contrib/vstudio/vc14/zlibstat.vcxproj
+@@ -173,7 +173,7 @@
+       <PreprocessorDefinitions>WIN32;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ExceptionHandling>
+       </ExceptionHandling>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
+       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+       <ObjectFileName>$(IntDir)</ObjectFileName>
+@@ -255,7 +255,7 @@
+       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ExceptionHandling>
+       </ExceptionHandling>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
+       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+       <ObjectFileName>$(IntDir)</ObjectFileName>
