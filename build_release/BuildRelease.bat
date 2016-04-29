@@ -138,8 +138,8 @@ copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_x64.zip
 mkdir Release\download\binary\mediaconch-gui\ || exit /b 1
 mkdir Release\download\binary\mediaconch-gui\%Version%\ || exit /b 1
 copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe Release\download\binary\mediaconch-gui\%Version%\ || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_Server_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_Server_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
 mkdir Release\download\binary\mediaconch-server\ || exit /b 1
 mkdir Release\download\binary\mediaconch-server\%Version%\ || exit /b 1
 copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_i386.zip Release\download\binary\mediaconch-server\%Version%\MediaConch_Server_%Version%_Windows_i386.zip || exit /b 1
