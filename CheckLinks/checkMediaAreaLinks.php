@@ -39,5 +39,5 @@ if (isset($options['directory']) && '' != $options['directory']) {
 
 $checkLinks = new checkLinks();
 $checkLinks->setDirectory($directory);
-$checkLinks->setPattern('|http[s]?://mediaarea.net/download/[a-zA-Z0-9\.\/_+\-]+|');
+$checkLinks->setPattern('|(http[s]?:)?//mediaarea.net/download/[a-zA-Z0-9\.\/_+\-]+|');
 $checkLinks->checkLinks();
