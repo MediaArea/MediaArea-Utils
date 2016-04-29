@@ -6,6 +6,7 @@ rem * You need Embarcadero RAD Studio 9 installed at default place for official 
 rem * You need (Project)-AllInOne, MediaArea-Utils, MediaArea-Utils-Binaries repos                *
 rem * Code signing certificate is expected to be in %USERPROFILE%\CodeSigningCertificate.p12      *
 rem * Code signing password is expected to be in %USERPROFILE%\CodeSigningCertificate.pass        *
+rem * Patch for MediaInfo donors is expected to be in %USERPROFILE%\MediaInfo_Donors.diff         *
 rem ***********************************************************************************************
 
 
@@ -21,6 +22,11 @@ if EXIST Release\ (
 mkdir Release\ || exit /b 1
 mkdir Release\download\ || exit /b 1
 mkdir Release\download\binary\ || exit /b 1
+if EXIST ThankYou\ (
+    rmdir ThankYou\ /S /Q || exit /b 1
+    rem sometimes the mkdir just after the rmdir fails
+    timeout /t 3
+)
 
 rem *** Handling of paths for 64-bit compilation ***
 set OLD_PATH=%PATH%
@@ -39,7 +45,7 @@ if "%1"=="" (
 )
 cd %OLD_CD%
 set PATH=%OLD_PATH%
-if "%BUILD_RELEASE_ERRORCODE%"=="1" exit /b 1
+if "%BUILD_RELEASE_ERRORCODE%"=="1" echo Problem && exit /b 1
 GOTO:EOF
 
 rem *** Global Helpers ***
@@ -208,6 +214,12 @@ call Release_CLI_Windows_i386.bat
 call Release_CLI_Windows_x64.bat
 call Release_GUI_Windows_i386.bat
 call Release_GUI_Windows_x64.bat
+cd ..
+git apply --ignore-whitespace "%USERPROFILE%\MediaInfo_Donors.diff" || exit /b 1
+cd Release || exit /b 1
+call Release_GUI_Windows.bat || exit /b 1
+move MediaInfo_GUI_%Version%_Windows.exe MediaInfo_GUI_%Version%_Windows_ThankYou.exe || exit /b 1
+git reset ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
 call Release_GUI_Windows.bat
 cd %OLD_CD%\..\..\MediaInfo-AllInOne\MediaInfoLib\Release
 call Release_DLL_Windows_i386.bat
@@ -216,18 +228,20 @@ call Release_DLL_Windows_x64.bat
 rem *** Signature of installers ***
 cd %OLD_CD%
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
-signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaInfo /du http://mediaarea.net ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe || set CodeSigningCertificatePass= && exit /b 1
+signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d MediaInfo /du http://mediaarea.net ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
 set CodeSigningCertificatePass=
 
 rem *** copy everything at the same place ***
 cd %OLD_CD%
+mkdir ThankYou\ || exit /b 1
+mkdir ThankYou\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe ThankYou\%Version%\MediaInfo_GUI_%Version%_Windows.exe || exit /b 1
 mkdir Release\download\binary\mediainfo\ || exit /b 1
 mkdir Release\download\binary\mediainfo\%Version%\ || exit /b 1
 copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
 copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_x64.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_x64.zip || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\ || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip Release\download\binary\mediainfo-gui\%Version%\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
 copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
 copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
