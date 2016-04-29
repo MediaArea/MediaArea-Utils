@@ -80,24 +80,28 @@ cd %OLD_CD%
 
 rem *** MediaConch GUI ***
 call:Patch_MediaConch_GUI
-move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\MediaConch-AllInOne\ || exit /b 1
-move ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\MediaConch-AllInOne\ || exit /b 1
+if EXIST ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\ rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\ || exit /b 1
+if EXIST ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\ rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\ || exit /b 1
+xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\ || exit /b 1
+xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\ || exit /b 1
 cd ..\..\MediaConch-AllInOne\MediaConch\Project\MSVC2015
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
 if %ERRORLEVEL% NEQ 0 (
-    move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
-    move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
+    cd %OLD_CD%
+    rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\
+    rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\
     exit /b 1
 )
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
 if %ERRORLEVEL% NEQ 0 (
-    move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
-    move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\
+    cd %OLD_CD%
+    rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\
+    rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\
     exit /b 1
 )
 cd %OLD_CD%
-move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015 ..\..\MediaArea-Utils-Binaries\Windows\Qt\ || exit /b 1
-move ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64 ..\..\MediaArea-Utils-Binaries\Windows\Qt\ || exit /b 1
+rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015\
+rmdir /S /Q ..\..\MediaConch-AllInOne\Qt5.6-msvc2015_64\
 
 rem *** libcurl ***
 cd %OLD_CD%
