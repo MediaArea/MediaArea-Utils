@@ -18,6 +18,9 @@ if EXIST Release\ (
     rem sometimes the mkdir just after the rmdir fails
     timeout /t 3
 )
+mkdir Release\ || exit /b 1
+mkdir Release\download\ || exit /b 1
+mkdir Release\download\binary\ || exit /b 1
 
 rem *** Handling of paths for 64-bit compilation ***
 set OLD_PATH=%PATH%
@@ -118,13 +121,19 @@ set CodeSigningCertificatePass=
 
 rem *** copy everything at the same place ***
 cd %OLD_CD%
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_i386.zip .\MediaConch_CLI_%Version%_Windows_i386.zip || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_x64.zip .\MediaConch_CLI_%Version%_Windows_x64.zip || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z .\MediaConch_Server_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_i386.zip .\MediaConch_Server_%Version%_Windows_i386.zip || exit /b 1
-copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_x64.zip .\MediaConch_Server_%Version%_Windows_x64.zip || exit /b 1
+mkdir Release\download\binary\mediaconch\ || exit /b 1
+mkdir Release\download\binary\mediaconch\%Version%\ || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_i386.zip Release\download\binary\mediaconch\%Version%\MediaConch_CLI_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_CLI_Windows_x64.zip Release\download\binary\mediaconch\%Version%\MediaConch_CLI_%Version%_Windows_x64.zip || exit /b 1
+mkdir Release\download\binary\mediaconch-gui\ || exit /b 1
+mkdir Release\download\binary\mediaconch-gui\%Version%\ || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe Release\download\binary\mediaconch-gui\%Version%\ || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_Server_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediaconch-gui\%Version%\MediaConch_Server_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+mkdir Release\download\binary\mediaconch-server\ || exit /b 1
+mkdir Release\download\binary\mediaconch-server\%Version%\ || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_i386.zip Release\download\binary\mediaconch-server\%Version%\MediaConch_Server_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaConch-AllInOne\MediaConch\Release\MediaConch_Server_Windows_x64.zip Release\download\binary\mediaconch-server\%Version%\MediaConch_Server_%Version%_Windows_x64.zip || exit /b 1
 
 rem *** Reset ***
 GOTO:EOF
@@ -212,15 +221,22 @@ set CodeSigningCertificatePass=
 
 rem *** copy everything at the same place ***
 cd %OLD_CD%
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip .\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_x64.zip .\MediaInfo_CLI_%Version%_Windows_x64.zip || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_i386_WithoutInstaller.7z .\MediaInfo_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInstaller.7z .\MediaInfo_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_Windows_i386_WithoutInstaller.7z .\MediaInfo_DLL_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_Windows_x64_WithoutInstaller.7z .\MediaInfo_DLL_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
-copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe || exit /b 1
+mkdir Release\download\binary\mediainfo\ || exit /b 1
+mkdir Release\download\binary\mediainfo\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_x64.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_x64.zip || exit /b 1
+mkdir Release\download\binary\mediainfo-gui\ || exit /b 1
+mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip Release\download\binary\mediainfo-gui\%Version%\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+mkdir Release\download\binary\libmediainfo0\ || exit /b 1
+mkdir Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_Windows_i386_WithoutInstaller.7z Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_Windows_x64_WithoutInstaller.7z Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+copy ..\..\MediaInfo-AllInOne\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
 
 rem *** Reset ***
 GOTO:EOF
