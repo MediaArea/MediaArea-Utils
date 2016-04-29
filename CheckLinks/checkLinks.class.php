@@ -54,7 +54,6 @@ class checkLinks
                             echo $link . ' => NOK' . "\n";
                         }
                     }
-
                 }
             }
         }
@@ -72,7 +71,6 @@ class checkLinks
             if (!is_file($this->directory . $entry)) {
                 unset($list[$key]);
             }
-            unset($list[2]);
         }
 
         $this->files = $list;
@@ -92,6 +90,11 @@ class checkLinks
 
     protected function checkLink($link)
     {
+        // handle links without http/https prefix
+        if ('//' == substr($link, 0, 2)) {
+            $link = 'http:' . $link;
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $link);
         curl_setopt($curl, CURLOPT_HEADER, true);
