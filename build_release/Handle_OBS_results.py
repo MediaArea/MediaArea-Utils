@@ -254,9 +254,19 @@ def Get_packages_on_OBS():
             # Bin = the library package in case of a library, or
             # the cli package otherwise
 
+            # Handle libzen and libmediainfo without 0 ending
+            if ((fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
+                    (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
+                    fnmatch.fnmatch(Distrib_name, "Fedora*")) and \
+                    Project_kind == "lib" :
+                Bin_or_lib_name = Debug_name
+            else:
+                Bin_or_lib_name = Bin_name
+
+
             # The wanted name for the package, under the form:
             # name[_|-]version[-1][_|.]Arch.[deb|rpm]
-            Bin_name_wanted = Bin_name \
+            Bin_name_wanted = Bin_or_lib_name \
                     + Package_infos[Package_type]["dash"] + Version \
                     + Revision \
                     + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
@@ -272,7 +282,7 @@ def Get_packages_on_OBS():
                    + "/" + Arch \
                    + "/" + OBS_package \
                    + " |grep 'rpm\"\|deb\"'" \
-                   + " |grep " + Bin_name + Package_infos[Package_type]["dash"] + Version \
+                   + " |grep " + Bin_or_lib_name + Package_infos[Package_type]["dash"] + Version \
                    + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
             print "Name of the bin package on OBS:"
             print Params
@@ -666,9 +676,9 @@ def Verify_states_and_files():
     # instances will be counted in Number_bin.
 
     Number_bin = 0
-    Params = "ls " + Destination + "/" + Bin_name + "*" + Version + "*" \
+    Params = "ls " + Destination + "/" + Debug_name + "*" + Version + "*" \
            + " |grep 'rpm\|deb'" \
-           + " |grep -v 'dbg\|debug'" \
+           + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
            + " |wc -l"
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
