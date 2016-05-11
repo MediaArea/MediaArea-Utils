@@ -2,48 +2,48 @@
     <th rowspan="10">OS_TITLE</th>
     <th>Universal installer (32/64 bit)</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION</a></td>
     <td>If you don't know which one to download, download this one<?php echo $AdSupported; ?></td>
 </tr>
 <tr>
     <th rowspan="4">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small> (<a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
     <td><?php echo $AdSupported; ?></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_Windows_i386.zip">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_Windows_i386.zip">vMC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_Windows_i386.zip">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_Windows_i386.zip">vMC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Dynamic Link Library">DLL</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_i386.exe">vMIL_VERSION</a><small> (<a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_i386_WithoutInstaller.7z">without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_i386.exe">vMIL_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_i386_WithoutInstaller.7z">without installer</a>)</small></td>
     <td>Currently with the same API as libmediainfo</td>
 </tr>
 <tr>
     <th rowspan="4">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small>(<a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
     <td><?php echo $AdSupported; ?></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_Windows_x64.zip">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_Windows_x64.zip">vMC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_Windows_x64.zip">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_Windows_x64.zip">vMC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Dynamic Link Library">DLL</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_x64.exe">vMIL_VERSION</a><small> (<a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_x64_WithoutInstaller.7z">without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_x64.exe">vMIL_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_Windows_x64_WithoutInstaller.7z">without installer</a>)</small></td>
     <td>Currently with the same API as libmediainfo</td>
 </tr>
