@@ -4,22 +4,22 @@
 </tr>
 <tr>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/MediaConch_CLI_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.xz">vMC_VERSION</a> (<a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/MediaConch_Server_MC_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Shared Object">SO</abbr></th>
-    <td><a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.xz">vMIL_VERSION</a> (<a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.xz">vMIL_VERSION</a> (<a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/binary/libmediainfo0/MIL_VERSION/MediaInfo_DLL_MIL_VERSION_GNU_FromSource.tar.gz">gz</a>)</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
@@ -28,17 +28,17 @@
 </tr>
 <tr>
     <th><abbr title="Graphical User Interface">GUI</abbr>/<abbr title="Command Line Interface">CLI</abbr>/Server</th>
-    <td><a href="https://mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.xz">vMC_VERSION</a> (<a href="https://mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.xz">vMC_VERSION</a> (<a href="//mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION.tar.gz">gz</a>)</td>
     <td>requires libmediainfo</td>
 </tr>
 <tr>
     <th>libmediainfo</th>
-    <td><a href="https://mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.xz">vMIL_VERSION</a> (<a href="https://mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.bz2">bz2</a> / <a href="https://mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.gz">gz</a>)</td>
+    <td><a href="//mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.xz">vMIL_VERSION</a> (<a href="//mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION.tar.gz">gz</a>)</td>
     <td>requires libzen</td>
 </tr>
 <tr>
     <th>libzen</th>
-    <td><a href="https://mediaarea.net/download/source/libzen/ZL_VERSION/libzen_ZL_VERSION.tar.bz2">vZL_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/source/libzen/ZL_VERSION/libzen_ZL_VERSION.tar.bz2">vZL_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
@@ -47,12 +47,11 @@
 </tr>
 <tr>
     <th><abbr title="Graphical User Interface">GUI</abbr>/<abbr title="Command Line Interface">CLI</abbr>/Server</th>
-    <td><a href="https://mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION_AllInclusive.7z">vMC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/source/mediaconch/MC_VERSION/mediaconch_MC_VERSION_AllInclusive.7z">vMC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th>libmediainfo</th>
-    <td><a href="https://mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION_AllInclusive.7z">vMIL_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/source/libmediainfo/MIL_VERSION/libmediainfo_MIL_VERSION_AllInclusive.7z">vMIL_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
-</table>

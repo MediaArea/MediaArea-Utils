@@ -158,7 +158,7 @@ def Sources():
 
 ##################################################################
 def OBS():
-    
+
     print "Generating " + Project.upper() + " download pages for linux"
     print
 
