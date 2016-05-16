@@ -108,10 +108,13 @@ def DL_pages(OS_name):
 
     Template_file_path = Skeletons_path + "_template"
     Template_file = open(Template_file_path, "r")
-    Template = Template_file.read()
+    Content = Template_file.read()
     Template_file.close()
 
-    Content = Template.replace(Project.upper() + "_VERSION", Project_version)
+    if Project == "mi" and OS_name == "mac":
+        Content = Content.replace("VERSIONS_APPLESTORE", Config[ Project.upper() + "_" + OS_name + "_applestore" ])
+
+    Content = Content.replace(Project.upper() + "_VERSION", Project_version)
     Content = Content.replace("MIL_VERSION", MIL_version)
     Content = Content.replace("OS_TITLE", OS_title)
 
@@ -122,8 +125,40 @@ def DL_pages(OS_name):
     Destination.close()
 
 ##################################################################
-def OBS():
+def Sources():
     
+    print "Generating " + Project.upper() + " download pages for sources"
+    print
+
+    Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_sources"
+
+    Header_file_path = Skeletons_path + "_header"
+    Header_file = open(Header_file_path, "r")
+    Header = Header_file.read()
+    Header_file.close()
+
+    Filename = Config[ Project.upper() + "_sources_filename" ]
+    Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
+    Destination.write(Header)
+
+    Template_file_path = Skeletons_path + "_template"
+    Template_file = open(Template_file_path, "r")
+    Content = Template_file.read()
+    Template_file.close()
+
+    Content = Content.replace(Project.upper() + "_VERSION", Project_version)
+    Content = Content.replace("MIL_VERSION", MIL_version)
+    Content = Content.replace("ZL_VERSION", ZL_version)
+
+    Destination.write(Content + "\n")
+    Destination.write("</tbody>\n</table>\n")
+    if Project == "mi":
+        Destination.write("</body>\n</html>\n")
+    Destination.close()
+
+##################################################################
+def OBS():
+
     print "Generating " + Project.upper() + " download pages for linux"
     print
 
@@ -208,7 +243,8 @@ def OBS():
         # 1. current Leap release
         Count = 0
         for Release_infos in Sorted_releases["openSUSE"]:
-            if Release_infos[0] == Config["opensuse_current_release"] and Release_infos[1] == Status:
+            # The .replace(" ", "_") is for "Leap XX" vs "Leap_XX"
+            if Release_infos[0] == Config["opensuse_current_release"].replace(" ", "_") and Release_infos[1] == Status:
                 Opensuse_releases.append(Release_infos)
                 del Sorted_releases["openSUSE"][Count]
             Count = Count + 1
@@ -363,9 +399,13 @@ def OBS():
                 Content = Template_file.read()
                 Template_file.close()
 
+                Release_name_formated = Release_name
+                if Distrib_name == "Debian":
+                    Release_name_formated = Release_name.replace(".0", "")
+
                 Count = Count + 1
                 if Count == 1:
-                    Release_rowspan = "\n    <th rowspan=\"" + Release_rowspan_number + "\">" + Release_title + "</th>"
+                    Release_rowspan = "\n    <th rowspan=\"" + Release_rowspan_number + "\" id=\"" + Release_name_formated + "\">" + Release_title + "</th>"
                 else:
                     Release_rowspan = ""
                 Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
@@ -377,7 +417,7 @@ def OBS():
                 Content = Content.replace("RELEASE_CLASS", Release_class)
 
                 Content = Content.replace("ARCH_ROWSPAN", Arch_rowspan)
-                Content = Content.replace("RELEASE_TITLE", Release_title)
+                Content = Content.replace("RELEASE_VERSION", Release_name_formated)
                 Content = Content.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
 
                 Request = "SELECT version, cliname, clinamedbg, guiname, guinamedbg"
@@ -420,9 +460,18 @@ def OBS():
                     MIL_lib_name = Result[1]
                     MIL_lib_name_dbg = Result[2]
                     MIL_lib_name_dev = Result[3]
+
                     Content = Content.replace("MIL_VERSION", MIL_version)
                     Content = Content.replace("MIL_PACKAGE", MIL_lib_name)
-                    Content = Content.replace("MIL_DEV_PACKAGE", MIL_lib_name_dev)
+
+                    if Project == "mi" \
+                    and (Distrib_name + "_" + Release_name == "CentOS_4" \
+                    or Distrib_name + "_" + Release_name == "RHEL_4" \
+                    or Distrib_name + "_" + Release_name == "Debian_4.0"):
+                        MIL_dev_package = ""
+                    else:
+                        MIL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>)</small>"
+                    Content = Content.replace("MIL_DEV_PACKAGE", MIL_dev_package)
 
                 Cursor.execute("SELECT" \
                         + " version, libname, libnamedbg, libnamedev" \
@@ -437,7 +486,15 @@ def OBS():
                     ZL_lib_name_dev = Result[3]
                     Content = Content.replace("ZL_VERSION", ZL_version)
                     Content = Content.replace("ZL_PACKAGE", ZL_lib_name)
-                    Content = Content.replace("ZL_DEV_PACKAGE", ZL_lib_name_dev)
+
+                    if Project == "mi" \
+                    and (Distrib_name + "_" + Release_name == "CentOS_4" \
+                    or Distrib_name + "_" + Release_name == "RHEL_4" \
+                    or Distrib_name + "_" + Release_name == "Debian_4.0"):
+                        ZL_dev_package = ""
+                    else:
+                        ZL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>)</small>"
+                    Content = Content.replace("ZL_DEV_PACKAGE", ZL_dev_package)
 
                 if Release_with_wx == True:
                     Wx_package = Config[ Release_in_config_file + "_wx" ]
@@ -514,23 +571,25 @@ if Project != "mc" and Project != "mi":
     sys.exit(1)
 
 if OS_name != "windows" and OS_name != "mac" \
-and OS_name != "linux" and OS_name != "all":
+and OS_name != "linux" and OS_name != "sources" \
+and OS_name != "all":
     print
-    print "The second argument must be windows, mac, linux or all"
+    print "The second argument must be windows, mac, linux, sources, or all"
     print
     sys.exit(1)
 
 if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
     # sys.argv[0] == Generate_DL_pages.py
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 6:
         print
-        print "If you ask windows, mac or all, you must provide the version"
-        print "numbers of MC|MI + MIL, respectively as 3rd and 4th arguments."
+        print "If you ask windows, mac, sources or all, you must provide the version"
+        print "numbers of MC|MI + MIL, ZL respectively as 3rd, 4th and 5th arguments."
         print
         sys.exit(1)
     else:
         Project_version = sys.argv[3]
         MIL_version = sys.argv[4]
+        ZL_version = sys.argv[5]
 
 Config = {}
 execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
@@ -549,7 +608,11 @@ if OS_name == "windows" or OS_name == "mac":
 if OS_name == "linux":
     OBS()
 
+if OS_name == "sources":
+    Sources()
+
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
     OBS()
+    Sources()

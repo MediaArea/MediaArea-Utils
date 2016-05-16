@@ -8,7 +8,7 @@ title: "Download MediaConch for Microsoft Windows"
 
 <img src="/MediaConch/images/Windows.png" alt="Windows logo" width="288" height="76"><br />
 
-<table border="1">
+<table border="1" class="download">
 <thead>
 <tr class="table-header">
     <th>Version</th>

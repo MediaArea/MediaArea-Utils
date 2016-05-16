@@ -8,7 +8,7 @@
 <h1>Download - Fedora</h1>
 <img src="/_/img/OS/Fedora.png" width="250" height="89"><br />
 
-<table border="1">
+<table border="1" class="download">
 <thead>
 <tr class="table-header">
     <th>Version</th>
@@ -22,7 +22,7 @@
 
 <tr>
     <th colspan="3">Official distribution packages (Starting from Fedora 19)<br />search for "MediaInfo" in your package manager<br />or "yum install mediainfo-gui" (for GUI)<br /> or "yum install mediainfo" (for CLI)</th>
-    <td><a href="https://admin.fedoraproject.org/pkgdb/acls/list/*MediaInfo*">Fedora packages search</a></td>
+    <td><a href="http://koji.fedoraproject.org/koji/packageinfo?packageID=18110">Fedora packages search</a></td>
     <td>&nbsp;</td>
 </tr>
 
