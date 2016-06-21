@@ -2,18 +2,27 @@
 
 CURRENT_PATH=$(dirname "$0")
 
+MASTER_REPO="https://github.com/MediaArea/MediaInfoLib"
+MASTER_BRANCH="master"
 NEW_REPO="https://github.com/MediaArea/MediaInfoLib"
 NEW_BRANCH="master"
 
-while getopts "r:b: " option; do
+while getopts "a:b:m:r:" option; do
     case "$option" in
-        r)
-            NEW_REPO="$OPTARG"
+        a)
+            MASTER_REPO="$OPTARG"
             ;;
         b)
             NEW_BRANCH="$OPTARG"
             ;;
+        m)
+            MASTER_BRANCH="$OPTARG"
+            ;;
+        r)
+            NEW_REPO="$OPTARG"
+            ;;
         \?)
+            echo "Usage: -a master_repo -m master_branch -r new_repo -b new_branch" >&2;
             exit 1;
             ;;
     esac
@@ -22,7 +31,7 @@ done
 #old
 if [ ! -d "$CURRENT_PATH/master" ]
 then
-    git clone --depth 1 https://github.com/MediaArea/MediaInfoLib "$CURRENT_PATH/master"
+    git clone --depth 1 "$MASTER_REPO" -b "$MASTER_BRANCH" "$CURRENT_PATH/master"
 fi
 
 MASTER_COMPIL_PATH="$CURRENT_PATH/master/Project/GNU/Library/"
