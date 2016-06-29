@@ -51,6 +51,16 @@ function makeUbuntu () {
     fi
 
     echo "Download Ubuntu files"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui_${MC_version}-1_i386.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch_${MC_version}-1_i386.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0v5_${MIL_version}-1_i386.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0v5_${ZL_version}-1_i386.xUbuntu_16.04.deb"
+
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui_${MC_version}-1_amd64.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch_${MC_version}-1_amd64.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0v5_${MIL_version}-1_amd64.xUbuntu_16.04.deb"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0v5_${ZL_version}-1_amd64.xUbuntu_16.04.deb"
+
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui_${MC_version}-1_i386.xUbuntu_15.10.deb"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch_${MC_version}-1_i386.xUbuntu_15.10.deb"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0v5_${MIL_version}-1_i386.xUbuntu_15.10.deb"
@@ -116,45 +126,55 @@ function makeFedora () {
     fi
 
     echo "Download Fedora files"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i686.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i686.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.i686.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i686.Fedora_24.rpm"
+
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.x86_64.Fedora_24.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_24.rpm"
+
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i686.Fedora_23.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i686.Fedora_23.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i686.Fedora_23.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i686.Fedora_23.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.i686.Fedora_23.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i686.Fedora_23.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.Fedora_23.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.Fedora_23.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.Fedora_23.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.Fedora_23.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.x86_64.Fedora_23.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_23.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i686.Fedora_22.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i686.Fedora_22.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i686.Fedora_22.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i686.Fedora_22.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.i686.Fedora_22.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i686.Fedora_22.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.Fedora_22.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.Fedora_22.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.Fedora_22.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.Fedora_22.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.x86_64.Fedora_22.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_22.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i686.Fedora_21.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i686.Fedora_21.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i686.Fedora_21.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i686.Fedora_21.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.i686.Fedora_21.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i686.Fedora_21.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.Fedora_21.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.Fedora_21.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.Fedora_21.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.Fedora_21.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.x86_64.Fedora_21.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_21.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i686.Fedora_20.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i686.Fedora_20.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i686.Fedora_20.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i686.Fedora_20.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.i686.Fedora_20.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i686.Fedora_20.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.Fedora_20.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.Fedora_20.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.Fedora_20.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.Fedora_20.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo-${MIL_version}.x86_64.Fedora_20.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_20.rpm"
 
     echo "Create Fedora package"
     cp License*.html tmp/
@@ -209,57 +229,57 @@ function makeOpensuse () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_Leap_42.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_Leap_42.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_Leap_42.1.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_Leap_42.1.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_Leap_42.1.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i586.openSUSE_Factory.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i586.openSUSE_Factory.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i586.openSUSE_Factory.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i586.openSUSE_Factory.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i586.openSUSE_Factory.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_Factory.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_Factory.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_Factory.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_Factory.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_Factory.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i586.openSUSE_Tumbleweed.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i586.openSUSE_Tumbleweed.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i586.openSUSE_Tumbleweed.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i586.openSUSE_Tumbleweed.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i586.openSUSE_Tumbleweed.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_Tumbleweed.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_Tumbleweed.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_Tumbleweed.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_Tumbleweed.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_Tumbleweed.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i586.openSUSE_13.2.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i586.openSUSE_13.2.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i586.openSUSE_13.2.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i586.openSUSE_13.2.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i586.openSUSE_13.2.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_13.2.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_13.2.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_13.2.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_13.2.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_13.2.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i586.openSUSE_13.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i586.openSUSE_13.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i586.openSUSE_13.1.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i586.openSUSE_13.1.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i586.openSUSE_13.1.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_13.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_13.1.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_13.1.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_13.1.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_13.1.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.i586.openSUSE_11.4.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.i586.openSUSE_11.4.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.i586.openSUSE_11.4.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.i586.openSUSE_11.4.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.i586.openSUSE_11.4.rpm"
 
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch-gui/${MC_version}/mediaconch-gui-${MC_version}.x86_64.openSUSE_11.4.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/mediaconch-${MC_version}.x86_64.openSUSE_11.4.rpm"
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libmediainfo0/${MIL_version}/libmediainfo0-${MIL_version}.x86_64.openSUSE_11.4.rpm"
-    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0-${ZL_version}.x86_64.openSUSE_11.4.rpm"
+    wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_11.4.rpm"
 
     echo "Create Opensuse package"
     cp License*.html tmp/

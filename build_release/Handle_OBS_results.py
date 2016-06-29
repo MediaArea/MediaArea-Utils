@@ -165,7 +165,7 @@ def Waiting_loop():
                     if Result == "scheduled":
                         print "Trigger rebuild for " + Distrib_name + " (" + Arch + ")"
                         subprocess.call(["osc", "rebuild", MA_project, Distrib_name, Arch])
-                        
+
             time.sleep(1200)
 
         # Check if the builds are done on OBS
@@ -444,7 +444,7 @@ def Get_packages_on_OBS():
                         + "." + Distrib_name \
                         + "." + Package_type
                 Doc_name_final = os.path.join(Destination, Doc_name_wanted)
-    
+
                 Doc_name_obs_side = "0"
                 # Fetch the name of the package on OBS
                 Params = "osc api /build/" + OBS_project \
@@ -456,7 +456,7 @@ def Get_packages_on_OBS():
                 print "Name of the doc package on OBS:"
                 print Params
                 Doc_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-    
+
                 # If the doc package is build
                 if len(Doc_name_obs_side) > 1:
                     Params_getpackage = \
@@ -470,7 +470,7 @@ def Get_packages_on_OBS():
                     print Params_getpackage
                     print
                     subprocess.call(Params_getpackage, shell=True)
-    
+
                     # If the doc package is build, but hasn’t been
                     # downloaded for some raison.
                     if not os.path.isfile(Doc_name_final):
@@ -736,7 +736,7 @@ def Verify_states_and_files():
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_dev = int(Result)
-        
+
         print "dev: " + str(Number_dev)
 
         if Number_dev < Number_succeeded:
@@ -753,7 +753,7 @@ def Verify_states_and_files():
         ################
         # Doc packages #
         ################
-    
+
         Number_doc = 0
         Params = "ls " + Destination + "/" + Debug_name + "-doc*" \
                + " |grep 'rpm\|deb'" \
@@ -786,7 +786,7 @@ def Verify_states_and_files():
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_server = int(Result)
-        
+
         print "server: " + str(Number_server)
 
         if Number_server < Number_succeeded:
@@ -811,7 +811,7 @@ def Verify_states_and_files():
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_gui = int(Result)
-        
+
         print "gui: " + str(Number_gui)
 
         if Number_gui < Number_succeeded:
@@ -893,7 +893,7 @@ def Verify_states_and_files():
                    + " |mailx -s '[BR lin] OK for " + OBS_package + "'" \
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
-    
+
     if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?") and not fnmatch.fnmatch(OBS_package, "*_mga?"):
         if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_gui >= Number_succeeded:
             Params = \
@@ -965,7 +965,7 @@ if fnmatch.fnmatch(OBS_package, "ZenLib*"):
             Bin_name = "libzen0v5"
     else:
         DL_pages_table = "releases_dlpages_zl"
-        DB_structure = """ 
+        DB_structure = """
             platform varchar(50),
             arch varchar(10),
             version varchar(18),
@@ -997,7 +997,7 @@ if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*
         #    Table = "snapshots_obs_mil_u12.04"
     else:
         DL_pages_table = "releases_dlpages_mil"
-        DB_structure = """ 
+        DB_structure = """
             platform varchar(50),
             arch varchar(10),
             version varchar(18),
@@ -1028,7 +1028,7 @@ if fnmatch.fnmatch(OBS_package, "MediaConch*"):
             Table = "snapshots_obs_mc_deb9"
     else:
         DL_pages_table = "releases_dlpages_mc"
-        DB_structure = """ 
+        DB_structure = """
             platform varchar(50),
             arch varchar(10),
             version varchar(18),
@@ -1062,7 +1062,7 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
             Table = "snapshots_obs_mi_mga5"
     else:
         DL_pages_table = "releases_dlpages_mi"
-        DB_structure = """ 
+        DB_structure = """
             platform varchar(50),
             arch varchar(10),
             version varchar(18),
@@ -1099,6 +1099,7 @@ Distribs = {
     "Fedora_21": ["x86_64", "i586"],
     "Fedora_22": ["x86_64", "i586"],
     "Fedora_23": ["x86_64", "i586"],
+    "Fedora_24": ["x86_64", "i586"],
     "Mageia_5_standard": ["x86_64", "i586"],
     "RHEL_5": ["x86_64", "i586"],
     "RHEL_6": ["x86_64", "i586"],
