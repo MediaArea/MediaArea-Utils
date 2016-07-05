@@ -78,7 +78,7 @@ function _unix () {
         rm -fr .cvsignore .git*
         rm -fr debian
         cd Project
-            rm -f GNU/libmediainfo.dsc GNU/libmediainfo.spec
+            rm -f GNU/libmediainfo.dsc GNU/libmediainfo.spec GNU/PKGBUILD
             rm -fr OBS Solaris
             rm -fr MSCS2008 MSCS2010 MSJS MSVB MSVB2010
             rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013 zlib

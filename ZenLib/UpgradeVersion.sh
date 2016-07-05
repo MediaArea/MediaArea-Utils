@@ -30,6 +30,7 @@ function btask.UpgradeVersion.run () {
     ZL_files[((index++))]="Project/GNU/Library/configure.ac"
     ZL_files[((index++))]="Project/GNU/libzen.spec"
     ZL_files[((index++))]="Project/GNU/libzen.dsc"
+    ZL_files[((index++))]="Project/GNU/PKGBUILD"
     ZL_files[((index++))]="debian/changelog"
     ZL_files[((index++))]="Project/OBS/deb6.dsc"
     ZL_files[((index++))]="Project/OBS/deb6.debian/changelog"

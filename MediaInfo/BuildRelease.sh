@@ -271,9 +271,12 @@ function _obs () {
 
     cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_package
     cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
+    cp prepare_source/MI/MediaInfo/Project/GNU/PKGBUILD $OBS_package
 
     update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
     update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}-1.debian.tar.xz mediainfo_${Version_new}-1.dsc
+
+    update_PKGBUILD "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz PKGBUILD
 
     cd $OBS_package
     osc addremove *

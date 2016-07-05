@@ -30,6 +30,7 @@ function btask.UpgradeVersion.run () {
     MIL_files[((index++))]="Project/GNU/Library/configure.ac"
     MIL_files[((index++))]="Project/GNU/libmediainfo.spec"
     MIL_files[((index++))]="Project/GNU/libmediainfo.dsc"
+    MIL_files[((index++))]="Project/GNU/PKGBUILD"
     MIL_files[((index++))]="debian/changelog"
     MIL_files[((index++))]="Project/OBS/deb6.dsc"
     MIL_files[((index++))]="Project/OBS/deb6.debian/changelog"

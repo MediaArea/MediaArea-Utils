@@ -51,7 +51,7 @@ function _unix () {
         rm -fr .cvsignore .git*
         rm -fr debian
         cd Project
-            rm -f GNU/libzen.dsc GNU/libzen.spec
+            rm -f GNU/libzen.dsc GNU/libzen.spec GNU/PKGBUILD
             rm -fr BCB CodeBlocks Coverity
             rm -fr MSVC2005 MSVC2008 MSVC2010 MSVC2012 MSVC2013
         cd ..
@@ -74,7 +74,7 @@ function _all_inclusive () {
         rm -fr .cvsignore .git*
         rm -fr debian
         cd Project
-            rm -f GNU/libzen.dsc GNU/libzen.spec
+            rm -f GNU/libzen.dsc GNU/libzen.spec GNU/PKGBUILD
             rm -fr Solaris
         cd ..
     cd ..

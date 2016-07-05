@@ -47,7 +47,10 @@ function btask.UpgradeVersion.run () {
     # sed will take the last of the longuest strings first and
     # will replace the 3 lines
     updateFile "00000000000000000000000000000000 000000 mediaconch_$Version_old_escaped" "00000000000000000000000000000000 000000 mediaconch_$Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
-    
+
+    echo "Update ${MC_source}/Project/GNU/PKGBUILD"
+    updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
+   
     echo
     echo "Passage for version YY.MM.patch ..."
     unset -v MC_files
