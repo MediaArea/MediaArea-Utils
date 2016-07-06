@@ -467,7 +467,8 @@ def OBS():
                     if Project == "mi" \
                     and (Distrib_name + "_" + Release_name == "CentOS_4" \
                     or Distrib_name + "_" + Release_name == "RHEL_4" \
-                    or Distrib_name + "_" + Release_name == "Debian_4.0"):
+                    or Distrib_name + "_" + Release_name == "Debian_4.0") \
+                    or Distrib_name == "Arch" :
                         MIL_dev_package = ""
                     else:
                         MIL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>)</small>"
@@ -490,7 +491,8 @@ def OBS():
                     if Project == "mi" \
                     and (Distrib_name + "_" + Release_name == "CentOS_4" \
                     or Distrib_name + "_" + Release_name == "RHEL_4" \
-                    or Distrib_name + "_" + Release_name == "Debian_4.0"):
+                    or Distrib_name + "_" + Release_name == "Debian_4.0") \
+                    or Distrib_name == "Arch" :
                         ZL_dev_package = ""
                     else:
                         ZL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>)</small>"

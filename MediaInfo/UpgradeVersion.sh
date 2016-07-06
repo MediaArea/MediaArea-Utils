@@ -30,6 +30,7 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
+    MI_files[((index++))]="Project/GNU/PKGBUILD"
     MI_files[((index++))]="debian/changelog"
     MI_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb7.debian/changelog"

@@ -82,7 +82,7 @@ function _unix_cli () {
         rm -fr debian
         cd Project
             rm -fr GNU/GUI Mac/*_GUI.sh
-            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
+            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec GNU/PKGBUILD
             rm -fr OBS
             rm -fr MSVC2013
         cd ..
@@ -138,7 +138,7 @@ function _unix_server () {
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
             rm -fr GNU/GUI Mac/*_GUI.sh
-            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
+            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec GNU/PKGBUILD
             rm -fr OBS
             rm -fr MSVC2013
         cd ..
@@ -193,7 +193,7 @@ function _unix_gui () {
         rm -fr debian
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
-            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec
+            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec GNU/PKGBUILD
             rm -fr OBS
             rm -fr MSVC2013
         cd ..

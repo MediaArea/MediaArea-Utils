@@ -109,6 +109,32 @@ function update_DSC () {
 
 }
 
+function update_PKGBUILD () {
+
+    # Arguments :
+    # update_PKGBUILD $Path_to_obs_project $Archive $PKGBUILD
+    
+    # TODO: Handle more than one file in PKGBUILD
+    # TODO: Handle sha1sum & sha256sum arrays
+    
+    local OBSPath=$1 Archive=$2 PKGBUILD=$3
+
+    PKGBUILD="$OBSPath"/$PKGBUILD
+
+    if [ $# -lt 3 ]; then
+        echo "Insuffisent parameters for update_PKGBUILD"
+        exit 1
+    fi
+
+    OldMD5="00000000000000000000000000000000"
+    MD5=`md5sum "$OBSPath"/$Archive |awk '{print $1}'`
+
+    # TODO: handle exception if file not found
+    if b.path.file? "$PKGBUILD" && b.path.readable? "$PKGBUILD"; then
+        $(sed -i "s/$OldMD5/$MD5/g" "$PKGBUILD")
+    fi
+}
+
 function run () {
     load_options
     b.opt.init "$@"

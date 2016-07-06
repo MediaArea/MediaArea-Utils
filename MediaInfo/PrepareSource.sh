@@ -81,7 +81,7 @@ function _unix_cli () {
         cd Project
             rm -fr GNU/GUI Mac/*_GUI.sh Mac/Prepare_for_Xcode.sh
             rm -fr WxWidgets
-            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
+            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec GNU/PKGBUILD
             rm -fr OBS Solaris
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks
@@ -140,7 +140,7 @@ function _unix_gui () {
         rm -fr debian
         cd Project
             rm -fr GNU/CLI Mac/*_CLI.sh
-            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec
+            rm -f GNU/mediainfo.dsc GNU/mediainfo.spec GNU/PKGBUILD
             rm -fr OBS Solaris
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
             rm -fr BCB QMake CodeBlocks

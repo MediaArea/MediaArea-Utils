@@ -36,9 +36,12 @@ function _obs () {
 
     cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_package
     cp prepare_source/ZL/ZenLib/Project/GNU/libzen.dsc $OBS_package/libzen_${Version_new}-1.dsc
+    cp prepare_source/ZL/ZenLib/Project/GNU/PKGBUILD $OBS_package
 
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}-1.debian.tar.xz libzen_${Version_new}-1.dsc
+    
+    update_PKGBUILD "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz PKGBUILD
 
     cd $OBS_package
     osc addremove *

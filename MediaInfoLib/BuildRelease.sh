@@ -139,9 +139,13 @@ function _obs () {
 
     cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_package
     cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.dsc $OBS_package/libmediainfo_${Version_new}-1.dsc
+    cp prepare_source/MIL/MediaInfoLib/Project/GNU/PKGBUILD $OBS_package
 
     update_DSC "$MIL_tmp"/$OBS_package libmediainfo_${Version_new}.orig.tar.xz libmediainfo_${Version_new}-1.dsc
     update_DSC "$MIL_tmp"/$OBS_package libmediainfo_${Version_new}-1.debian.tar.xz libmediainfo_${Version_new}-1.dsc
+
+    update_PKGBUILD "$MIL_tmp"/$OBS_package libmediainfo_${Version_new}.orig.tar.xz PKGBUILD
+
 
     cd $OBS_package
     osc addremove *
