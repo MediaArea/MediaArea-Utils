@@ -15,7 +15,12 @@ rem *** Init ***
 set ERRORLEVEL=
 set BUILD_RELEASE_ERRORCODE=
 if EXIST Release\ (
-    rmdir Release\ /S /Q || exit /b 1
+    rem buggy rmdir sometimes does not delete all files and directories
+    rmdir Release\ /S /Q
+    rmdir Release\ /S /Q
+    rmdir Release\ /S /Q
+    rmdir Release\ /S /Q
+    if EXIST Release\ (rmdir Release\ /S /Q || exit /b 1)
     rem sometimes the mkdir just after the rmdir fails
     timeout /t 3
 )
@@ -23,7 +28,10 @@ mkdir Release\ || exit /b 1
 mkdir Release\download\ || exit /b 1
 mkdir Release\download\binary\ || exit /b 1
 if EXIST ThankYou\ (
-    rmdir ThankYou\ /S /Q || exit /b 1
+    rem buggy rmdir sometimes does not delete all files and directories
+    rmdir ThankYou\ /S /Q
+    rmdir ThankYou\ /S /Q
+    if EXIST ThankYou\ (rmdir ThankYou\ /S /Q || exit /b 1)
     rem sometimes the mkdir just after the rmdir fails
     timeout /t 3
 )
@@ -53,10 +61,10 @@ rem *** Global Helpers ***
 :Patch
 cd ..\..\%~1-AllInOne\%~2
 git reset --hard HEAD
-if "%~3" NEQ "" echo Git: %~2_%~3 && git apply "%OLD_CD%\Diff\%~2_%~3.diff" || exit /b 1
-if "%~4" NEQ "" echo Git: %~2_%~4 && git apply "%OLD_CD%\Diff\%~2_%~4.diff" || exit /b 1
-if "%~5" NEQ "" echo Git: %~2_%~5 && git apply "%OLD_CD%\Diff\%~2_%~5.diff" || exit /b 1
-if "%~6" NEQ "" echo Git: %~2_%~6 && git apply "%OLD_CD%\Diff\%~2_%~6.diff" || exit /b 1
+if "%~3" NEQ "" echo Git: %~2_%~3 && git apply --ignore-whitespace "%OLD_CD%\Diff\%~2_%~3.diff" || exit /b 1
+if "%~4" NEQ "" echo Git: %~2_%~4 && git apply --ignore-whitespace "%OLD_CD%\Diff\%~2_%~4.diff" || exit /b 1
+if "%~5" NEQ "" echo Git: %~2_%~5 && git apply --ignore-whitespace "%OLD_CD%\Diff\%~2_%~5.diff" || exit /b 1
+if "%~6" NEQ "" echo Git: %~2_%~6 && git apply --ignore-whitespace "%OLD_CD%\Diff\%~2_%~6.diff" || exit /b 1
 GOTO:EOF
 
 rem ***********************************************************************************************
@@ -64,6 +72,13 @@ rem * MediaConch                                                                
 rem ***********************************************************************************************
 
 :MediaConch
+
+rem *** Update ***
+cd ..\..\MediaConch-AllInOne
+git submodule foreach git reset --hard HEAD
+git submodule foreach git clean -f
+git submodule update --init --remote
+cd %OLD_CD%
 
 rem *** Retrieve version number ***
 cd %OLD_CD%
@@ -178,6 +193,13 @@ rem ****************************************************************************
 
 :MediaInfo
 
+rem *** Update ***
+cd ..\..\MediaInfo-AllInOne
+git submodule foreach git reset --hard HEAD
+git submodule foreach git clean -f
+git submodule update --init --remote
+cd %OLD_CD%
+
 rem *** Retrieve version number ***
 cd %OLD_CD%
 for /F "delims=" %%a in ('find "define PRODUCT_VERSION " ..\..\MediaInfo-AllInOne\MediaInfo\Source\Install\MediaInfo_GUI_Windows.nsi') do set "Version=%%a"
@@ -223,7 +245,7 @@ git apply --ignore-whitespace "%USERPROFILE%\MediaInfo_Donors.diff" || exit /b 1
 cd Release || exit /b 1
 call Release_GUI_Windows.bat || exit /b 1
 move MediaInfo_GUI_%Version%_Windows.exe MediaInfo_GUI_%Version%_Windows_ThankYou.exe || exit /b 1
-git reset ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
+git checkout ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
 call Release_GUI_Windows.bat
 cd %OLD_CD%\..\..\MediaInfo-AllInOne\MediaInfoLib\Release
 call Release_DLL_Windows_i386.bat
