@@ -45,7 +45,7 @@ function _get_source () {
 
     # Dependency : zlib
     cd "$WDir"/repos
-    git clone -b "v1.2.8" https://github.com/madler/zlib
+    git clone https://github.com/MediaArea/zlib
 
 }
 
