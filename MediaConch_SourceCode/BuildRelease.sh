@@ -181,35 +181,116 @@ function _mac () {
 
 function _windows () {
 
-    local SSHP RWorking_dir
+    local Try=5 VM_started=0 SSHP Build_dir MSG DLPath File
 
-    # SSH prefix
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
-    RWorking_dir="c:/Users/almin"
+    Build_dir="build_$RANDOM"
 
     cd "$MC_tmp"
 
-    # Clean up
-    $SSHP "c: & chdir $RWorking_dir & rmdir /S /Q build & md build"
+    # Windows binaries are kept apart from the others
+    mkdir -p "win_binary/mediaconch/$Version_new"
+    mkdir -p "win_binary/mediaconch-gui/$Version_new"
+    mkdir -p "win_binary/mediaconch-server/$Version_new"
 
-    echo
-    echo "Compile MC CLI for windows..."
-    echo
+    # Start the VM if needed
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
+        if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
+            echo "Starting Windows VM..."
+            vm_start "$Virsh_uri" "$Win_VM_name" || (echo "ERROR: unable to start VM" >&2 && return 1)
 
-    scp -P $Win_SSH_port prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z $Win_SSH_user@$Win_IP:$RWorking_dir/build/mediaconch_${Version_new}_AllInclusive.7z
-    $SSHP "c: & chdir $RWorking_dir/build & \
-            c:/\"Program Files\"/7-Zip/7z x mediaconch_${Version_new}_AllInclusive.7z & \
-            xcopy /E /I /Q ..\\libxml2 mediaconch_AllInclusive\\libxml2 & \
+            # Allow time for VM startup
+            for i in $(seq $Try) ; do
+                sleep 30
+                $SSHP "exit" && (sleep 3 ; break)
+            done
+            VM_started="1"
+        fi
+    fi
 
-"
-#            copy /Y ..\\MediaConch.vcxproj mediaconch_AllInclusive\\MediaConch\\Project\\MSVC2013\\CLI & \
-#            copy /Y ..\\MediaInfoLib.vcxproj mediaconch_AllInclusive\\MediaInfoLib\\Project\\MSVC2013\\Library & \
+    # Test connection
+    $SSHP "exit" || (echo "ERROR: unable to connect to host" >&2 && return 1)
 
-#cd "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64"
-#%comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" amd64
-#cd C:\Users\almin\build\mediaconch_AllInclusive\MediaConch\Project\MSVC2013\CLI
-#msbuild MediaConch.vcxproj
+    # Prepare build directory
+    echo "Prepare build directory..."
+    $SSHP "Set-Location \"$Win_working_dir\"; if(Test-Path \"$Build_dir\") { Remove-Item -Force -Recurse \"$Build_dir\" }"
+    sleep 3
 
+    $SSHP "Set-Location \"$Win_working_dir\"; New-Item -Type \"directory\" \"$Build_dir\""
+    sleep 3
+
+    # Get the tools
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\" }"
+    sleep 3
+
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\" }"
+    sleep 3
+
+    # Get the sources
+    scp -P $Win_SSH_port "prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\"
+    sleep 3
+
+    # Build
+    echo "Compile MC for Windows..."
+
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\\MediaArea-Utils\\build_release\"; cmd /c \"BuildRelease.bat MC /archive 2>&1\""
+    sleep 3
+
+    # Retrieve files
+    echo "Retreive files"
+    DLPath="MediaArea-Utils\\build_release\\Release\\download\\binary"
+
+    File="MediaConch_CLI_${Version_new}_Windows_i386.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_i386.zip" \
+                         "win_binary/mediaconch/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_CLI_${Version_new}_Windows_x64.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_x64.zip" \
+                         "win_binary/mediaconch/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_GUI_${Version_new}_Windows.exe"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows.exe" \
+                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_Server_${Version_new}_Windows_i386.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_i386.zip" \
+                         "win_binary/mediaconch-server/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaConch_Server_${Version_new}_Windows_x64.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_x64.zip" \
+                         "win_binary/mediaconch-server/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    # Check errors
+    if [ -n "$MSG" ]; then
+        if ! [ -z "$Email_CC" ]; then
+            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MC" -c "$Email_CC" $Email_to
+        else
+            echo -e "$MSG" | mailx -s "[BR WIndows] Problem building MC" $Email_to
+        fi
+        echo -e $MSG 1>&2
+    fi
+
+    # Copy files to the final destination
+    scp -r "win_binary/." "$Win_binary_dir"
+
+    # Cleaning
+    echo "Cleaning..."
+    rm -r "win_binary"
+
+    $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
+
+    # Stop the VM
+    if [ "$VM_started" == "1" ] ; then
+        vm_stop "$Virsh_URI" "$Win_VM_name"
+    fi
 }
 
 function _obs () {
@@ -323,9 +404,9 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
-            echo _windows
+            _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
     fi
@@ -343,11 +424,11 @@ function btask.BuildRelease.run () {
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             _linux
             _mac
-            echo _windows
+            _windows
         fi
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"

@@ -168,79 +168,138 @@ function _mac () {
 
 function _windows () {
 
-    local SSHP RWorking_dir
+    local Try=5 VM_started=0 SSHP Build_dir MSG DLPath File
 
-    # SSH prefix
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
-    RWorking_dir="c:/Users/almin"
+    Build_dir="build_$RANDOM"
 
     cd "$MI_tmp"
 
-    # Clean up
-    $SSHP "c: & chdir $RWorking_dir & rmdir /S /Q build"
-    $SSHP "c: & chdir $RWorking_dir & md build"
+    # Windows binaries are kept apart from the others
+    mkdir -p "win_binary/libmediainfo0/$Version_new"
+    mkdir -p "win_binary/mediainfo/$Version_new"
+    mkdir -p "win_binary/mediainfo-gui/$Version_new"
+    mkdir -p "win_donors/$Version_new"
 
-    echo
-    echo "Compile MI CLI for windows..."
-    echo
+    # Start the VM if needed
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
+        if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
+            echo "Starting Windows VM..."
+            vm_start "$Virsh_uri" "$Win_VM_name" || (echo "ERROR: unable to start VM" >&2 && return 1)
 
-    scp -P $Win_SSH_port prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z $Win_SSH_user@$Win_IP:$RWorking_dir/build/mediainfo_${Version_new}_AllInclusive.7z
-    $SSHP "c: & chdir $RWorking_dir/build & \
-            c:/\"Program Files\"/7-Zip/7z x mediainfo_${Version_new}_AllInclusive.7z & \
+            # Allow time for VM startup
+            for i in $(seq $Try) ; do
+                sleep 30 ; $SSHP "exit" && (sleep 3 ; break)
+            done
 
-"
-#            copy /Y ..\\MediaInfo.vcxproj mediainfo_AllInclusive\\MediaInfo\\Project\\MSVC2013\\CLI & \
-#            copy /Y ..\\MediaInfoLib.vcxproj mediainfo_AllInclusive\\MediaInfoLib\\Project\\MSVC2013\\Library & \
+            VM_started="1"
+        fi
+    fi
 
-#cd "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64"
-#%comspec% /k ""C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"" amd64
-#cd C:\Users\almin\build\mediainfo_AllInclusive\MediaInfo\Project\MSVC2013\CLI
-#msbuild MediaInfo.vcxproj
+    # Test connection
+    $SSHP "exit" || (echo "ERROR: unable to connect to host" >&2 && return 1)
+    sleep 3
 
+    # Prepare build directory
+    echo "Prepare build directory..."
+    $SSHP "Set-Location \"$Win_working_dir\"; if(Test-Path \"$Build_dir\") { Remove-Item -Force -Recurse \"$Build_dir\" }"
+    sleep 3
 
-#    echo
-#    echo "Compile MI CLI for mac..."
-#    echo
-#
-#    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz
-#            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWorking_dir/build ;
-#            tar xf MediaInfo_CLI_${Version_new}_GNU_FromSource.tar.xz ;
-#            cd MediaInfo_CLI_GNU_FromSource ;
-#            ./CLI_Compile.sh --enable-arch-x86_64 --enable-arch-i386"
-#
-#    echo
-#    echo "Compile MI GUI for mac..."
-#    echo
-#
-#    scp -P $Mac_SSH_port prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz $Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz
-#            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWorking_dir/build ;
-#            tar xf MediaInfo_GUI_${Version_new}_GNU_FromSource.tar.xz ;
-#            cd MediaInfo_GUI_GNU_FromSource ;
-#            mkdir -p Shared/Source
-#            cp -r ../../WxWidgets Shared/Source ;
-#            ./GUI_Compile.sh --with-wx-static --enable-arch-x86_64"
-#            # Because wx doesn’t compile in 32 bits
-#            #./GUI_Compile.sh --with-wx-static --enable-arch-x86_64 --enable-arch-i386"
-#
-#    echo
-#    echo "Making the dmg..."
-#    echo
-#
-#            #cd MediaInfo_CLI_${Version_new}_GNU_FromSource ;
-#            #cd MediaInfo_GUI_${Version_new}_GNU_FromSource ;
-#    $SSHP "cd $RWorking_dir/build ;
-#            $Key_chain ;
-#            cd MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac ;
-#            ./mkdmg.sh mi cli $Version_new ;
-#            cd - > /dev/null ;
-#            cd MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac ;
-#            ./mkdmg.sh mi gui $Version_new"
-#
-#    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg" mac
-#    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$RWorking_dir/build/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg" mac
+    $SSHP "Set-Location \"$Win_working_dir\"; New-Item -Type \"directory\" \"$Build_dir\""
+    sleep 3
 
+    # Get the tools
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\" }"
+    sleep 3
+
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\" }"
+    sleep 3
+
+    # Get the sources
+    scp -P $Win_SSH_port "prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\" || (echo "ERROR: unable to get the sources" >&2 && return 1)
+    sleep 3
+
+    # Build
+    echo "Compile MI for Windows..."
+
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\\MediaArea-Utils\\build_release\"; cmd /c \"BuildRelease.bat MI /archive 2>&1\""
+    sleep 3
+
+    # Retrieve files
+    echo "Retreive files..."
+    DLPath="MediaArea-Utils\\build_release\\Release\\download\\binary"
+
+    File="MediaInfo_DLL_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_DLL_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_DLL_${Version_new}_Windows_i386.exe"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386.exe" \
+                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_DLL_${Version_new}_Windows_x64.exe"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64.exe" \
+                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_CLI_${Version_new}_Windows_i386.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_i386.zip" \
+                         "win_binary/mediainfo/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_CLI_${Version_new}_Windows_x64.zip"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_x64.zip" \
+                         "win_binary/mediainfo/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="MediaInfo_GUI_${Version_new}_Windows.exe"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
+                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    # Download thank version only in release mode
+    if [ -n "$Win_donors_dir" ] && [ "${Version_new%.????????}" == "${Version_new}" ] ; then
+        File="MediaInfo_GUI_${Version_new}_Windows.exe"
+        scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\..\\..\\..\\ThankYou\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
+                             "win_donors/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+    fi
+
+    # Check errors
+    if [ -n "$MSG" ]; then
+        if ! [ -z "$Email_CC" ]; then
+            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MI" -c "$Email_CC" $Email_to
+        else
+            echo -e "$MSG" | mailx -s "[BR WIndows] Problem building MI" $Email_to
+        fi
+        echo -e $MSG 1>&2
+    fi
+
+    # Copy files to the final destination
+    if [ -e "win_donors/$Sub_dir/MediaInfo_GUI_${Version_new}_Windows.exe" ] ; then
+        scp -r "win_donors/." "$Win_donors_dir"
+    fi
+
+    scp -r "win_binary/." "$Win_binary_dir"
+
+    # Cleaning
+    echo "Cleaning..."
+    rm -rf "win_donors"
+    rm -rf "win_binary"
+
+    $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
+
+    # Stop the VM
+    if [ "$VM_started" == "1" ] ; then
+        vm_stop "$Virsh_URI" "$Win_VM_name"
+    fi
 }
 
 function _obs () {
@@ -460,6 +519,13 @@ function btask.BuildRelease.run () {
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version
     fi
 
+    local MIL_gs=""
+    if [ $(b.opt.get_opt --mil-gs) ]; then
+        MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version $MIL_gs
+
     cd $(b.get bang.working_dir)/../prepare_source
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
@@ -476,9 +542,9 @@ function btask.BuildRelease.run () {
 
     if [ "$Target" = "windows" ]; then
         if b.opt.has_flag? --log; then
-            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
-            echo _windows
+            _windows
         fi
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
     fi
@@ -497,11 +563,11 @@ function btask.BuildRelease.run () {
             # Linux first, in order that OBS build while the mac and windows tasks are # executed
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
+            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             _linux
             _mac
-            echo _windows
+            _windows
         fi
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
