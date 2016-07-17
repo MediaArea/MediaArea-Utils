@@ -823,10 +823,9 @@ def Verify_states_and_files():
 
         print "doc: " + str(Number_doc)
 
-        # Doc packages aren’t generated on debX and mgaX repos
+        # Doc packages aren’t generated on debX repos
         if Number_doc < Number_succeeded - Number_Arch \
-        and not fnmatch.fnmatch(OBS_package, "*_deb?") \
-        and not fnmatch.fnmatch(OBS_package, "*_mga?"):
+        and not fnmatch.fnmatch(OBS_package, "*_deb?"):
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -936,8 +935,8 @@ def Verify_states_and_files():
 
     print "\nHandle_OBS_results.py has run during: " + Total_time
 
-    # Don’t send a confirmation mail for the debX and mgaX repos
-    if Project_kind == "lib" and not fnmatch.fnmatch(OBS_package, "*_deb?") and not fnmatch.fnmatch(OBS_package, "*_mga?"):
+    # Don’t send a confirmation mail for the debX repos
+    if Project_kind == "lib" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
         # We use >= and not ==, because there may be other repos
         # which have ran into the same directory (Project_debX).
         if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_dev >= Number_succeeded and Number_doc >= Number_succeeded:
@@ -956,7 +955,7 @@ def Verify_states_and_files():
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
 
-    if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?") and not fnmatch.fnmatch(OBS_package, "*_mga?"):
+    if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
         if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_gui >= Number_succeeded:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
@@ -1120,8 +1119,6 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
             Table = "snapshots_obs_mi_deb7"
         elif OBS_package == "MediaInfo_deb9":
             Table = "snapshots_obs_mi_deb9"
-        elif OBS_package == "MediaInfo_mga5":
-            Table = "snapshots_obs_mi_mga5"
     else:
         DL_pages_table = "releases_dlpages_mi"
         DB_structure = """
@@ -1140,8 +1137,6 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
             Table = "releases_obs_mi_deb7"
         elif OBS_package == "MediaInfo_deb9":
             Table = "releases_obs_mi_deb9"
-        elif OBS_package == "MediaInfo_mga5":
-            Table = "releases_obs_mi_mga5"
 
 if len(DL_pages_table) > 1:
     Release = True
