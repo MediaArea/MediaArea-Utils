@@ -394,6 +394,10 @@ function btask.BuildRelease.run () {
         git -C "$MC_tmp"/upgrade_version clone "$Repo"
     fi
 
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MC_tmp"/upgrade_version/MediaConch_SourceCode checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+    fi
+
     if b.opt.has_flag? --snapshot ; then
         Version_new="$(cat $MC_tmp/upgrade_version/MediaConch_SourceCode/Project/version.txt).$Date"
     else

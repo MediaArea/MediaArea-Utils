@@ -27,6 +27,9 @@ function load_options () {
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
     b.opt.add_alias --working-path -wp
 
+    b.opt.add_opt --git-state "Ask for a specific git state of the current project"
+    b.opt.add_alias --git-state -gs
+
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 

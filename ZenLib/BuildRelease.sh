@@ -200,6 +200,10 @@ function btask.BuildRelease.run () {
         git -C "$ZL_tmp"/upgrade_version clone "$Repo"
     fi
 
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$ZL_tmp"/upgrade_version/ZenLib checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+    fi
+
     if b.opt.has_flag? --snapshot ; then
         Version_new="$(cat $ZL_tmp/upgrade_version/ZenLib/Project/version.txt).$Date"
     else

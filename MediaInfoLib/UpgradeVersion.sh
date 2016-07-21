@@ -24,6 +24,10 @@ function btask.UpgradeVersion.run () {
         echo
     fi
 
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MIL_source" checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+    fi
+
     # Populate Version_old_* variables
     getOld "$MIL_source/Project/version.txt"
 
