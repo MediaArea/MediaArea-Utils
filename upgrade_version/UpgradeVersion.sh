@@ -24,14 +24,20 @@ function load_options () {
     b.opt.add_opt --new "New version of the project"
     b.opt.add_alias --new -n
 
+    b.opt.add_opt --mil-version "Ask for a specific MediaInfoLib version to depend on"
+    b.opt.add_alias --mil-version -mv
+
+    b.opt.add_opt --zl-version "Ask for a specific Zenlib version to depend on"
+    b.opt.add_alias --zl-version -zv
+
     b.opt.add_opt --working-path "Specify working path (otherwise /tmp)"
     b.opt.add_alias --working-path -wp
 
-    b.opt.add_opt --git-state "Ask for a specific git state of the current project"
-    b.opt.add_alias --git-state -gs
-
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
+
+    b.opt.add_opt --git-state "Ask for a specific git state of the current project"
+    b.opt.add_alias --git-state -gs
 
     # WDir and SDir aren’t used togheter at the same time :
     # WDir is used for git, SDir for modify a local repertory
