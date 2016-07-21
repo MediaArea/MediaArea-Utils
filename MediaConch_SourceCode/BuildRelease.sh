@@ -335,7 +335,7 @@ function _linux () {
     echo python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
     echo
 
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
@@ -379,7 +379,7 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
-    cd $(b.get bang.working_dir)/../upgrade_version
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
@@ -387,7 +387,7 @@ function btask.BuildRelease.run () {
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$MC_tmp"/upgrade_version
     fi
 
-    cd $(b.get bang.working_dir)/../prepare_source
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 

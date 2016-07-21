@@ -44,7 +44,7 @@ function _get_source () {
     fi
 
     # MediaInfoLib (will also bring ZenLib and zlib)
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
 
 }

@@ -143,7 +143,7 @@ function _linux () {
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$ZL_tmp", the current directory, will
     # be deleted)
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     # The sleep is to avoid OSError: File exists: 'destination'
     sleep 10
@@ -191,7 +191,7 @@ function btask.BuildRelease.run () {
         Repo="-r $(sanitize_arg $(b.opt.get_opt --repo))"
     fi
 
-    cd $(b.get bang.working_dir)/../upgrade_version
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$ZL_tmp"/upgrade_version/ZenLib
@@ -200,7 +200,7 @@ function btask.BuildRelease.run () {
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -o $Version_old -n $Version_new $Repo -wp "$ZL_tmp"/upgrade_version
     fi
 
-    cd $(b.get bang.working_dir)/../prepare_source
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p zl -v $Version_new -wp "$ZL_tmp"/prepare_source -sp "$ZL_tmp"/upgrade_version/ZenLib -sa -nc
 

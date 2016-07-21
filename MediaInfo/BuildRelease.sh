@@ -463,7 +463,7 @@ function _linux () {
     echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
     echo
 
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log & 
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
@@ -511,7 +511,7 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
-    cd $(b.get bang.working_dir)/../upgrade_version
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
         $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
@@ -526,7 +526,7 @@ function btask.BuildRelease.run () {
 
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version $MIL_gs
 
-    cd $(b.get bang.working_dir)/../prepare_source
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 

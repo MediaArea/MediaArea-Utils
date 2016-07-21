@@ -166,7 +166,7 @@ function run () {
         Version_old=$(sanitize_arg $(b.opt.get_opt --old))
 
         # Load sensible configuration we don’t want on github
-        . Config.sh    
+        source "$(dirname ${BASH_SOURCE[0]})"/Config.sh
 
         if b.opt.has_flag? --snapshot; then
             Version_new="${Version_old}.$Date"
@@ -238,9 +238,7 @@ function run () {
             mkdir -p "$Log"
         fi
 
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/BuildRelease.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/BuildRelease.sh"
+        Script="$(dirname ${BASH_SOURCE[0]})/../${Project}/BuildRelease.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
             # Load the script for this project, so bang can find

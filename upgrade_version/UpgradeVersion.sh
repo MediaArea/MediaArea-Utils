@@ -172,9 +172,7 @@ function run () {
         # For lisibility
         echo
 
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/UpgradeVersion.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/UpgradeVersion.sh"
+        Script="$(dirname ${BASH_SOURCE[0]})/../${Project}/UpgradeVersion.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
             # Load the script for this project, so bang can find

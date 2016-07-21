@@ -40,7 +40,7 @@ function _get_source () {
     fi
 
     # Dependency : ZenLib
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" $ZL_gs -${Target} -na
 
     # Dependency : zlib
