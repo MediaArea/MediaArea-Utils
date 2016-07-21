@@ -485,7 +485,8 @@ function btask.BuildRelease.run () {
     #    Working_dir=$Working_dir/`date +%Y%m%d`-2
     #    mkdir -p $Working_dir
     # + handle a third run, etc
-        
+
+    local Repo MIL_gs
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -511,20 +512,38 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
-    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
-    if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version
+        Repo="https://github.com/MediaArea/MediaInfo"
     fi
 
-    local MIL_gs=""
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
+    if [ $(b.opt.get_opt --source-path) ]; then
+        # Made a copy, because UV.sh -sp modify the files in place
+        cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
+    else
+        git -C "$MI_tmp"/upgrade_version clone "$Repo"
+    fi
+
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MI_tmp"/upgrade_version/MediaInfo checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+    fi
+
+    if b.opt.has_flag? --snapshot ; then
+        Version_new="$(cat $MI_tmp/upgrade_version/MediaInfo/Project/version.txt).$Date"
+    else
+        Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
+
+    MIL_gs=""
     if [ $(b.opt.get_opt --mil-gs) ]; then
         MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version $MIL_gs
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $MIL_gs -wp "$MI_tmp"/upgrade_version
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec

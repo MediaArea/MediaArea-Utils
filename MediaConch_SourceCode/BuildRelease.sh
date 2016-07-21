@@ -350,6 +350,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
+    local Repo
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -379,13 +380,27 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
+    else
+        Repo="https://github.com/MediaArea/MediaConch_SourceCode"
+    fi
+
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
+        # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$MC_tmp"/upgrade_version
+        git -C "$MC_tmp"/upgrade_version clone "$Repo"
     fi
+
+    if b.opt.has_flag? --snapshot ; then
+        Version_new="$(cat $MC_tmp/upgrade_version/MediaConch_SourceCode/Project/version.txt).$Date"
+    else
+        Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec

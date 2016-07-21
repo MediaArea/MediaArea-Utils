@@ -24,6 +24,16 @@ function btask.UpgradeVersion.run () {
         echo
     fi
 
+    # Populate Version_old_* variables
+    getOld "$MC_source/Project/version.txt"
+
+    # Update version.txt only in release mode
+    if [ "${Version_new%.????????}" == "${Version_new}" ] ; then
+        echo "Update version.txt"
+        echo "${Version_new}" > "$MC_source/Project/version.txt"
+    fi
+
+    echo
     echo "Passage for version YY.MM ..."
     index=0
     MC_files[((index++))]="License.html"

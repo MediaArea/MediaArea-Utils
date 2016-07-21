@@ -132,7 +132,7 @@ function run () {
         if b.opt.has_flag? --source-package; then
             Target="sa"
         fi
-    
+
         WDir=/tmp/
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
@@ -142,13 +142,17 @@ function run () {
                 echo
                 WDir=/tmp/
             else
-                # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? "$WDir" ;then
-                    mkdir -p "$WDir"
+                if ! b.path.dir? $WDir ;then
+                    if ! mkdir -p $WDir ; then
+                        echo
+                        echo "Unable to create directory $WDir : will use /tmp instead."
+                        echo
+                        WDir=/tmp/
+                    fi
                 fi
             fi
         fi
-    
+
         if [ $(b.opt.get_opt --source-path) ]; then
             SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$SDir"; then
@@ -168,7 +172,7 @@ function run () {
             MakeArchives=false
             CleanUp=false
         fi
-    
+
         # For lisibility
         echo
 

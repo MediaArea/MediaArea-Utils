@@ -19,9 +19,6 @@ function load_options () {
     b.opt.add_opt --project "The project to work with"
     b.opt.add_alias --project -p
 
-    b.opt.add_opt --old "Old version of the project"
-    b.opt.add_alias --old -o
-
     b.opt.add_opt --new "New version of the project"
     b.opt.add_alias --new -n
 
@@ -62,7 +59,7 @@ function load_options () {
     b.opt.add_alias --no-cleanup -nc
 
     # Mandatory arguments
-    b.opt.required_args --project --old
+    b.opt.required_args --project
 }
 
 function displayHelp () {
@@ -163,19 +160,15 @@ function run () {
 
         Date=`date +%Y%m%d`
 
-        Version_old=$(sanitize_arg $(b.opt.get_opt --old))
-
         # Load sensible configuration we don’t want on github
         source "$(dirname ${BASH_SOURCE[0]})"/Config.sh
 
-        if b.opt.has_flag? --snapshot; then
-            Version_new="${Version_old}.$Date"
+        if b.opt.has_flag? --snapshot ; then
             Sub_dir="$Date"
             Mac_working_dir="${Mac_working_dir}/snapshots"
             OBS_project="${OBS_project}:snapshots"
-        elif [ $(b.opt.get_opt --new) ]; then
-            Version_new=$(sanitize_arg $(b.opt.get_opt --new))
-            Sub_dir="$Version_new"
+        elif [ $(b.opt.get_opt --new) ] ; then
+            Sub_dir="$(sanitize_arg $(b.opt.get_opt --new))"
             Mac_working_dir="${Mac_working_dir}/releases"
         else
             echo

@@ -24,6 +24,16 @@ function btask.UpgradeVersion.run () {
         echo
     fi
 
+    # Populate Version_old_* variables
+    getOld "$MI_source/Project/version.txt"
+
+    # Update version.txt only in release mode
+    if [ "${Version_new%.????????}" == "${Version_new}" ] ; then
+        echo "Update version.txt"
+        echo "${Version_new}" > "$MI_source/Project/version.txt"
+    fi
+
+    echo
     echo "Passage for version with dots..."
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"

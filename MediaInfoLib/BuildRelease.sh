@@ -261,7 +261,8 @@ function btask.BuildRelease.run () {
     #    Working_dir=$Working_dir/`date +%Y%m%d`-2
     #    mkdir -p $Working_dir
     # + handle a third run, etc
-        
+
+    local Repo
     local MILB_dir="$Working_dir"/binary/libmediainfo0/$Sub_dir
     local MILS_dir="$Working_dir"/source/libmediainfo/$Sub_dir
     local MIL_tmp="$Working_dir"/tmp/libmediainfo/$Sub_dir
@@ -284,13 +285,27 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
+    else
+        Repo="https://github.com/MediaArea/MediaInfoLib"
+    fi
+
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
+        # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$MIL_tmp"/upgrade_version/MediaInfoLib
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -wp "$MIL_tmp"/upgrade_version
+        git -C "$MIL_tmp"/upgrade_version clone "$Repo"
     fi
+
+    if b.opt.has_flag? --snapshot ; then
+        Version_new="$(cat $MIL_tmp/upgrade_version/MediaInfoLib/Project/version.txt).$Date"
+    else
+        Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
