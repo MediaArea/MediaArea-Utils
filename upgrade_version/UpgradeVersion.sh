@@ -1,6 +1,6 @@
 #!/usr/bin/env bang run
 
-# MediaArea-Utils/upgrade_version/UpgradeVersion.sh 
+# MediaArea-Utils/upgrade_version/UpgradeVersion.sh
 # Upgrade the version number of the projects used by MediaArea
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
@@ -38,8 +38,8 @@ function load_options () {
     b.opt.add_opt --source-path "Source directory to modify"
     b.opt.add_alias --source-path -sp
 
-    #b.opt.add_opt --commit "Commit the changes on git"
-    #b.opt.add_alias --commit -c
+    b.opt.add_flag --commit "Commit the changes on git"
+    b.opt.add_alias --commit -c
 
     # Mandatory arguments
     b.opt.required_args --project --old --new
@@ -73,6 +73,23 @@ function getRepo () {
     # TODO: if the repository url is wrong, or no network is
     # available, ask for --source-path and exit
     git clone $Repo
+}
+
+function commit () {
+    if [ $(b.opt.get_opt --source-path) ]; then
+        local Repo="$SDir"
+    else
+        local Repo="$WDir/$Project"
+    fi
+
+    local Branch="autocommit_$Version_new"
+
+    echo
+    echo "Commit changes on $Repo:$Branch"
+    git -C "$Repo" checkout -b "$Branch"
+    git -C "$Repo" commit -a -m "[UpdateVersion.sh] version $Version_new"
+
+    git -C "$Repo" push -f -u origin "$Branch"
 }
 
 function run () {
@@ -174,11 +191,15 @@ function run () {
 
         Script="$(dirname ${BASH_SOURCE[0]})/../${Project}/UpgradeVersion.sh"
         # If the user give a correct project name
-        if b.path.file? $Script && b.path.readable? $Script; then
+        if b.path.file? $Script && b.path.readable? $Script ; then
             # Load the script for this project, so bang can find
             # the corresponding task, then launch it
             . $Script
             b.task.run UpgradeVersion
+
+            if b.opt.has_flag? --commit ; then
+                commit
+            fi
         else
             echo "Error : no task found for $Project!"
             echo
@@ -194,7 +215,7 @@ function run () {
         unset -v Project Script WDir SDir
         unset -v Version_old Version_new
         unset -v Version_old_escaped Version_old_comma Version_new_comma
-        unset -v Version_old_array Version_new_array 
+        unset -v Version_old_array Version_new_array
         unset -v Version_old_major Version_old_minor Version_old_patch
         unset -v Version_new_major Version_new_minor Version_new_patch
     fi
