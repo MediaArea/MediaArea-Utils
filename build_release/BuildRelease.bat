@@ -70,7 +70,13 @@ rem *** Global Helpers ***
 rem buggy rmdir sometimes does not delete all files and directories
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
+if EXIST %~1 timeout /t 3
 if EXIST %~1 rmdir %~1 /s /q
+if EXIST %~1 rmdir %~1 /s /q
+if EXIST %~1 timeout /t 3
+if EXIST %~1 rmdir %~1 /s /q
+if EXIST %~1 rmdir %~1 /s /q
+if EXIST %~1 timeout /t 3
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 timeout /t 3
@@ -133,28 +139,31 @@ cd %OLD_CD%
 
 rem *** MediaConch GUI ***
 call:Patch_MediaConch_GUI
-if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
-if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
+if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
+if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
 xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
 xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
+timeout /t 3
 cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
+timeout /t 3
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
-    rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-    rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
+    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
+    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
     exit /b 1
 )
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
+timeout /t 3
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
-    rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-    rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
+    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
+    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
     exit /b 1
 )
 cd %OLD_CD%
-rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-rmdir /S /Q ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
+call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
+call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
 
 rem *** libcurl ***
 cd %OLD_CD%
