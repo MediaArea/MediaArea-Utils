@@ -81,10 +81,12 @@ function getRepo () {
     # the destination directory already exist
     mkdir -p "$Path"
     rm -fr "$Path"
-    # TODO: if $Path isn’t writable, or if no network is available,
-    # or if the repository url is wrong: ask for --source-path and
-    # exit
-    git clone "$RepoURL" "$Path"
+
+    if ! git clone "$RepoURL" "$Path"; then
+        echo "Error : Unable to clone repository $RepoURL!"
+        echo
+        echo "Use --source-path to specify a valid and accecible location"
+    fi
 }
 
 function run () {

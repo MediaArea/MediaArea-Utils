@@ -350,7 +350,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo
+    local Repo MIL_ver ZL_ver
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -377,13 +377,15 @@ function btask.BuildRelease.run () {
     cd "$MC_tmp"
     rm -fr upgrade_version
     rm -fr prepare_source
+    rm -fr repos
     mkdir upgrade_version
     mkdir prepare_source
+    mkdir repos
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        Repo="https://github.com/MediaArea/MediaConch_SourceCode"
+        Repo="https://github.com/MediaArea/MediaConch_SourceCode.git"
     fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
@@ -404,7 +406,24 @@ function btask.BuildRelease.run () {
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+    # Get MIL version to depend on
+    MIL_ver=""
+    if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
+        git -C "$MC_tmp"/repos clone "https://github.com/MediaArea/MediaInfoLib.git"
+
+        if [ $(b.opt.get_opt --mil-gs) ]; then
+            git -C "$MC_tmp"/repos/MediaInfoLib checkout "$(sanitize_arg $(b.opt.get_opt --mil-gs))"
+        fi
+
+        MIL_ver="-mv $(cat $MC_tmp/repos/MediaInfoLib/Project/version.txt)"
+    fi
+
+    ZL_ver=""
+    if [ $(b.opt.get_opt --zl-version) ]; then
+         ZL_ver="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new $MIL_ver $ZL_ver -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
@@ -429,7 +448,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
     fi
-    
+
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
@@ -438,7 +457,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
-    
+
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log

@@ -189,7 +189,7 @@ function btask.BuildRelease.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        Repo="https://github.com/MediaArea/Zenlib"
+        Repo="https://github.com/MediaArea/ZenLib.git"
     fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"

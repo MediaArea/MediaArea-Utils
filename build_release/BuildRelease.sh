@@ -40,6 +40,10 @@ function load_options () {
     b.opt.add_opt --mil-gs "Ask for a specific git state for the MIL dependency"
     b.opt.add_opt --zl-gs "Ask for a specific git state for the ZL dependency"
 
+    b.opt.add_opt --zl-version "Update the ZL version to depend on"
+
+    b.opt.add_flag --keep-mil-dep "(in release mode) don't autoincrement the MIL version to depend to the latest detected version"
+
     b.opt.add_flag --build-mac "Build only for Mac"
     b.opt.add_alias --build-mac -bm
 

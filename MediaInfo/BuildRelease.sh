@@ -486,7 +486,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo MIL_gs
+    local Repo MIL_gs MIL_ver ZL_ver
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -515,7 +515,7 @@ function btask.BuildRelease.run () {
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        Repo="https://github.com/MediaArea/MediaInfo"
+        Repo="https://github.com/MediaArea/MediaInfo.git"
     fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
@@ -536,14 +536,24 @@ function btask.BuildRelease.run () {
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
-
     MIL_gs=""
     if [ $(b.opt.get_opt --mil-gs) ]; then
         MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
     fi
 
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $MIL_gs -wp "$MI_tmp"/upgrade_version
+
+    MIL_ver=""
+    if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
+        MIL_ver="-mv $(cat $MI_tmp/upgrade_version/MediaInfoLib/Project/version.txt)"
+    fi
+
+    ZL_ver=""
+    if [ $(b.opt.get_opt --zl-version) ]; then
+         ZL_ver="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $MIL_ver $ZL_ver -sp "$MI_tmp"/upgrade_version/MediaInfo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
