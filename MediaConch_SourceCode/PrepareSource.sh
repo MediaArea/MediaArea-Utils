@@ -216,15 +216,22 @@ function _all_inclusive () {
 
     echo
     echo "Generate the MC all inclusive tarball:"
-    echo "1: get the sources..."
+    echo "1: copy what is wanted..."
 
     cd "$WDir"/MC
     mkdir mediaconch_AllInclusive
     cd mediaconch_AllInclusive
 
-    git clone --recursive https://github.com/MediaArea/MediaConch-AllInOne .
-    # Update submodules
-    git submodule update --remote
+    cp -r "$MC_source" MediaConch
+
+    # Dependencies
+    git clone https://github.com/MediaArea/libxml2.git
+    git clone https://github.com/MediaArea/libxslt.git
+    git clone https://github.com/MediaArea/jansson.git
+    git clone https://github.com/MediaArea/libevent.git
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
+    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
 
     echo "2: remove what isn’t wanted..."
     rm -fr .git*
@@ -283,11 +290,7 @@ function btask.PrepareSource.run () {
     rm -fr MC
     mkdir MC
 
-    # No need to get the source normally if we want the all
-    # inclusive tarball.
-    if ! [ "$Target" = "ai" ]; then
-        _get_source
-    fi
+    _get_source
 
     if [ "$Target" = "cu" ]; then
         _unix_cli
