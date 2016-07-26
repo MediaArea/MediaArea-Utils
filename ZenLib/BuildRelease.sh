@@ -163,7 +163,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo
+    local Repo UV_flags
     local ZLB_dir="$Working_dir"/binary/libzen0/$Sub_dir
     local ZLS_dir="$Working_dir"/source/libzen/$Sub_dir
     local ZL_tmp="$Working_dir"/tmp/libzen/$Sub_dir
@@ -210,7 +210,12 @@ function btask.BuildRelease.run () {
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -n $Version_new -sp "$ZL_tmp"/upgrade_version/ZenLib
+    UV_flags=""
+    if b.opt.has_flag? --commit ; then
+        UV_flags="-c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -n $Version_new $UV_flags -sp "$ZL_tmp"/upgrade_version/ZenLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec

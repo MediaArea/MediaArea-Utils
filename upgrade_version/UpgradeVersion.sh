@@ -78,6 +78,7 @@ function getRepo () {
         echo "Error : Directory  $Path isn't writable!"
         echo
         echo "Use --source-path to specify a valid and accecible location"
+        exit 1
     fi
 
     cd "$Path"
@@ -87,6 +88,7 @@ function getRepo () {
         echo "Error : Unable to clone repository $Repo!"
         echo
         echo "Use --source-path to specify a valid and accecible location"
+        exit 1
     fi
 }
 

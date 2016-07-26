@@ -86,6 +86,7 @@ function getRepo () {
         echo "Error : Unable to clone repository $RepoURL!"
         echo
         echo "Use --source-path to specify a valid and accecible location"
+        exit 1
     fi
 }
 

@@ -262,7 +262,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo ZL_ver
+    local Repo UV_flags
     local MILB_dir="$Working_dir"/binary/libmediainfo0/$Sub_dir
     local MILS_dir="$Working_dir"/source/libmediainfo/$Sub_dir
     local MIL_tmp="$Working_dir"/tmp/libmediainfo/$Sub_dir
@@ -309,12 +309,16 @@ function btask.BuildRelease.run () {
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
 
-    ZL_ver=""
+    UV_flags=""
     if [ $(b.opt.get_opt --zl-version) ]; then
-         ZL_ver="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+         UV_flags="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $ZL_ver -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
+    if b.opt.has_flag? --commit ; then
+        UV_flags="${UV_flags} -c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $UV_flags -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec

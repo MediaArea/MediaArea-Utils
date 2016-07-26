@@ -42,7 +42,7 @@ function load_options () {
 
     b.opt.add_opt --zl-version "Update the ZL version to depend on"
 
-    b.opt.add_flag --keep-mil-dep "(in release mode) don't autoincrement the MIL version to depend to the latest detected version"
+    b.opt.add_flag --keep-mil-dep "(In release mode) Don't autoincrement the MIL requested version to the latest detected one"
 
     b.opt.add_flag --build-mac "Build only for Mac"
     b.opt.add_alias --build-mac -bm
@@ -61,6 +61,9 @@ function load_options () {
 
     b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
+
+    b.opt.add_flag --commit "Commit the changes made by UpgradeVersion.sh on git"
+    b.opt.add_alias --commit -c
 
     # Mandatory arguments
     b.opt.required_args --project
@@ -210,6 +213,30 @@ function run () {
             fi
         fi
 
+        # TODO: Handle exception if /tmp not writable
+        # In case --working-path is not defined
+        Working_dir=/tmp
+        # In case it is
+        if [ $(b.opt.get_opt --working-path) ]; then
+            Working_dir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? "$Working_dir" && ! b.path.writable? "$Working_dir"; then
+                echo
+                echo "The directory $Working_dir isn’t writable : will use /tmp instead."
+                echo
+                Working_dir=/tmp/
+            else
+                if ! b.path.dir? $Working_dir ;then
+                    if ! mkdir -p $Working_dir ; then
+                        echo
+                        echo "Unable to create directory $Working_dir : will use /tmp instead."
+                        echo
+                        Working_dir=/tmp/
+                    fi
+                fi
+            fi
+        fi
+
+
         if [ $(b.opt.get_opt --source-path) ]; then
             Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$Source_dir"; then
@@ -223,11 +250,6 @@ function run () {
         Clean_up=true
         if b.opt.has_flag? --no-cleanup; then
             Clean_up=false
-        fi
-        
-        # TODO: Handle exception if mkdir fail (/tmp not writable)
-        if ! b.path.dir? "$Working_dir"; then
-            mkdir -p "$Working_dir"
         fi
 
         Log="$Working_dir"/log/$Project/$Sub_dir

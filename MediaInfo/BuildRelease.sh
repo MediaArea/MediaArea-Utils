@@ -486,7 +486,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo MIL_gs MIL_ver ZL_ver
+    local Repo MIL_gs UV_flags
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -543,17 +543,20 @@ function btask.BuildRelease.run () {
 
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $MIL_gs -wp "$MI_tmp"/upgrade_version
 
-    MIL_ver=""
+    UV_flags=""
     if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
-        MIL_ver="-mv $(cat $MI_tmp/upgrade_version/MediaInfoLib/Project/version.txt)"
+        UV_flags="-mv $(cat $MI_tmp/upgrade_version/MediaInfoLib/Project/version.txt)"
     fi
 
-    ZL_ver=""
     if [ $(b.opt.get_opt --zl-version) ]; then
-         ZL_ver="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+         UV_flags="${UV_flags} -zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $MIL_ver $ZL_ver -sp "$MI_tmp"/upgrade_version/MediaInfo
+    if b.opt.has_flag? --commit ; then
+        UV_flags="${UV_flags} -c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $UV_flags -sp "$MI_tmp"/upgrade_version/MediaInfo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec

@@ -350,7 +350,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
-    local Repo MIL_ver ZL_ver
+    local Repo UV_flags
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -407,7 +407,7 @@ function btask.BuildRelease.run () {
     fi
 
     # Get MIL version to depend on
-    MIL_ver=""
+    UV_flags=""
     if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
         git -C "$MC_tmp"/repos clone "https://github.com/MediaArea/MediaInfoLib.git"
 
@@ -415,15 +415,18 @@ function btask.BuildRelease.run () {
             git -C "$MC_tmp"/repos/MediaInfoLib checkout "$(sanitize_arg $(b.opt.get_opt --mil-gs))"
         fi
 
-        MIL_ver="-mv $(cat $MC_tmp/repos/MediaInfoLib/Project/version.txt)"
+        UV_flags="-mv $(cat $MC_tmp/repos/MediaInfoLib/Project/version.txt)"
     fi
 
-    ZL_ver=""
     if [ $(b.opt.get_opt --zl-version) ]; then
-         ZL_ver="-zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+         UV_flags="${UV_flags} -zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new $MIL_ver $ZL_ver -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+    if b.opt.has_flag? --commit ; then
+        UV_flags="${UV_flags} -c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new $UV_flags -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
