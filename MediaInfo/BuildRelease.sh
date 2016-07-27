@@ -420,41 +420,12 @@ function _obs_deb6 () {
 
 }
 
-function _obs_mga () {
-
-    # This function build the source on OBS for a specific mageia
-    # version.
-
-    local Mga_version="$1"
-    local OBS_package="$OBS_project/MediaInfo_$Mga_version"
-
-    cd "$MI_tmp"
-
-    echo
-    echo "OBS for $OBS_package, initialize files..."
-    echo
-
-    osc checkout $OBS_package
-
-    # Clean up
-    rm -f $OBS_package/*
-
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
-    cp prepare_source/MI/MediaInfo/Project/OBS/mga5.spec $OBS_package/mediainfo.spec
-
-    cd $OBS_package
-    osc addremove *
-    osc commit -n
-
-}
-
 function _linux () {
 
     _obs
     _obs_deb deb9
     _obs_deb deb7
     _obs_deb6
-    _obs_mga mga5
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
@@ -471,8 +442,6 @@ function _linux () {
     python Handle_OBS_results.py $OBS_project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb7.log 2>"$Log"/obs_deb7-error.log &
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_mga5 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_mga5.log 2>"$Log"/obs_mga5-error.log &
 
 }
 
