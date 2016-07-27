@@ -6,6 +6,7 @@ import sys
 import os
 import subprocess
 import fnmatch
+import re
 
 print "\n========================================================"
 print "Generate_DL_pages.py"
@@ -410,7 +411,7 @@ def OBS():
                     Release_rowspan = ""
                 Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
                 
-                if Release_status == "old":
+                if Release_status == "old" and Project == "mi":
                     Release_class = " class=\"old-files\""
                 else:
                     Release_class = ""
@@ -464,6 +465,8 @@ def OBS():
                     Content = Content.replace("MIL_VERSION", MIL_version)
                     Content = Content.replace("MIL_PACKAGE", MIL_lib_name)
 
+                    Content = Content.replace("MIL_NAME", re.match("libmediainfo0?", MIL_lib_name).group(0))
+
                     if Project == "mi" \
                     and (Distrib_name + "_" + Release_name == "CentOS_4" \
                     or Distrib_name + "_" + Release_name == "RHEL_4" \
@@ -471,7 +474,7 @@ def OBS():
                     or Distrib_name == "Arch" :
                         MIL_dev_package = ""
                     else:
-                        MIL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>)</small>"
+                        MIL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>)</small>"
                     Content = Content.replace("MIL_DEV_PACKAGE", MIL_dev_package)
 
                 Cursor.execute("SELECT" \
@@ -485,8 +488,11 @@ def OBS():
                     ZL_lib_name = Result[1]
                     ZL_lib_name_dbg = Result[2]
                     ZL_lib_name_dev = Result[3]
+
                     Content = Content.replace("ZL_VERSION", ZL_version)
                     Content = Content.replace("ZL_PACKAGE", ZL_lib_name)
+
+                    Content = Content.replace("ZL_NAME", re.match("libzen0?", ZL_lib_name).group(0))
 
                     if Project == "mi" \
                     and (Distrib_name + "_" + Release_name == "CentOS_4" \
@@ -495,7 +501,7 @@ def OBS():
                     or Distrib_name == "Arch" :
                         ZL_dev_package = ""
                     else:
-                        ZL_dev_package = " <small>(<a href=\"https://mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>)</small>"
+                        ZL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>)</small>"
                     Content = Content.replace("ZL_DEV_PACKAGE", ZL_dev_package)
 
                 if Release_with_wx == True:

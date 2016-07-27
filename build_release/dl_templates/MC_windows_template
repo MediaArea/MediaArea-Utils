@@ -1,15 +1,15 @@
 <tr>
-    <th rowspan="10">OS_TITLE</th>
+    <th rowspan="9">OS_TITLE</th>
     <th>Universal installer (32/64 bit)</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION</a></td>
-    <td>If you don't know which one to download, download this one<?php echo $AdSupported; ?></td>
+    <td>If you don't know which one to download, download this one</td>
 </tr>
 <tr>
     <th rowspan="4">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
-    <td><?php echo $AdSupported; ?></td>
+    <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
@@ -30,7 +30,7 @@
     <th rowspan="4">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows.exe">vMC_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/MediaConch_GUI_MC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
-    <td><?php echo $AdSupported; ?></td>
+    <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
