@@ -226,8 +226,7 @@ def OBS():
         # the current version of MC
         if not Already_here:
             Cursor.execute("SELECT version FROM " + Table_releases_dlpages + " WHERE platform = '" + Distrib + "';")
-            DB_version = Cursor.fetchone()[0]
-            if DB_version == Version:
+            if (Version,) in Cursor.fetchall():
                 Status = "current"
             else:
                 Status = "old"
