@@ -169,7 +169,7 @@ def Waiting_loop():
             time.sleep(1200)
 
         # Check if the builds are done on OBS
-        Params = "osc results " + MA_project \
+        Params = "osc results 2>&1" + MA_project \
                + " |awk '{print $3}' |sed 's/*//' |grep -v 'excluded\|disabled\|broken\|unresolvable\|failed\|succeeded' |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         # When all the distros are build, Result will equal 0
@@ -203,8 +203,10 @@ def Update_DB():
             State = "0"
             if Result == "succeeded":
                 State = "1"
-            if Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
+            elif Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
                 State = "2"
+            elif Result == "":
+                State = "3"
             Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
 ##################################################################
@@ -622,15 +624,18 @@ def Get_packages_on_OBS():
                 Dev_name_wanted = ''
 
             ### Doc package ###
-            # No doc packages for Arch at this time
-            if not fnmatch.fnmatch(Distrib_name, "Arch*") or \
-               not fnmatch.fnmatch(OBS_package, "MediaConch*") :
+            # No doc packages for Arch at this time, doc packages aren’t generated on debX repos
+            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not fnmatch.fnmatch(OBS_package, "*_deb?"):
                 Doc_name_wanted = Get_doc_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
             else:
                 Doc_name_wanted = ''
 
             ### GUI package ###
-            if Project_kind == "gui":
+            if Project_kind == "gui" and (not Bin_name == "mediaconch" or \
+                                         (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
+                                          not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
+                                          not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                          not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
                 Gui_name_wanted = Get_gui_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
             else:
                 Gui_name_wanted = ''
@@ -639,7 +644,11 @@ def Get_packages_on_OBS():
             # Server package #
             ##################
 
-            if Bin_name == "mediaconch":
+            if Bin_name == "mediaconch" and (not Distrib_name == "CentOS_5" and \
+                                             not Distrib_name == "CentOS_6" and \
+                                             not fnmatch.fnmatch(Distrib_name, "RHEL_*") and \
+                                             not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                             not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
                 Server_name_wanted = Get_server_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
             else :
                 Server_name_wanted = ''
@@ -700,6 +709,12 @@ def Verify_states_and_files():
     DB_distribs = Cursor.fetchall()
 
     Number_succeeded = 0
+    Number_bin_wanted = 0
+    Number_dev_wanted = 0
+    Number_gui_wanted = 0
+    Number_srv_wanted = 0
+    Number_doc_wanted = 0
+    Number_dbg_wanted = 0
     Dists_failed = []
 
     for DB_dist in DB_distribs:
@@ -711,10 +726,37 @@ def Verify_states_and_files():
         # State == 1 if build succeeded
         if State == 1:
             Number_succeeded = Number_succeeded + 1
+            Number_bin_wanted = Number_bin_wanted + 1
+
+            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+                Number_dev_wanted = Number_dev_wanted + 1
+                # Doc packages aren’t generated on debX repos
+                if not fnmatch.fnmatch(OBS_package, "*_deb?"):
+                    Number_doc_wanted = Number_doc_wanted + 1
+            elif Project_kind == "gui" and (not fnmatch.fnmatch(OBS_package, "MediaConch*") or \
+                                           (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
+                                            not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
+                                            not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                            not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
+                Number_gui_wanted = Number_gui_wanted + 1
+
+            if fnmatch.fnmatch(OBS_package, "MediaConch*") and \
+               (not Distrib_name == "CentOS_5" and \
+                not Distrib_name == "CentOS_6" and \
+                not fnmatch.fnmatch(Distrib_name, "RHEL_*") and \
+                not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
+                Number_srv_wanted = Number_srv_wanted + 1
+
+            # Neither MediaInfo nor MediaInfoLib provides debuginfo package
+            if not fnmatch.fnmatch(OBS_package, "MediaInfo*") and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+                Number_dbg_wanted = Number_dbg_wanted + 1
 
         # State == 2 if build failed
         if State == 2:
-            Dists_failed.append(DB_dist)
+            Dists_failed.append(DB_dist + ("Build failed",))
+        elif State == 3:
+            Dists_failed.append(DB_dist + ("OBS error",))
 
     print "(In case the mails can’t be send:)"
     print "succeeded: " + str(Number_succeeded)
@@ -736,18 +778,11 @@ def Verify_states_and_files():
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
 
-    Params = "ls " + Destination + "/" + Debug_name + "*" + Version + "*" \
-           + " |grep 'pkg.tar.xz'" \
-           + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
-           + " |wc -l"
-    Result = subprocess.check_output(Params, shell=True).strip()
-    Number_Arch = int(Result)
-
     # It’s not a good idea to put it before the previous line, as
     # in some case Result is an int, and other time it’s a str…
     print "bin: " + str(Number_bin)
 
-    if Number_bin < Number_succeeded:
+    if Number_bin < Number_bin_wanted:
         Params = \
                "echo 'OBS project: " + OBS_project + "\n" \
                + "OBS package: " + OBS_package + "\n" \
@@ -773,7 +808,7 @@ def Verify_states_and_files():
     print "dbg: " + str(Number_debug)
 
     # Debug packages aren’t perfectly handled on OBS
-    #if Number_debug < Number_succeeded:
+    #if Number_debug < Number_dbg_wanted:
     #    Params = \
     #           "echo 'OBS project: " + OBS_project + "\n" \
     #           + "OBS package: " + OBS_package + "\n" \
@@ -799,7 +834,7 @@ def Verify_states_and_files():
 
         print "dev: " + str(Number_dev)
 
-        if Number_dev < Number_succeeded - Number_Arch:
+        if Number_dev < Number_dev_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -823,9 +858,7 @@ def Verify_states_and_files():
 
         print "doc: " + str(Number_doc)
 
-        # Doc packages aren’t generated on debX repos
-        if Number_doc < Number_succeeded - Number_Arch \
-        and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+        if Number_doc < Number_doc_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -850,7 +883,7 @@ def Verify_states_and_files():
 
         print "server: " + str(Number_server)
 
-        if Number_server < Number_succeeded:
+        if Number_server < Number_srv_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -875,7 +908,7 @@ def Verify_states_and_files():
 
         print "gui: " + str(Number_gui)
 
-        if Number_gui < Number_succeeded:
+        if Number_gui < Number_gui_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -896,7 +929,8 @@ def Verify_states_and_files():
         for Dist in Dists_failed:
             Distrib_name = Dist[0]
             Arch = Dist[1]
-            Failed_list = Failed_list + "* " + str(Distrib_name) + " (" + str(Arch) + ")\n"
+            Reason = Dist[3]
+            Failed_list = Failed_list + "* %s (%s) Reason: %s\n" % (str(Distrib_name), str(Arch), str(Reason))
 
         print "\nFailed:\n" + Failed_list
 
@@ -909,7 +943,7 @@ def Verify_states_and_files():
                + "OBS package: " + OBS_package + "\n" \
                + "Version: " + Version + "\n\n" \
                + Timeout_message \
-               + "The build have fail on OBS for:\n" + Failed_list + "'" \
+               + "These packages fail on OBS for:\n" + Failed_list + "'" \
                + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
                + " " + Config["Email_to"]
         subprocess.call(Params, shell=True)
@@ -939,7 +973,7 @@ def Verify_states_and_files():
     if Project_kind == "lib" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
         # We use >= and not ==, because there may be other repos
         # which have ran into the same directory (Project_debX).
-        if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_dev >= Number_succeeded and Number_doc >= Number_succeeded:
+        if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_dev >= Number_dev_wanted and Number_doc >= Number_doc_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -956,7 +990,7 @@ def Verify_states_and_files():
             subprocess.call(Params, shell=True)
 
     if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
-        if len(Dists_failed) == 0 and Number_bin >= Number_succeeded and Number_gui >= Number_succeeded:
+        if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_gui >= Number_gui_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \

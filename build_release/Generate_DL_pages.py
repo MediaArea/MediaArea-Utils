@@ -338,14 +338,23 @@ def OBS():
                 if Result != None and Result[0] != "":
                     Release_with_server = True
 
+            Release_with_gui = True
+            if Project == "mc":
+                Cursor.execute("SELECT guiname FROM " + Table_releases_dlpages + " WHERE platform = '" + Distrib_name + "_" + Release_name + "';")
+                Result = Cursor.fetchone()
+                if Result != None and Result[0] == "":
+                    Release_with_gui = False
+
             Release_with_wx = False
             if Project == "mi" and (Distrib_name == "RHEL" or Distrib_name == "CentOS"):
                 # The second if is mandatory (<distrib>_<release>_wx only exists for RHEL/CentOS).
                 if Config[ Release_in_config_file + "_wx" ] != "":
                     Release_with_wx = True
 
-            Rowspan = 4
+            Rowspan = 3
             if Release_with_server == True:
+                Rowspan = Rowspan + 1
+            if Release_with_gui == True:
                 Rowspan = Rowspan + 1
             if Release_with_wx == True:
                 Rowspan = Rowspan + 1
@@ -389,12 +398,18 @@ def OBS():
 
             for Arch in Archs:
 
-                if Release_with_server == True:
-                    Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
-                elif Project == "mc":
-                    Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_server"
+                if Project == "mc":
+                    if Release_with_server == False and Release_with_gui == False:
+                        Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_cli_only"
+                    elif Release_with_server == False and Release_with_gui == True:
+                        Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_server"
+                    elif Release_with_server == True and Release_with_gui == False:
+                        Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_gui"
+                    else:
+                        Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
                 elif Project == "mi":
                     Template_file_path = Script_emplacement + "/dl_templates/MI_linux_template"
+
                 Template_file = open(Template_file_path, "r")
                 Content = Template_file.read()
                 Template_file.close()
@@ -447,7 +462,8 @@ def OBS():
                 Content = Content.replace("CLI_PACKAGE", Cli_name)
                 if Release_with_server == True:
                     Content = Content.replace("SERVER_PACKAGE", Server_name)
-                Content = Content.replace("GUI_PACKAGE", Gui_name)
+                if Release_with_gui == True:
+                    Content = Content.replace("GUI_PACKAGE", Gui_name)
 
                 Cursor.execute("SELECT" \
                         + " version, libname, libnamedbg, libnamedev" \
