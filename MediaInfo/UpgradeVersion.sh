@@ -24,6 +24,20 @@ function btask.UpgradeVersion.run () {
         echo
     fi
 
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MI_source" checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+    fi
+
+    # Populate Version_old_* variables
+    getOld "$MI_source/Project/version.txt"
+
+    # Update version.txt only in release mode
+    if [ "${Version_new%.????????}" == "${Version_new}" ] ; then
+        echo "Update version.txt"
+        echo "${Version_new}" > "$MI_source/Project/version.txt"
+    fi
+
+    echo
     echo "Passage for version with dots..."
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"
@@ -133,4 +147,57 @@ function btask.UpgradeVersion.run () {
         "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" \
         "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
 
+    # Update MediaInfoLib required version
+    if [ $(b.opt.get_opt --mil-version) ]; then
+        echo
+        MIL_version=$(sanitize_arg $(b.opt.get_opt --mil-version))
+        echo "Update MediaInfoLib in Project/GNU/mediainfo.spec"
+        updateFile "%define libmediainfo_version\(\s\+\)[0-9.-]\+" "%define libmediainfo_version\1$MIL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        echo "Update MediaInfoLib in Project/GNU/mediainfo.dsc"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/GNU/mediainfo.dsc
+        echo "Update MediaInfoLib in Project/GNU/PKGBUILD"
+        updateFile "libmediainfo>=[0-9.-]\+" "libmediainfo>=$MIL_version" "${MI_source}"/Project/GNU/PKGBUILD
+        echo "Update MediaInfoLib in Project/OBS/deb6.debian/control"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
+        updateFile "libmediainfo0 (>= [0-9.-]\+)" "libmediainfo0 (>= $MIL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
+        echo "Update MediaInfoLib in Project/OBS/deb7.debian/control"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
+        echo "Update MediaInfoLib in Project/OBS/deb9.debian/control"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
+        echo "Update MediaInfoLib in Project/OBS/deb6.dsc"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb6.dsc
+        echo "Update MediaInfoLib in Project/OBS/deb7.dsc"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb7.dsc
+        echo "Update MediaInfoLib in Project/OBS/deb9.dsc"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb9.dsc
+        echo "Update MediaInfoLib in debian/control"
+        updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/debian/control
+    fi
+
+    # Update ZenLib required version
+    if [ $(b.opt.get_opt --zl-version) ]; then
+        echo
+        ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
+        echo "Update ZenLib in Project/GNU/mediainfo.spec"
+        updateFile "%define libzen_version\(\s\+\)[0-9.-]\+" "%define libzen_version\1$ZL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        echo "Update ZenLib in Project/GNU/mediainfo.dsc"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/GNU/mediainfo.dsc
+        echo "Update ZenLib in Project/GNU/PKGBUILD"
+        updateFile "libzen>=[0-9.-]\+" "libzen>=$ZL_version" "${MI_source}"/Project/GNU/PKGBUILD
+        echo "Update ZenLib in Project/OBS/deb6.debian/control"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
+        updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
+        echo "Update ZenLib in Project/OBS/deb7.debian/control"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
+        echo "Update ZenLib in Project/OBS/deb9.debian/control"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
+        echo "Update ZenLib in Project/OBS/deb6.dsc"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb6.dsc
+        echo "Update ZenLib in Project/OBS/deb7.dsc"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb7.dsc
+        echo "Update ZenLib in Project/OBS/deb9.dsc"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb9.dsc
+        echo "Update ZenLib in debian/control"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/debian/control
+    fi
 }

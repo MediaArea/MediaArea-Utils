@@ -19,9 +19,6 @@ function load_options () {
     b.opt.add_opt --project "The project to work with"
     b.opt.add_alias --project -p
 
-    b.opt.add_opt --old "Old version of the project"
-    b.opt.add_alias --old -o
-
     b.opt.add_opt --new "New version of the project"
     b.opt.add_alias --new -n
 
@@ -43,6 +40,10 @@ function load_options () {
     b.opt.add_opt --mil-gs "Ask for a specific git state for the MIL dependency"
     b.opt.add_opt --zl-gs "Ask for a specific git state for the ZL dependency"
 
+    b.opt.add_opt --zl-version "Update the ZL version to depend on"
+
+    b.opt.add_flag --keep-mil-dep "(In release mode) Don't autoincrement the MIL requested version to the latest detected one"
+
     b.opt.add_flag --build-mac "Build only for Mac"
     b.opt.add_alias --build-mac -bm
 
@@ -61,8 +62,11 @@ function load_options () {
     b.opt.add_flag --no-cleanup "Don’t erase the temporary directories"
     b.opt.add_alias --no-cleanup -nc
 
+    b.opt.add_flag --commit "Commit the changes made by UpgradeVersion.sh on git"
+    b.opt.add_alias --commit -c
+
     # Mandatory arguments
-    b.opt.required_args --project --old
+    b.opt.required_args --project
 }
 
 function displayHelp () {
@@ -163,19 +167,15 @@ function run () {
 
         Date=`date +%Y%m%d`
 
-        Version_old=$(sanitize_arg $(b.opt.get_opt --old))
-
         # Load sensible configuration we don’t want on github
-        . Config.sh    
+        source "$(dirname ${BASH_SOURCE[0]})"/Config.sh
 
-        if b.opt.has_flag? --snapshot; then
-            Version_new="${Version_old}.$Date"
+        if b.opt.has_flag? --snapshot ; then
             Sub_dir="$Date"
             Mac_working_dir="${Mac_working_dir}/snapshots"
             OBS_project="${OBS_project}:snapshots"
-        elif [ $(b.opt.get_opt --new) ]; then
-            Version_new=$(sanitize_arg $(b.opt.get_opt --new))
-            Sub_dir="$Version_new"
+        elif [ $(b.opt.get_opt --new) ] ; then
+            Sub_dir="$(sanitize_arg $(b.opt.get_opt --new))"
             Mac_working_dir="${Mac_working_dir}/releases"
         else
             echo
@@ -213,6 +213,30 @@ function run () {
             fi
         fi
 
+        # TODO: Handle exception if /tmp not writable
+        # In case --working-path is not defined
+        Working_dir=/tmp
+        # In case it is
+        if [ $(b.opt.get_opt --working-path) ]; then
+            Working_dir="$(sanitize_arg $(b.opt.get_opt --working-path))"
+            if b.path.dir? "$Working_dir" && ! b.path.writable? "$Working_dir"; then
+                echo
+                echo "The directory $Working_dir isn’t writable : will use /tmp instead."
+                echo
+                Working_dir=/tmp/
+            else
+                if ! b.path.dir? $Working_dir ;then
+                    if ! mkdir -p $Working_dir ; then
+                        echo
+                        echo "Unable to create directory $Working_dir : will use /tmp instead."
+                        echo
+                        Working_dir=/tmp/
+                    fi
+                fi
+            fi
+        fi
+
+
         if [ $(b.opt.get_opt --source-path) ]; then
             Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$Source_dir"; then
@@ -227,20 +251,13 @@ function run () {
         if b.opt.has_flag? --no-cleanup; then
             Clean_up=false
         fi
-        
-        # TODO: Handle exception if mkdir fail (/tmp not writable)
-        if ! b.path.dir? "$Working_dir"; then
-            mkdir -p "$Working_dir"
-        fi
 
         Log="$Working_dir"/log/$Project/$Sub_dir
         if ! b.path.dir? "$Log"; then
             mkdir -p "$Log"
         fi
 
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/BuildRelease.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/BuildRelease.sh"
+        Script="$(dirname ${BASH_SOURCE[0]})/../${Project}/BuildRelease.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
             # Load the script for this project, so bang can find

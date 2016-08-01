@@ -25,6 +25,20 @@ function btask.UpgradeVersion.run () {
         echo
     fi
 
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$ZL_source" checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+    fi
+
+    # Populate Version_old_* variables
+    getOld "$ZL_source/Project/version.txt"
+
+    # Update version.txt only in release mode
+    if [ "${Version_new%.????????}" == "${Version_new}" ] ; then
+        echo "Update version.txt"
+        echo "${Version_new}" > "$ZL_source/Project/version.txt"
+    fi
+
+    echo
     echo "Passage for version with dots..."
     index=0
     ZL_files[((index++))]="Project/GNU/Library/configure.ac"

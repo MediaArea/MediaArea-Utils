@@ -81,10 +81,13 @@ function getRepo () {
     # the destination directory already exist
     mkdir -p "$Path"
     rm -fr "$Path"
-    # TODO: if $Path isn’t writable, or if no network is available,
-    # or if the repository url is wrong: ask for --source-path and
-    # exit
-    git clone "$RepoURL" "$Path"
+
+    if ! git clone "$RepoURL" "$Path"; then
+        echo "Error : Unable to clone repository $RepoURL!"
+        echo
+        echo "Use --source-path to specify a valid and accecible location"
+        exit 1
+    fi
 }
 
 function run () {
@@ -132,7 +135,7 @@ function run () {
         if b.opt.has_flag? --source-package; then
             Target="sa"
         fi
-    
+
         WDir=/tmp/
         if [ $(b.opt.get_opt --working-path) ]; then
             WDir="$(sanitize_arg $(b.opt.get_opt --working-path))"
@@ -142,13 +145,17 @@ function run () {
                 echo
                 WDir=/tmp/
             else
-                # TODO: Handle exception if mkdir fail
-                if ! b.path.dir? "$WDir" ;then
-                    mkdir -p "$WDir"
+                if ! b.path.dir? $WDir ;then
+                    if ! mkdir -p $WDir ; then
+                        echo
+                        echo "Unable to create directory $WDir : will use /tmp instead."
+                        echo
+                        WDir=/tmp/
+                    fi
                 fi
             fi
         fi
-    
+
         if [ $(b.opt.get_opt --source-path) ]; then
             SDir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$SDir"; then
@@ -168,13 +175,11 @@ function run () {
             MakeArchives=false
             CleanUp=false
         fi
-    
+
         # For lisibility
         echo
 
-        # TODO: possibility to run the script from anywhere
-        #Script="$(b.get bang.working_dir)/../../${Project}/Release/PrepareSource.sh"
-        Script="$(b.get bang.working_dir)/../${Project}/PrepareSource.sh"
+        Script="$(dirname ${BASH_SOURCE[0]})/../${Project}/PrepareSource.sh"
         # If the user give a correct project name
         if b.path.file? $Script && b.path.readable? $Script; then
             # Load the script for this project, so bang can find the

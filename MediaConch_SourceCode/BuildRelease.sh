@@ -335,7 +335,7 @@ function _linux () {
     echo python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
     echo
 
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
@@ -350,6 +350,7 @@ function btask.BuildRelease.run () {
     #    mkdir -p $Working_dir
     # + handle a third run, etc
 
+    local Repo UV_flags
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -376,18 +377,58 @@ function btask.BuildRelease.run () {
     cd "$MC_tmp"
     rm -fr upgrade_version
     rm -fr prepare_source
+    rm -fr repos
     mkdir upgrade_version
     mkdir prepare_source
+    mkdir repos
 
-    cd $(b.get bang.working_dir)/../upgrade_version
-    if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -o $Version_old -n $Version_new -wp "$MC_tmp"/upgrade_version
+        Repo="https://github.com/MediaArea/MediaConch_SourceCode.git"
     fi
 
-    cd $(b.get bang.working_dir)/../prepare_source
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
+    if [ $(b.opt.get_opt --source-path) ]; then
+        # Made a copy, because UV.sh -sp modify the files in place
+        cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+    else
+        git -C "$MC_tmp"/upgrade_version clone "$Repo"
+    fi
+
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MC_tmp"/upgrade_version/MediaConch_SourceCode checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+    fi
+
+    if b.opt.has_flag? --snapshot ; then
+        Version_new="$(cat $MC_tmp/upgrade_version/MediaConch_SourceCode/Project/version.txt).$Date"
+    else
+        Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
+    fi
+
+    # Get MIL version to depend on
+    UV_flags=""
+    if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
+        git -C "$MC_tmp"/repos clone "https://github.com/MediaArea/MediaInfoLib.git"
+
+        if [ $(b.opt.get_opt --mil-gs) ]; then
+            git -C "$MC_tmp"/repos/MediaInfoLib checkout "$(sanitize_arg $(b.opt.get_opt --mil-gs))"
+        fi
+
+        UV_flags="-mv $(cat $MC_tmp/repos/MediaInfoLib/Project/version.txt)"
+    fi
+
+    if [ $(b.opt.get_opt --zl-version) ]; then
+         UV_flags="${UV_flags} -zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+    fi
+
+    if b.opt.has_flag? --commit ; then
+        UV_flags="${UV_flags} -c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new $UV_flags -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 
@@ -410,7 +451,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
     fi
-    
+
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
@@ -419,7 +460,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
-    
+
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log

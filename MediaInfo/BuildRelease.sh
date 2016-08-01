@@ -434,7 +434,7 @@ function _linux () {
     echo python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
     echo
 
-    cd $(b.get bang.working_dir)
+    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log & 
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
@@ -454,7 +454,8 @@ function btask.BuildRelease.run () {
     #    Working_dir=$Working_dir/`date +%Y%m%d`-2
     #    mkdir -p $Working_dir
     # + handle a third run, etc
-        
+
+    local Repo MIL_gs UV_flags
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -480,22 +481,53 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
 
-    cd $(b.get bang.working_dir)/../upgrade_version
-    if [ $(b.opt.get_opt --source-path) ]; then
-        cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -sp "$MI_tmp"/upgrade_version/MediaInfo
+    if [ $(b.opt.get_opt --repo) ]; then
+        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
     else
-        $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version
+        Repo="https://github.com/MediaArea/MediaInfo.git"
     fi
 
-    local MIL_gs=""
+    cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
+    if [ $(b.opt.get_opt --source-path) ]; then
+        # Made a copy, because UV.sh -sp modify the files in place
+        cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
+    else
+        git -C "$MI_tmp"/upgrade_version clone "$Repo"
+    fi
+
+    if [ $(b.opt.get_opt --git-state) ]; then
+        git -C "$MI_tmp"/upgrade_version/MediaInfo checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+    fi
+
+    if b.opt.has_flag? --snapshot ; then
+        Version_new="$(cat $MI_tmp/upgrade_version/MediaInfo/Project/version.txt).$Date"
+    else
+        Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
+    fi
+
+    MIL_gs=""
     if [ $(b.opt.get_opt --mil-gs) ]; then
         MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -o $Version_old -n $Version_new -wp "$MI_tmp"/upgrade_version $MIL_gs
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $MIL_gs -wp "$MI_tmp"/upgrade_version
 
-    cd $(b.get bang.working_dir)/../prepare_source
+    UV_flags=""
+    if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
+        UV_flags="-mv $(cat $MI_tmp/upgrade_version/MediaInfoLib/Project/version.txt)"
+    fi
+
+    if [ $(b.opt.get_opt --zl-version) ]; then
+         UV_flags="${UV_flags} -zv $(sanitize_arg $(b.opt.get_opt --zl-version))"
+    fi
+
+    if b.opt.has_flag? --commit ; then
+        UV_flags="${UV_flags} -c"
+    fi
+
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $UV_flags -sp "$MI_tmp"/upgrade_version/MediaInfo
+
+    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
