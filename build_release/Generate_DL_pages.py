@@ -466,7 +466,7 @@ def OBS():
                     Content = Content.replace("GUI_PACKAGE", Gui_name)
 
                 Cursor.execute("SELECT" \
-                        + " version, libname, libnamedbg, libnamedev" \
+                        + " version, libname, libnamedbg, libnamedev, libnamedoc" \
                         + " FROM `releases_dlpages_mil`" \
                         + " WHERE platform = '" + Distrib_name + "_" + Release_name + "'" \
                         + " AND arch = '" + Arch + "';")
@@ -476,6 +476,7 @@ def OBS():
                     MIL_lib_name = Result[1]
                     MIL_lib_name_dbg = Result[2]
                     MIL_lib_name_dev = Result[3]
+                    MIL_lib_name_doc = Result[4]
 
                     Content = Content.replace("MIL_VERSION", MIL_version)
                     Content = Content.replace("MIL_PACKAGE", MIL_lib_name)
@@ -489,11 +490,14 @@ def OBS():
                     or Distrib_name == "Arch" :
                         MIL_dev_package = ""
                     else:
-                        MIL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>)</small>"
+                        MIL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_dev + "\">devel</a>"
+                        if MIL_lib_name_doc:
+                            MIL_dev_package = MIL_dev_package + ", <a href=\"//mediaarea.net/download/binary/libmediainfo0/" + MIL_version + "/" + MIL_lib_name_doc + "\">doc</a>"
+                        MIL_dev_package = MIL_dev_package + ")</small>"
                     Content = Content.replace("MIL_DEV_PACKAGE", MIL_dev_package)
 
                 Cursor.execute("SELECT" \
-                        + " version, libname, libnamedbg, libnamedev" \
+                        + " version, libname, libnamedbg, libnamedev, libnamedoc" \
                         + " FROM `releases_dlpages_zl`" \
                         + " WHERE platform = '" + Distrib_name + "_" + Release_name + "'" \
                         + " AND arch = '" + Arch + "';")
@@ -503,6 +507,7 @@ def OBS():
                     ZL_lib_name = Result[1]
                     ZL_lib_name_dbg = Result[2]
                     ZL_lib_name_dev = Result[3]
+                    ZL_lib_name_doc = Result[4]
 
                     Content = Content.replace("ZL_VERSION", ZL_version)
                     Content = Content.replace("ZL_PACKAGE", ZL_lib_name)
@@ -516,7 +521,10 @@ def OBS():
                     or Distrib_name == "Arch" :
                         ZL_dev_package = ""
                     else:
-                        ZL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>)</small>"
+                        ZL_dev_package = " <small>(<a href=\"//mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_dev + "\">devel</a>"
+                        if ZL_lib_name_doc:
+                            ZL_dev_package = ZL_dev_package + ", <a href=\"//mediaarea.net/download/binary/libzen0/" + ZL_version + "/" + ZL_lib_name_doc + "\">doc</a>"
+                        ZL_dev_package = ZL_dev_package + ")</small>"
                     Content = Content.replace("ZL_DEV_PACKAGE", ZL_dev_package)
 
                 if Release_with_wx == True:

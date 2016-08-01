@@ -99,6 +99,13 @@ def Initialize_DB():
                             + "("
                             + DB_structure
                             + ") DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;")
+        else:
+            # Update table schema to add doc package name
+            if Project_kind == "lib":
+                Cursor.execute("SELECT * FROM information_schema.columns WHERE table_schema = '" + Config["MySQL_db"] \
+                               + "' AND table_name = '" + DL_pages_table + "' AND column_name = 'libnamedoc';")
+                if Cursor.rowcount() == 0:
+                    Cursor.execute("ALTER TABLE `" + DL_pages_table + "` ADD `libnamedoc` VARCHAR(120) DEFAULT '';")
 
     # Ensure that all the distribs in the dictionary are presents
     # in the DB
@@ -165,7 +172,6 @@ def Waiting_loop():
                     if Result == "scheduled":
                         print "Trigger rebuild for " + Distrib_name + " (" + Arch + ")"
                         subprocess.call(["osc", "rebuild", MA_project, Distrib_name, Arch])
-
             time.sleep(1200)
 
         # Check if the builds are done on OBS
@@ -674,7 +680,8 @@ def Get_packages_on_OBS():
                             + " version = '" + Version + "'," \
                             + " libname = '" + Bin_name_wanted + "'," \
                             + " libnamedbg = '" + Debug_name_wanted + "'," \
-                            + " libnamedev = '" + Dev_name_wanted + "'" \
+                            + " libnamedev = '" + Dev_name_wanted + "'," \
+                            + " libnamedoc = '" + Doc_name_wanted + "'"
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
@@ -1066,7 +1073,8 @@ if fnmatch.fnmatch(OBS_package, "ZenLib*"):
             version varchar(18),
             libname varchar(120),
             libnamedbg varchar(120),
-            libnamedev varchar(120)"""
+            libnamedev varchar(120),
+            libnamedoc varchar(120)"""
         if OBS_package == "ZenLib":
             Table = "releases_obs_zl"
         elif OBS_package == "ZenLib_deb6":
@@ -1098,7 +1106,8 @@ if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*
             version varchar(18),
             libname varchar(120),
             libnamedbg varchar(120),
-            libnamedev varchar(120)"""
+            libnamedev varchar(120),
+            libnamedoc varchar(120)"""
         if OBS_package == "MediaInfoLib":
             Table = "releases_obs_mil"
         elif OBS_package == "MediaInfoLib_deb6":
