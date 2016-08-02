@@ -7,6 +7,7 @@ import sys
 import fnmatch
 import os
 import subprocess
+import xml.etree.ElementTree as ElementTree
 
 print "\n========================================================"
 print "Handle_OBS_results.py"
@@ -1184,47 +1185,18 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
 if len(DL_pages_table) > 1:
     Release = True
 
-# TODO: automaticaly build the dictionnary from the active distros
-# on OBS
-Distribs = {
-#    "Arch_Core": ["x86_64", "i586"],
-    "Arch_Extra": ["x86_64", "i586"],
-    "CentOS_5": ["x86_64", "i586"],
-    "CentOS_6": ["x86_64", "i586"],
-    "CentOS_7": ["x86_64"],
-    "Debian_6.0": ["x86_64", "i586"],
-    "Debian_7.0": ["x86_64", "i586"],
-    "Debian_8.0": ["x86_64", "i586"],
-    "Fedora_20": ["x86_64", "i586"],
-    "Fedora_21": ["x86_64", "i586"],
-    "Fedora_22": ["x86_64", "i586"],
-    "Fedora_23": ["x86_64", "i586"],
-    "Fedora_24": ["x86_64", "i586"],
-    "Mageia_5_standard": ["x86_64", "i586"],
-    "RHEL_5": ["x86_64", "i586"],
-    "RHEL_6": ["x86_64", "i586"],
-    "RHEL_7": ["x86_64", "ppc64"],
-    "SLE_11": ["x86_64", "i586"],
-    "SLE_11_SP1": ["x86_64", "i586"],
-    "SLE_11_SP2": ["x86_64", "ppc64", "i586"],
-    "SLE_11_SP3": ["x86_64", "i586"],
-    "SLE_11_SP4": ["x86_64", "i586"],
-    "SLE_12": ["x86_64"],
-    "SLE_12_SP1": ["x86_64"],
-    "openSUSE_11.4": ["x86_64", "i586"],
-    "openSUSE_13.1": ["x86_64", "i586"],
-    "openSUSE_13.2": ["x86_64", "i586"],
-    "openSUSE_Leap_42.1": ["x86_64"],
-    "openSUSE_Tumbleweed": ["x86_64", "i586"],
-    #"openSUSE_Factory": ["x86_64", "i586"],
-    #"openSUSE_Factory_ARM": ["aarch64", "armv7l", "armv6l"],
-    "xUbuntu_12.04": ["x86_64", "i586"],
-    "xUbuntu_14.04": ["x86_64", "i586"],
-    "xUbuntu_14.10": ["x86_64", "i586"],
-    "xUbuntu_15.04": ["x86_64", "i586"],
-    "xUbuntu_15.10": ["x86_64", "i586"],
-    #"xUbuntu_16.04": ["x86_64", "i586"],
-}
+# Build the dictionnary from the active distributions on OBS
+Distribs = {}
+
+Params = "osc results --xml " + MA_project
+Result = subprocess.check_output(Params, shell=True).strip()
+
+XML_root = ElementTree.fromstring(Result)
+
+for Element in XML_root.iter('result'):
+    Distrib = Element.attrib['repository']
+    Arch = Element.attrib['arch']
+    Distribs[Distrib] = Distribs.get(Distrib, []) + [Arch]
 
 #
 # Handle the directories
