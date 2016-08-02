@@ -40,7 +40,7 @@ function _obs () {
 
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
     update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}-1.debian.tar.xz libzen_${Version_new}-1.dsc
-    
+
     update_PKGBUILD "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz PKGBUILD
 
     cd $OBS_package
@@ -197,11 +197,15 @@ function btask.BuildRelease.run () {
         # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$ZL_tmp"/upgrade_version/ZenLib
     else
-        git -C "$ZL_tmp"/upgrade_version clone "$Repo"
+        pushd "$ZL_tmp"/upgrade_version
+        git clone "$Repo"
+        popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$ZL_tmp"/upgrade_version/ZenLib checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        pushd  "$ZL_tmp"/upgrade_version/ZenLib
+        git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        popd
     fi
 
     if b.opt.has_flag? --snapshot ; then

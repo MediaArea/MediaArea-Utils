@@ -435,7 +435,7 @@ function _linux () {
     echo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log & 
+    python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     sleep 10
     python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
     sleep 10
@@ -492,11 +492,15 @@ function btask.BuildRelease.run () {
         # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$MI_tmp"/upgrade_version/MediaInfo
     else
-        git -C "$MI_tmp"/upgrade_version clone "$Repo"
+        pushd "$MI_tmp"/upgrade_version
+        git clone "$Repo"
+        popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$MI_tmp"/upgrade_version/MediaInfo checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        pushd "$MI_tmp"/upgrade_version/MediaInfo
+        git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
@@ -549,7 +553,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
     fi
-    
+
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
@@ -558,7 +562,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
-    
+
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             # Linux first, in order that OBS build while the mac and windows tasks are # executed

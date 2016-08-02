@@ -139,10 +139,13 @@ function commit () {
 
     echo
     echo "Commit changes on $Repo:$Branch"
-    git -C "$Repo" checkout -b "$Branch"
-    git -C "$Repo" commit -a -m "[UpdateVersion.sh] version $Version_new"
 
-    git -C "$Repo" push -f -u origin "$Branch"
+    pushd "$Repo"
+    git checkout -b "$Branch"
+    git commit -a -m "[UpdateVersion.sh] version $Version_new"
+
+    git push -f -u origin "$Branch"
+    popd
 }
 
 function run () {
