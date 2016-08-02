@@ -296,11 +296,15 @@ function btask.BuildRelease.run () {
         # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$MIL_tmp"/upgrade_version/MediaInfoLib
     else
-        git -C "$MIL_tmp"/upgrade_version clone "$Repo"
+        pushd "$MIL_tmp"/upgrade_version
+        git clone "$Repo"
+        popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$MIL_tmp"/upgrade_version/MediaInfoLib checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        pushd "$MIL_tmp"/upgrade_version/MediaInfoLib
+        git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
@@ -341,7 +345,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
     fi
-    
+
     if [ "$Target" = "linux" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
@@ -350,7 +354,7 @@ function btask.BuildRelease.run () {
         fi
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
-    
+
     if [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log

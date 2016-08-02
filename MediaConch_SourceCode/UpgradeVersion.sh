@@ -25,7 +25,9 @@ function btask.UpgradeVersion.run () {
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$MC_source" checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        pushd "$MC_source"
+        git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        popd
     fi
 
     # Populate Version_old_* variables
@@ -64,20 +66,20 @@ function btask.UpgradeVersion.run () {
 
     echo "Update ${MC_source}/Project/GNU/PKGBUILD"
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
-   
+
     echo
     echo "Passage for version YY.MM.patch ..."
     unset -v MC_files
     index=0
-    MC_files[((index++))]="Project/GNU/CLI/configure.ac" 
-    MC_files[((index++))]="Project/GNU/Server/configure.ac" 
-    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc" 
-    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
-    MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc" 
-    MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc" 
-    MC_files[((index++))]="Project/OBS/obs_mediaconch" 
+    MC_files[((index++))]="Project/GNU/CLI/configure.ac"
+    MC_files[((index++))]="Project/GNU/Server/configure.ac"
+    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/OBS/obs_mediaconch"
 
     for MC_file in ${MC_files[@]}
     do
@@ -89,12 +91,12 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version YY,MM,patch ..."
     unset -v MC_files
     index=0
-    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc" 
-    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc" 
-    MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc" 
-    MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc" 
-    MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc" 
+    MC_files[((index++))]="Project/MSVC2013/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2013/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2013/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc"
 
     for MC_file in ${MC_files[@]}
     do

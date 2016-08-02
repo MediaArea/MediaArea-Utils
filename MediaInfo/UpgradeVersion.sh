@@ -25,7 +25,9 @@ function btask.UpgradeVersion.run () {
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$MI_source" checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        pushd "$MI_source"
+        git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
+        popd
     fi
 
     # Populate Version_old_* variables
@@ -56,7 +58,7 @@ function btask.UpgradeVersion.run () {
     #MI_files[((index++))]="Project/OBS/deb6.debian/control"
     MI_files[((index++))]="Project/OBS/obs_mediainfo"
     MI_files[((index++))]="Project/Solaris/mkpkg"
-    
+
     for MI_file in ${MI_files[@]}
     do
         echo "${MI_source}/${MI_file}"
@@ -68,23 +70,23 @@ function btask.UpgradeVersion.run () {
     updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     echo
-    
+
     echo "Update ${MI_source}/Project/GNU/mediainfo.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
     # sed will take the last of the longuest strings first and
     # will replace the 3 lines
     updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/GNU/mediainfo.dsc
-    
+
     echo
     echo "Update ${MI_source}/Project/OBS/deb9.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb9.dsc
     updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb9.dsc
-    
+
     echo
     echo "Update ${MI_source}/Project/OBS/deb7.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb7.dsc
     updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb7.dsc
-    
+
     echo
     echo "Update ${MI_source}/Project/OBS/deb6.dsc"
     updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MI_source}"/Project/OBS/deb6.dsc

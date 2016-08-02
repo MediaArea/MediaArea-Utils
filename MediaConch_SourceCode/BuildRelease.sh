@@ -393,11 +393,15 @@ function btask.BuildRelease.run () {
         # Made a copy, because UV.sh -sp modify the files in place
         cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
     else
-        git -C "$MC_tmp"/upgrade_version clone "$Repo"
+        pushd "$MC_tmp"/upgrade_version
+        git clone "$Repo"
+        popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        git -C "$MC_tmp"/upgrade_version/MediaConch_SourceCode checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        pushd "$MC_tmp"/upgrade_version/MediaConch_SourceCode
+        git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
+        popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
@@ -409,10 +413,14 @@ function btask.BuildRelease.run () {
     # Get MIL version to depend on
     UV_flags=""
     if [ $(b.opt.get_opt --new) ] && ! b.opt.has_flag? --keep-mil-dep; then
-        git -C "$MC_tmp"/repos clone "https://github.com/MediaArea/MediaInfoLib.git"
+        pushd "$MC_tmp"/repos
+        git clone "https://github.com/MediaArea/MediaInfoLib.git"
+        popd
 
         if [ $(b.opt.get_opt --mil-gs) ]; then
-            git -C "$MC_tmp"/repos/MediaInfoLib checkout "$(sanitize_arg $(b.opt.get_opt --mil-gs))"
+            pushd  "$MC_tmp"/repos/MediaInfoLib
+            git checkout "$(sanitize_arg $(b.opt.get_opt --mil-gs))"
+            popd
         fi
 
         UV_flags="-mv $(cat $MC_tmp/repos/MediaInfoLib/Project/version.txt)"
