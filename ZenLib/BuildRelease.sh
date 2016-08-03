@@ -155,14 +155,6 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    # TODO: incremental snapshots if multiple execution in the
-    # same day eg. AAAAMMJJ-X
-    #if b.path.dir? $Working_dir/`date +%Y%m%d`; then
-    #    mv $Working_dir/`date +%Y%m%d` $Working_dir/`date +%Y%m%d`-1
-    #    Working_dir=$Working_dir/`date +%Y%m%d`-2
-    #    mkdir -p $Working_dir
-    # + handle a third run, etc
-
     local Repo UV_flags
     local ZLB_dir="$Working_dir"/binary/libzen0/$Sub_dir
     local ZLS_dir="$Working_dir"/source/libzen/$Sub_dir
