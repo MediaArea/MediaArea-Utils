@@ -62,9 +62,10 @@ function updateFile () {
 
     local Search="$1" Replace="$2" File="$3"
 
-    # TODO: handle exception if file not found
     if b.path.file? "$File" && b.path.readable? "$File"; then
         $(sed -i "s/${Search}/$Replace/g" "$File")
+    else
+        print_e "WARNING: file ${File} not found"
     fi
 }
 
@@ -124,7 +125,8 @@ function getOld () {
             Version_old_build=0
         fi
     else
-        echo "Error: unable to get old version" 1>&2 && return 1
+        print_e "ERROR: unable to get old version"
+        exit 1
     fi
 }
 
