@@ -176,7 +176,7 @@ def Waiting_loop():
             time.sleep(1200)
 
         # Check if the builds are done on OBS
-        Params = "osc results 2>&1" + MA_project \
+        Params = "osc results 2>&1 " + MA_project \
                + " |awk '{print $3}' |sed 's/*//' |grep -v 'excluded\|disabled\|broken\|unresolvable\|failed\|succeeded' |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         # When all the distros are build, Result will equal 0
