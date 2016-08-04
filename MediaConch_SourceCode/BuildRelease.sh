@@ -29,6 +29,7 @@ function _mac_cli () {
             cd MediaConch/Project/Mac ;
             ./Make_MC_dmg.sh cli $Version_new"
 
+    test -e "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg && rm "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_CLI_${Version_new}_Mac.dmg "$MCC_dir"
 
 }
@@ -56,6 +57,7 @@ function _mac_server () {
             cd MediaConch/Project/Mac ;
             ./Make_MC_dmg.sh server $Version_new"
 
+    test -e "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg && rm "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_Server_GNU_FromSource/MediaConch/Project/Mac/MediaConch_Server_${Version_new}_Mac.dmg "$MCD_dir"
 
 }
@@ -83,6 +85,7 @@ function _mac_gui () {
             cd MediaConch/Project/Mac ;
             ./Make_MC_dmg.sh gui $Version_new"
 
+    test -e "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg && rm "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
 }
@@ -349,10 +352,6 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$MCC_dir"
-    rm -fr "$MCD_dir"
-    rm -fr "$MCG_dir"
-    rm -fr "$MCS_dir"
     rm -fr "$MC_tmp"
 
     mkdir -p "$MCC_dir"
@@ -363,9 +362,6 @@ function btask.BuildRelease.run () {
     mkdir -p "$MC_tmp"
 
     cd "$MC_tmp"
-    rm -fr upgrade_version
-    rm -fr prepare_source
-    rm -fr repos
     mkdir upgrade_version
     mkdir prepare_source
     mkdir repos
@@ -425,6 +421,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mc -n $Version_new $UV_flags -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
+    find "$MCS_dir" -mindepth 1 -delete
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 

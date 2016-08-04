@@ -164,8 +164,6 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$ZLB_dir"
-    rm -fr "$ZLS_dir"
     rm -fr "$ZL_tmp"
 
     mkdir -p "$ZLB_dir"
@@ -173,8 +171,6 @@ function btask.BuildRelease.run () {
     mkdir -p "$ZL_tmp"
 
     cd "$ZL_tmp"
-    rm -fr upgrade_version
-    rm -fr prepare_source
     mkdir upgrade_version
     mkdir prepare_source
 
@@ -214,6 +210,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -n $Version_new $UV_flags -sp "$ZL_tmp"/upgrade_version/ZenLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
+    find "$ZLS_dir" -mindepth 1 -delete
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p zl -v $Version_new -wp "$ZL_tmp"/prepare_source -sp "$ZL_tmp"/upgrade_version/ZenLib -sa -nc
 

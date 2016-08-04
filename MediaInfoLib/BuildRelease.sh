@@ -40,7 +40,9 @@ function _mac_mil () {
                 cp MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz dylib_for_xcode"
     fi
 
+    test -e "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 && rm "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.bz2 "$MILB_dir"
+    test -e "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz && rm "$MILB_dir"/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/Mac/MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz "$MILB_dir"
 
 }
@@ -263,8 +265,6 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$MILB_dir"
-    rm -fr "$MILS_dir"
     rm -fr "$MIL_tmp"
 
     mkdir -p "$MILB_dir"
@@ -272,8 +272,6 @@ function btask.BuildRelease.run () {
     mkdir -p "$MIL_tmp"
 
     cd "$MIL_tmp"
-    rm -fr upgrade_version
-    rm -fr prepare_source
     mkdir upgrade_version
     mkdir prepare_source
 
@@ -317,6 +315,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $UV_flags -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
+    find "$MILS_dir" -mindepth 1 -delete
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PS_target -nc
 

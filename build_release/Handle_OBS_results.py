@@ -271,6 +271,8 @@ def Get_bin_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
         print "Command to fetch the bin package:"
         print Params_getpackage
         print
+        if os.path.isfile(Bin_name_final):
+            os.remove(Bin_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # This is potentially a spam tank, but I leave the
@@ -334,6 +336,8 @@ def Get_debug_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
         print "Command to fetch the debug package:"
         print Params_getpackage
         print
+        if os.path.isfile(Debug_name_final):
+            os.remove(Debug_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # If the debug package is build, but hasn’t been
@@ -392,6 +396,8 @@ def Get_dev_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
         print "Command to fetch the dev package:"
         print Params_getpackage
         print
+        if os.path.isfile(Dev_name_final):
+            os.remove(Dev_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # If the dev package is build, but hasn’t
@@ -446,6 +452,8 @@ def Get_doc_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
         print "Command to fetch the doc package:"
         print Params_getpackage
         print
+        if os.path.isfile(Doc_name_final):
+            os.remove(Doc_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # If the doc package is build, but hasn’t been
@@ -501,6 +509,8 @@ def Get_gui_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
         print "Command to fetch the gui package:"
         print Params_getpackage
         print
+        if os.path.isfile(Gui_name_final):
+            os.remove(Gui_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # If the gui package is build, but hasn’t
@@ -555,6 +565,8 @@ def Get_server_package(Distrib_name, Arch, Revision, Package_type, Package_infos
         print "Command to fetch the server package:"
         print Params_getpackage
         print
+        if os.path.isfile(Server_name_final):
+            os.remove(Server_name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # If the server package is build, but hasn’t

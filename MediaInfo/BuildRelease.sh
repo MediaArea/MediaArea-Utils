@@ -29,6 +29,7 @@ function _mac_cli () {
             cd MediaInfo/Project/Mac ;
             ./Make_MI_dmg.sh cli $Version_new"
 
+    test -e "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg && rm "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
 
 }
@@ -60,6 +61,7 @@ function _mac_gui () {
             cd MediaInfo/Project/Mac ;
             ./Make_MI_dmg.sh gui $Version_new"
 
+    test -e "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg && rm "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
 
     if ! b.opt.has_flag? --snapshot; then
@@ -454,9 +456,6 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$MIC_dir"
-    rm -fr "$MIG_dir"
-    rm -fr "$MIS_dir"
     rm -fr "$MI_tmp"
 
     mkdir -p "$MIC_dir"
@@ -521,6 +520,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $UV_flags -sp "$MI_tmp"/upgrade_version/MediaInfo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
+    find "$MIS_dir" -mindepth 1 -delete
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
