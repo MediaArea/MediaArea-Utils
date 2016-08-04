@@ -189,27 +189,36 @@ function _windows () {
     cd "$MC_tmp"
 
     # Windows binaries are kept apart from the others
-    mkdir -p "win_binary/mediaconch/$Version_new"
-    mkdir -p "win_binary/mediaconch-gui/$Version_new"
-    mkdir -p "win_binary/mediaconch-server/$Version_new"
+    mkdir -p "win_binary/mediaconch/$Sub_dir"
+    mkdir -p "win_binary/mediaconch-gui/$Sub_dir"
+    mkdir -p "win_binary/mediaconch-server/$Sub_dir"
 
     # Start the VM if needed
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
         if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
             echo "Starting Windows VM..."
-            vm_start "$Virsh_uri" "$Win_VM_name" || (echo "ERROR: unable to start VM" >&2 && return 1)
+            if ! vm_start "$Virsh_uri" "$Win_VM_name"; then
+                print_e "ERROR: unable to start VM"
+                return 1
+            fi
 
             # Allow time for VM startup
             for i in $(seq $Try) ; do
                 sleep 30
-                $SSHP "exit" && (sleep 3 ; break)
+                if $SSHP "exit"; then
+                    sleep 3
+                    break
+                fi
             done
             VM_started="1"
         fi
     fi
 
     # Test connection
-    $SSHP "exit" || (echo "ERROR: unable to connect to host" >&2 && return 1)
+    if ! $SSHP "exit"; then
+        print_e "ERROR: unable to connect to host"
+       return 1
+    fi
 
     # Prepare build directory
     echo "Prepare build directory..."
@@ -242,31 +251,31 @@ function _windows () {
 
     File="MediaConch_CLI_${Version_new}_Windows_i386.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_i386.zip" \
-                         "win_binary/mediaconch/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_CLI_${Version_new}_Windows_x64.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_x64.zip" \
-                         "win_binary/mediaconch/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows.exe"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows.exe" \
-                         "win_binary/mediaconch-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_Server_${Version_new}_Windows_i386.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_i386.zip" \
-                         "win_binary/mediaconch-server/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch-server/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_Server_${Version_new}_Windows_x64.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_x64.zip" \
-                         "win_binary/mediaconch-server/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediaconch-server/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Check errors
     if [ -n "$MSG" ]; then
