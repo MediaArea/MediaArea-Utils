@@ -101,14 +101,15 @@ function update_DSC () {
     newSHA1="$SHA1 $Size $Archive"
     newSHA256="$SHA256 $Size $Archive"
     newMD5="$MD5 $Size $Archive"
-    
-    # TODO: handle exception if file not found
+
     if b.path.file? "$DSC" && b.path.readable? "$DSC"; then
         # Handle the longuest strings first, otherwise the shorters
         # get in the way
         $(sed -i "s/${oldSHA256}/$newSHA256/g" "$DSC")
         $(sed -i "s/${oldSHA1}/$newSHA1/g" "$DSC")
         $(sed -i "s/${oldMD5}/$newMD5/g" "$DSC")
+    else
+       print_e "WARNING: file ${DSC} not found"
     fi
 
 }
@@ -133,9 +134,10 @@ function update_PKGBUILD () {
     OldMD5="00000000000000000000000000000000"
     MD5=`md5sum "$OBSPath"/$Archive |awk '{print $1}'`
 
-    # TODO: handle exception if file not found
     if b.path.file? "$PKGBUILD" && b.path.readable? "$PKGBUILD"; then
         $(sed -i "s/$OldMD5/$MD5/g" "$PKGBUILD")
+    else
+       print_e "WARNING: file ${PKGBUILD} not found"
     fi
 }
 
@@ -154,36 +156,25 @@ function run () {
         Project=$(sanitize_arg $(b.opt.get_opt --project))
         if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
             Project=ZenLib
+            Dirname="libzen"
         fi
         if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
             Project=MediaInfoLib
+            Dirname="libmediainfo"
         fi
         if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
             Project=MediaInfo
+            Dirname="mediainfo"
         fi
         if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
             Project=MediaConch_SourceCode
+            Dirname="mediaconch"
         fi
 
         Date=`date +%Y%m%d`
 
         # Load sensible configuration we don’t want on github
         source "$(dirname ${BASH_SOURCE[0]})"/Config.sh
-
-        if b.opt.has_flag? --snapshot ; then
-            Sub_dir="$Date"
-            Mac_working_dir="${Mac_working_dir}/snapshots"
-            OBS_project="${OBS_project}:snapshots"
-        elif [ $(b.opt.get_opt --new) ] ; then
-            Sub_dir="$(sanitize_arg $(b.opt.get_opt --new))"
-            Mac_working_dir="${Mac_working_dir}/releases"
-        else
-            echo
-            echo "If you don’t ask a snapshot, you must provide"
-            echo "the new version of the release (with --new)"
-            echo
-            exit 1
-        fi
 
         Target="all"
         PS_target="-all"
@@ -198,19 +189,6 @@ function run () {
         if b.opt.has_flag? --build-linux; then
             Target="linux"
             PS_target="-sa"
-        fi
-
-        # In case --working-path is not defined
-        Working_dir=/tmp
-        # In case it is
-        if [ $(b.opt.get_opt --working-path) ]; then
-            Working_dir="$(sanitize_arg $(b.opt.get_opt --working-path))"
-            if b.path.dir? "$Working_dir" && ! b.path.writable? "$Working_dir"; then
-                echo
-                echo "The directory $Working_dir isn’t writable : will use /tmp instead."
-                echo
-                Working_dir=/tmp
-            fi
         fi
 
         # TODO: Handle exception if /tmp not writable
@@ -252,6 +230,29 @@ function run () {
             Clean_up=false
         fi
 
+        if b.opt.has_flag? --snapshot ; then
+            Sub_dir="${Date}"
+            Index=2
+            while [ "$(find ${Working_dir}/binary ${Working_dir}/source ${Working_dir}/tmp \
+                    \( -regex .*/${Dirname}0?/${Sub_dir} -o -regex .*/${Dirname}-*/${Sub_dir} \) \
+                    -printf 1 -quit)" == "1" ]
+            do
+                Sub_dir="$Date-$Index"
+                let Index++
+            done
+            Mac_working_dir="${Mac_working_dir}/snapshots"
+            OBS_project="${OBS_project}:snapshots"
+        elif [ $(b.opt.get_opt --new) ] ; then
+            Sub_dir="$(sanitize_arg $(b.opt.get_opt --new))"
+            Mac_working_dir="${Mac_working_dir}/releases"
+        else
+            echo
+            echo "If you don’t ask a snapshot, you must provide"
+            echo "the new version of the release (with --new)"
+            echo
+            exit 1
+        fi
+
         Log="$Working_dir"/log/$Project/$Sub_dir
         if ! b.path.dir? "$Log"; then
             mkdir -p "$Log"
@@ -286,7 +287,7 @@ function run () {
         unset -v Mac_working_dir Email_to Email_CC
         unset -v Mac_IP Mac_SSH_port Mac_SSH_user Key_chain
         unset -v Win_IP Win_SSH_port Win_SSH_user
-        unset -v Clean_up Log Script
+        unset -v Clean_up Log Script Index
     fi
 }
 

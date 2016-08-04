@@ -176,20 +176,27 @@ function _windows () {
     cd "$MI_tmp"
 
     # Windows binaries are kept apart from the others
-    mkdir -p "win_binary/libmediainfo0/$Version_new"
-    mkdir -p "win_binary/mediainfo/$Version_new"
-    mkdir -p "win_binary/mediainfo-gui/$Version_new"
-    mkdir -p "win_donors/$Version_new"
+    mkdir -p "win_binary/libmediainfo0/$Sub_dir"
+    mkdir -p "win_binary/mediainfo/$Sub_dir"
+    mkdir -p "win_binary/mediainfo-gui/$Sub_dir"
+    mkdir -p "win_donors/$Sub_dir"
 
     # Start the VM if needed
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
         if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
             echo "Starting Windows VM..."
-            vm_start "$Virsh_uri" "$Win_VM_name" || (echo "ERROR: unable to start VM" >&2 && return 1)
+            if ! vm_start "$Virsh_uri" "$Win_VM_name"; then
+                print_e "ERROR: unable to start VM"
+                return 1
+            fi
 
             # Allow time for VM startup
             for i in $(seq $Try) ; do
-                sleep 30 ; $SSHP "exit" && (sleep 3 ; break)
+                sleep 30
+                if $SSHP "exit"; then
+                    sleep 3
+                    break
+                fi
             done
 
             VM_started="1"
@@ -197,7 +204,10 @@ function _windows () {
     fi
 
     # Test connection
-    $SSHP "exit" || (echo "ERROR: unable to connect to host" >&2 && return 1)
+    if ! $SSHP "exit"; then
+        print_e "ERROR: unable to connect to host"
+        return 1
+    fi
     sleep 3
 
     # Prepare build directory
@@ -216,7 +226,7 @@ function _windows () {
     sleep 3
 
     # Get the sources
-    scp -P $Win_SSH_port "prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\" || (echo "ERROR: unable to get the sources" >&2 && return 1)
+    scp -P $Win_SSH_port "prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\"
     sleep 3
 
     # Build
@@ -231,45 +241,45 @@ function _windows () {
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386.exe"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386.exe" \
-                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64.exe"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64.exe" \
-                         "win_binary/libmediainfo0/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_i386.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_i386.zip" \
-                         "win_binary/mediainfo/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediainfo/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_x64.zip"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_x64.zip" \
-                         "win_binary/mediainfo/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediainfo/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows.exe"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
-                         "win_binary/mediainfo-gui/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Download thank version only in release mode
     if [ -n "$Win_donors_dir" ] && [ "${Version_new%.????????}" == "${Version_new}" ] ; then
         File="MediaInfo_GUI_${Version_new}_Windows.exe"
         scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\..\\..\\..\\ThankYou\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
-                             "win_donors/$Version_new/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                             "win_donors/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
     fi
 
     # Check errors
@@ -446,14 +456,6 @@ function _linux () {
 }
 
 function btask.BuildRelease.run () {
-
-    # TODO: incremental snapshots if multiple execution in the
-    # same day eg. AAAAMMJJ-X
-    #if b.path.dir? $Working_dir/`date +%Y%m%d`; then
-    #    mv $Working_dir/`date +%Y%m%d` $Working_dir/`date +%Y%m%d`-1
-    #    Working_dir=$Working_dir/`date +%Y%m%d`-2
-    #    mkdir -p $Working_dir
-    # + handle a third run, etc
 
     local Repo MIL_gs UV_flags
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
