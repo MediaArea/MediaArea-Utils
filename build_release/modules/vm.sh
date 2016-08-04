@@ -9,7 +9,7 @@
 function vm_is_running () {
     local URI="$1" Name="$2"
 
-    if [ $# -lt 2 ] ; then 
+    if [ $# -lt 2 ] ; then
         return 2
     fi
 
@@ -23,9 +23,9 @@ function vm_is_running () {
 }
 
 function vm_start() {
-    local URI="$1" Name="$2"
+    local URI="$1" Name="$2" IP="$3" Port="$4" Try="5"
 
-    if [ $# -lt 2 ] ; then 
+    if [ $# -lt 2 ] ; then
         return 2
     fi
 
@@ -37,14 +37,26 @@ function vm_start() {
     local State="$(LC_ALL=C virsh -c $URI domstate $Name 2>/dev/null)"
 
     if [ "$State" == "shut off" ] || [ "$State" == "crashed" ] ; then
-        LC_ALL=C virsh -c $URI start $Name 2>/dev/null
+        virsh -c $URI start $Name 2>/dev/null
+        b.set "vm.started" "1"
     elif [ "$State" == "paused" ] ; then
-        LC_ALL=C virsh -c $URI resume $Name 2>/dev/null
+        virsh -c $URI resume $Name 2>/dev/null
+        b.set "vm.started" "1"
     elif [ "$State" == "running" ] ; then
-        # do nothing
-        true
+        # Already running
+        return 0
     else
         return 1
+    fi
+
+    # Allow time for VM startup
+    if [ -n "$IP" ] && [ -n "$Port" ]; then
+        for i in $(seq $Try) ; do
+            sleep 30
+            if echo > /dev/tcp/$IP/$Port; then
+                break
+            fi
+        done
     fi
 
     # return 0 or 1
@@ -54,7 +66,7 @@ function vm_start() {
 function vm_stop () {
     local URI="$1" Name="$2"
 
-    if [ $# -lt 2 ] ; then 
+    if [ $# -lt 2 ] ; then
         return 2
     fi
 
@@ -63,5 +75,8 @@ function vm_stop () {
         return 3
     fi
 
-    virsh -c $URI shutdown $Name 2>/dev/null
+    if b.is_set? "vm.started"; then
+        b.unset "vm.started"
+        virsh -c $URI shutdown $Name 2>/dev/null
+    fi
 }

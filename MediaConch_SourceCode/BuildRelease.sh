@@ -181,7 +181,7 @@ function _mac () {
 
 function _windows () {
 
-    local Try=5 VM_started=0 SSHP Build_dir MSG DLPath File
+    local SSHP Build_dir MSG DLPath File
 
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
     Build_dir="build_$RANDOM"
@@ -194,23 +194,10 @@ function _windows () {
     mkdir -p "win_binary/mediaconch-server/$Sub_dir"
 
     # Start the VM if needed
-    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
-        if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
-            echo "Starting Windows VM..."
-            if ! vm_start "$Virsh_uri" "$Win_VM_name"; then
-                print_e "ERROR: unable to start VM"
-                return 1
-            fi
-
-            # Allow time for VM startup
-            for i in $(seq $Try) ; do
-                sleep 30
-                if $SSHP "exit"; then
-                    sleep 3
-                    break
-                fi
-            done
-            VM_started="1"
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
+            print_e "ERROR: unable to start VM"
+            return 1
         fi
     fi
 
@@ -297,7 +284,7 @@ function _windows () {
     $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
 
     # Stop the VM
-    if [ "$VM_started" == "1" ] ; then
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         vm_stop "$Virsh_URI" "$Win_VM_name"
     fi
 }
