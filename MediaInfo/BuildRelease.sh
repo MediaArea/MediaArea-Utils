@@ -319,99 +319,13 @@ function _obs () {
     cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_package/mediainfo_${Version_new}.orig.tar.xz
     cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
 
-    cd $OBS_package
-    tar xf mediainfo_${Version_new}.orig.tar.xz
-    mv MediaInfo/debian .
-    rm -fr MediaInfo
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}-1.debian.tar.xz debian)
-    rm -fr debian
-    cd ../..
+    # Create Debian packages and dsc
+    deb_obs "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz
 
     cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.spec $OBS_package
-    cp prepare_source/MI/MediaInfo/Project/GNU/mediainfo.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
     cp prepare_source/MI/MediaInfo/Project/GNU/PKGBUILD $OBS_package
 
-    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
-    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}-1.debian.tar.xz mediainfo_${Version_new}-1.dsc
-
     update_PKGBUILD "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz PKGBUILD
-
-    cd $OBS_package
-    osc addremove *
-    osc commit -n
-
-}
-
-function _obs_deb () {
-
-    # This function build the source on OBS for a specific debian
-    # version.
-
-    local Deb_version="$1"
-    local OBS_package="$OBS_project/MediaInfo_$Deb_version"
-
-    cd "$MI_tmp"
-
-    echo
-    echo "OBS for $OBS_package, initialize files..."
-    echo
-
-    osc checkout $OBS_package
-
-    # Clean up
-    rm -f $OBS_package/*
-
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.xz $OBS_package
-    cd $OBS_package
-    tar xf mediainfo_${Version_new}.tar.xz
-    rm -fr mediainfo_${Version_new}.tar.xz
-    rm -fr MediaInfo/debian ; mv MediaInfo/Project/OBS/${Deb_version}.debian MediaInfo/debian
-    cp -r MediaInfo/debian .
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}.orig.tar.xz MediaInfo)
-    rm -fr MediaInfo
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f mediainfo_${Version_new}-1.debian.tar.xz debian)
-    rm -fr debian
-    cd ../..
-
-    cp prepare_source/MI/MediaInfo/Project/OBS/${Deb_version}.dsc $OBS_package/mediainfo_${Version_new}-1.dsc
-
-    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.orig.tar.xz mediainfo_${Version_new}-1.dsc
-    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}-1.debian.tar.xz mediainfo_${Version_new}-1.dsc
-
-    cd $OBS_package
-    osc addremove *
-    osc commit -n
-
-}
-
-function _obs_deb6 () {
-
-    # This function build the source on OBS for Debian 6.
-
-    local OBS_package="$OBS_project/MediaInfo_deb6"
-
-    cd "$MI_tmp"
-
-    echo
-    echo "OBS for $OBS_package, initialize files..."
-    echo
-
-    osc checkout $OBS_package
-
-    # Clean up
-    rm -f $OBS_package/*
-
-    cp prepare_source/archives/mediainfo_${Version_new}.tar.gz $OBS_package
-    cd $OBS_package
-    tar xf mediainfo_${Version_new}.tar.gz
-    rm -fr MediaInfo/debian ; mv MediaInfo/Project/OBS/deb6.debian MediaInfo/debian
-    (GZIP=-9 tar -cz --owner=root --group=root -f mediainfo_${Version_new}.tar.gz MediaInfo)
-    rm -fr MediaInfo
-    cd ../..
-
-    cp prepare_source/MI/MediaInfo/Project/OBS/deb6.dsc $OBS_package/mediainfo_${Version_new}.dsc
-
-    update_DSC "$MI_tmp"/$OBS_package mediainfo_${Version_new}.tar.gz mediainfo_${Version_new}.dsc
 
     cd $OBS_package
     osc addremove *
@@ -422,9 +336,6 @@ function _obs_deb6 () {
 function _linux () {
 
     _obs
-    _obs_deb deb9
-    _obs_deb deb7
-    _obs_deb6
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
@@ -435,12 +346,6 @@ function _linux () {
 
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb9 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb7 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb7.log 2>"$Log"/obs_deb7-error.log &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project MediaInfo_deb6 $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
 
 }
 

@@ -25,21 +25,11 @@ function _obs () {
     # Suse doesn’t handle xz
     cp prepare_source/archives/libzen_${Version_new}.tar.gz $OBS_package
 
-    # For Debian : generation of libzen_XXX-1.debian.tar.xz
-    cd $OBS_package
-    tar xf libzen_${Version_new}.orig.tar.xz
-    mv ZenLib/debian .
-    rm -fr ZenLib
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f libzen_${Version_new}-1.debian.tar.xz debian)
-    rm -fr debian
-    cd ../..
+    # Create Debian packages and dsc
+    deb_obs "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz
 
     cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_package
-    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.dsc $OBS_package/libzen_${Version_new}-1.dsc
     cp prepare_source/ZL/ZenLib/Project/GNU/PKGBUILD $OBS_package
-
-    update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
-    update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}-1.debian.tar.xz libzen_${Version_new}-1.dsc
 
     update_PKGBUILD "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz PKGBUILD
 
@@ -49,89 +39,10 @@ function _obs () {
 
 }
 
-function _obs_deb () {
-
-    # This function build the source on OBS for a specific Debian
-    # version.
-
-    local Deb_version="$1"
-    local OBS_package="$OBS_project/ZenLib_$Deb_version"
-
-    cd "$ZL_tmp"
-
-    echo
-    echo "OBS for $OBS_package, initialize files..."
-    echo
-
-    osc checkout $OBS_package
-
-    # Clean up
-    rm -f $OBS_package/*
-
-    # Gestion of specific /debian/
-    cp prepare_source/archives/libzen_${Version_new}.tar.xz $OBS_package
-    cd $OBS_package
-    tar xf libzen_${Version_new}.tar.xz
-    rm -fr libzen_${Version_new}.tar.xz
-    rm -fr ZenLib/debian ; mv ZenLib/Project/OBS/${Deb_version}.debian ZenLib/debian
-    cp -r ZenLib/debian .
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f libzen_${Version_new}.orig.tar.xz ZenLib)
-    rm -fr ZenLib
-    (XZ_OPT=-9e tar -cJ --owner=root --group=root -f libzen_${Version_new}-1.debian.tar.xz debian)
-    rm -fr debian
-    cd ../..
-
-    cp prepare_source/ZL/ZenLib/Project/OBS/${Deb_version}.dsc $OBS_package/libzen_${Version_new}-1.dsc
-
-    update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz libzen_${Version_new}-1.dsc
-    update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}-1.debian.tar.xz libzen_${Version_new}-1.dsc
-
-    cd $OBS_package
-    osc addremove *
-    osc commit -n
-
-}
-
-function _obs_deb6 () {
-
-    # This function build the source on OBS for Debian 6.
-
-    local OBS_package="$OBS_project/ZenLib_deb6"
-
-    cd "$ZL_tmp"
-
-    echo
-    echo "OBS for $OBS_package, initialize files..."
-    echo
-
-    osc checkout $OBS_package
-
-    # Clean up
-    rm -f $OBS_package/*
-
-    cp prepare_source/archives/libzen_${Version_new}.tar.gz $OBS_package
-    cd $OBS_package
-    tar xf libzen_${Version_new}.tar.gz
-    rm -fr ZenLib/debian ; mv ZenLib/Project/OBS/deb6.debian ZenLib/debian
-    (GZIP=-9 tar -cz --owner=root --group=root -f libzen_${Version_new}.tar.gz ZenLib)
-    rm -fr ZenLib
-    cd ../..
-
-    cp prepare_source/ZL/ZenLib/Project/OBS/deb6.dsc $OBS_package/libzen_${Version_new}.dsc
-
-    update_DSC "$ZL_tmp"/$OBS_package libzen_${Version_new}.tar.gz libzen_${Version_new}.dsc
-
-    cd $OBS_package
-    osc addremove *
-    osc commit -n
-
-}
 
 function _linux () {
 
     _obs
-    _obs_deb6
-    _obs_deb deb9
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
@@ -145,11 +56,6 @@ function _linux () {
     # be deleted)
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $OBS_project ZenLib $Version_new "$ZLB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-    # The sleep is to avoid OSError: File exists: 'destination'
-    sleep 10
-    python Handle_OBS_results.py $OBS_project ZenLib_deb6 $Version_new "$ZLB_dir" >"$Log"/obs_deb6.log 2>"$Log"/obs_deb6-error.log &
-    sleep 10
-    python Handle_OBS_results.py $OBS_project ZenLib_deb9 $Version_new "$ZLB_dir" >"$Log"/obs_deb9.log 2>"$Log"/obs_deb9-error.log &
 
 }
 
