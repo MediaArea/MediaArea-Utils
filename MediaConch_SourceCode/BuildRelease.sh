@@ -309,11 +309,12 @@ function _obs () {
 
     cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_package
     cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_package
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_package
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.dsc $OBS_package/mediaconch_${Version_new}.dsc
-    cp prepare_source/MC/MediaConch/Project/GNU/PKGBUILD $OBS_package
 
-    update_DSC "$MC_tmp"/$OBS_package mediaconch_${Version_new}.tar.xz mediaconch_${Version_new}.dsc
+    # Create Debian packages and dsc
+    deb_obs "$MC_tmp"/$OBS_package mediaconch_${Version_new}.tar.xz
+
+    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_package
+    cp prepare_source/MC/MediaConch/Project/GNU/PKGBUILD $OBS_package
 
     update_PKGBUILD "$MC_tmp"/$OBS_package mediaconch_${Version_new}.tar.xz PKGBUILD
 

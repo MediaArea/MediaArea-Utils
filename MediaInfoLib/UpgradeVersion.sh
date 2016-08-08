@@ -33,11 +33,8 @@ function btask.UpgradeVersion.run () {
     # Populate Version_old_* variables
     getOld "$MIL_source/Project/version.txt"
 
-    # Update version.txt only in release mode
-    if [ "${Version_new%.????????}" == "${Version_new}" ] ; then
-        echo "Update version.txt"
-        echo "${Version_new}" > "$MIL_source/Project/version.txt"
-    fi
+    echo "Update version.txt"
+    echo "${Version_new}" > "$MIL_source/Project/version.txt"
 
     echo
     echo "Passage for version with dots..."

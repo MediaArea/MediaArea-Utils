@@ -643,8 +643,8 @@ def Get_packages_on_OBS():
                 Dev_name_wanted = ''
 
             ### Doc package ###
-            # No doc packages for Arch at this time, doc packages aren’t generated on debX repos
-            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+            # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
+            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "Debian_6.0":
                 Doc_name_wanted = Get_doc_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
             else:
                 Doc_name_wanted = ''
@@ -750,8 +750,8 @@ def Verify_states_and_files():
 
             if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
                 Number_dev_wanted = Number_dev_wanted + 1
-                # Doc packages aren’t generated on debX repos
-                if not fnmatch.fnmatch(OBS_package, "*_deb?"):
+                # Doc packages aren’t generated for Debian_6.0
+                if not Distrib_name == "Debian_6.0":
                     Number_doc_wanted = Number_doc_wanted + 1
             elif Project_kind == "gui" and (not fnmatch.fnmatch(OBS_package, "MediaConch*") or \
                                            (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
@@ -990,7 +990,7 @@ def Verify_states_and_files():
     print "\nHandle_OBS_results.py has run during: " + Total_time
 
     # Don’t send a confirmation mail for the debX repos
-    if Project_kind == "lib" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+    if Project_kind == "lib":
         # We use >= and not ==, because there may be other repos
         # which have ran into the same directory (Project_debX).
         if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_dev >= Number_dev_wanted and Number_doc >= Number_doc_wanted:
@@ -1009,7 +1009,7 @@ def Verify_states_and_files():
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
 
-    if Project_kind == "gui" and not fnmatch.fnmatch(OBS_package, "*_deb?"):
+    if Project_kind == "gui":
         if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_gui >= Number_gui_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \

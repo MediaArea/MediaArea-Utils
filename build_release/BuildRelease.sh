@@ -74,46 +74,6 @@ function displayHelp () {
     b.opt.show_usage
 }
 
-function update_DSC () {
-
-    # Arguments :
-    # update_DSC $Path_to_obs_project $Archive $DSC
-    
-    local OBSPath=$1 Archive=$2 DSC=$3
-    
-    DSC="$OBSPath"/$DSC
-
-    if [ $# -lt 3 ]; then
-        echo "Insuffisent parameters for update_DSC"
-        exit 1
-    fi
-    
-    Size=`ls -l "$OBSPath"/$Archive |awk '{print $5}'`
-    SHA1=`sha1sum "$OBSPath"/$Archive |awk '{print $1}'`
-    SHA256=`sha256sum "$OBSPath"/$Archive |awk '{print $1}'`
-    MD5=`md5sum "$OBSPath"/$Archive |awk '{print $1}'`
-    
-    # For sed, 00* = 0+
-    oldSHA1="0000000000000000000000000000000000000000 00* $Archive"
-    oldSHA256="0000000000000000000000000000000000000000000000000000000000000000 00* $Archive"
-    oldMD5="00000000000000000000000000000000 00* $Archive"
-
-    newSHA1="$SHA1 $Size $Archive"
-    newSHA256="$SHA256 $Size $Archive"
-    newMD5="$MD5 $Size $Archive"
-
-    if b.path.file? "$DSC" && b.path.readable? "$DSC"; then
-        # Handle the longuest strings first, otherwise the shorters
-        # get in the way
-        $(sed -i "s/${oldSHA256}/$newSHA256/g" "$DSC")
-        $(sed -i "s/${oldSHA1}/$newSHA1/g" "$DSC")
-        $(sed -i "s/${oldMD5}/$newMD5/g" "$DSC")
-    else
-       print_e "WARNING: file ${DSC} not found"
-    fi
-
-}
-
 function update_PKGBUILD () {
 
     # Arguments :
