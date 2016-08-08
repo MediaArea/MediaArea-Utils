@@ -87,7 +87,7 @@ function deb_obs () {
     # Create *.debian.tar.xz achive if the package name is *.orig.tar.xz
     if [ "$Archive" == "${Archive%%_*}_${Version}.orig.tar.xz" ] ; then
         mv $Project/debian .
-        tar -c --owner=root --group=root -I 'xz -9e' -f ${Archive%%_*}_${Version}-1.debian.tar.xz debian
+        (XZ_OPT=-9e tar -c --owner=root --group=root -f ${Archive%%_*}_${Version}-1.debian.tar.xz debian)
         rm -fr debian
 
         update_dsc "$OBS_path" ${Archive%%_*}_${Version}-1.debian.tar.xz ${Archive%%_*}_${Version}-1.dsc
@@ -107,13 +107,13 @@ function deb_obs () {
 
         if [ "$Target" == "deb6" ] ; then
             mv $Project/Project/OBS/deb6.debian $Project/debian
-            tar -c --owner=root --group=root --exclude Project/OBS -I 'gzip -9' -f ${Archive%%_*}_${Version}-1${Target}.tar.gz $Project
+            (GZIP=-9 tar -c --owner=root --group=root --exclude Project/OBS -f ${Archive%%_*}_${Version}-1${Target}.tar.gz $Project)
 
             cp $Project/Project/OBS/${Target}.dsc .
             update_dsc "$OBS_path" ${Archive%%_*}_${Version}-1${Target}.tar.gz ${Target}.dsc
         else
             mv $Project/Project/OBS/${Target}.debian debian
-            tar -c --owner=root --group=root -I 'xz -9e' -f ${Archive%%_*}_${Version}-1${Target}.debian.tar.xz debian
+            (XZ_OPT=-9e tar -c --owner=root --group=root -f ${Archive%%_*}_${Version}-1${Target}.debian.tar.xz debian)
             rm -fr debian
 
             cp $Project/Project/OBS/${Target}.dsc .
