@@ -29,6 +29,7 @@ function _mac_cli () {
             cd MediaInfo/Project/Mac ;
             ./Make_MI_dmg.sh cli $Version_new"
 
+    test -e "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg && rm "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_CLI_${Version_new}_Mac.dmg "$MIC_dir"
 
 }
@@ -60,6 +61,7 @@ function _mac_gui () {
             cd MediaInfo/Project/Mac ;
             ./Make_MI_dmg.sh gui $Version_new"
 
+    test -e "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg && rm "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaInfo_GUI_GNU_FromSource/MediaInfo/Project/Mac/MediaInfo_GUI_${Version_new}_Mac.dmg "$MIG_dir"
 
     if ! b.opt.has_flag? --snapshot; then
@@ -168,7 +170,7 @@ function _mac () {
 
 function _windows () {
 
-    local Try=5 VM_started=0 SSHP Build_dir MSG DLPath File
+    local SSHP Build_dir MSG DLPath File
 
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
     Build_dir="build_$RANDOM"
@@ -182,24 +184,11 @@ function _windows () {
     mkdir -p "win_donors/$Sub_dir"
 
     # Start the VM if needed
-    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ] ; then
-        if ! vm_is_running "$Virsh_uri" "$Win_VM_name" ; then
-            echo "Starting Windows VM..."
-            if ! vm_start "$Virsh_uri" "$Win_VM_name"; then
-                print_e "ERROR: unable to start VM"
-                return 1
-            fi
-
-            # Allow time for VM startup
-            for i in $(seq $Try) ; do
-                sleep 30
-                if $SSHP "exit"; then
-                    sleep 3
-                    break
-                fi
-            done
-
-            VM_started="1"
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        echo "Starting Windows VM..."
+        if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
+            print_e "ERROR: unable to start VM"
+            return 1
         fi
     fi
 
@@ -307,7 +296,7 @@ function _windows () {
     $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
 
     # Stop the VM
-    if [ "$VM_started" == "1" ] ; then
+    if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         vm_stop "$Virsh_URI" "$Win_VM_name"
     fi
 }
@@ -467,9 +456,6 @@ function btask.BuildRelease.run () {
     echo Clean up...
     echo
 
-    rm -fr "$MIC_dir"
-    rm -fr "$MIG_dir"
-    rm -fr "$MIS_dir"
     rm -fr "$MI_tmp"
 
     mkdir -p "$MIC_dir"
@@ -534,6 +520,7 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mi -n $Version_new $UV_flags -sp "$MI_tmp"/upgrade_version/MediaInfo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
+    find "$MIS_dir" -mindepth 1 -delete
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
