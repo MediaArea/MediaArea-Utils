@@ -224,12 +224,17 @@ def Get_bin_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
     # Bin = the library package in case of a library, or
     # the cli package otherwise
 
-    # Handle libzen and libmediainfo without 0 ending
-    if ((fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
-       (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
-       fnmatch.fnmatch(Distrib_name, "Fedora*") or \
-       fnmatch.fnmatch(Distrib_name, "Arch*")) and Project_kind == "lib" :
-        Bin_or_lib_name = Debug_name
+    # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
+    if Project_kind == "lib":
+        if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
+           (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
+           fnmatch.fnmatch(Distrib_name, "Fedora*") or \
+           fnmatch.fnmatch(Distrib_name, "Arch*"):
+            Bin_or_lib_name = Debug_name
+        elif Distrib_name == "xUbuntu_15.10" or Distrib_name == "xUbuntu_16.04":
+            Bin_or_lib_name = Bin_name + "v5"
+        else:
+            Bin_or_lib_name = Bin_name
     else:
         Bin_or_lib_name = Bin_name
 
@@ -1066,18 +1071,12 @@ Timeout = False
 Count = 0
 Result = 0
 
-if fnmatch.fnmatch(OBS_package, "ZenLib*"):
+if OBS_package == "ZenLib":
     Project_kind = "lib"
     Bin_name = "libzen0"
     Debug_name = "libzen"
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        if OBS_package == "ZenLib":
-            Table = "snapshots_obs_zl"
-        elif OBS_package == "ZenLib_deb6":
-            Table = "snapshots_obs_zl_deb6"
-        elif OBS_package == "ZenLib_deb9":
-            Table = "snapshots_obs_zl_deb9"
-            Bin_name = "libzen0v5"
+        Table = "snapshots_obs_zl"
     else:
         DL_pages_table = "releases_dlpages_zl"
         DB_structure = """
@@ -1088,29 +1087,14 @@ if fnmatch.fnmatch(OBS_package, "ZenLib*"):
             libnamedbg varchar(120),
             libnamedev varchar(120),
             libnamedoc varchar(120)"""
-        if OBS_package == "ZenLib":
-            Table = "releases_obs_zl"
-        elif OBS_package == "ZenLib_deb6":
-            Table = "releases_obs_zl_deb6"
-        elif OBS_package == "ZenLib_deb9":
-            Table = "releases_obs_zl_deb9"
-            Bin_name = "libzen0v5"
+        Table = "releases_obs_zl"
 
-if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*"):
+if OBS_package == "MediaInfoLib":
     Project_kind = "lib"
     Bin_name = "libmediainfo0"
     Debug_name = "libmediainfo"
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        if OBS_package == "MediaInfoLib":
-            Table = "snapshots_obs_mil"
-        elif OBS_package == "MediaInfoLib_deb6":
-            Table = "snapshots_obs_mil_deb6"
-        elif OBS_package == "MediaInfoLib_deb9":
-            Table = "snapshots_obs_mil_deb9"
-            Bin_name = "libmediainfo0v5"
-        # Since TinyXML2 is back as buildin for deb distribs
-        #elif OBS_package == "MediaInfoLib_u12.04":
-        #    Table = "snapshots_obs_mil_u12.04"
+        Table = "snapshots_obs_mil"
     else:
         DL_pages_table = "releases_dlpages_mil"
         DB_structure = """
@@ -1121,28 +1105,16 @@ if OBS_package == "MediaInfoLib" or fnmatch.fnmatch(OBS_package, "MediaInfoLib_*
             libnamedbg varchar(120),
             libnamedev varchar(120),
             libnamedoc varchar(120)"""
-        if OBS_package == "MediaInfoLib":
-            Table = "releases_obs_mil"
-        elif OBS_package == "MediaInfoLib_deb6":
-            Table = "releases_obs_mil_deb6"
-        elif OBS_package == "MediaInfoLib_deb9":
-            Table = "releases_obs_mil_deb9"
-            Bin_name = "libmediainfo0v5"
-        # Since TinyXML2 is back as buildin for deb distribs
-        #elif OBS_package == "MediaInfoLib_u12.04":
-        #    Table = "releases_obs_mil_u12.04"
+        Table = "releases_obs_mil"
 
-if fnmatch.fnmatch(OBS_package, "MediaConch*"):
+if OBS_package == "MediaConch":
     Project_kind = "gui"
     Bin_name = "mediaconch"
     Debug_name = "mediaconch"
     Destination_server = sys.argv[5]
     Destination_gui = sys.argv[6]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        if OBS_package == "MediaConch":
-            Table = "snapshots_obs_mc"
-        if OBS_package == "MediaConch_deb9":
-            Table = "snapshots_obs_mc_deb9"
+        Table = "snapshots_obs_mc"
     else:
         DL_pages_table = "releases_dlpages_mc"
         DB_structure = """
@@ -1155,26 +1127,15 @@ if fnmatch.fnmatch(OBS_package, "MediaConch*"):
             servernamedbg varchar(120),
             guiname varchar(120),
             guinamedbg varchar(120)"""
-        if OBS_package == "MediaConch":
-            Table = "releases_obs_mc"
-        if OBS_package == "MediaConch_deb9":
-            Table = "releases_obs_mc_deb9"
+        Table = "releases_obs_mc"
 
-# Careful to not catch MediaInfoLib
-if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
+if OBS_package == "MediaInfo":
     Project_kind = "gui"
     Bin_name = "mediainfo"
     Debug_name = "mediainfo"
     Destination_gui = sys.argv[5]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        if OBS_package == "MediaInfo":
-            Table = "snapshots_obs_mi"
-        elif OBS_package == "MediaInfo_deb6":
-            Table = "snapshots_obs_mi_deb6"
-        elif OBS_package == "MediaInfo_deb7":
-            Table = "snapshots_obs_mi_deb7"
-        elif OBS_package == "MediaInfo_deb9":
-            Table = "snapshots_obs_mi_deb9"
+        Table = "snapshots_obs_mi"
     else:
         DL_pages_table = "releases_dlpages_mi"
         DB_structure = """
@@ -1185,14 +1146,7 @@ if OBS_package == "MediaInfo" or fnmatch.fnmatch(OBS_package, "MediaInfo_*"):
             clinamedbg varchar(120),
             guiname varchar(120),
             guinamedbg varchar(120)"""
-        if OBS_package == "MediaInfo":
-            Table = "releases_obs_mi"
-        elif OBS_package == "MediaInfo_deb6":
-            Table = "releases_obs_mi_deb6"
-        elif OBS_package == "MediaInfo_deb7":
-            Table = "releases_obs_mi_deb7"
-        elif OBS_package == "MediaInfo_deb9":
-            Table = "releases_obs_mi_deb9"
+        Table = "releases_obs_mi"
 
 if len(DL_pages_table) > 1:
     Release = True
