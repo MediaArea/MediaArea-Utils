@@ -170,7 +170,7 @@ function _mac () {
 
 function _windows () {
 
-    local SSHP Build_dir MSG DLPath File
+    local SSHP Build_dir DLPath File
 
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
     Build_dir="build_$RANDOM"
@@ -187,14 +187,16 @@ function _windows () {
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         echo "Starting Windows VM..."
         if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
-            print_e "ERROR: unable to start VM"
+            MSG="ERROR: unable to start VM"
+            print_e "$MSG"
             return 1
         fi
     fi
 
     # Test connection
     if ! $SSHP "exit"; then
-        print_e "ERROR: unable to connect to host"
+        MSG="ERROR: unable to connect to host"
+        print_e "$MSG"
         return 1
     fi
     sleep 3
@@ -271,16 +273,6 @@ function _windows () {
                              "win_donors/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
     fi
 
-    # Check errors
-    if [ -n "$MSG" ]; then
-        if ! [ -z "$Email_CC" ]; then
-            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MI" -c "$Email_CC" $Email_to
-        else
-            echo -e "$MSG" | mailx -s "[BR WIndows] Problem building MI" $Email_to
-        fi
-        echo -e $MSG 1>&2
-    fi
-
     # Copy files to the final destination
     if [ -e "win_donors/$Sub_dir/MediaInfo_GUI_${Version_new}_Windows.exe" ] ; then
         scp -r "win_donors/." "$Win_donors_dir"
@@ -299,6 +291,14 @@ function _windows () {
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         vm_stop "$Virsh_URI" "$Win_VM_name"
     fi
+
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
+
+    return 0
 }
 
 function _obs () {
@@ -351,7 +351,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo MIL_gs UV_flags
+    local Repo MIL_gs UV_flags MSG
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -429,7 +429,16 @@ function btask.BuildRelease.run () {
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
-    if [ "$Target" = "mac" ]; then
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
+        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
+    fi
+
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
         else
@@ -439,39 +448,19 @@ function btask.BuildRelease.run () {
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
     fi
 
-    if [ "$Target" = "windows" ]; then
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ]; then
+        MSG=
         if b.opt.has_flag? --log; then
             _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             _windows
         fi
-        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
-    fi
 
-    if [ "$Target" = "linux" ]; then
-        if b.opt.has_flag? --log; then
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
-        else
-            _linux
+        if [ $? -ne 0 ] ; then
+            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MI" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
         fi
-        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
-    fi
 
-    if [ "$Target" = "all" ]; then
-        if b.opt.has_flag? --log; then
-            # Linux first, in order that OBS build while the mac and windows tasks are # executed
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
-            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-        else
-            _linux
-            _mac
-            _windows
-        fi
-        mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
-        mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}_AllInclusive.7z "$MIS_dir"
-        mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
 
     if $Clean_up; then

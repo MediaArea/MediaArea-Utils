@@ -184,7 +184,7 @@ function _mac () {
 
 function _windows () {
 
-    local SSHP Build_dir MSG DLPath File
+    local SSHP Build_dir DLPath File
 
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
     Build_dir="build_$RANDOM"
@@ -199,16 +199,19 @@ function _windows () {
     # Start the VM if needed
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
-            print_e "ERROR: unable to start VM"
+            MSG="ERROR: unable to start VM"
+            print_e "$MSG"
             return 1
         fi
     fi
 
     # Test connection
     if ! $SSHP "exit"; then
-        print_e "ERROR: unable to connect to host"
-       return 1
+        MSG="ERROR: unable to connect to host"
+        print_e "$MSG"
+        return 1
     fi
+    sleep 3
 
     # Prepare build directory
     echo "Prepare build directory..."
@@ -267,16 +270,6 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_x64.zip" \
                          "win_binary/mediaconch-server/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    # Check errors
-    if [ -n "$MSG" ]; then
-        if ! [ -z "$Email_CC" ]; then
-            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MC" -c "$Email_CC" $Email_to
-        else
-            echo -e "$MSG" | mailx -s "[BR WIndows] Problem building MC" $Email_to
-        fi
-        echo -e $MSG 1>&2
-    fi
-
     # Copy files to the final destination
     scp -r "win_binary/." "$Win_binary_dir"
 
@@ -290,6 +283,14 @@ function _windows () {
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         vm_stop "$Virsh_URI" "$Win_VM_name"
     fi
+
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
+
+    return 0
 }
 
 function _obs () {
@@ -342,7 +343,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags
+    local Repo UV_flags MSG
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -426,7 +427,16 @@ function btask.BuildRelease.run () {
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mc -v $Version_new -wp "$MC_tmp"/prepare_source -sp "$MC_tmp"/upgrade_version/MediaConch_SourceCode $PS_target -nc
 
-    if [ "$Target" = "mac" ]; then
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        if b.opt.has_flag? --log; then
+            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
+        else
+            _linux
+        fi
+        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
+    fi
+
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
         else
@@ -437,39 +447,19 @@ function btask.BuildRelease.run () {
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
     fi
 
-    if [ "$Target" = "windows" ]; then
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        MSG=
         if b.opt.has_flag? --log; then
             _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
             _windows
         fi
-        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
-    fi
 
-    if [ "$Target" = "linux" ]; then
-        if b.opt.has_flag? --log; then
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
-        else
-            _linux
+        if [ $? -ne 0 ] ; then
+            echo -e "$MSG" | mailx -s "[BR Windows] Problem building MC" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
         fi
-        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
-    fi
 
-    if [ "$Target" = "all" ]; then
-        if b.opt.has_flag? --log; then
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
-            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-            _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-        else
-            _linux
-            _mac
-            _windows
-        fi
-        mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
-        mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
-        mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"
         mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}_AllInclusive.7z "$MCS_dir"
-        mv "$MC_tmp"/prepare_source/archives/mediaconch_${Version_new}.* "$MCS_dir"
     fi
 
     if $Clean_up; then
