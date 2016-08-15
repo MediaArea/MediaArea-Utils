@@ -217,67 +217,50 @@ def Update_DB():
             Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
 ##################################################################
-def Get_bin_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
+def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination):
 
     # We pass Package_infos as argument even if is global because it locally modified by the calling function
 
-    # Bin = the library package in case of a library, or
-    # the cli package otherwise
-
-    # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
-    if Project_kind == "lib":
-        if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
-           (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
-           fnmatch.fnmatch(Distrib_name, "Fedora*") or \
-           fnmatch.fnmatch(Distrib_name, "Arch*"):
-            Bin_or_lib_name = Debug_name
-        elif Distrib_name == "xUbuntu_15.10" or Distrib_name == "xUbuntu_16.04":
-            Bin_or_lib_name = Bin_name + "v5"
-        else:
-            Bin_or_lib_name = Bin_name
-    else:
-        Bin_or_lib_name = Bin_name
-
-
     # The wanted name for the package, under the form:
     # name[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Bin_name_wanted = Bin_or_lib_name \
-                    + Package_infos[Package_type]["dash"] + Version \
-                    + Revision \
-                    + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
-                    + "." + Distrib_name \
-                    + "." + Package_type
-    Bin_name_final = os.path.join(Destination, Bin_name_wanted)
+    Name_wanted = Name \
+                + Package_infos[Package_type]["dash"] + Version \
+                + Revision \
+                + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                + "." + Distrib_name \
+                + "." + Package_type
+    Name_final = os.path.join(Destination, Name_wanted)
 
-    Bin_name_obs_side = "0"
+    Name_obs_side = "0"
     # Fetch the name of the package on OBS
     # We take “ deb" ” to avoid the *.debian.txz files
-    Params = "osc api /build/" + OBS_project \
+    Params = "osc api /build/" \
+           + OBS_project \
            + "/" + Distrib_name \
            + "/" + Arch \
            + "/" + OBS_package \
            + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep " + Bin_or_lib_name + Package_infos[Package_type]["dash"] + Version \
-           + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
+           + " |grep " + Name + Package_infos[Package_type]["dash"] + Version \
+           + " |grep -v src |awk -F '\"' '{print $2}'"
 
-    print "Name of the bin package on OBS:"
+    print "Name of the package on OBS:"
     print Params
-    Bin_name_obs_side = subprocess.check_output(Params, shell=True).strip()
+    Name_obs_side = subprocess.check_output(Params, shell=True).strip()
 
     # If the bin package is build
-    if len(Bin_name_obs_side) > 1:
+    if len(Name_obs_side) > 1:
         Params_getpackage = "osc api /build/" + OBS_project \
                           + "/" + Distrib_name \
                           + "/" + Arch \
                           + "/" + OBS_package \
-                          + "/" + Bin_name_obs_side \
-                          + " > " + Bin_name_final
+                          + "/" + Name_obs_side \
+                          + " > " + Name_final
 
-        print "Command to fetch the bin package:"
+        print "Command to fetch the package:"
         print Params_getpackage
         print
-        if os.path.isfile(Bin_name_final):
-            os.remove(Bin_name_final)
+        if os.path.isfile(Name_final):
+            os.remove(Name_final)
         subprocess.call(Params_getpackage, shell=True)
 
         # This is potentially a spam tank, but I leave the
@@ -290,305 +273,22 @@ def Get_bin_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
 
         # If the bin package is build, but hasn’t been
         # downloaded for some raison.
-        if not os.path.isfile(Bin_name_final):
-            Params = \
-            "echo '" + Distrib_name + " (" + Arch + "): the bin package is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
-                     + Params_getpackage + "'" \
-                     + " |mailx -s '[BR lin] Problem with " \
-                     + OBS_package + "'" \
-                     + " " + Config["Email_to"]
-            subprocess.call(Params, shell=True)
-    else:
-        print "ERROR: fail to get the name of the bin package on OBS."
-        print
-
-    return Bin_name_wanted
-
-##################################################################
-def Get_debug_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
-
-    # name-[dbg|debuginfo][_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Debug_name_wanted = Debug_name \
-                      + Package_infos[Package_type]["debugsuffix"] \
-                      + Package_infos[Package_type]["dash"] + Version \
-                      + Revision \
-                      + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
-                      + "." + Distrib_name \
-                      + "." + Package_type
-    Debug_name_final = os.path.join(Destination, Debug_name_wanted)
-
-    Debug_name_obs_side = "0"
-    # Fetch the name of the package on OBS
-    Params = "osc api /build/" + OBS_project \
-           + "/" + Distrib_name \
-           + "/" + Arch \
-           + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep " + Debug_name + Package_infos[Package_type]["debugsuffix"] + Package_infos[Package_type]["dash"] + Version \
-           + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
-    print "Name of the debug package on OBS:"
-    print Params
-    Debug_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-
-    # If the debug package is build
-    if len(Debug_name_obs_side) > 1:
-        Params_getpackage = "osc api /build/" + OBS_project \
-                          + "/" + Distrib_name \
-                          + "/" + Arch \
-                          + "/" + OBS_package \
-                          + "/" + Debug_name_obs_side \
-                          + " > " + Debug_name_final
-        print "Command to fetch the debug package:"
-        print Params_getpackage
-        print
-        if os.path.isfile(Debug_name_final):
-            os.remove(Debug_name_final)
-        subprocess.call(Params_getpackage, shell=True)
-
-        # If the debug package is build, but hasn’t been
-        # downloaded for some raison.
-        if not os.path.isfile(Debug_name_final):
-            Params = "echo '" + Distrib_name \
-                              + " (" + Arch + "): the debug package is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
-                              + Params_getpackage \
-                              + "'" + " |mailx -s '[BR lin] Problem with " \
-                              + OBS_package + "'" \
-                              + " " + Config["Email_to"]
-            subprocess.call(Params, shell=True)
-        else:
-            # Debug packages aren’t perfectly handled on OBS
-            #print "ERROR: fail to get the name of the debug package on OBS."
-            print
-
-    return Debug_name_wanted
-
-##################################################################
-def Get_dev_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
-
-    # name-dev[el][_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Dev_name_wanted = Debug_name \
-                    + Package_infos[Package_type]["devsuffix"] \
-                    + Package_infos[Package_type]["dash"] + Version \
-                    + Revision \
-                    + Package_infos[Package_type]["separator"] \
-                    + Package_infos[Package_type][Arch] \
-                    + "." + Distrib_name \
-                    + "." + Package_type
-    Dev_name_final = os.path.join(Destination, Dev_name_wanted)
-
-    Dev_name_obs_side = "0"
-    # Fetch the name of the package on OBS
-    Params = "osc api /build/" + OBS_project \
-           + "/" + Distrib_name \
-           + "/" + Arch \
-           + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep " + Debug_name + Package_infos[Package_type]["devsuffix"] + Package_infos[Package_type]["dash"] + Version \
-           + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
-    print "Name of the dev package on OBS:"
-    print Params
-    Dev_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-
-    # If the dev package is build
-    if len(Dev_name_obs_side) > 1:
-        Params_getpackage = "osc api /build/" \
-                            + OBS_project \
-                            + "/" + Distrib_name \
-                            + "/" + Arch \
-                            + "/" + OBS_package \
-                            + "/" + Dev_name_obs_side \
-                            + " > " + Dev_name_final
-        print "Command to fetch the dev package:"
-        print Params_getpackage
-        print
-        if os.path.isfile(Dev_name_final):
-            os.remove(Dev_name_final)
-        subprocess.call(Params_getpackage, shell=True)
-
-        # If the dev package is build, but hasn’t
-        # been downloaded for some raison.
-        if not os.path.isfile(Dev_name_final):
-            Params = "echo '" + Distrib_name \
-                              + " (" + Arch + "): the dev package is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
-                              + Params_getpackage + "'" \
-                              + " |mailx -s '[BR lin] Problem with " \
-                              + OBS_package + "'" \
-                              + " " + Config["Email_to"]
-            subprocess.call(Params, shell=True)
-    else:
-        print "ERROR: fail to get the name of the dev package on OBS."
-        print
-
-    return Dev_name_wanted
-
-##################################################################
-def Get_doc_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
-
-    # name-doc[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Doc_name_wanted = Debug_name + "-doc" \
-                    + Package_infos[Package_type]["dash"] + Version \
-                    + Revision \
-                    + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
-                    + "." + Distrib_name \
-                    + "." + Package_type
-    Doc_name_final = os.path.join(Destination, Doc_name_wanted)
-
-    Doc_name_obs_side = "0"
-    # Fetch the name of the package on OBS
-    Params = "osc api /build/" + OBS_project \
-           + "/" + Distrib_name \
-           + "/" + Arch \
-           + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep doc |grep -v src |awk -F '\"' '{print $2}'"
-    print "Name of the doc package on OBS:"
-    print Params
-    Doc_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-
-    # If the doc package is build
-    if len(Doc_name_obs_side) > 1:
-        Params_getpackage = "osc api /build/" \
-                          + OBS_project \
-                          + "/" + Distrib_name \
-                          + "/" + Arch \
-                          + "/" + OBS_package \
-                          + "/" + Doc_name_obs_side \
-                          + " > " + Doc_name_final
-        print "Command to fetch the doc package:"
-        print Params_getpackage
-        print
-        if os.path.isfile(Doc_name_final):
-            os.remove(Doc_name_final)
-        subprocess.call(Params_getpackage, shell=True)
-
-        # If the doc package is build, but hasn’t been
-        # downloaded for some raison.
-        if not os.path.isfile(Doc_name_final):
+        if not os.path.isfile(Name_final):
             Params = "echo '" \
-                   + Distrib_name + " (" + Arch \
-                   + "): the doc package is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
-                   + Params_getpackage + "'" \
-                   + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
-                   + " " + Config["Email_to"]
-            subprocess.call(Params, shell=True)
-    else:
-        print "ERROR: fail to get the name of the doc package on OBS."
-        print
-
-    return Doc_name_wanted
-
-##################################################################
-def Get_gui_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
-
-    # name-gui[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Gui_name_wanted = Bin_name + "-gui" \
-                    + Package_infos[Package_type]["dash"] + Version \
-                    + Revision \
-                    + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
-                    + "." + Distrib_name \
-                    + "." + Package_type
-    Gui_name_final = os.path.join(Destination_gui, Gui_name_wanted)
-
-    Gui_name_obs_side = "0"
-    # Fetch the name of the package on OBS
-    Params = "osc api /build/" + OBS_project \
-           + "/" + Distrib_name \
-           + "/" + Arch \
-           + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep " + Bin_name + "-gui" + Package_infos[Package_type]["dash"] + Version \
-           + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
-    print "Name of the gui package on OBS:"
-    print Params
-    Gui_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-
-    # If the gui package is build
-    if len(Gui_name_obs_side) > 1:
-        Params_getpackage = "osc api /build/" \
-                          + OBS_project \
-                          + "/" + Distrib_name \
-                          + "/" + Arch \
-                          + "/" + OBS_package \
-                          + "/" + Gui_name_obs_side \
-                          + " > " + Gui_name_final
-        print "Command to fetch the gui package:"
-        print Params_getpackage
-        print
-        if os.path.isfile(Gui_name_final):
-            os.remove(Gui_name_final)
-        subprocess.call(Params_getpackage, shell=True)
-
-        # If the gui package is build, but hasn’t
-        # been downloaded for some raison.
-        if not os.path.isfile(Gui_name_final):
-            Params = "echo '" + Distrib_name \
-                              + " (" + Arch + "): the gui package is build, but hasn’t been downloaded.\n\nThe command line was:\n" + Params_getpackage + "'" \
-                              + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
-                              + " " + Config["Email_to"]
-            subprocess.call(Params, shell=True)
-    else:
-        print "ERROR: fail to get the name of the gui package on OBS."
-        print
-
-    return Gui_name_wanted
-
-##################################################################
-def Get_server_package(Distrib_name, Arch, Revision, Package_type, Package_infos):
-
-    # name-server[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
-    Server_name_wanted = Bin_name + "-server" \
-                       + Package_infos[Package_type]["dash"] + Version \
-                       + Revision \
-                       + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
-                       + "." + Distrib_name \
-                       + "." + Package_type
-    Server_name_final = os.path.join(Destination_server, Server_name_wanted)
-
-    Server_name_obs_side = "0"
-    # Fetch the name of the package on OBS
-    Params = "osc api /build/" \
-           + OBS_project \
-           + "/" + Distrib_name \
-           + "/" + Arch \
-           + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
-           + " |grep " + Bin_name + "-server" + Package_infos[Package_type]["dash"] + Version \
-           + " |grep -v src |grep -v doc |awk -F '\"' '{print $2}'"
-    print "Name of the server package on OBS:"
-    print Params
-    Server_name_obs_side = subprocess.check_output(Params, shell=True).strip()
-
-    # If the server package is build
-    if len(Server_name_obs_side) > 1:
-        Params_getpackage = "osc api /build/" \
-                          + OBS_project \
-                          + "/" + Distrib_name \
-                          + "/" + Arch \
-                          + "/" + OBS_package \
-                          + "/" + Server_name_obs_side \
-                          + " > " + Server_name_final
-        print "Command to fetch the server package:"
-        print Params_getpackage
-        print
-        if os.path.isfile(Server_name_final):
-            os.remove(Server_name_final)
-        subprocess.call(Params_getpackage, shell=True)
-
-        # If the server package is build, but hasn’t
-        # been downloaded for some raison.
-        if not os.path.isfile(Server_name_final):
-            Params = "echo '" + Distrib_name \
-                   + " (" + Arch + "): the server package is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
+                   + Distrib_name \
+                   + " (" + Arch + "): the package " \
+                   + Name_obs_side \
+                   + " is build, but hasn’t been downloaded.\n\nThe command line was:\n" \
                    + Params_getpackage + "'" \
                    + " |mailx -s '[BR lin] Problem with " \
                    + OBS_package + "'" \
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
     else:
-        print "ERROR: fail to get the name of the server package on OBS."
+        print "ERROR: fail to get the name of the package " + Name + " on OBS."
         print
 
-    return Server_name_wanted
+    return Name_wanted
 
 ##################################################################
 def Get_packages_on_OBS():
@@ -630,27 +330,40 @@ def Get_packages_on_OBS():
             if fnmatch.fnmatch(Distrib_name, "Arch*"):
                 Package_type = "pkg.tar.xz"
 
+
+            # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
+            Bin_or_lib_name = Bin_name
+            if Project_kind == "lib":
+                if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
+                   (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
+                   fnmatch.fnmatch(Distrib_name, "Fedora*") or \
+                   fnmatch.fnmatch(Distrib_name, "Arch*"):
+                    Bin_or_lib_name = Devel_name
+                elif Distrib_name == "xUbuntu_15.10" or Distrib_name == "xUbuntu_16.04":
+                    Bin_or_lib_name = Bin_name + "v5"
+
             ### Bin package ###
-            Bin_name_wanted = Get_bin_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+            Bin_name_wanted = Get_package(Bin_or_lib_name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
             ### Debug package ###
-            # No debug packages for Arch at this time
-            if not fnmatch.fnmatch(Distrib_name, "Arch*"):
-                Debug_name_wanted = Get_debug_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+            if not fnmatch.fnmatch(Distrib_name, "Arch*") and \
+               not Distrib_name == "RHEL_5" and \
+               not Distrib_name == "CentOS_5":
+                Debug_name_wanted = Get_package(Bin_or_lib_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
             else:
-                Debug_name_wanted =''
+                Debug_name_wanted = ''
 
             ### Dev package ###
             # Arch devel dependencies usually come with the library itself
             if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
-                Dev_name_wanted =  Get_dev_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+                Dev_name_wanted =  Get_package(Devel_name + Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
             else:
                 Dev_name_wanted = ''
 
             ### Doc package ###
             # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
             if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "Debian_6.0":
-                Doc_name_wanted = Get_doc_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+                Doc_name_wanted = Get_package(Devel_name + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
             else:
                 Doc_name_wanted = ''
 
@@ -660,9 +373,21 @@ def Get_packages_on_OBS():
                                           not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
                                           not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
                                           not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
-                Gui_name_wanted = Get_gui_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+                Gui_name_wanted = Get_package(Bin_name + "-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+
+                # GUI debug package
+                if not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "RHEL_5" and not Distrib_name == "CentOS_5":
+                    if Package_type == "deb" \
+                       or fnmatch.fnmatch(Distrib_name, "openSUSE_*") \
+                       or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
+                        Gui_debug_name_wanted = Get_package(Bin_name + "-gui" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+                    else:
+                        Gui_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+                else:
+                        Gui_debug_name_wanted = ''
             else:
                 Gui_name_wanted = ''
+                Gui_debug_name_wanted = ''
 
             ##################
             # Server package #
@@ -673,9 +398,19 @@ def Get_packages_on_OBS():
                                              not fnmatch.fnmatch(Distrib_name, "RHEL_*") and \
                                              not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
                                              not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
-                Server_name_wanted = Get_server_package(Distrib_name, Arch, Revision, Package_type, Package_infos)
+                Server_name_wanted = Get_package(Bin_name + "-server", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+
+                # Server debug package
+                if not fnmatch.fnmatch(Distrib_name, "Arch*"):
+                    if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or fnmatch.fnmatch(Distrib_name, "SLE_*"):
+                        Server_debug_name_wanted = Get_package(Bin_name + "-server" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+                    else:
+                        Server_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+                else:
+                    Server_debug_name_wanted = ''
             else :
                 Server_name_wanted = ''
+                Server_debug_name_wanted = ''
 
             ###########################
             # Put the filenames in DB #
@@ -710,7 +445,9 @@ def Get_packages_on_OBS():
                             + " cliname = '" + Bin_name_wanted + "'," \
                             + " clinamedbg = '" + Debug_name_wanted + "'," \
                             + " servername = '" + Server_name_wanted + "'," \
-                            + " guiname = '" + Gui_name_wanted + "'" \
+                            + " servernamedbg = '" + Server_debug_name_wanted + "'," \
+                            + " guiname = '" + Gui_name_wanted + "'," \
+                            + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
@@ -720,7 +457,8 @@ def Get_packages_on_OBS():
                             + " version = '" + Version + "'," \
                             + " cliname = '" + Bin_name_wanted + "'," \
                             + " clinamedbg = '" + Debug_name_wanted + "'," \
-                            + " guiname = '" + Gui_name_wanted + "'" \
+                            + " guiname = '" + Gui_name_wanted + "'," \
+                            + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
@@ -796,7 +534,7 @@ def Verify_states_and_files():
     # instances will be counted in Number_bin.
 
     Number_bin = 0
-    Params = "ls " + Destination + "/" + Debug_name + "*" + Version + "*" \
+    Params = "ls " + Destination + "/" + Devel_name + "*" + Version + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
            + " |wc -l"
@@ -823,7 +561,7 @@ def Verify_states_and_files():
     ##################
 
     Number_debug = 0
-    Params = "ls " + Destination + "/" + Debug_name + "*" \
+    Params = "ls " + Destination + "/" + Devel_name + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep 'dbg\|debug'" \
            + " |wc -l"
@@ -850,7 +588,7 @@ def Verify_states_and_files():
 
     if Project_kind == "lib":
         Number_dev = 0
-        Params = "ls " + Destination + "/" + Debug_name + "*" \
+        Params = "ls " + Destination + "/" + Devel_name + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
                + " |grep 'dev\|devel'" \
                + " |wc -l"
@@ -875,7 +613,7 @@ def Verify_states_and_files():
         ################
 
         Number_doc = 0
-        Params = "ls " + Destination + "/" + Debug_name + "-doc*" \
+        Params = "ls " + Destination + "/" + Devel_name + "-doc*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
@@ -1074,7 +812,7 @@ Result = 0
 if OBS_package == "ZenLib":
     Project_kind = "lib"
     Bin_name = "libzen0"
-    Debug_name = "libzen"
+    Devel_name = "libzen"
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_zl"
     else:
@@ -1092,7 +830,7 @@ if OBS_package == "ZenLib":
 if OBS_package == "MediaInfoLib":
     Project_kind = "lib"
     Bin_name = "libmediainfo0"
-    Debug_name = "libmediainfo"
+    Devel_name = "libmediainfo"
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_mil"
     else:
@@ -1110,7 +848,7 @@ if OBS_package == "MediaInfoLib":
 if OBS_package == "MediaConch":
     Project_kind = "gui"
     Bin_name = "mediaconch"
-    Debug_name = "mediaconch"
+    Devel_name = "mediaconch"
     Destination_server = sys.argv[5]
     Destination_gui = sys.argv[6]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
@@ -1132,7 +870,7 @@ if OBS_package == "MediaConch":
 if OBS_package == "MediaInfo":
     Project_kind = "gui"
     Bin_name = "mediainfo"
-    Debug_name = "mediainfo"
+    Devel_name = "mediainfo"
     Destination_gui = sys.argv[5]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_mi"
