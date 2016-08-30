@@ -137,14 +137,14 @@ function commit () {
         local Repo="$WDir/$Project"
     fi
 
-    local Branch="autocommit_$Version_new"
+    local Branch="preparing-v$Version_new"
 
     echo
     echo "Commit changes on $Repo:$Branch"
 
     pushd "$Repo"
     git checkout -b "$Branch"
-    git commit -a -m "[UpdateVersion.sh] version $Version_new"
+    git commit -a -m "Preparing v$Version_new"
 
     git push -f -u origin "$Branch"
     popd
