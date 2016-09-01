@@ -149,6 +149,20 @@ function btask.UpgradeVersion.run () {
         "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" \
         "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
 
+    # Increment CFBundleVersion in MediaInfo-Info.plist
+    echo
+    echo "Update Source/GUI/Cocoa/MediaInfo-Info.plist"
+    sed -i '/<key>CFBundleVersion<\/key>/ {n
+                s/[0-9]\.[0-9]\.[0-9]*[0-9]/&@/g
+                :i {
+                    s/0@/1/g; s/1@/2/g
+                    s/2@/3/g; s/3@/4/g
+                    s/4@/5/g; s/5@/6/g
+                    s/6@/7/g; s/7@/8/g
+                    s/8@/9/g; s/9@/@0/g
+                    t i }
+                s/@/1/g }' "${MI_source}"/Source/GUI/Cocoa/MediaInfo-Info.plist
+
     # Update MediaInfoLib required version
     if [ $(b.opt.get_opt --mil-version) ]; then
         echo
