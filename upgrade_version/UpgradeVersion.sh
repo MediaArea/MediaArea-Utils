@@ -175,6 +175,9 @@ function run () {
         if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
             Project=MediaConch_SourceCode
         fi
+        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
+            Project=QCTools
+        fi
 
         Version_new=$(sanitize_arg $(b.opt.get_opt --new))
         Version_new_comma=$(b.str.replace_all Version_new '.' ',')

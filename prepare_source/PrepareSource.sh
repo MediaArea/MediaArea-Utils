@@ -115,6 +115,9 @@ function run () {
         if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
             Project=MediaConch_SourceCode
         fi
+        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
+            Project=QCTools
+        fi
 
         Version=""
         if [ $(b.opt.get_opt --version) ]; then

@@ -130,6 +130,10 @@ function run () {
             Project=MediaConch_SourceCode
             Dirname="mediaconch"
         fi
+        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
+            Project=QCTools
+            Dirname="qctools"
+        fi
 
         Date=`date +%Y%m%d`
 
