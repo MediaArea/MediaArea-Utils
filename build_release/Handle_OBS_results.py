@@ -368,11 +368,12 @@ def Get_packages_on_OBS():
                 Doc_name_wanted = ''
 
             ### GUI package ###
-            if Project_kind == "gui" and (not Bin_name == "mediaconch" or \
-                                         (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
-                                          not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
-                                          not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                          not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
+            if Project_kind == "gui" and not Bin_name == "qctools" and \
+                                        (not Bin_name == "mediaconch" or \
+                                        (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
+                                         not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
+                                         not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                         not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
                 Gui_name_wanted = Get_package(Bin_name + "-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
 
                 # GUI debug package
@@ -462,6 +463,16 @@ def Get_packages_on_OBS():
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
+                # For QC
+                if Bin_name == "qctools":
+                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                            + " version = '" + Version + "'," \
+                            + " cliname = ''," \
+                            + " clinamedbg = ''," \
+                            + " guiname = '" + Bin_name_wanted + "'," \
+                            + " guinamedbg = '" + Debug_name_wanted + "'" \
+                            + " WHERE platform = '" + Distrib_name + "'" \
+                            + " AND arch = '" + Arch + "';")
 
             print "-----------------------"
 
@@ -496,7 +507,8 @@ def Verify_states_and_files():
                 # Doc packages aren’t generated for Debian_6.0
                 if not Distrib_name == "Debian_6.0":
                     Number_doc_wanted = Number_doc_wanted + 1
-            elif Project_kind == "gui" and (not fnmatch.fnmatch(OBS_package, "MediaConch*") or \
+            elif Project_kind == "gui" and (not fnmatch.fnmatch(OBS_package, "MediaConch*") and \
+                                            not fnmatch.fnmatch(OBS_package, "QCTools*") or \
                                            (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
                                             not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
                                             not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
@@ -661,7 +673,7 @@ def Verify_states_and_files():
     # GUI packages #
     ################
 
-    if Project_kind == "gui":
+    if Project_kind == "gui" and Bin_name != "qctools":
         Number_gui = 0
         Params = "ls " + Destination_gui + "/" + Bin_name + "-gui" + "?" + Version + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
@@ -885,6 +897,25 @@ if OBS_package == "MediaInfo":
             guiname varchar(120),
             guinamedbg varchar(120)"""
         Table = "releases_obs_mi"
+
+if OBS_package == "QCTools":
+    Project_kind = "gui"
+    Bin_name = "qctools"
+    Devel_name = "qctools"
+    Destination_gui = Destination
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        Table = "snapshots_obs_qc"
+    else:
+        DL_pages_table = "releases_dlpages_qc"
+        DB_structure = """
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        Table = "releases_obs_qc"
 
 if len(DL_pages_table) > 1:
     Release = True

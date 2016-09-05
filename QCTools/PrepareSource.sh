@@ -75,17 +75,17 @@ function _all_inclusive () {
 
     git clone "git://source.ffmpeg.org/ffmpeg.git"
 
-    wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
+    wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar -zxvf yasm-1.3.0.tar.gz
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
-    wget http://slackware.uk/sbosrcarch/by-name/multimedia/vlc/Blackmagic_DeckLink_SDK_10.1.4.zip
+    wget -q http://slackware.uk/sbosrcarch/by-name/multimedia/vlc/Blackmagic_DeckLink_SDK_10.1.4.zip
     unzip Blackmagic_DeckLink_SDK_10.1.4.zip
     rm Blackmagic_DeckLink_SDK_10.1.4.zip
     mv "Blackmagic DeckLink SDK 10.1.4" "Blackmagic DeckLink SDK"
 
-    wget http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2
+    wget -q http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2
     tar jxf qwt-6.1.2.tar.bz2
     rm qwt-6.1.2.tar.bz2
     mv qwt-6.1.2 qwt
