@@ -313,6 +313,8 @@ def OBS():
         if Project == "mi":
             if Distrib_name == "xUbuntu":
                 Filename = "Ubuntu.html"
+            elif Distrib_name == "Arch":
+                Filename = "Arch_Linux.html"
             else:
                 Filename = Distrib_name + ".html"
 
