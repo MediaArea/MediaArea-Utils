@@ -69,79 +69,48 @@ function _windows () {
 
            # Compile qctools 32 bits
            Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
-           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.6-msvc2015\\5.6\\msvc2015\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static\\5.7\\msvc2015_static\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
 
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
-           & .\\build.bat 2>&1
+           & .\\build.bat /static /target x86 2>&1
 
-           # Make installer
-           Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
-           $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis QCTools.nsi
+           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
+              # Make installer
+              Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis /DSTATIC QCTools.nsi
 
-           # Make WithoutInstaller archive
-           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\Release\\QCTools.exe\") {
+              # Make WithoutInstaller archive
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
               Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
 
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\Release\\QCTools.exe\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavcodec\\avcodec-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavdevice\\avdevice-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavfilter\\avfilter-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavformat\\avformat-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavutil\\avutil-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libpostproc\\postproc-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libswresample\\swresample-*.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libswscale\\swscale-*.dll\"
-              Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\concrt140.dll\"
-              Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\msvcp140.dll\"
-              Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\vccorlib140.dll\"
-              Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\vcruntime140.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Core.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Gui.dll\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Widgets.dll\"
-              New-Item -Type \"directory\" \"imageformats\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\plugins\\imageformats\\qjpeg.dll\" -Destination \"imageformats\"
-              New-Item -Type \"directory\" \"platforms\"
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\plugins\\platforms\\qwindows.dll\" -Destination \"platforms\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_i386_WithoutInstaller.zip *
            }
 
            # Compile qctools 64 bits
            Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
-           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.6-msvc2015_64\\5.6\\msvc2015_64\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+           Start-Sleep 3
+
+           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\") {
+               Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+               Start-Sleep 3
+           }
+
+           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static_64\\5.7\\msvc2015_static_64\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
 
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
-           & .\\build.bat /target x64 2>&1
+           & .\\build.bat /static /target x64 2>&1
 
-           # Make WithoutInstaller archive
-           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\Release\\QCTools.exe\") {
+           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
+               # Make WithoutInstaller archive
                New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
                Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
 
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\Release\\QCTools.exe\"
+               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavcodec\\avcodec-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavdevice\\avdevice-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavfilter\\avfilter-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavformat\\avformat-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libavutil\\avutil-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libpostproc\\postproc-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libswresample\\swresample-*.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\ffmpeg\\libswscale\\swscale-*.dll\"
-               Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\concrt140.dll\"
-               Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\msvcp140.dll\"
-               Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\vccorlib140.dll\"
-               Copy-Item \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\vcruntime140.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Core.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Gui.dll\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\bin\\Qt5Widgets.dll\"
-               New-Item -Type \"directory\" \"imageformats\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\plugins\\imageformats\\qjpeg.dll\" -Destination \"imageformats\"
-               New-Item -Type \"directory\" \"platforms\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\\plugins\\platforms\\qwindows.dll\" -Destination \"platforms\"
                $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip *
             }"
 
@@ -221,12 +190,13 @@ function _mac () {
            test -e Project/QtCreator/QCTools.app/Contents/MacOS/QCTools || exit 1
            cd Project/Mac
            $Key_chain
-           ./mkdmg"
+           ./mkdmg
+           mv QCTools.dmg QCTools_${Version_new}_mac.dmg"
 
     echo "Retreive files"
     DLPath="$Mac_working_dir/$Build_dir/qctools/qctools/Project/Mac"
 
-    File="QCTools.dmg"
+    File="QCTools_${Version_new}_mac.dmg"
     scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
 
     # Cleaning
