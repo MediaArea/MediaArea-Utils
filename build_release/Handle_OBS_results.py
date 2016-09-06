@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb
+import subprocess
+import fnmatch
 import time
 import sys
-import fnmatch
 import os
-import subprocess
 import xml.etree.ElementTree as ElementTree
 
 print "\n========================================================"
@@ -312,7 +312,7 @@ def Get_packages_on_OBS():
             # Initialization depending on the distrib’s family
             Revision = ""
             if fnmatch.fnmatch(Distrib_name, "Debian*") or \
-                    fnmatch.fnmatch(Distrib_name, "xUbuntu*"):
+               fnmatch.fnmatch(Distrib_name, "*Ubuntu*"):
                 Package_type = "deb"
                 Revision = "-1"
             if fnmatch.fnmatch(Distrib_name, "RHEL*") or \
@@ -339,7 +339,7 @@ def Get_packages_on_OBS():
                    fnmatch.fnmatch(Distrib_name, "Fedora*") or \
                    fnmatch.fnmatch(Distrib_name, "Arch*"):
                     Bin_or_lib_name = Devel_name
-                elif Distrib_name == "xUbuntu_15.10" or Distrib_name == "xUbuntu_16.04":
+                elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") or Distrib_name == "Ubuntu_Next_Standard":
                     Bin_or_lib_name = Bin_name + "v5"
 
             ### Bin package ###
