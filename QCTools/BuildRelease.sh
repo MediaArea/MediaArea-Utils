@@ -263,7 +263,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags
+    local UV_flags
     local QCB_dir="$Working_dir"/binary/qctools/$Sub_dir
     local QCS_dir="$Working_dir"/source/qctools/$Sub_dir
     local QC_tmp="$Working_dir"/tmp/qctools/$Sub_dir
@@ -281,12 +281,6 @@ function btask.BuildRelease.run () {
     cd "$QC_tmp"
     mkdir upgrade_version
     mkdir prepare_source
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/g-maxime/qctools.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

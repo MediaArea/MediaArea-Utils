@@ -345,7 +345,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags MSG
+    local UV_flags MSG
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -369,12 +369,6 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
     mkdir repos
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/MediaArea/MediaConch_SourceCode.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

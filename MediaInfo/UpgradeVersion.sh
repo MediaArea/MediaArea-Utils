@@ -8,13 +8,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo MI_source MI_files index
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        Repo="https://github.com/MediaArea/MediaInfo"
-    fi
+    local MI_source MI_files index
 
     if [ $(b.opt.get_opt --source-path) ]; then
         MI_source="$SDir"

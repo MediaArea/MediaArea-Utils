@@ -8,13 +8,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo MC_source MC_files index
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        Repo="https://github.com/MediaArea/MediaConch_SourceCode"
-    fi
+    local MC_source MC_files index
 
     if [ $(b.opt.get_opt --source-path) ]; then
         MC_source="$SDir"
