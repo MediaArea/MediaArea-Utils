@@ -222,10 +222,9 @@ function _windows () {
     sleep 3
 
     # Get the tools
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\" }"
+    win_copy_utils \"$Win_working_dir\\$Build_dir\"
     sleep 3
-
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\" }"
+    win_copy_binaries \"$Win_working_dir\\$Build_dir\"
     sleep 3
 
     # Get the sources
