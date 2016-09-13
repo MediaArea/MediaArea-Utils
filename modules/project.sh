@@ -33,6 +33,11 @@ function project_get () {
         Dirname="qctools"
         Repo="https://github.com/g-maxime/qctools.git"
     fi
+    if [ "$Project" = "da" ] || [ "$Project" = "DA" ] || [ "$Project" = "DVAnalyzer" ]; then
+        Project=DVAnalyzer
+        Dirname="dvanalyzer"
+        Repo="https://github.com/g-maxime/DV_Analyzer.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
