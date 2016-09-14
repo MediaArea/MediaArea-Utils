@@ -8,13 +8,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo Source Files index
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        Repo="https://github.com/g-maxime/qctools.git"
-    fi
+    local Source Files index
 
     if [ $(b.opt.get_opt --source-path) ]; then
         Source="$SDir"

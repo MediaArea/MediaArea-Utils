@@ -222,10 +222,9 @@ function _windows () {
     sleep 3
 
     # Get the tools
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\" }"
+    win_copy_utils \"$Win_working_dir\\$Build_dir\"
     sleep 3
-
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; if(Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"} else { git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\" }"
+    win_copy_binaries \"$Win_working_dir\\$Build_dir\"
     sleep 3
 
     # Get the sources
@@ -345,7 +344,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags MSG
+    local UV_flags MSG
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -369,12 +368,6 @@ function btask.BuildRelease.run () {
     mkdir upgrade_version
     mkdir prepare_source
     mkdir repos
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/MediaArea/MediaConch_SourceCode.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

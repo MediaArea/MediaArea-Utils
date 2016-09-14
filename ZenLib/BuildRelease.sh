@@ -61,7 +61,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags
+    local UV_flags
     local ZLB_dir="$Working_dir"/binary/libzen0/$Sub_dir
     local ZLS_dir="$Working_dir"/source/libzen/$Sub_dir
     local ZL_tmp="$Working_dir"/tmp/libzen/$Sub_dir
@@ -79,12 +79,6 @@ function btask.BuildRelease.run () {
     cd "$ZL_tmp"
     mkdir upgrade_version
     mkdir prepare_source
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/MediaArea/ZenLib.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

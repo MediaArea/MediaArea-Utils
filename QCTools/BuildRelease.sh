@@ -44,12 +44,7 @@ function _windows () {
     sleep 3
 
     # Get the tools
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"
-           If (Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {
-               git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\" 
-           } Else {
-              git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
-           }"
+    win_copy_binaries \"$Win_working_dir\\$Build_dir\"
     sleep 3
 
     # Get the sources
@@ -75,9 +70,20 @@ function _windows () {
            & .\\build.bat /static /target x86 2>&1
 
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
+
+              # Sign binary
+              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
+              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\`\"\"
+              \$CodeSigningCertificatePass = \"\"
+
               # Make installer
               Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis /DSTATIC QCTools.nsi
+
+              # Sign installer
+              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
+              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\`\"\"
+              \$CodeSigningCertificatePass = \"\"
 
               # Make WithoutInstaller archive
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
@@ -104,6 +110,11 @@ function _windows () {
            & .\\build.bat /static /target x64 2>&1
 
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
+              # Sign binary
+              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
+              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\`\"\"
+              \$CodeSigningCertificatePass = \"\"
+
                # Make WithoutInstaller archive
                New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
                Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
@@ -263,7 +274,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags
+    local UV_flags
     local QCB_dir="$Working_dir"/binary/qctools/$Sub_dir
     local QCS_dir="$Working_dir"/source/qctools/$Sub_dir
     local QC_tmp="$Working_dir"/tmp/qctools/$Sub_dir
@@ -281,12 +292,6 @@ function btask.BuildRelease.run () {
     cd "$QC_tmp"
     mkdir upgrade_version
     mkdir prepare_source
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/g-maxime/qctools.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

@@ -8,14 +8,6 @@
 
 function _get_source () {
 
-    local RepoURL
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        RepoURL="https://github.com/MediaArea/ZenLib"
-    fi
-
     cd "$WDir"
     if ! b.path.dir? repos; then
         mkdir repos
@@ -26,7 +18,7 @@ function _get_source () {
         ZL_source="$SDir"
     else
         ZL_source="$WDir"/repos/ZenLib
-        getRepo $RepoURL "$ZL_source"
+        getRepo $Repo "$ZL_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
             cd "$ZL_source"

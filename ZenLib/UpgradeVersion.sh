@@ -8,13 +8,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo ZL_source ZL_files index
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        Repo="https://github.com/MediaArea/ZenLib"
-    fi
+    local ZL_source ZL_files index
 
     if [ $(b.opt.get_opt --source-path) ]; then
         ZL_source="$SDir"

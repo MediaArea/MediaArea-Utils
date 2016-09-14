@@ -8,13 +8,7 @@
 
 function btask.UpgradeVersion.run () {
 
-    local Repo MIL_source MIL_files index
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        Repo="https://github.com/MediaArea/MediaInfoLib"
-    fi
+    local MIL_source MIL_files index
 
     if [ $(b.opt.get_opt --source-path) ]; then
         MIL_source="$SDir"

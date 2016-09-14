@@ -164,7 +164,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local Repo UV_flags
+    local UV_flags
     local MILB_dir="$Working_dir"/binary/libmediainfo0/$Sub_dir
     local MILS_dir="$Working_dir"/source/libmediainfo/$Sub_dir
     local MIL_tmp="$Working_dir"/tmp/libmediainfo/$Sub_dir
@@ -182,12 +182,6 @@ function btask.BuildRelease.run () {
     cd "$MIL_tmp"
     mkdir upgrade_version
     mkdir prepare_source
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
-    else
-        Repo="https://github.com/MediaArea/MediaInfoLib.git"
-    fi
 
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then

@@ -113,27 +113,7 @@ function run () {
     
     if b.opt.check_required_args; then
 
-        Project=$(sanitize_arg $(b.opt.get_opt --project))
-        if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
-            Project=ZenLib
-            Dirname="libzen"
-        fi
-        if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
-            Project=MediaInfoLib
-            Dirname="libmediainfo"
-        fi
-        if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
-            Project=MediaInfo
-            Dirname="mediainfo"
-        fi
-        if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
-            Project=MediaConch_SourceCode
-            Dirname="mediaconch"
-        fi
-        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
-            Project=QCTools
-            Dirname="qctools"
-        fi
+        project_get
 
         Date=`date +%Y%m%d`
 
@@ -245,7 +225,8 @@ function run () {
             echo
         fi
 
-        unset -v Project Date Version_old Version_new
+        unset -v Project Repo
+        unset -v Date Version_old Version_new
         unset -v OBS_project Target PS_target
         unset -v Working_dir Source_dir Sub_dir
         unset -v Mac_working_dir Email_to Email_CC
@@ -254,6 +235,10 @@ function run () {
         unset -v Clean_up Log Script Index
     fi
 }
+
+# Import globals modules
+b.module.append_lookup_dir $(dirname ${BASH_SOURCE[0]})/../modules
+b.module.require project
 
 b.try.do run "$@"
 b.catch RequiredOptionNotSet displayHelp

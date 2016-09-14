@@ -162,22 +162,7 @@ function run () {
 
     if b.opt.check_required_args; then
 
-        Project=$(sanitize_arg $(b.opt.get_opt --project))
-        if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
-            Project=ZenLib
-        fi
-        if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
-            Project=MediaInfoLib
-        fi
-        if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
-            Project=MediaInfo
-        fi
-        if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
-            Project=MediaConch_SourceCode
-        fi
-        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
-            Project=QCTools
-        fi
+        project_get
 
         Version_new=$(sanitize_arg $(b.opt.get_opt --new))
         Version_new_comma=$(b.str.replace_all Version_new '.' ',')
@@ -256,7 +241,7 @@ function run () {
         echo
 
         #unset -v Project Release_date Script
-        unset -v Project Script WDir SDir
+        unset -v Project Repo Script WDir SDir
         unset -v Version_old Version_new
         unset -v Version_old_escaped Version_old_comma Version_new_comma
         unset -v Version_old_array Version_new_array
@@ -264,6 +249,10 @@ function run () {
         unset -v Version_new_major Version_new_minor Version_new_patch
     fi
 }
+
+# Import globals modules
+b.module.append_lookup_dir $(dirname ${BASH_SOURCE[0]})/../modules
+b.module.require project
 
 b.try.do run "$@"
 b.catch RequiredOptionNotSet displayHelp

@@ -102,22 +102,7 @@ function run () {
     
     if b.opt.check_required_args; then
 
-        Project=$(sanitize_arg $(b.opt.get_opt --project))
-        if [ "$Project" = "zl" ] || [ "$Project" = "ZL" ]; then
-            Project=ZenLib
-        fi
-        if [ "$Project" = "mil" ] || [ "$Project" = "MIL" ]; then
-            Project=MediaInfoLib
-        fi
-        if [ "$Project" = "mi" ] || [ "$Project" = "MI" ]; then
-            Project=MediaInfo
-        fi
-        if [ "$Project" = "mc" ] || [ "$Project" = "MC" ] || [ "$Project" = "MediaConch" ]; then
-            Project=MediaConch_SourceCode
-        fi
-        if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
-            Project=QCTools
-        fi
+        project_get
 
         Version=""
         if [ $(b.opt.get_opt --version) ]; then
@@ -197,13 +182,18 @@ function run () {
             echo "and the project repository must be in the same directory than MediaArea-Utils"
         fi
 
-        unset -v Project Version Target CleanUp MakeArchives
+        unset -v Project Repo Version Target
+        unset -v CleanUp MakeArchives
         unset -v Script WDir SDir
 
         # For lisibility
         echo
     fi
 }
+
+# Import globals modules
+b.module.append_lookup_dir $(dirname ${BASH_SOURCE[0]})/../modules
+b.module.require project
 
 b.try.do run "$@"
 b.catch RequiredOptionNotSet displayHelp

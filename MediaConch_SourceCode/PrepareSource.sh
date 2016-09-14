@@ -8,13 +8,7 @@
 
 function _get_source () {
 
-    local RepoURL MIL_gs ZL_gs
-
-    if [ $(b.opt.get_opt --repo) ]; then
-        RepoURL=$(sanitize_arg $(b.opt.get_opt --repo))
-    else
-        RepoURL="https://github.com/MediaArea/MediaConch_SourceCode"
-    fi
+    local MIL_gs ZL_gs
 
     cd "$WDir"
     if ! b.path.dir? repos; then
@@ -26,7 +20,7 @@ function _get_source () {
         MC_source="$SDir"
     else
         MC_source="$WDir"/repos/MediaConch_SourceCode
-        getRepo "$RepoURL" "$MC_source"
+        getRepo $Repo "$MC_source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
             cd "$MC_source"
