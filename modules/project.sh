@@ -38,6 +38,11 @@ function project_get () {
         Dirname="dvanalyzer"
         Repo="https://github.com/g-maxime/DV_Analyzer.git"
     fi
+    if [ "$Project" = "am" ] || [ "$Project" = "AM" ] || [ "$Project" = "AVIMetaEdit" ]; then
+        Project=AVIMetaEdit
+        Dirname="avimetaedit"
+        Repo="https://github.com/g-maxime/AVI_MetaEdit.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
