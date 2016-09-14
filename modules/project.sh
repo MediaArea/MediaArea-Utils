@@ -43,6 +43,11 @@ function project_get () {
         Dirname="avimetaedit"
         Repo="https://github.com/g-maxime/AVI_MetaEdit.git"
     fi
+    if [ "$Project" = "bm" ] || [ "$Project" = "BM" ] || [ "$Project" = "BWFMetaEdit" ]; then
+        Project=BWFMetaEdit
+        Dirname="bwfmetaedit"
+        Repo="https://github.com/g-maxime/BWF_MetaEdit.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
