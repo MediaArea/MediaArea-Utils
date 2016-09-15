@@ -354,7 +354,7 @@ function btask.BuildRelease.run () {
         else
             _linux
         fi
-        mv "$AM_tmp"/prepare_source/archives/avimetaedit_${Version_new}.* "$AMS_dir"
+        mv "$AM_tmp"/prepare_source/archives/avimetaedit_${Version_new}.tar.* "$AMS_dir"
     fi
     if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         MSG=

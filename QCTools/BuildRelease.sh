@@ -326,6 +326,22 @@ function btask.BuildRelease.run () {
         else
             _linux
         fi
+    fi
+
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        MSG=
+        if b.opt.has_flag? --log; then
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+        else
+            _mac
+        fi
+
+        if [ $? -ne 0 ] ; then
+            echo -e "$MSG" | mailx -s "[BR Mac] Problem building QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
+        fi
+    fi
+
+    if [ "$Target" = "linux" ] || [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         mv "$QC_tmp"/prepare_source/archives/qctools_${Version_new}.* "$QCS_dir"
     fi
 
@@ -344,21 +360,7 @@ function btask.BuildRelease.run () {
         mv "$QC_tmp"/prepare_source/archives/qctools_${Version_new}_AllInclusive.7z "$QCS_dir"
     fi
 
-    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
-        MSG=
-        if b.opt.has_flag? --log; then
-            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-        else
-            _mac
-        fi
-
-        if [ $? -ne 0 ] ; then
-            echo -e "$MSG" | mailx -s "[BR Mac] Problem building QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
-        fi
-    fi
-
     if $Clean_up; then
         rm -fr "$QC_tmp"
     fi
-
 }

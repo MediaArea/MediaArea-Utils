@@ -355,7 +355,7 @@ function btask.BuildRelease.run () {
         else
             _linux
         fi
-        mv "$BM_tmp"/prepare_source/archives/bwfmetaedit_${Version_new}.* "$BMS_dir"
+        mv "$BM_tmp"/prepare_source/archives/bwfmetaedit_${Version_new}.tar.* "$BMS_dir"
     fi
     if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         MSG=
