@@ -174,7 +174,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\dvanalyzer.exe\") -And (Test-Path \"x64\\Release\\dvanalyzer.exe\")) {
                # Sign binaries
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \`\"Win32\\Release\\dvanalyzer.exe\`\" \`\"x64\\Release\\dvanalyzer.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -193,7 +193,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\") -And (Test-Path \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\")) {
                # Sign binaries
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \`\"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\`\" \`\"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -201,7 +201,7 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \`\"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\`\" \`\"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
            }"
     sleep 3
 
