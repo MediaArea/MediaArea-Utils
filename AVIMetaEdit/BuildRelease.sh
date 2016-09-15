@@ -159,7 +159,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\avimetaedit.exe\") -And (Test-Path \"x64\\Release\\avimetaedit.exe\")) {
                # Sign binaries
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \`\"Win32\\Release\\avimetaedit.exe\`\" \`\"x64\\Release\\avimetaedit.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\avimetaedit.exe\" \"x64\\Release\\avimetaedit.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
@@ -179,7 +179,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\AVI_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\AVI_MetaEdit_GUI.exe\")) {
                # Sign binaries
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \`\"Win32\\Release\\AVI_MetaEdit_GUI.exe\`\" \`\"x64\\Release\\AVI_MetaEdit_GUI.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\AVI_MetaEdit_GUI.exe\" \"x64\\Release\\AVI_MetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
@@ -187,7 +187,7 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \`\"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\`\" \`\"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\`\"\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }"
     sleep 3
 

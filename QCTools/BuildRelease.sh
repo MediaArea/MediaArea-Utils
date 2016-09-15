@@ -61,6 +61,7 @@ function _windows () {
     $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"
 
            \$env:PATH=\"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Cygwin\\bin;\$env:PATH\"
+           \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
 
            # Compile qctools 32 bits
            Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
@@ -72,18 +73,14 @@ function _windows () {
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
 
               # Sign binary
-              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
-              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\`\"\"
-              \$CodeSigningCertificatePass = \"\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
 
               # Make installer
               Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis /DSTATIC QCTools.nsi
 
               # Sign installer
-              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
-              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\`\"\"
-              \$CodeSigningCertificatePass = \"\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\"
 
               # Make WithoutInstaller archive
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
@@ -111,9 +108,7 @@ function _windows () {
 
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
               # Sign binary
-              \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
-              cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" && signtool sign /f %USERPROFILE%\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \`\"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\`\"\"
-              \$CodeSigningCertificatePass = \"\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
 
                # Make WithoutInstaller archive
                New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
@@ -174,23 +169,21 @@ function _mac () {
 
     # SSH prefix
     SSHP="ssh -x -p $Mac_SSH_port $Mac_SSH_user@$Mac_IP"
-    Build_dir="build_$RANDOM"
 
     cd "$QC_tmp"
 
-    # Prepare build directory
-    echo "Prepare build directory..."
-    $SSHP "cd \"$Mac_working_dir\"
-           test ! -e \"$Build_dir\" || rm -fr \"$Build_dir\"
-           mkdir \"$Build_dir\""
+    # Clean up
+    $SSHP "test -d $Mac_working_dir || mkdir $Mac_working_dir
+           cd $Mac_working_dir
+           rm -fr qctools*"
+
 
     # Get the sources
-    scp -P $Mac_SSH_port "prepare_source/archives/qctools_${Version_new}-1.tar.gz" "$Mac_SSH_user@$Mac_IP:$Mac_working_dir/$Build_dir/"
+    scp -P $Mac_SSH_port "prepare_source/archives/qctools_${Version_new}-1.tar.gz" "$Mac_SSH_user@$Mac_IP:$Mac_working_dir/qctools_${Version_new}-1.tar.gz"
 
     # Compile
     echo "Compile QC for mac..."
-    $SSHP "
-           cd \"$Mac_working_dir/$Build_dir\"
+    $SSHP "cd \"$Mac_working_dir\"
            export PATH=\"/Users/mymac/Qt/5.3/clang_64/bin:\$PATH\"
 
            tar xf qctools_${Version_new}-1.tar.gz
@@ -199,13 +192,13 @@ function _mac () {
            ./Project/BuildAllFromSource/build
 
            test -e Project/QtCreator/QCTools.app/Contents/MacOS/QCTools || exit 1
-           cd Project/Mac
            $Key_chain
+           cd Project/Mac
            ./mkdmg
            mv QCTools.dmg QCTools_${Version_new}_mac.dmg"
 
     echo "Retreive files"
-    DLPath="$Mac_working_dir/$Build_dir/qctools/qctools/Project/Mac"
+    DLPath="$Mac_working_dir/qctools/qctools/Project/Mac"
 
     File="QCTools_${Version_new}_mac.dmg"
     scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
