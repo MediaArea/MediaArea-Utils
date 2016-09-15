@@ -452,8 +452,9 @@ def Get_packages_on_OBS():
                             + " WHERE platform = '" + Distrib_name + "'" \
                             + " AND arch = '" + Arch + "';")
 
-                # For MI
-                if Bin_name == "mediainfo":
+                # For MI, DA, AM, BM
+                if Bin_name == "mediainfo" or Bin_name == "dvanalyzer" or \
+                   Bin_name == "avimetaedit" or Bin_name == "bwfmetaedit":
                     Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
                             + " version = '" + Version + "'," \
                             + " cliname = '" + Bin_name_wanted + "'," \
@@ -916,6 +917,63 @@ if OBS_package == "QCTools":
             guiname varchar(120),
             guinamedbg varchar(120)"""
         Table = "releases_obs_qc"
+
+if OBS_package == "DVAnalyzer":
+    Project_kind = "gui"
+    Bin_name = "dvanalyzer"
+    Devel_name = "dvanalyzer"
+    Destination_gui = sys.argv[5]
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        Table = "snapshots_obs_da"
+    else:
+        DL_pages_table = "releases_dlpages_da"
+        DB_structure = """
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        Table = "releases_obs_da"
+
+if OBS_package == "AVIMetaEdit":
+    Project_kind = "gui"
+    Bin_name = "avimetaedit"
+    Devel_name = "avimetaedit"
+    Destination_gui = sys.argv[5]
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        Table = "snapshots_obs_am"
+    else:
+        DL_pages_table = "releases_dlpages_am"
+        DB_structure = """
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        Table = "releases_obs_am"
+
+if OBS_package == "BWFMetaEdit":
+    Project_kind = "gui"
+    Bin_name = "bwfmetaedit"
+    Devel_name = "bwfmetaedit"
+    Destination_gui = sys.argv[5]
+    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+        Table = "snapshots_obs_bm"
+    else:
+        DL_pages_table = "releases_dlpages_bm"
+        DB_structure = """
+            platform varchar(50),
+            arch varchar(10),
+            version varchar(18),
+            cliname varchar(120),
+            clinamedbg varchar(120),
+            guiname varchar(120),
+            guinamedbg varchar(120)"""
+        Table = "releases_obs_bm"
 
 if len(DL_pages_table) > 1:
     Release = True
