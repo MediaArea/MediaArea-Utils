@@ -160,7 +160,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\bwfmetaedit.exe\") -And (Test-Path \"x64\\Release\\bwfmetaedit.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\bwfmetaedit.exe\" \"x64\\Release\\bwfmetaedit.exe\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\bwfmetaedit.exe\" \"x64\\Release\\bwfmetaedit.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release\"
@@ -180,7 +180,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\BWF_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\BWF_MetaEdit_GUI.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWF_MetaEdit_GUI.exe\" \"x64\\Release\\BWF_MetaEdit_GUI.exe\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWF_MetaEdit_GUI.exe\" \"x64\\Release\\BWF_MetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release\"
@@ -188,7 +188,7 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
+               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }"
     sleep 3
 
@@ -355,7 +355,7 @@ function btask.BuildRelease.run () {
         else
             _linux
         fi
-        mv "$BM_tmp"/prepare_source/archives/bwfmetaedit_${Version_new}.* "$BMS_dir"
+        mv "$BM_tmp"/prepare_source/archives/bwfmetaedit_${Version_new}.tar.* "$BMS_dir"
     fi
     if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         MSG=

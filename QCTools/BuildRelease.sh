@@ -73,14 +73,14 @@ function _windows () {
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
 
               # Sign binary
-              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
 
               # Make installer
               Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis /DSTATIC QCTools.nsi
 
               # Sign installer
-              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\"
 
               # Make WithoutInstaller archive
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
@@ -108,7 +108,7 @@ function _windows () {
 
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
               # Sign binary
-              & \"C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
+              & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
 
                # Make WithoutInstaller archive
                New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
@@ -326,6 +326,22 @@ function btask.BuildRelease.run () {
         else
             _linux
         fi
+    fi
+
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        MSG=
+        if b.opt.has_flag? --log; then
+            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
+        else
+            _mac
+        fi
+
+        if [ $? -ne 0 ] ; then
+            echo -e "$MSG" | mailx -s "[BR Mac] Problem building QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
+        fi
+    fi
+
+    if [ "$Target" = "linux" ] || [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         mv "$QC_tmp"/prepare_source/archives/qctools_${Version_new}.* "$QCS_dir"
     fi
 
@@ -344,21 +360,7 @@ function btask.BuildRelease.run () {
         mv "$QC_tmp"/prepare_source/archives/qctools_${Version_new}_AllInclusive.7z "$QCS_dir"
     fi
 
-    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
-        MSG=
-        if b.opt.has_flag? --log; then
-            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-        else
-            _mac
-        fi
-
-        if [ $? -ne 0 ] ; then
-            echo -e "$MSG" | mailx -s "[BR Mac] Problem building QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
-        fi
-    fi
-
     if $Clean_up; then
         rm -fr "$QC_tmp"
     fi
-
 }
