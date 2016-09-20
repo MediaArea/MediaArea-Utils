@@ -296,14 +296,14 @@ function _linux () {
     echo the build results and download the packages...
     echo
     echo The command line is:
-    echo python Handle_OBS_results.py $OBS_project DVAnalyzer $Version_new "$DAB_dir"
+    echo python Handle_OBS_results.py $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir"
     echo
 
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$DA_tmp", the current directory, will
     # be deleted)
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $OBS_project DVAnalyzer $Version_new "$DAB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    python Handle_OBS_results.py $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
