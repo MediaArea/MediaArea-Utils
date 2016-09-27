@@ -6,6 +6,23 @@
 # can be found in the License.html file in the root of the source
 # tree.
 
+# Utilities for PowerShell
+win_ps_utils="
+function Load-VcVars {
+    param([ValidateSet(\"x86\", \"x64\")][String]\$Arch = \"x86\")
+
+    If (Test-Path \"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\\vcvarsall.bat\") {
+        cmd /c \"\`\"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\\vcvarsall.bat\`\" \$Arch & set\" |
+        ForEach {
+            If (\$_ -Match \"(.*?)=(.*)\") {
+                Set-Item -Force -Path \"ENV:\$(\$matches[1])\" -Value \"\$(\$matches[2])\"
+            }
+        }
+    } Else {
+        Write-Host \"Error: Visual Studio 2015 not installed\"
+    }
+}"
+
 # Update the MediaArea-Utils-Binaries package and copy it into $DST
 function win_copy_utils () {
     local DST="$1"

@@ -146,35 +146,41 @@ function _windows () {
     # Build
     echo "Compile DA for Windows..."
     
-    $SSHP "# Get password for signing
+    $SSHP "$win_ps_utils
+
+           # Get password for signing
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
 
            # Prepare zlib
            Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\zlib\\contrib\\masmx86\"
            (Get-Content \"bld_ml32.bat\") | ForEach-Object { \$_ -creplace \"ml /coff\", \"ml /safeseh /coff\" } | Set-Content \"bld_ml32.bat\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x86 && bld_ml32 2>&1\"
+           # Load 32 bits env
+           Load-VcVars x86
+           cmd /s /c \"bld_ml32.bat 2>&1\"
            Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\zlib\\contrib\\masmx64\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && bld_ml64 2>&1\"
+           # Load 64 bits env
+           Load-VcVars x64
+           cmd /s /c \"bld_ml64.bat 2>&1\"
 
            #
            # Compile MediaInfoLib
            #
 
            Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\MediaInfoLib\\Project\\MSVC2015\\Library\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=Win32 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=x64 2>&1\"
+           MSBuild /p:Configuration=Release\`;Platform=Win32
+           MSBuild /p:Configuration=Release\`;Platform=x64
 
            #
            # Compile CLI
            #
 
            Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=Win32 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=x64 2>&1\"
+           MSBuild /p:Configuration=Release\`;Platform=Win32
+           MSBuild /p:Configuration=Release\`;Platform=x64
 
            If ((Test-Path \"Win32\\Release\\dvanalyzer.exe\") -And (Test-Path \"x64\\Release\\dvanalyzer.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -188,12 +194,12 @@ function _windows () {
 
            Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\"
            cmd /s /c \"qt_update.bat 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=Win32 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=x64 2>&1\"
+           MSBuild /p:Configuration=Release\`;Platform=Win32
+           MSBuild /p:Configuration=Release\`;Platform=x64
 
            If ((Test-Path \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\") -And (Test-Path \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -201,7 +207,7 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
            }"
     sleep 3
 

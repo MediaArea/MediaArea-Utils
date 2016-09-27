@@ -147,7 +147,12 @@ function _windows () {
     echo "Compile BM for Windows..."
 
 
-    $SSHP "# Get password for signing
+    $SSHP "$win_ps_utils
+
+           # Load env
+           Load-VcVars x64
+
+           # Get password for signing
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
 
            #
@@ -155,12 +160,12 @@ function _windows () {
            #
 
            Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\CLI\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=Win32 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=x64 2>&1\"
+           MSBuild /p:Configuration=Release\`;Platform=Win32
+           MSBuild /p:Configuration=Release\`;Platform=x64
 
            If ((Test-Path \"Win32\\Release\\bwfmetaedit.exe\") -And (Test-Path \"x64\\Release\\bwfmetaedit.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\bwfmetaedit.exe\" \"x64\\Release\\bwfmetaedit.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\bwfmetaedit.exe\" \"x64\\Release\\bwfmetaedit.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release\"
@@ -175,12 +180,12 @@ function _windows () {
 
            Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\GUI\"
            cmd /s /c \"qt_update.bat 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=Win32 2>&1\"
-           cmd /s /c \"call \`\"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat\`\" x64 && MSBuild /p:Configuration=Release;Platform=x64 2>&1\"
+           MSBuild /p:Configuration=Release\`;Platform=Win32
+           MSBuild /p:Configuration=Release\`;Platform=x64
 
            If ((Test-Path \"Win32\\Release\\BWF_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\BWF_MetaEdit_GUI.exe\")) {
                # Sign binaries
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWF_MetaEdit_GUI.exe\" \"x64\\Release\\BWF_MetaEdit_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWF_MetaEdit_GUI.exe\" \"x64\\Release\\BWF_MetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release\"
@@ -188,7 +193,7 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               & \"C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\signtool.exe\" sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }"
     sleep 3
 
