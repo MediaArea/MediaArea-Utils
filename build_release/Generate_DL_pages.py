@@ -588,7 +588,7 @@ def OBS():
                 Destination.write(Old_releases)
 
         Destination.write("</tbody>\n</table>\n")
-        if Project == "mi":
+        if Project != "mc":
             Destination.write("</body>\n</html>\n")
         Destination.close()
 
