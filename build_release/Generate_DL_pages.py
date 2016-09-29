@@ -116,12 +116,14 @@ def DL_pages(OS_name):
         Content = Content.replace("VERSIONS_APPLESTORE", Config[ Project.upper() + "_" + OS_name + "_applestore" ])
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
-    Content = Content.replace("MIL_VERSION", MIL_version)
     Content = Content.replace("OS_TITLE", OS_title)
+
+    if Project != "qc":
+        Content = Content.replace("MIL_VERSION", MIL_version)
 
     Destination.write(Content + "\n")
     Destination.write("</tbody>\n</table>\n")
-    if Project == "mi":
+    if Project != "mc":
         Destination.write("</body>\n</html>\n")
     Destination.close()
 
@@ -148,12 +150,14 @@ def Sources():
     Template_file.close()
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
-    Content = Content.replace("MIL_VERSION", MIL_version)
-    Content = Content.replace("ZL_VERSION", ZL_version)
+
+    if Project != "qc":
+        Content = Content.replace("MIL_VERSION", MIL_version)
+        Content = Content.replace("ZL_VERSION", ZL_version)
 
     Destination.write(Content + "\n")
     Destination.write("</tbody>\n</table>\n")
-    if Project == "mi":
+    if Project != "mc":
         Destination.write("</body>\n</html>\n")
     Destination.close()
 
@@ -310,7 +314,7 @@ def OBS():
     
         if Project == "mc":
             Filename = Distrib_name_lower + ".md"
-        if Project == "mi":
+        else:
             if Distrib_name == "xUbuntu":
                 Filename = "Ubuntu.html"
             elif Distrib_name == "Arch":
@@ -353,7 +357,18 @@ def OBS():
                 if Config[ Release_in_config_file + "_wx" ] != "":
                     Release_with_wx = True
 
-            Rowspan = 3
+            Release_with_mil = True
+            Release_with_zl = True
+            if Project == "qc":
+                Release_with_gui = False
+                Release_with_mil = False
+                Release_with_zl = False
+
+            Rowspan = 1
+            if Release_with_mil == True:
+                Rowspan = Rowspan + 1
+            if Release_with_zl == True:
+                Rowspan = Rowspan + 1
             if Release_with_server == True:
                 Rowspan = Rowspan + 1
             if Release_with_gui == True:
@@ -411,6 +426,8 @@ def OBS():
                         Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
                 elif Project == "mi":
                     Template_file_path = Script_emplacement + "/dl_templates/MI_linux_template"
+                elif Project == "qc":
+                    Template_file_path = Script_emplacement + "/dl_templates/QC_linux_template"
 
                 Template_file = open(Template_file_path, "r")
                 Content = Template_file.read()
@@ -462,10 +479,10 @@ def OBS():
 
                 Content = Content.replace(Project.upper() + "_VERSION", Project_version)
                 Content = Content.replace("CLI_PACKAGE", Cli_name)
-                if Release_with_server == True:
+                Content = Content.replace("GUI_PACKAGE", Gui_name)
+
+                if Project == "mc":
                     Content = Content.replace("SERVER_PACKAGE", Server_name)
-                if Release_with_gui == True:
-                    Content = Content.replace("GUI_PACKAGE", Gui_name)
 
                 Cursor.execute("SELECT" \
                         + " version, libname, libnamedbg, libnamedev, libnamedoc" \
@@ -571,7 +588,7 @@ def OBS():
                 Destination.write(Old_releases)
 
         Destination.write("</tbody>\n</table>\n")
-        if Project == "mi":
+        if Project != "mc":
             Destination.write("</body>\n</html>\n")
         Destination.close()
 
@@ -584,7 +601,7 @@ def OBS():
 #
 # Arguments
 #
-# 1 Project: mc, mi
+# 1 Project: mc, mi, qc
 # 2 OS name: windows, mac, linux
 # For Windows and Mac: 3 MC|MI version and 4 MIL version
 
@@ -597,9 +614,9 @@ OS_name = sys.argv[2]
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-if Project != "mc" and Project != "mi":
+if Project != "mc" and Project != "mi" and Project != "qc":
     print
-    print "The first argument must be mc or mi"
+    print "The first argument must be mc, mi or qc"
     print
     sys.exit(1)
 
@@ -613,10 +630,12 @@ and OS_name != "all":
 
 if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
     # sys.argv[0] == Generate_DL_pages.py
-    if len(sys.argv) < 6:
+    if len(sys.argv) == 4 and Project == "qc":
+       Project_version = sys.argv[3]
+    elif len(sys.argv) < 6:
         print
         print "If you ask windows, mac, sources or all, you must provide the version"
-        print "numbers of MC|MI + MIL, ZL respectively as 3rd, 4th and 5th arguments."
+        print "numbers of QC or MC|MI + MIL and ZL respectively as 3rd, 4th and 5th arguments."
         print
         sys.exit(1)
     else:

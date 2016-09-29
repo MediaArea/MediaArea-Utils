@@ -1,0 +1,19 @@
+<tr>
+    <th rowspan="3">OS_TITLE</th>
+    <th>Universal installer (32/64 bit)</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a></td>
+    <td>If you don't know which one to download, download this one</td>
+</tr>
+<tr>
+    <th>32 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/qctools_QC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
+    <td></td>
+</tr>
+<tr>
+    <th>64 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/qctools_QC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
+    <td></td>
+</tr>

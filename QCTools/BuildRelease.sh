@@ -293,6 +293,19 @@ function btask.BuildRelease.run () {
     else
         pushd "$QC_tmp"/upgrade_version
         git clone "$Repo"
+
+        # Sync with upstream
+        cd qctools
+        git fetch https://github.com/bavc/qctools.git
+
+        git rebase FETCH_HEAD
+
+        if [ $? -ne 0 ] ; then
+            echo -e "Unable to automatically rebase the current branch on upstream" | mailx -s "[BR] Problem with QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
+            git rebase --abort
+        fi
+
+        cd ..
         popd
     fi
 
