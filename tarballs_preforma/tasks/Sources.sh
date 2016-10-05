@@ -43,6 +43,9 @@ function btask.Sources.run () {
     grep -rlZ "Use of this source code is governed by a zlib-style license that" | xargs -0 sed -i "s/Use of this source code is governed by a zlib-style license that/Use of this source code is governed by a GPL v3+ and MPL v2+ license that/g"
     grep -rlZ "This program is freeware under zlib license conditions" | xargs -0 sed -i "s/This program is freeware under zlib license conditions/This program is freeware under GPL v3+ and MPL v2+ license conditions/g"
 
+    # Replace repo README.md by MediaConch README.md
+    cp -f mediaconch_AllInclusive/MediaConch/README.md mediaconch_AllInclusive/README.md
+
     zip -q -r ../src01-$Date.zip mediaconch_AllInclusive
 
     cd mediaconch_AllInclusive/

@@ -139,6 +139,7 @@ function btask.Buildenv_debian.run () {
     echo "Create Debian package (buildenv17)..."
 
     cp License*.html buildenv17
+    cp -f $(b.get bang.working_dir)/readmes/Readme_debian.txt buildenv17/Read_me.txt
     zip -q -r buildenv17-$Date.zip buildenv17
     rm -fr buildenv17
 

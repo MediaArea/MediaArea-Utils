@@ -15,10 +15,8 @@ function Ubuntu_get_packages () {
     #local Security_Packages_gz=$Security_mirror/dists/$Ubuntu_name/main/binary-$Arch/Packages.gz
     local Main_mirror=http://ftp.ubuntu.com/ubuntu
     local Main_Packages_gz=$Main_mirror/dists/$Ubuntu_name/main/binary-$Arch/Packages.gz
-
-    #http://archive.ubuntu.com/ubuntu/dists/trusty/universe/binary-amd64/
-    #local Universe_mirror=
-    #local Universe_Packages_gz=
+    local Universe_mirror=http://ftp.ubuntu.com/ubuntu
+    local Universe_Packages_gz=$Main_mirror/dists/$Ubuntu_name/universe/binary-$Arch/Packages.gz
 
     local List_packages=$(b.get bang.working_dir)/packages/Ubuntu-$Version.txt
     local Destination=buildenv09/Ubuntu-$Version-$Arch
@@ -63,6 +61,18 @@ function Ubuntu_get_packages () {
     fi
     gzip -d Packages.gz
     mv Packages Main_packages-$Version-$Arch
+
+    # Get the file Packages.gz for the universe repo
+    rm -f Universe_packages*
+    if ! wget -nd -q $Universe_Packages_gz || ! b.path.file? Packages.gz; then
+        echo
+        echo "Error downloading $Universe_Packages_gz"
+        echo
+        exit 1
+    fi
+    gzip -d Packages.gz
+    mv Packages Universe_packages-$Version-$Arch
+
 
     # Download the packages
     while read -r Package || [[ -n $Package ]]; do
@@ -139,32 +149,30 @@ function Ubuntu_get_packages () {
 
                 # If the package is neither in the updates, 
                 # security or main repo, we try the universe repo
-#                else
-#
-#                    Package_URL_part=$(grep -A 100 "^Package: $Package$" Universe_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
-#    
-#                    if [[ -n $Package_URL_part ]]; then
-#    
-#                        Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
-#                        Package_URL=$Universe_mirror/$Package_URL_part
-#                
-#                        # Verbose mode
+                else
+                    Package_URL_part=$(grep -A 100 "^Package: $Package$" Universe_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
+
+                    if [[ -n $Package_URL_part ]]; then
+
+                        Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
+                        Package_URL=$Universe_mirror/$Package_URL_part
+                        # Verbose mode
 #                        echo -n "Downloading (from universe repo) $Package ..."
-#                        if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
-#                            echo
-#                            echo "Error while downloading $Package"
-#                            echo "$Package_URL"
-#                            echo
-#                            rm -f $Destination/index.html
+                        if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
+                            echo
+                            echo "Error while downloading $Package"
+                            echo "$Package_URL"
+                            echo
+                            rm -f $Destination/index.html
 #                        # Verbose mode
 #                        else
 #                            echo " OK"
-#                        fi
+                        fi
 
                     else
                         #echo "$Package not found neither in updates, security, main or universe repositories."
-                        echo "$Package not found in main repositories."
-                    #fi
+                        echo "$Package not found neither in main repositories or universe repositories."
+                    fi
 
                 #fi
     
@@ -180,6 +188,7 @@ function Ubuntu_get_packages () {
     #rm -f Updates_packages-$Version-$Arch
     #rm -f Security_packages-$Version-$Arch
     rm -f Main_packages-$Version-$Arch
+    rm -f Universe_packages-$Version-$Arch
 
 }
 
@@ -203,12 +212,12 @@ function btask.Buildenv_ubuntu.run () {
     Ubuntu_names[15.10]="wily"
     Ubuntu_names[16.04]="xenial"
 
-    #Ubuntu_handle_version 14.04
-    Ubuntu_handle_version 15.10
+    Ubuntu_handle_version 16.04
 
     echo "Create Ubuntu package (buildenv09)..."
 
     cp License*.html buildenv09
+    cp -f $(b.get bang.working_dir)/readmes/Readme_ubuntu.txt buildenv09/Read_me.txt
     zip -q -r buildenv09-$Date.zip buildenv09
     rm -fr buildenv09
 

@@ -118,6 +118,7 @@ function btask.Buildenv_opensuse.run () {
     echo "Create the Opensuse package (buildenv21)..."
 
     cp License*.html buildenv21
+    cp -f $(b.get bang.working_dir)/readmes/Readme_opensuse.txt buildenv21/Read_me.txt
     zip -q -r buildenv21-$Date.zip buildenv21
     rm -fr buildenv21
 

@@ -3,10 +3,12 @@ aajohan-comfortaa-fonts
 alsa-lib
 automake
 binutils
+bzip2-devel
 cairo
 cdparanoia-libs
 clucene09-core
 cpp
+dbusmenu-qt
 desktop-file-utils
 doxygen
 dwz
@@ -31,6 +33,7 @@ graphite2
 gstreamer1
 gstreamer1-plugins-base
 harfbuzz
+hwdata
 isl
 iso-codes
 jansson
@@ -55,6 +58,7 @@ libjpeg-turbo
 libmng
 libmpc
 libogg
+libpciaccess
 libpng
 libpng-devel
 libSM
@@ -117,6 +121,7 @@ mozilla-filesystem
 mpfr
 ocaml-srpm-macros
 orc
+opus
 pango
 pciutils
 pciutils-libs
@@ -125,11 +130,13 @@ perl-Carp
 perl-constant
 perl-Data-Dumper
 perl-Encode
+perl-Errno
 perl-Exporter
 perl-File-Path
 perl-File-Temp
 perl-Getopt-Long
 perl-HTTP-Tiny
+perl-IO
 perl-libs
 perl-macros
 perl-MIME-Base64
@@ -160,7 +167,8 @@ proj
 python
 python-libs
 python-pip
-python-setuptools
+python-srpm-macros
+python2-setuptools
 qt
 qt-common
 qt-devel
@@ -172,8 +180,10 @@ qt-x11
 qtwebkit
 qtwebkit-devel
 redhat-rpm-config
+sni-qt
 sqlite
 sqlite-devel
+tar
 tinyxml2
 tinyxml2-devel
 xml-common

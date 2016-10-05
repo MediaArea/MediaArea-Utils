@@ -145,11 +145,12 @@ function btask.Buildenv_fedora.run () {
     echo "Generate Fedora build environment..."
 
     #Fedora_handle_version 22
-    Fedora_handle_version 23
+    Fedora_handle_version 24
 
     echo "Create Fedora package (buildenv13)..."
 
     cp License*.html buildenv13
+    cp -f $(b.get bang.working_dir)/readmes/Readme_fedora.txt buildenv13/Read_me.txt
     zip -q -r buildenv13-$Date.zip buildenv13
     rm -fr buildenv13
 
