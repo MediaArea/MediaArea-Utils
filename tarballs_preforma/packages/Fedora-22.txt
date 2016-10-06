@@ -57,7 +57,6 @@ libmpc
 libogg
 libpng
 libpng-devel
-libpng-devel
 libSM
 libSM-devel
 libstdc++-devel

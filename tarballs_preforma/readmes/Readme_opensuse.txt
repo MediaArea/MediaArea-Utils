@@ -16,7 +16,7 @@ How to install the build environnement
 
 Download and unzip the buildenv21*.zip. Enter the directory
 corresponding to your architecture, and type (in root) :
-zypper install *
+zypper install --no-refresh --no-recommends *
 
 -----------------------
 How to build MediaConch

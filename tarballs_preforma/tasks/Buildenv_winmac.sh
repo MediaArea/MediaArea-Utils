@@ -24,6 +24,12 @@ function btask.Buildenv_winmac.run () {
     rm -fr mediaconch_AllInclusive/ZenLib
     rm -fr mediaconch_AllInclusive/MediaInfoLib
     rm -fr mediaconch_AllInclusive/MediaConch
+    rm -fr mediaconch_AllInclusive/README.md
+
+    # Add Qt binaries for Windows
+    git clone "https://github.com/MediaArea/MediaArea-Utils-Binaries.git"
+    mv MediaArea-Utils-Binaries/Windows/Qt/Qt5.5-msvc2013 mediaconch_AllInclusive/
+    mv MediaArea-Utils-Binaries/Windows/Qt/Qt5.6-msvc2015 mediaconch_AllInclusive/
 
     echo "Create Windows package (buildenv01)..."
     mv mediaconch_AllInclusive buildenv01
@@ -31,6 +37,7 @@ function btask.Buildenv_winmac.run () {
 
     echo "Create Mac package (buildenv05)..."
     mv buildenv01 buildenv05
+    rm -fr buildenv05/Qt*
     rm -f buildenv05/*bat
     zip -q -r ../buildenv05-$Date.zip buildenv05
 
