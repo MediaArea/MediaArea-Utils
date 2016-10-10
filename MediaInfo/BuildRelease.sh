@@ -78,7 +78,16 @@ function _mac_gui () {
                     rm -fr MediaInfoLib ;
                     tar xf MediaInfo_DLL_${Version_new}_Mac_i386+x86_64.tar.xz ;
                     cd ../MediaInfo_GUI_GNU_FromSource ;
-                    MediaInfo/Project/Mac/Prepare_for_Xcode.sh"
+                    MediaInfo/Project/Mac/Prepare_for_Xcode.sh
+                    sed -i '' \\
+                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"3rd Party Mac Developer Application\";/g' \\
+                        MediaInfo/Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj
+                    sed -i '' \\
+                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1CODE_SIGN_IDENTITY = \"3rd Party Mac Developer Application\";/g' \\
+                        MediaInfo/Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj
+                    cd MediaInfo/Source/GUI/Cocoa/
+                    $Key_chain
+                    xcodebuild -scheme MediaInfo archive"
         else
             echo
             echo
