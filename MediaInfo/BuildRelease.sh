@@ -186,10 +186,7 @@ function _windows () {
 
     cd "$MI_tmp"
 
-    # Windows binaries are kept apart from the others
-    mkdir -p "win_binary/libmediainfo0/$Sub_dir"
-    mkdir -p "win_binary/mediainfo/$Sub_dir"
-    mkdir -p "win_binary/mediainfo-gui/$Sub_dir"
+    # Donors binaries are kept apart from the others
     mkdir -p "win_donors/$Sub_dir"
 
     # Start the VM if needed
@@ -239,40 +236,49 @@ function _windows () {
     DLPath="MediaArea-Utils\\build_release\\Release\\download\\binary"
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386.exe"
+    test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386.exe" \
-                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64.exe"
+    test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64.exe" \
-                         "win_binary/libmediainfo0/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_i386.zip"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_i386.zip" \
-                         "win_binary/mediainfo/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_x64.zip"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_x64.zip" \
-                         "win_binary/mediainfo/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows.exe"
+    test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
-                         "win_binary/mediainfo-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Download thank version only in release mode
     if [ -n "$Win_donors_dir" ] && [ "${Version_new%.????????}" == "${Version_new}" ] ; then
@@ -286,12 +292,9 @@ function _windows () {
         scp -r "win_donors/." "$Win_donors_dir"
     fi
 
-    scp -r "win_binary/." "$Win_binary_dir"
-
     # Cleaning
     echo "Cleaning..."
     rm -rf "win_donors"
-    rm -rf "win_binary"
 
     $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
     sleep 3
@@ -362,6 +365,7 @@ function _linux () {
 function btask.BuildRelease.run () {
 
     local MIL_gs UV_flags MSG
+    local MIL_dir="$Working_dir"/binary/libmediainfo0/$Sub_dir
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
     local MIS_dir="$Working_dir"/source/mediainfo/$Sub_dir
@@ -373,6 +377,7 @@ function btask.BuildRelease.run () {
 
     rm -fr "$MI_tmp"
 
+    mkdir -p "$MIL_dir"
     mkdir -p "$MIC_dir"
     mkdir -p "$MIG_dir"
     mkdir -p "$MIS_dir"
