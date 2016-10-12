@@ -98,10 +98,6 @@ function _windows () {
 
     cd "$AM_tmp"
 
-    # Windows binaries are kept apart from the others
-    mkdir -p "win_binary/avimetaedit/$Sub_dir"
-    mkdir -p "win_binary/avimetaedit-gui/$Sub_dir"
-
     # Start the VM if needed
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
@@ -201,37 +197,39 @@ function _windows () {
     DLPath="$Win_working_dir\\$Build_dir\\avimetaedit\\Release"
 
     File="AVI_MetaEdit_CLI_${Version_new}_Windows_i386.zip"
+    test -e "$AMB_dir/$File" && rm "$AMB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_i386.zip" \
-                         "win_binary/avimetaedit/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_CLI_${Version_new}_Windows_x64.zip"
+    test -e "$AMB_dir/$File" && rm "$AMB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_x64.zip" \
-                         "win_binary/avimetaedit/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
-                         "win_binary/avimetaedit-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
-                         "win_binary/avimetaedit-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "win_binary/avimetaedit-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "win_binary/avimetaedit-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
-
-    # Copy files to the final destination
-    scp -r "win_binary/." "$Win_binary_dir"
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Cleaning
     echo "Cleaning..."
-    rm -r "win_binary"
 
-    $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
+    win_rm_tree "$Win_working_dir\\$Build_dir"
 
     # Stop the VM
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then

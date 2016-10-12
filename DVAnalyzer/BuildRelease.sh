@@ -98,10 +98,6 @@ function _windows () {
 
     cd "$DA_tmp"
 
-    # Windows binaries are kept apart from the others
-    mkdir -p "win_binary/dvanalyzer/$Sub_dir"
-    mkdir -p "win_binary/dvanalyzer-gui/$Sub_dir"
-
     # Start the VM if needed
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
         if ! vm_start "$Virsh_uri" "$Win_VM_name" "$Win_IP" "$Win_SSH_port"; then
@@ -216,39 +212,39 @@ function _windows () {
     DLPath="$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release"
 
     File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_i386.zip"
+    test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_i386.zip" \
-                         "win_binary/dvanalyzer/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_x64.zip"
+    test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_x64.zip" \
-                         "win_binary/dvanalyzer/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_i386_WithoutInstaller.7z" \
-                         "win_binary/dvanalyzer-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_x64_WithoutInstaller.7z" \
-                         "win_binary/dvanalyzer-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "win_binary/dvanalyzer-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "win_binary/dvanalyzer-gui/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
-
-    # Copy files to the final destination
-    scp -r "win_binary/." "$Win_binary_dir"
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Cleaning
     echo "Cleaning..."
-    rm -r "win_binary"
 
-    $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
-    sleep 3
-    $SSHP "Set-Location \"$Win_working_dir\"; If (Test-Path \"$Build_dir\") { Remove-Item -Force -Recurse \"$Build_dir\" }"
+    win_rm_tree "$Win_working_dir\\$Build_dir"
 
     # Stop the VM
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then

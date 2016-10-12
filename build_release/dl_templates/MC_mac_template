@@ -22,5 +22,5 @@
 </tr>
 <tr>
     <th><a href="http://brew.sh/">Homebrew</a></th>
-    <td colspan="4">You can install MediaConch by typing <code>brew install mediaconch</code> into the Terminal</td>
+    <td colspan="4">You can install MediaConch CLI by typing <code>brew install mediaconch</code> into the Terminal, and the GUI by typing <code>brew tap caskroom/cask && brew cask install mediaconch-app</code></td>
 </tr>

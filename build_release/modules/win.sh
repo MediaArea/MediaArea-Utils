@@ -66,3 +66,20 @@ function win_copy_binaries () {
                git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
            }"
 }
+
+# Try to remove directory tree
+function win_rm_tree () {
+    local DST="$1" Try=5
+    local SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
+
+        $SSHP "\$Try=0
+               While (Test-Path \"$DST\") {
+                   Remove-Item -Force -Recurse \"$DST\"
+                   \$Try++
+                   If (\$Try -eq $Try) {
+                       break
+                   }
+                   Start-Sleep -Seconds 3
+               }
+"
+}
