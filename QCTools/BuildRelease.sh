@@ -149,9 +149,7 @@ function _windows () {
     # Cleaning
     echo "Cleaning..."
 
-    $SSHP "Set-Location \"$Win_working_dir\"; Remove-Item -Force -Recurse \"$Build_dir\""
-    sleep 3
-    $SSHP "Set-Location \"$Win_working_dir\"; If (Test-Path \"$Build_dir\") { Remove-Item -Force -Recurse \"$Build_dir\" }"
+    win_rm_tree "$Win_working_dir\\$Build_dir"
 
     # Stop the VM
     if [ -n "$Win_VM_name" ] && [ -n "$Virsh_uri" ]; then
