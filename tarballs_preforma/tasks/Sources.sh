@@ -49,6 +49,7 @@ function btask.Sources.run () {
     zip -q -r ../src01-$Date.zip mediaconch_AllInclusive
 
     cd mediaconch_AllInclusive/
+    rm -f MediaInfoLib/LICENSE
     rm -f *bat
 
     chmod +x ZenLib/Project/GNU/Library/autogen.sh
