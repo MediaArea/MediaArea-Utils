@@ -139,7 +139,8 @@ function run () {
         b.task.run Buildenv_debian
         b.task.run Buildenv_ubuntu
         b.task.run Buildenv_opensuse
-        b.task.run Buildenv_winmac
+        b.task.run Buildenv_win
+        b.task.run Buildenv_mac
 
         # Clean up
         rm -fr MediaArea

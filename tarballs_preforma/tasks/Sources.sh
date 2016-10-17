@@ -46,6 +46,9 @@ function btask.Sources.run () {
     # Replace repo README.md by MediaConch README.md
     cp -f mediaconch_AllInclusive/MediaConch/README.md mediaconch_AllInclusive/README.md
 
+    rm -f mediaconch_AllInclusive/MediaInfoLib/LICENSE
+
+    cp -f $(b.get bang.working_dir)/readmes/Readme_windows.txt mediaconch_AllInclusive/Read_me.txt
     zip -q -r ../src01-$Date.zip mediaconch_AllInclusive
 
     cd mediaconch_AllInclusive/
@@ -74,6 +77,7 @@ function btask.Sources.run () {
     cd ..
 
     # Mac
+    cp -f $(b.get bang.working_dir)/readmes/Readme_mac.txt mediaconch_AllInclusive/Read_me.txt
     zip -q -r ../src05-$Date.zip mediaconch_AllInclusive
 
     cp -f $(b.get bang.working_dir)/readmes/Readme_ubuntu.txt mediaconch_AllInclusive/Read_me.txt
