@@ -59,6 +59,22 @@ function btask.UpgradeVersion.run () {
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
 
     echo
+    echo "Update ${MC_source}/Project/AppImage/Recipe.sh"
+    updateFile "VERSION=$Version_old_escaped" "VERSION=$Version_new" "${MC_source}"/Project/AppImage/Recipe.sh
+
+    echo
+    echo "Update ${MC_source}/Project/Snap/mediaconch/snapcraft.yaml"
+    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch/snapcraft.yaml
+
+    echo
+    echo "Update ${MC_source}/Project/Snap/mediaconch-server/snapcraft.yaml"
+    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch-server/snapcraft.yaml
+
+    echo
+    echo "Update ${MC_source}/Project/Snap/mediaconch-gui/snapcraft.yaml"
+    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch-gui/snapcraft.yaml
+
+    echo
     echo "Passage for version YY.MM.patch ..."
     unset -v MC_files
     index=0
