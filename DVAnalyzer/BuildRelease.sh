@@ -136,13 +136,16 @@ function _windows () {
     scp -P $Win_SSH_port "prepare_source/archives/dvanalyzer_${Version_new}_AllInclusive.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\"
     sleep 3
 
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y dvanalyzer_${Version_new}_AllInclusive.7z"
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y dvanalyzer_${Version_new}_AllInclusive.7z > \$null"
     sleep 3
 
     # Build
     echo "Compile DA for Windows..."
     
     $SSHP "$win_ps_utils
+
+           # Save path
+           \$OldPath = \$env:PATH
 
            # Get password for signing
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
@@ -204,7 +207,10 @@ function _windows () {
 
                # Sign installers
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
-           }"
+           }
+
+           # Restore path
+           \$env:PATH = \$OldPath"
     sleep 3
 
     # Retrieve files

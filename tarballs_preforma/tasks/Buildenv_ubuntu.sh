@@ -213,7 +213,7 @@ function btask.Buildenv_ubuntu.run () {
     Ubuntu_names[16.04]="xenial"
     Ubuntu_names[16.10]="yakkety"
 
-    Ubuntu_handle_version 16.10
+    Ubuntu_handle_version 16.04
 
     echo "Create Ubuntu package (buildenv09)..."
 

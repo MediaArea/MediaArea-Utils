@@ -68,7 +68,7 @@ function _all_inclusive () {
     git clone "git://source.ffmpeg.org/ffmpeg.git"
 
     wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
-    tar -zxvf yasm-1.3.0.tar.gz
+    tar -zxf yasm-1.3.0.tar.gz
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
