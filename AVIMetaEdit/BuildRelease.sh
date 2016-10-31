@@ -136,13 +136,16 @@ function _windows () {
     scp -P $Win_SSH_port "prepare_source/archives/avimetaedit_${Version_new}.7z" "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\"
     sleep 3
 
-    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y avimetaedit_${Version_new}.7z"
+    $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"; MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y avimetaedit_${Version_new}.7z > \$null"
     sleep 3
 
     # Build
     echo "Compile AM for Windows..."
-    
+
     $SSHP "$win_ps_utils
+
+           # Save path
+           \$OldPath = \$env:PATH
 
            # Load env
            Load-VcVars x64
@@ -189,7 +192,11 @@ function _windows () {
 
                # Sign installers
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
-           }"
+           }
+
+           # Restore path
+           \$env:PATH = \$OldPath
+"
     sleep 3
 
     # Retrieve files

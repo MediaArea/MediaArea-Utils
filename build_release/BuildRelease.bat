@@ -111,7 +111,7 @@ if "%ARCHIVE%"=="1" (
     set MC_SOURCES=mediaconch_AllInclusive
     cd %OLD_CD%\..\..
     if EXIST mediaconch_AllInclusive\ call:RTree mediaconch_AllInclusive\ || exit /b 1
-    MediaArea-Utils-Binaries\Windows\7-Zip\7z x -y "mediaconch_*_AllInclusive.7z" || exit /b 1
+    MediaArea-Utils-Binaries\Windows\7-Zip\7z x -y "mediaconch_*_AllInclusive.7z" > nul || exit /b 1
     del /q /s mediaconch_AllInclusive\.git 2> nul
 )
 
@@ -253,7 +253,7 @@ if "%ARCHIVE%"=="1" (
     set MI_SOURCES=mediainfo_AllInclusive
     cd %OLD_CD%\..\..
     if EXIST mediainfo_AllInclusive\ call:Rtree mediainfo_AllInclusive\ || exit /b 1
-    MediaArea-Utils-Binaries\Windows\7-Zip\7z x -y mediainfo_*_AllInclusive.7z || exit /b 1
+    MediaArea-Utils-Binaries\Windows\7-Zip\7z x -y mediainfo_*_AllInclusive.7z > nul || exit /b 1
     del /q /s mediainfo_AllInclusive\.git 2> nul
 )
 

@@ -105,81 +105,69 @@ function _mac () {
 
     Try=0
     touch "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 2000000 ] || [ $Try -eq $NbTry ]; do
+    until [ 0`stat -c %s "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg 2>/dev/null` -gt 2000000 ] || [ $Try -eq $NbTry ]; do
         _mac_cli
         Try=$(($Try + 1))
     done
 
     Try=0
     touch "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
+    until [ 0`stat -c %s "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg 2>/dev/null` -gt 3000000 ] || [ $Try -eq $NbTry ]; do
         _mac_server
         Try=$(($Try + 1))
     done
 
     Try=0
     touch "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 10000000 ] || [ $Try -eq $NbTry ]; do
+    until [ 0`stat -c %s "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg 2>/dev/null` -gt 10000000 ] || [ $Try -eq $NbTry ]; do
         _mac_gui
         Try=$(($Try + 1))
     done
 
-    # Send a mail if a build fail
+    # Send a mail on errors
 
-    # If the CLI dmg is less than 3 Mo
-    if [ `ls -l "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 3000000 ]; then
+    # Test mediaconch executable
+    $SSHP "$Mac_working_dir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/GNU/CLI/mediaconch --version" &>/dev/null
+    if [ $? -ne 0 ] ; then
+        MSG="${MSG}Error $? when trying execute mediaconch.\n"
         if b.opt.has_flag? --log; then
             xz --keep --force -9e $Log/mac-cli.log
-            if ! [ -z "$Email_CC" ]; then
-                echo "The CLI dmg is less than 3 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz -c "$Email_CC" $Email_to
-            else
-                echo "The CLI dmg is less than 3 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MC-cli" -a $Log/mac-cli.log.xz $Email_to
-            fi
-        else
-            if ! [ -z "$Email_CC" ]; then
-                echo "The CLI dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-cli" -c "$Email_CC" $Email_to
-            else
-                echo "The CLI dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-cli" $Email_to
-            fi
+            PJ="${PJ} -a $Log/mac-cli.log.xz"
+        fi
+    fi
+
+    # If the CLI dmg is less than 3 Mo
+    if [ 0`stat -c %s "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg 2>/dev/null` -lt 3000000 ]; then
+        MSG="${MSG}The CLI dmg is less than 3 Mo.\n"
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-cli.log
+            PJ="${PJ} -a $Log/mac-cli.log.xz"
         fi
     fi
 
     # If the server dmg is less than 3 Mo
-    if [ `ls -l "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 3000000 ]; then
+    if [ 0`stat -c %s "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg 2>/dev/null` -lt 3000000 ]; then
+        MSG="${MSG}The server dmg is less than 3 Mo.\n"
         if b.opt.has_flag? --log; then
             xz --keep --force -9e $Log/mac-server.log
-            if ! [ -z "$Email_CC" ]; then
-                echo "The server dmg is less than 3 Mo. The log is http://url/$Log/mac-server.log" | mailx -s "[BR mac] Problem building MC-server" -a $Log/mac-server.log.xz -c "$Email_CC" $Email_to
-            else
-                echo "The server dmg is less than 3 Mo. The log is http://url/$Log/mac-server.log" | mailx -s "[BR mac] Problem building MC-server" -a $Log/mac-server.log.xz $Email_to
-            fi
-        else
-            if ! [ -z "$Email_CC" ]; then
-                echo "The server dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-server" -c "$Email_CC" $Email_to
-            else
-                echo "The server dmg is less than 3 Mo" | mailx -s "[BR mac] Problem building MC-server" $Email_to
-            fi
+            PJ="${PJ} -a $Log/mac-server.log.xz"
         fi
     fi
 
     # If the GUI dmg is less than 20 Mo
-    if [ `ls -l "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 20000000 ]; then
+    if [ 0`stat -c %s "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg 2>/dev/null` -lt 20000000 ]; then
+        MSG="${MSG}The GUI dmg is less than 20 Mo.\n"
         if b.opt.has_flag? --log; then
             xz --keep --force -9e $Log/mac-gui.log
-            if ! [ -z "$Email_CC" ]; then
-                echo "The GUI dmg is less than 20 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz -c "$Email_CC" $Email_to
-            else
-                echo "The GUI dmg is less than 20 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MC-gui" -a $Log/mac-gui.log.xz $Email_to
-            fi
-        else
-            if ! [ -z "$Email_CC" ]; then
-                echo "The GUI dmg is less than 20 Mo" | mailx -s "[BR mac] Problem building MC-gui" -c "$Email_CC" $Email_to
-            else
-                echo "The GUI dmg is less than 20 Mo" | mailx -s "[BR mac] Problem building MC-gui" $Email_to
-            fi
+            PJ="${PJ} -a $Log/mac-gui.log.xz"
         fi
     fi
 
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
 }
 
 function _windows () {
@@ -231,6 +219,13 @@ function _windows () {
 
     $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\\MediaArea-Utils\\build_release\"; cmd /c \"BuildRelease.bat MC /archive 2>&1\""
     sleep 3
+
+    # Test MediaConch executables
+    $SSHP "$Win_working_dir\\$Build_dir\\mediaconch_AllInclusive\\MediaConch\\Project\\MSVC2015\\Win32\\Release\\MediaConch.exe --version" &>/dev/null || \
+           MSG="${MSG}Error $? when trying execute MediaConch.exe (Win32).\n"
+
+    $SSHP "$Win_working_dir\\$Build_dir\\mediaconch_AllInclusive\\MediaCOnch\\Project\\MSVC2015\\x64\\Release\\MediaConch.exe --version" &>/dev/null || \
+           MSG="${MSG}Error $? when trying execute MediaConch.exe (x64).\n"
 
     # Retrieve files
     echo "Retreive files"
@@ -340,7 +335,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local UV_flags MSG
+    local UV_flags MSG PJ
     local MCC_dir="$Working_dir"/binary/mediaconch/$Sub_dir
     local MCD_dir="$Working_dir"/binary/mediaconch-server/$Sub_dir
     local MCG_dir="$Working_dir"/binary/mediaconch-gui/$Sub_dir
@@ -428,11 +423,17 @@ function btask.BuildRelease.run () {
     fi
 
     if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        MSG= PJ=
         if b.opt.has_flag? --log; then
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
         else
             _mac
         fi
+
+        if [ $? -ne 0 ] ; then
+            echo "echo -e \"$MSG\" | mailx -s \"[BR Mac] Problem building MC\" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to"
+        fi
+
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_Server_${Version_new}_GNU_FromSource.* "$MCD_dir"
         mv "$MC_tmp"/prepare_source/archives/MediaConch_GUI_${Version_new}_GNU_FromSource.* "$MCG_dir"

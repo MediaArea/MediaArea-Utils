@@ -49,13 +49,16 @@ function _windows () {
     sleep 3
 
     $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"
-           MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y \"qctools_${Version_new}_AllInclusive.7z\""
+           MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y \"qctools_${Version_new}_AllInclusive.7z\" > \$null"
     sleep 3
 
     # Build
     echo "Compile QC for Windows..."
     
     $SSHP "$win_ps_utils
+
+           # Save path
+           \$OldPath = \$env:PATH
 
            # Load env
            Load-VcVars x64
@@ -120,7 +123,10 @@ function _windows () {
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
                $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip *
-            }"
+            }
+
+           # Restore path
+           \$env:PATH = \$OldPath"
 
     sleep 3
 

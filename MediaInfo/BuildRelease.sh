@@ -122,7 +122,7 @@ function _mac () {
     MultiArch=0
     Try=0
     touch "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
+    until [ 0`stat -c %s "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg 2>/dev/null` -gt 4000000 ] && [ $MultiArch -eq 1 ] || [ $Try -eq $NbTry ]; do
         _mac_cli
         # Return 1 if MI-cli is compiled for i386 and x86_64,
         # 0 otherwise
@@ -132,49 +132,46 @@ function _mac () {
 
     Try=0
     touch "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg
-    until [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -gt 4000000 ] || [ $Try -eq $NbTry ]; do
+    until [ 0`stat -c %s "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg 2>/dev/null` -gt 4000000 ] || [ $Try -eq $NbTry ]; do
         _mac_gui
         Try=$(($Try + 1))
     done
 
-    # Send a mail if a build fail
+    # Send a mail on errors
 
-    # If the CLI dmg is less than 5 Mo
-    if [ `ls -l "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 5000000 ] || [ $MultiArch -eq 0 ]; then
+    # Test mediainfo executable
+	$SSHP "$Mac_working_dir/MediaInfo_CLI_GNU_FromSource/MediaInfo/Project/GNU/CLI/mediainfo --version" &>/dev/null
+    if [ $? -ne 0 ] ; then
+        MSG="${MSG}Error $? when trying execute mediainfo.\n"
         if b.opt.has_flag? --log; then
             xz --keep --force -9e $Log/mac-cli.log
-            if ! [ -z "$Email_CC" ]; then
-                echo "The CLI dmg is less than 5 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz -c "$Email_CC" $Email_to
-            else
-                echo "The CLI dmg is less than 5 Mo. The log is http://url/$Log/mac-cli.log" | mailx -s "[BR mac] Problem building MI-cli" -a $Log/mac-cli.log.xz $Email_to
-            fi
-        else
-            if ! [ -z "$Email_CC" ]; then
-                echo "The CLI dmg is less than 5 Mo" | mailx -s "[BR mac] Problem building MI-cli" -c "$Email_CC" $Email_to
-            else
-                echo "The CLI dmg is less than 5 Mo" | mailx -s "[BR mac] Problem building MI-cli" $Email_to
-            fi
+            PJ="${PJ} -a $Log/mac-cli.log.xz"
+        fi
+    fi
+
+    # If the CLI dmg is less than 5 Mo
+    if [ 0`stat -c %s "$MIC_dir"/MediaInfo_CLI_${Version_new}_Mac.dmg 2>/dev/null` -lt 5000000 ]; then
+        MSG="${MSG}The CLI dmg is less than 5 Mo.\n"
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac-cli.log
+            PJ="${PJ} -a $Log/mac-cli.log.xz"
         fi
     fi
 
     # If the GUI dmg is less than 4 Mo
-    if [ `ls -l "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg |awk '{print $5}'` -lt 4000000 ] ; then
+    if [ 0`stat -c %s "$MIG_dir"/MediaInfo_GUI_${Version_new}_Mac.dmg 2>/dev/null` -lt 4000000 ]; then
+        MSG="${MSG}The GUI dmg is less than 4 Mo.\n"
         if b.opt.has_flag? --log; then
             xz --keep --force -9e $Log/mac-gui.log
-            if ! [ -z "$Email_CC" ]; then
-                echo "The GUI dmg is less than 4 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz -c "$Email_CC" $Email_to
-            else
-                echo "The GUI dmg is less than 4 Mo. The log is http://url/$Log/mac-gui.log" | mailx -s "[BR mac] Problem building MI-gui" -a $Log/mac-gui.log.xz $Email_to
-            fi
-        else
-            if ! [ -z "$Email_CC" ]; then
-                echo "The GUI dmg is less than 4 Mo" | mailx -s "[BR mac] Problem building MI-gui" -c "$Email_CC" $Email_to
-            else
-                echo "The GUI dmg is less than 4 Mo" | mailx -s "[BR mac] Problem building MI-gui" $Email_to
-            fi
+            PJ="${PJ} -a $Log/mac-gui.log.xz"
         fi
     fi
 
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
 }
 
 function _windows () {
@@ -230,6 +227,13 @@ function _windows () {
 
     $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\\MediaArea-Utils\\build_release\"; cmd /c \"BuildRelease.bat MI /archive 2>&1\""
     sleep 3
+
+    # Test MediaInfo executables
+    $SSHP "$Win_working_dir\\$Build_dir\\mediainfo_AllInclusive\\MediaInfo\\Project\\MSVC2015\\Win32\\Release\\MediaInfo.exe --version" &>/dev/null || \
+           MSG="${MSG}Error $? when trying execute MediaInfo.exe (Win32).\n"
+
+    $SSHP "$Win_working_dir\\$Build_dir\\mediainfo_AllInclusive\\MediaInfo\\Project\\MSVC2015\\x64\\Release\\MediaInfo.exe --version" &>/dev/null || \
+           MSG="${MSG}Error $? when trying execute MediaInfo.exe (x64).\n"
 
     # Retrieve files
     echo "Retreive files..."
@@ -362,7 +366,7 @@ function _linux () {
 
 function btask.BuildRelease.run () {
 
-    local MIL_gs UV_flags MSG
+    local MIL_gs UV_flags MSG PJ
     local MIL_dir="$Working_dir"/binary/libmediainfo0/$Sub_dir
     local MIC_dir="$Working_dir"/binary/mediainfo/$Sub_dir
     local MIG_dir="$Working_dir"/binary/mediainfo-gui/$Sub_dir
@@ -446,11 +450,17 @@ function btask.BuildRelease.run () {
     fi
 
     if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        MSG= PJ=
         if b.opt.has_flag? --log; then
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
         else
             _mac
         fi
+
+        if [ $? -ne 0 ] ; then
+            echo "echo -e \"$MSG\" | mailx -s \"[BR Mac] Problem building MC\" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to"
+        fi
+
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_GUI_${Version_new}_GNU_FromSource.* "$MIG_dir"
     fi
