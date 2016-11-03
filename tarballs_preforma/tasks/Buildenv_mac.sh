@@ -19,9 +19,9 @@ function btask.Buildenv_mac.run () {
     echo "Generate mac build environment..."
     cd tmp
     mkdir buildenv05
-    scp -q -r -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/releases/MediaConch_CLI_GNU_FromSource/{libevent,libxslt,jansson,libxml2,sqlite} buildenv05
-
     # Add Qt binaries
+    cp -rf $Mac_binaries_dir/{libevent,libxslt,jansson,libxml2,sqlite,Qt} buildenv05
+
     scp -q -r -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:Qt buildenv05
     sed -i 's/xcrun -find xcrun/xcrun -find xcodebuild/g' buildenv05/Qt/5.3/clang_64/mkspecs/features/mac/default_pre.prf
     sed -i 's/macosx10.8/macosx/g' buildenv05/Qt/5.3/clang_64/mkspecs/qdevice.pri

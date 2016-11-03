@@ -12,6 +12,8 @@ Mac_SSH_user=""
 Key_chain=""
 Mac_working_dir=""
 
+Mac_binaries_dir=""
+
 # OBS
 OBS_project=""
 
