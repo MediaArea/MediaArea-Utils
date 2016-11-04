@@ -8,6 +8,7 @@ cairo
 cdparanoia-libs
 clucene09-core
 cpp
+curl
 dbusmenu-qt
 desktop-file-utils
 doxygen
@@ -48,6 +49,7 @@ libdrm
 libdrm-devel
 libevent
 libevent-devel
+libgcomp
 libgcrypt
 libgcrypt-devel
 libgpg-error
@@ -63,6 +65,7 @@ libpng
 libpng-devel
 libSM
 libSM-devel
+libstdc++
 libstdc++-devel
 libthai
 libtheora
@@ -182,6 +185,7 @@ qtwebkit-devel
 redhat-rpm-config
 sni-qt
 sqlite
+sqlite-libs
 sqlite-devel
 tar
 tinyxml2

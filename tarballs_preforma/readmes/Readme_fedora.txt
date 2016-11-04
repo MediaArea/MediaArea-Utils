@@ -16,7 +16,7 @@ How to install the build environnement
 
 Download and unzip the buildenv13*.zip. Enter the directory
 corresponding to your architecture, and type (in root) :
-dnf install *
+dnf install --allowerasing *
 
 -----------------------
 How to build MediaConch

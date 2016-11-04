@@ -26,6 +26,6 @@ To build the server, type:
 ./Server_compile.sh
 
 To build the GUI, type:
-export PATH="$PATH:$PWD/Qt/5.3/clang_64/bin"
+export PATH="$PWD/Qt/5.3/clang_64/bin:$PATH"
 ./GUI_compile.sh
 macdeployqt MediaConch/Project/Qt/MediaConch.app
