@@ -149,9 +149,6 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    # Copy files to the final destination
-    scp -r "win_binary/." "$Win_binary_dir"
-
     # Cleaning
     echo "Cleaning..."
 
