@@ -49,7 +49,7 @@ libdrm
 libdrm-devel
 libevent
 libevent-devel
-libgcomp
+libgomp
 libgcrypt
 libgcrypt-devel
 libgpg-error
