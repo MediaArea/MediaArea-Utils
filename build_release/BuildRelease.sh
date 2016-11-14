@@ -65,6 +65,9 @@ function load_options () {
     b.opt.add_flag --commit "Commit the changes made by UpgradeVersion.sh on git"
     b.opt.add_alias --commit -c
 
+    b.opt.add_flag --force "Force run even if the master is older than the last build"
+    b.opt.add_alias --force -f
+
     # Mandatory arguments
     b.opt.required_args --project
 }
@@ -158,6 +161,16 @@ function run () {
             fi
         fi
 
+    # Test if the project was modified since the last build (only for global build of snapshots)
+    if [ "$Target" == "all" ]; then
+        if b.path.file? "$Working_dir/log/$Project/last_commit" && b.opt.has_flag? --snapshot && ! b.opt.has_flag? --force; then
+            if [ "$(cat $Working_dir/log/$Project/last_commit)" == "$(git ls-remote $Repo | cut -f1)" ] ; then
+                echo "Master is older than the last build"
+                exit 0
+            fi
+        fi
+        git ls-remote $Repo | cut -f1 > $Working_dir/log/$Project/last_commit
+    fi
 
         if [ $(b.opt.get_opt --source-path) ]; then
             Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
