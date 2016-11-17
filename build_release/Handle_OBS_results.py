@@ -339,7 +339,9 @@ def Get_packages_on_OBS():
                    fnmatch.fnmatch(Distrib_name, "Fedora*") or \
                    fnmatch.fnmatch(Distrib_name, "Arch*"):
                     Bin_or_lib_name = Devel_name
-                elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") or Distrib_name == "Ubuntu_Next_standard":
+                elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
+                     or Distrib_name == "Ubuntu_Next_standard" \
+                     or Distrib_name == "Debian_Next_ga" :
                     Bin_or_lib_name = Bin_name + "v5"
 
             ### Bin package ###
