@@ -95,6 +95,10 @@ function _windows () {
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_i386_WithoutInstaller.zip *
+
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_i386_DebugInfo.zip \`
+                                                   \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.pdb\"
            }
 
            # Compile qctools 64 bits
@@ -123,6 +127,10 @@ function _windows () {
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
                Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
                $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip *
+
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_DebugInfo.zip \`
+                                             \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.pdb\"
             }
 
            # Restore path
@@ -144,7 +152,17 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
+    File="QCTools_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
     File="QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="QCTools_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
