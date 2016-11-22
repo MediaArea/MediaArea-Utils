@@ -169,6 +169,12 @@ function _windows () {
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
                cmd /s /c \"Release_CLI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_CLI_Windows_x64.bat 2>&1\"
+
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_CLI_Windows_i386_DebugInfo.zip \`
+                                                 \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\CLI\\Win32\\Release\\avimetaedit.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_CLI_Windows_x64_DebugInfo.zip \`
+                                                  \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\CLI\\x64\\Release\\avimetaedit.pdb\"
            }
 
 
@@ -190,6 +196,12 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_GUI_Windows_i386_DebugInfo.zip \`
+                                            \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\Win32\\Release\\AVI_MetaEdit_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_GUI_Windows_x64_DebugInfo.zip \`
+                                             \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\x64\\Release\\AVI_MetaEdit_GUI.pdb\"
+
                # Sign installers
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }
@@ -208,9 +220,19 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_i386.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
+    File="AVI_MetaEdit_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_i386_DebugInfo.zip" \
+                         "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
     File="AVI_MetaEdit_CLI_${Version_new}_Windows_x64.zip"
     test -e "$AMB_dir/$File" && rm "$AMB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_x64.zip" \
+                         "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="AVI_MetaEdit_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_x64_DebugInfo.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
@@ -218,9 +240,19 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
+    File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_i386_DebugInfo.zip" \
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
+                         "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
+    test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_x64_DebugInfo.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe"
