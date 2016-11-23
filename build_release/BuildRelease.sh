@@ -161,17 +161,6 @@ function run () {
             fi
         fi
 
-    # Test if the project was modified since the last build (only for global build of snapshots)
-    if [ "$Target" == "all" ]; then
-        if b.path.file? "$Working_dir/log/$Project/last_commit" && b.opt.has_flag? --snapshot && ! b.opt.has_flag? --force; then
-            if [ "$(cat $Working_dir/log/$Project/last_commit)" == "$(git ls-remote $Repo | cut -f1)" ] ; then
-                echo "Master is older than the last build"
-                exit 0
-            fi
-        fi
-        git ls-remote $Repo | cut -f1 > $Working_dir/log/$Project/last_commit
-    fi
-
         if [ $(b.opt.get_opt --source-path) ]; then
             Source_dir="$(sanitize_arg $(b.opt.get_opt --source-path))"
             if ! b.path.dir? "$Source_dir"; then
@@ -188,15 +177,37 @@ function run () {
         fi
 
         if b.opt.has_flag? --snapshot ; then
+            # Test if the project was modified since the last build
+            local Last_commit="$(git ls-remote $Repo master | cut -f1)"
+            local Rebuild=false
+
+            if b.path.file? "$Working_dir/log/$Project/last_commit" \
+            && [ "$(cat $Working_dir/log/$Project/last_commit 2>/dev/null)" ==  $Last_commit ] ; then
+                if ! b.opt.has_flag? --force; then
+                    echo "Master is older than the last build"
+                    exit 0
+                fi
+                Rebuild=true
+            fi
+
             Sub_dir="${Date}"
-            Index=2
+            local Index=2
+            local Found="$Sub_dir"
             while [ "$(find ${Working_dir}/binary ${Working_dir}/source ${Working_dir}/tmp \
                     \( -regex .*/${Dirname}0?/${Sub_dir} -o -regex .*/${Dirname}-*/${Sub_dir} \) \
                     -printf 1 -quit)" == "1" ]
             do
+                Found="$Sub_dir"
                 Sub_dir="$Date-$Index"
                 let Index++
             done
+
+            if $Rebuild ; then
+                Sub_dir="$Found"
+            fi
+
+            echo $Last_commit > $Working_dir/log/$Project/last_commit
+
             Mac_working_dir="${Mac_working_dir}/snapshots"
             OBS_project="${OBS_project}:snapshots"
         elif [ $(b.opt.get_opt --new) ] ; then
@@ -245,7 +256,7 @@ function run () {
         unset -v Mac_working_dir Email_to Email_CC
         unset -v Mac_IP Mac_SSH_port Mac_SSH_user Key_chain
         unset -v Win_IP Win_SSH_port Win_SSH_user
-        unset -v Clean_up Log Script Index
+        unset -v Clean_up Log Script
     fi
 }
 
