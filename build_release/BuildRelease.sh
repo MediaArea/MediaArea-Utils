@@ -53,6 +53,8 @@ function load_options () {
     b.opt.add_flag --build-linux "Build only for Linux"
     b.opt.add_alias --build-linux -bl
 
+    b.opt.add_opt --rebuild "Trigger rebuild of package on OBS"
+
     b.opt.add_flag --all "Build all the targets for a project"
     # Same arguments as PrepareSource.sh
     b.opt.add_alias --all -all
@@ -204,6 +206,10 @@ function run () {
 
             if $Rebuild ; then
                 Sub_dir="$Found"
+            fi
+
+            if ! b.path.dir? "$Working_dir/log/$Project" ; then
+                mkdir -p "$Working_dir/log/$Project"
             fi
 
             echo $Last_commit > $Working_dir/log/$Project/last_commit

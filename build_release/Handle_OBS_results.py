@@ -3,6 +3,7 @@
 
 import MySQLdb
 import subprocess
+import argparse
 import fnmatch
 import time
 import sys
@@ -128,19 +129,20 @@ def Initialize_DB():
     # affected since a distrib can be removed from builds but still
     # wanted in the download tables.
 
-    Cursor.execute("SELECT * FROM `" + Table + "`")
-    DB_distribs = Cursor.fetchall()
+    if not Rebuild:
+        Cursor.execute("SELECT * FROM `" + Table + "`")
+        DB_distribs = Cursor.fetchall()
 
-    for DB_dist in DB_distribs:
-        DB_distrib_name = DB_dist[0]
-        DB_arch = DB_dist[1]
-        if DB_distrib_name in Distribs:
-            # If the distrib is present, but this arch has been
-            # removed
-            if Distribs[DB_distrib_name].count(DB_arch) == 0:
+        for DB_dist in DB_distribs:
+            DB_distrib_name = DB_dist[0]
+            DB_arch = DB_dist[1]
+            if DB_distrib_name in Distribs:
+                # If the distrib is present, but this arch has been
+                # removed
+                if Distribs[DB_distrib_name].count(DB_arch) == 0:
+                    Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
+            else:
                 Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
-        else:
-            Cursor.execute("DELETE FROM `" + Table + "` WHERE distrib = '" + DB_distrib_name + "' AND arch = '" + DB_arch + "';")
 
 ##################################################################
 def Waiting_loop():
@@ -215,6 +217,13 @@ def Update_DB():
             elif Result == "":
                 State = "3"
             Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+
+##################################################################
+def Trigger_rebuild():
+    for Distrib in Distribs:
+        for Arch in Distribs[Distrib]:
+            print "Trigger rebuild for %s/%s"% (Distrib, Arch)
+            subprocess.call(["osc", "rebuild", MA_project, Distrib, Arch])
 
 ##################################################################
 def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination):
@@ -292,8 +301,9 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
 
 ##################################################################
 def Get_packages_on_OBS():
+    global FS_filter
 
-    Cursor.execute("SELECT * FROM `" + Table + "`")
+    Cursor.execute("SELECT * FROM `" + Table + "`" + DB_filter)
     DB_distribs = Cursor.fetchall()
 
     for DB_dist in DB_distribs:
@@ -415,6 +425,10 @@ def Get_packages_on_OBS():
                 Server_name_wanted = ''
                 Server_debug_name_wanted = ''
 
+            if Rebuild:
+                FS_filter += "\|" if FS_filter else ""
+                FS_filter += "%s\.%s" % (Package_infos[Package_type][Arch], Distrib_name)
+
             ###########################
             # Put the filenames in DB #
             ###########################
@@ -481,8 +495,9 @@ def Get_packages_on_OBS():
 
 ##################################################################
 def Verify_states_and_files():
+    Filter = " |grep '%s'" % FS_filter if Rebuild else ""
 
-    Cursor.execute("SELECT * FROM `" + Table + "`")
+    Cursor.execute("SELECT * FROM `" + Table + "`" + DB_filter)
     DB_distribs = Cursor.fetchall()
 
     Number_succeeded = 0
@@ -552,6 +567,7 @@ def Verify_states_and_files():
     Params = "ls " + Destination + "/" + Devel_name + "*" + Version + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
+           + Filter \
            + " |wc -l"
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
@@ -579,6 +595,7 @@ def Verify_states_and_files():
     Params = "ls " + Destination + "/" + Devel_name + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep 'dbg\|debug'" \
+           + Filter \
            + " |wc -l"
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_debug = int(Result)
@@ -606,6 +623,7 @@ def Verify_states_and_files():
         Params = "ls " + Destination + "/" + Devel_name + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
                + " |grep 'dev\|devel'" \
+               + Filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_dev = int(Result)
@@ -630,6 +648,7 @@ def Verify_states_and_files():
         Number_doc = 0
         Params = "ls " + Destination + "/" + Devel_name + "-doc*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
+               + Filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_doc = int(Result)
@@ -655,6 +674,7 @@ def Verify_states_and_files():
         Number_server = 0
         Params = "ls " + Destination_server + "/" + Bin_name + "-server" + "?" + Version + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
+               + Filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_server = int(Result)
@@ -680,6 +700,7 @@ def Verify_states_and_files():
         Number_gui = 0
         Params = "ls " + Destination_gui + "/" + Bin_name + "-gui" + "?" + Version + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
+               + Filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_gui = int(Result)
@@ -802,10 +823,18 @@ Time_start = time.time()
 # Handle the variables
 #
 
-OBS_project = sys.argv[1]
-OBS_package = sys.argv[2]
-Version = sys.argv[3]
-Destination = sys.argv[4]
+Args_parser = argparse.ArgumentParser()
+Args_parser.add_argument("--filter", help="filter distributions/archs")
+Args_parser.add_argument("project")
+Args_parser.add_argument("package")
+Args_parser.add_argument("version")
+Args_parser.add_argument("destination", nargs="+")
+Args = Args_parser.parse_args()
+
+OBS_project = Args.project
+OBS_package = Args.package
+Version = Args.version
+Destination = Args.destination[0]
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
@@ -864,8 +893,8 @@ if OBS_package == "MediaConch":
     Project_kind = "gui"
     Bin_name = "mediaconch"
     Devel_name = "mediaconch"
-    Destination_server = sys.argv[5]
-    Destination_gui = sys.argv[6]
+    Destination_server = Args.destination[1]
+    Destination_gui = Args.destination[2]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_mc"
     else:
@@ -886,7 +915,7 @@ if OBS_package == "MediaInfo":
     Project_kind = "gui"
     Bin_name = "mediainfo"
     Devel_name = "mediainfo"
-    Destination_gui = sys.argv[5]
+    Destination_gui = Args.destination[1]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_mi"
     else:
@@ -924,7 +953,7 @@ if OBS_package == "DVAnalyzer":
     Project_kind = "gui"
     Bin_name = "dvanalyzer"
     Devel_name = "dvanalyzer"
-    Destination_gui = sys.argv[5]
+    Destination_gui = Args.destination[1]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_da"
     else:
@@ -943,7 +972,7 @@ if OBS_package == "AVIMetaEdit":
     Project_kind = "gui"
     Bin_name = "avimetaedit"
     Devel_name = "avimetaedit"
-    Destination_gui = sys.argv[5]
+    Destination_gui = Args.destination[1]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_am"
     else:
@@ -962,7 +991,7 @@ if OBS_package == "BWFMetaEdit":
     Project_kind = "gui"
     Bin_name = "bwfmetaedit"
     Devel_name = "bwfmetaedit"
-    Destination_gui = sys.argv[5]
+    Destination_gui = Args.destination[1]
     if fnmatch.fnmatch(OBS_project, "*:snapshots"):
         Table = "snapshots_obs_bm"
     else:
@@ -992,6 +1021,38 @@ for Element in XML_root.iter('result'):
     Distrib = Element.attrib['repository']
     Arch = Element.attrib['arch']
     Distribs[Distrib] = Distribs.get(Distrib, []) + [Arch]
+
+# Filter to cmdline distributions
+Rebuild = False
+DB_filter = ""
+FS_filter = ""
+if Args.filter:
+    Distribs_filter = {}
+    for Element in Args.filter.split(","):
+        Distrib = Element.split("/")[0].strip()
+        if len(Element.split("/")) > 1:
+            Arch = Element.split("/")[1].strip()
+            if Arch not in Distribs_filter.get(Distrib, []):
+                Distribs_filter[Distrib] = Distribs_filter.get(Distrib, []) + [Arch]
+            else:
+                Distribs_filter[Distrib] = Distribs.get(Distrib)
+
+    Distribs = Distribs_filter
+
+    for Distrib in Distribs:
+        if DB_filter:
+            DB_filter += " OR ("
+        else:
+            DB_filter += " WHERE ("
+
+        DB_filter += "distrib='%s' AND (arch='%s'" % (Distrib, Distribs[Distrib][0])
+        for Arch in Distribs[Distrib][1:]:
+            DB_filter += " OR arch='%s'" % Arch
+        DB_filter += "))"
+
+    Rebuild = True
+
+    Trigger_rebuild()
 
 #
 # Handle the directories
