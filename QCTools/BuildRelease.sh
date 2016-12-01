@@ -57,8 +57,8 @@ function _windows () {
     
     $SSHP "$win_ps_utils
 
-           # Save path
-           \$OldPath = \$env:PATH
+           # Save env
+           \$OldEnv = Get-ChildItem Env:
 
            # Load env
            Load-VcVars x64
@@ -133,8 +133,8 @@ function _windows () {
                                              \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.pdb\"
             }
 
-           # Restore path
-           \$env:PATH = \$OldPath"
+           # Restore env
+           Load-Env(\$OldEnv)"
 
     sleep 3
 

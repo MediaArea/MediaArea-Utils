@@ -144,8 +144,8 @@ function _windows () {
 
     $SSHP "$win_ps_utils
 
-           # Save path
-           \$OldPath = \$env:PATH
+           # Save env
+           \$OldEnv = Get-ChildItem Env:
 
            # Load env
            Load-VcVars x64
@@ -194,8 +194,8 @@ function _windows () {
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }
 
-           # Restore path
-           \$env:PATH = \$OldPath
+           # Restore env
+           Load-Env(\$OldEnv)
 "
     sleep 3
 
