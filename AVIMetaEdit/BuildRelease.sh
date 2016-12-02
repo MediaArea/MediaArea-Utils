@@ -144,8 +144,8 @@ function _windows () {
 
     $SSHP "$win_ps_utils
 
-           # Save path
-           \$OldPath = \$env:PATH
+           # Save env
+           \$OldEnv = Get-ChildItem Env:
 
            # Load env
            Load-VcVars x64
@@ -163,7 +163,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\avimetaedit.exe\") -And (Test-Path \"x64\\Release\\avimetaedit.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\avimetaedit.exe\" \"x64\\Release\\avimetaedit.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\avimetaedit.exe\" \"x64\\Release\\avimetaedit.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
@@ -183,7 +183,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\AVI_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\AVI_MetaEdit_GUI.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\AVI_MetaEdit_GUI.exe\" \"x64\\Release\\AVI_MetaEdit_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\AVI_MetaEdit_GUI.exe\" \"x64\\Release\\AVI_MetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
@@ -191,11 +191,11 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }
 
-           # Restore path
-           \$env:PATH = \$OldPath
+           # Restore env
+           Load-Env(\$OldEnv)
 "
     sleep 3
 

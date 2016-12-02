@@ -57,8 +57,8 @@ function _windows () {
     
     $SSHP "$win_ps_utils
 
-           # Save path
-           \$OldPath = \$env:PATH
+           # Save env
+           \$OldEnv = Get-ChildItem Env:
 
            # Load env
            Load-VcVars x64
@@ -78,14 +78,14 @@ function _windows () {
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
 
               # Sign binary
-              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
 
               # Make installer
               Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\NSIS\makensis /DSTATIC QCTools.nsi
 
               # Sign installer
-              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\"
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_Windows.exe\"
 
               # Make WithoutInstaller archive
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
@@ -117,7 +117,7 @@ function _windows () {
 
            If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
               # Sign binary
-              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
 
                # Make WithoutInstaller archive
                New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
@@ -133,8 +133,8 @@ function _windows () {
                                              \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.pdb\"
             }
 
-           # Restore path
-           \$env:PATH = \$OldPath"
+           # Restore env
+           Load-Env(\$OldEnv)"
 
     sleep 3
 

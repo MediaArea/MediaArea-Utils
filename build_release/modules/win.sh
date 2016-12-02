@@ -8,6 +8,16 @@
 
 # Utilities for PowerShell
 win_ps_utils="
+function Load-Env {
+    param([Array]\$Env)
+
+    Remove-Item Env:*
+
+    \$Env | ForEach-Object {
+        Set-Content Env:\$(\$_.Name) \$_.Value
+    }
+}
+
 function Load-VcVars {
     param([ValidateSet(\"x86\", \"x64\")][String]\$Arch = \"x86\")
 

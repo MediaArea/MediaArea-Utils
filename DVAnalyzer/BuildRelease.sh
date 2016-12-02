@@ -144,8 +144,8 @@ function _windows () {
     
     $SSHP "$win_ps_utils
 
-           # Save path
-           \$OldPath = \$env:PATH
+           # Save env
+           \$OldEnv = Get-ChildItem Env:
 
            # Get password for signing
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
@@ -179,7 +179,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\dvanalyzer.exe\") -And (Test-Path \"x64\\Release\\dvanalyzer.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
 
                # Make archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -198,7 +198,7 @@ function _windows () {
 
            If ((Test-Path \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\") -And (Test-Path \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
@@ -206,11 +206,11 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
                # Sign installers
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.geotrust.com/tsa /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
            }
 
-           # Restore path
-           \$env:PATH = \$OldPath"
+           # Restore env
+           Load-Env(\$OldEnv)"
     sleep 3
 
     # Retrieve files
