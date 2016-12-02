@@ -8,14 +8,14 @@
 # can be found in the License.txt file in the root of the source
 # tree.
 
-# This script requires: bang.sh UpgradeVersion.sh PrepareSource.sh 
+# This script requires: bang.sh UpgradeVersion.sh PrepareSource.sh
 #                        ssh mawk osc rpm-common
 
 function load_options () {
 
     b.opt.add_flag --help "Show this help"
     b.opt.add_alias --help -h
-    
+
     b.opt.add_opt --project "The project to work with"
     b.opt.add_alias --project -p
 
@@ -83,10 +83,10 @@ function update_PKGBUILD () {
 
     # Arguments :
     # update_PKGBUILD $Path_to_obs_project $Archive $PKGBUILD
-    
+
     # TODO: Handle more than one file in PKGBUILD
     # TODO: Handle sha1sum & sha256sum arrays
-    
+
     local OBSPath=$1 Archive=$2 PKGBUILD=$3
 
     PKGBUILD="$OBSPath"/$PKGBUILD
@@ -115,7 +115,7 @@ function run () {
         b.opt.show_usage
         exit 1
     fi
-    
+
     if b.opt.check_required_args; then
 
         project_get
