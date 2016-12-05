@@ -8,7 +8,10 @@ import fnmatch
 import time
 import sys
 import os
+import Repo
+
 import xml.etree.ElementTree as ElementTree
+
 
 print "\n========================================================"
 print "Handle_OBS_results.py"
@@ -272,6 +275,17 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
             os.remove(Name_final)
         subprocess.call(Params_getpackage, shell=True)
 
+        if os.path.isfile(Name_final):
+            if Config["Enable_repo"]:
+                if Package_type == "rpm":
+                    print "Export package %s to repository" % Name_final
+                    print
+                    Repo.Add_rpm_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                elif Package_type == "deb":
+                    print "Export package %s to repository" % Name_final
+                    print
+                    Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+        else:
         # This is potentially a spam tank, but I leave the
         # mails here because:
         # 1. it allows to have the command that have
@@ -282,7 +296,6 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
 
         # If the bin package is build, but hasn’t been
         # downloaded for some raison.
-        if not os.path.isfile(Name_final):
             Params = "echo '" \
                    + Distrib_name \
                    + " (" + Arch + "): the package " \
