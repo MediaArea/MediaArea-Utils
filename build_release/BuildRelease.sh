@@ -55,6 +55,9 @@ function load_options () {
 
     b.opt.add_opt --rebuild "Trigger rebuild of package on OBS"
 
+    b.opt.add_flag --skip-images "Skip build of Linux images (AppImages, Snap...)"
+    b.opt.add_alias --skip-images -ski
+
     b.opt.add_flag --all "Build all the targets for a project"
     # Same arguments as PrepareSource.sh
     b.opt.add_alias --all -all

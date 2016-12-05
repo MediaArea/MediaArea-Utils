@@ -83,6 +83,18 @@ function btask.UpgradeVersion.run () {
     updateFile "00000000000000000000000000000000 000000 mediainfo_$Version_old_escaped" "00000000000000000000000000000000 000000 mediainfo_$Version_new" "${MI_source}"/Project/OBS/deb6.dsc
 
     echo
+    echo "Update ${MI_source}/Project/AppImage/Recipe.sh"
+    updateFile "VERSION=$Version_old_escaped" "VERSION=$Version_new" "${MI_source}"/Project/AppImage/Recipe.sh
+
+    echo
+    echo "Update ${MI_source}/Project/Snap/mediainfo/snapcraft.yaml"
+    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MI_source}"/Project/Snap/mediainfo/snapcraft.yaml
+
+    echo
+    echo "Update ${MI_source}/Project/Snap/mediainfo-gui/snapcraft.yaml"
+    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MI_source}"/Project/Snap/mediainfo-gui/snapcraft.yaml
+
+    echo
     echo "Update ${MI_source}/Project/GNU/PKGBUILD"
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MI_source}"/Project/GNU/PKGBUILD
 

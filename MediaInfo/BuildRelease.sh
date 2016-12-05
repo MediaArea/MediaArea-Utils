@@ -316,6 +316,169 @@ function _windows () {
     return 0
 }
 
+function _linux_images () {
+
+    local SSHP Build_dir File Container_name
+
+    SSHP="ssh -x -p $Ubuntu_SSH_port $Ubuntu_SSH_user@$Ubuntu_IP"
+    Build_dir="build_$RANDOM"
+    Container_name=$RANDOM
+
+    cd "$MI_tmp"
+
+    # Start the VM if needed
+    if [ -n "$Ubuntu_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        if ! vm_start "$Virsh_uri" "$Ubuntu_VM_name" "$Ubuntu_IP" "$Ubuntu_SSH_port"; then
+            MSG="ERROR: unable to start VM"
+            print_e "$MSG"
+            return 1
+        fi
+    fi
+
+    # Test connection
+    if ! $SSHP "exit"; then
+        MSG="ERROR: unable to connect to host"
+        print_e "$MSG"
+        return 1
+    fi
+
+    # Prepare build directory
+    echo "Prepare build directory..."
+    $SSHP "cd \"$Ubuntu_working_dir\"
+           if [ -e \"$Build_dir\" ] ; then
+               rf -fr \"$Build_dir\"
+           fi
+           mkdir \"$Build_dir\""
+
+    # Get the sources
+    scp -qrP $Ubuntu_SSH_port prepare_source/{ZL/ZenLib,MIL/MediaInfoLib,MI/MediaInfo} \
+             "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir\\"
+
+
+    # Build Snap
+    echo "Make MI Snap Image..."
+
+    $SSHP "cd \"$Ubuntu_working_dir/$Build_dir\"
+           cp -rf MediaInfo/Project/Snap/mediainfo/* .
+           snapcraft cleanbuild
+           snapcraft --target-arch i386 cleanbuild
+           cp -rf MediaInfo/Project/Snap/mediainfo-gui/* .
+           snapcraft cleanbuild
+
+           # Bug, snapcraft wrongly consider compiling in a 32 bit container on 64 bit system
+           # as cross-compilation and refuses to build mediaconch-gui since gtk-desktop module
+           # don't support cross-compile. So we have to do the job manually.
+
+           lxc launch -e ubuntu:xenial/i386 xenial$Container_name
+           lxc file push -r ZenLib xenial$Container_name/root
+           lxc file push -r MediaInfoLib xenial$Container_name/root
+           lxc file push -r MediaInfo xenial$Container_name/root
+           # Bug, lxc eat directory name first letter
+           lxc exec xenial$Container_name -- mv ediaInfoLib MediaInfoLib
+           lxc exec xenial$Container_name -- mv enLib ZenLib
+           lxc exec xenial$Container_name -- mv ediaInfo MediaInfo
+           lxc exec xenial$Container_name -- cp -rf MediaInfo/Project/Snap/mediainfo-gui/* .
+           lxc exec xenial$Container_name -- apt-get update
+           lxc exec xenial$Container_name -- apt-get install snapcraft -y
+           lxc exec xenial$Container_name -- snapcraft
+           lxc file pull xenial$Container_name/root/mediainfo-gui_${Version_new}_i386.snap .
+           lxc delete -f xenial$Container_name"
+
+    # Build AppImage
+    echo "Make MI AppImage..."
+
+    $SSHP "cd \"$Ubuntu_working_dir/$Build_dir\"
+           lxc launch -e images:centos/6/amd64 centos64$Container_name
+           lxc file push -r ZenLib centos64$Container_name/root
+           lxc file push -r MediaInfoLib centos64$Container_name/root
+           lxc file push -r MediaInfo centos64$Container_name/root
+           # Bug, lxc eat first directory name letter
+           lxc exec centos64$Container_name -- mv ediaInfoLib MediaInfoLib
+           lxc exec centos64$Container_name -- mv enLib ZenLib
+           lxc exec centos64$Container_name -- mv ediaInfo MediaInfo
+           lxc exec centos64$Container_name -- cp -f MediaInfo/Project/AppImage/Recipe.sh .
+           lxc exec centos64$Container_name -- sh Recipe.sh
+           lxc file pull -r centos64$Container_name/root/out/mediainfo-${Version_new}-x86_64.AppImage .
+           lxc file pull -r centos64$Container_name/root/out/mediainfo-gui-${Version_new}-x86_64.AppImage .
+           lxc delete -f centos64$Container_name
+
+           lxc launch -e images:centos/6/i386 centos$Container_name
+           lxc file push -r ZenLib centos$Container_name/root
+           lxc file push -r MediaInfoLib centos$Container_name/root
+           lxc file push -r MediaInfo centos$Container_name/root
+           # Bug, lxc eat first directory name letter
+           lxc exec centos$Container_name -- mv ediaInfoLib MediaInfoLib
+           lxc exec centos$Container_name -- mv enLib ZenLib
+           lxc exec centos$Container_name -- mv ediaInfo MediaInfo
+           lxc exec centos$Container_name -- cp -f MediaInfo/Project/AppImage/Recipe.sh .
+           lxc exec centos$Container_name -- sh Recipe.sh
+           lxc file pull -r centos$Container_name/root/out/mediainfo-${Version_new}-i686.AppImage .
+           lxc file pull -r centos$Container_name/root/out/mediainfo-gui-${Version_new}-i686.AppImage .
+           lxc delete -f centos$Container_name"
+
+    # Retrieve files
+    echo "Retreive files"
+
+    File="mediainfo_${Version_new}_amd64.snap"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo-gui_${Version_new}_amd64.snap"
+    test -e "$MIG_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo_${Version_new}_i386.snap"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo-gui_${Version_new}_i386.snap"
+    test -e "$MIG_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo-${Version_new}-x86_64.AppImage"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo-gui-${Version_new}-x86_64.AppImage"
+    test -e "$MIG_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+
+    File="mediainfo-${Version_new}-i686.AppImage"
+    test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="mediainfo-gui-${Version_new}-i686.AppImage"
+    test -e "$MIG_dir/$File" && rm "$MIC_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    # Cleaning
+    echo "Cleaning..."
+
+    $SSHP "cd \"$Ubuntu_working_dir\" && rm -fr \"$Build_dir\""
+
+    # Stop the VM
+    if [ -n "$Ubuntu_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        vm_stop "$Virsh_URI" "$Ubuntu_VM_name"
+    fi
+
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
+
+    return 0
+}
+
 function _obs () {
 
     local OBS_package="$OBS_project/MediaInfo"
@@ -365,6 +528,9 @@ function _linux () {
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
     python Handle_OBS_results.py $* $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
+    if ! b.opt.has_flag? --skip-images && [ ! $(b.opt.get_opt --rebuild) ] ; then
+        _linux_images
+    fi
 }
 
 function btask.BuildRelease.run () {
@@ -450,10 +616,15 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mi -v $Version_new -wp "$MI_tmp"/prepare_source -sp "$MI_tmp"/upgrade_version/MediaInfo $PS_target -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        MSG=
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
             _linux
+        fi
+
+        if [ $? -ne 0 ] ; then
+            echo -e "$MSG" | mailx -s "[BR Linux] Problem building MI" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
         fi
         mv "$MI_tmp"/prepare_source/archives/mediainfo_${Version_new}.* "$MIS_dir"
     fi
@@ -467,7 +638,7 @@ function btask.BuildRelease.run () {
         fi
 
         if [ $? -ne 0 ] ; then
-            echo "echo -e \"$MSG\" | mailx -s \"[BR Mac] Problem building MC\" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to"
+            echo "echo -e \"$MSG\" | mailx -s \"[BR Mac] Problem building MI\" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to"
         fi
 
         mv "$MI_tmp"/prepare_source/archives/MediaInfo_CLI_${Version_new}_GNU_FromSource.* "$MIC_dir"

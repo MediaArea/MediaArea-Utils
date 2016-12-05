@@ -11,8 +11,13 @@ Mac_SSH_port=""
 Mac_SSH_user=""
 Key_chain=""
 Mac_working_dir=""
-
 Mac_binaries_dir=""
+
+# Ubuntu
+Ubuntu_IP=""
+Ubuntu_SSH_port=""
+Ubuntu_SSH_user=""
+Ubuntu_working_dir=""
 
 # OBS
 OBS_project=""
