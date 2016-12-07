@@ -507,22 +507,24 @@ function _obs () {
 
 function _linux () {
 
-    if [ ! $(b.opt.get_opt --rebuild) ] ; then
-        _obs
+    if ! b.opt.has_flag? --only-images ; then
+        if ! $(b.opt.get_opt --rebuild ; then
+            _obs
+        fi
+
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
+        echo The command line is:
+        echo python Handle_OBS_results.py $* $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
+        echo
+
+        cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
+        python Handle_OBS_results.py $* $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     fi
 
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
-    echo The command line is:
-    echo python Handle_OBS_results.py $* $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir"
-    echo
-
-    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $* $OBS_project MediaConch $Version_new "$MCC_dir" "$MCD_dir" "$MCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-
-    if ! b.opt.has_flag? --skip-images && [ ! $(b.opt.get_opt --rebuild) ] ; then
+    if ! b.opt.has_flag? --skip-images && ! b.opt.get_opt --rebuild ; then
         _linux_images
     fi
 }
