@@ -388,7 +388,7 @@ function _linux_images () {
     echo "Make MI AppImage..."
 
     $SSHP "cd \"$Ubuntu_working_dir/$Build_dir\"
-           lxc launch -e images:centos/6/amd64 centos64$Container_name
+           lxc launch -e -c 'security.privileged=true' images:centos/6/amd64 centos64$Container_name
            lxc file push -r ZenLib centos64$Container_name/root
            lxc file push -r MediaInfoLib centos64$Container_name/root
            lxc file push -r MediaInfo centos64$Container_name/root
@@ -402,7 +402,7 @@ function _linux_images () {
            lxc file pull -r centos64$Container_name/root/out/mediainfo-gui-${Version_new}-x86_64.AppImage .
            lxc delete -f centos64$Container_name
 
-           lxc launch -e images:centos/6/i386 centos$Container_name
+           lxc launch -e -c 'security.privileged=true' images:centos/6/i386 centos$Container_name
            lxc file push -r ZenLib centos$Container_name/root
            lxc file push -r MediaInfoLib centos$Container_name/root
            lxc file push -r MediaInfo centos$Container_name/root
@@ -530,7 +530,7 @@ function _linux () {
         python Handle_OBS_results.py $* $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     fi
 
-    if ! b.opt.has_flag? --skip-images && [ ! $(b.opt.get_opt --rebuild) ] ; then
+    if ! b.opt.has_flag? --skip-images && ! b.opt.get_opt --rebuild ; then
         _linux_images
     fi
 }
