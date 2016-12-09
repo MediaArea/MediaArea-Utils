@@ -359,7 +359,7 @@ function _linux_images () {
     echo "Make MC AppImage..."
 
     $SSHP "cd \"$Ubuntu_working_dir/$Build_dir\"
-           lxc launch -e images:centos/6/amd64 centos64$Container_name
+           lxc launch -e -c 'security.privileged=true' images:centos/6/amd64 centos64$Container_name
            lxc file push -r ZenLib centos64$Container_name/root
            lxc file push -r MediaInfoLib centos64$Container_name/root
            lxc file push -r MediaConch centos64$Container_name/root
@@ -374,7 +374,7 @@ function _linux_images () {
            lxc file pull -r centos64$Container_name/root/out/mediaconch-gui-${Version_new}-x86_64.AppImage .
            lxc delete -f centos64$Container_name
 
-           lxc launch -e images:centos/6/i386 centos$Container_name
+           lxc launch -e -c 'security.privileged=true' images:centos/6/i386 centos$Container_name
            lxc file push -r ZenLib centos$Container_name/root
            lxc file push -r MediaInfoLib centos$Container_name/root
            lxc file push -r MediaConch centos$Container_name/root
@@ -508,7 +508,7 @@ function _obs () {
 function _linux () {
 
     if ! b.opt.has_flag? --only-images ; then
-        if ! $(b.opt.get_opt --rebuild ; then
+        if ! b.opt.get_opt --rebuild ; then
             _obs
         fi
 
