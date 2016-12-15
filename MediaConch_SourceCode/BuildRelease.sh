@@ -568,7 +568,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$MC_tmp"/upgrade_version/MediaConch_SourceCode
     else
         pushd "$MC_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" MediaConch_SourceCode
         popd
     fi
 

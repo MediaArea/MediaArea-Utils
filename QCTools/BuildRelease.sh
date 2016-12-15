@@ -324,7 +324,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$QC_tmp"/upgrade_version/qctools
     else
         pushd "$QC_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" qctools
 
         # Sync with upstream
         cd qctools

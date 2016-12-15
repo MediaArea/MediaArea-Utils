@@ -339,7 +339,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$AM_tmp"/upgrade_version/AVI_MetaEdit
     else
         pushd "$AM_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" AVI_MetaEdit
         popd
     fi
 

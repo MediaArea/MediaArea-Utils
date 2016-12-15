@@ -197,7 +197,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$MIL_tmp"/upgrade_version/MediaInfoLib
     else
         pushd "$MIL_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" MediaInfoLib
         popd
     fi
 
