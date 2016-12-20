@@ -326,15 +326,19 @@ function btask.BuildRelease.run () {
         pushd "$QC_tmp"/upgrade_version
         git clone "$Repo" qctools
 
-        # Sync with upstream
+        # Add our patches
         cd qctools
-        git fetch https://github.com/bavc/qctools.git
+        git fetch https://github.com/g-maxime/qctools.git
 
-        git rebase FETCH_HEAD
+        git merge FETCH_HEAD
 
         if [ $? -ne 0 ] ; then
-            echo -e "Unable to automatically rebase the current branch on upstream" | mailx -s "[BR] Problem with QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
-            git rebase --abort
+            echo -e "Unable to merge patches" | mailx -s "[BR] Problem with QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
+            if $Clean_up; then
+                cd "$QC_tmp"
+                rm -fr "$QC_tmp"
+            fi
+            exit 1
         fi
 
         cd ..
