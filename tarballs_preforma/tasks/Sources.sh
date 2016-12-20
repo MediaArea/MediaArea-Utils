@@ -24,9 +24,12 @@ function btask.Sources.run () {
     7za x mediaconch_${MC_version}_AllInclusive.7z > /dev/null
 
     # Copy license files
-    cp ../License*.html mediaconch_AllInclusive/
+    cp ../License*.html mediaconch_AllInclusive
     cp ../License.*.html mediaconch_AllInclusive/MediaInfoLib
     cp ../License.*.html mediaconch_AllInclusive/ZenLib
+
+    cp -r ../img mediaconch_AllInclusive
+    cp ../*.html mediaconch_AllInclusive
 
     # Keep only MediaArea sources (ZL/MIL/MC)
     rm -fr mediaconch_AllInclusive/zlib

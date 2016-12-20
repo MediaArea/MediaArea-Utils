@@ -21,8 +21,9 @@ function makeWindows () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/MediaConch_CLI_${MC_version}_Windows_x64.zip"
 
     echo "Create Windows package"
-    cp License*.html tmp/
-    zip -q -j exec01-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec01-$Date.zip *)
 
     rm -fr tmp
 }
@@ -40,8 +41,9 @@ function makeMac () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/mediaconch/${MC_version}/MediaConch_CLI_${MC_version}_Mac.dmg"
 
     echo "Create Mac package"
-    cp License*.html tmp/
-    zip -q -j exec05-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec05-$Date.zip *)
 
     rm -fr tmp
 }
@@ -127,8 +129,9 @@ function makeUbuntu () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0_${ZL_version}-1_amd64.xUbuntu_12.04.deb"
 
     echo "Create Ubuntu package"
-    cp License*.html tmp/
-    zip -q -j exec09-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec09-$Date.zip *)
 
     rm -fr tmp
 }
@@ -202,8 +205,9 @@ function makeFedora () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.Fedora_20.rpm"
 
     echo "Create Fedora package"
-    cp License*.html tmp/
-    zip -q -j exec13-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec13-$Date.zip *)
 
     rm -fr tmp
 }
@@ -241,8 +245,9 @@ function makeDebian () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen0_${ZL_version}-1_amd64.Debian_7.0.deb"
 
     echo "Create Debian package"
-    cp License*.html tmp/
-    zip -q -j exec17-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec17-$Date.zip *)
 
     rm -fr tmp
 }
@@ -320,8 +325,9 @@ function makeOpensuse () {
     wget -nd -q -P tmp "https://mediaarea.net/download/binary/libzen0/${ZL_version}/libzen-${ZL_version}.x86_64.openSUSE_11.4.rpm"
 
     echo "Create Opensuse package"
-    cp License*.html tmp/
-    zip -q -j exec21-$Date.zip tmp/*
+    cp -r img tmp/
+    cp *.html tmp/
+    (cd tmp && zip -r -q ../exec21-$Date.zip *)
 
     rm -fr tmp
 }

@@ -85,6 +85,56 @@ function getLicensesFiles () {
 
 }
 
+function getReadmeFiles () {
+
+    echo
+    echo "Download doc files..."
+    echo
+
+    if ! b.path.file? "Markdown.pl"; then
+        wget -nd -q http://daringfireball.net/projects/downloads/Markdown_1.0.1.zip
+        unzip -qj Markdown_1.0.1.zip Markdown_1.0.1/Markdown.pl
+        rm Markdown_1.0.1.zip
+    fi
+
+    if ! b.path.file? "REST.html"; then
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/Documentation/REST.md"
+        perl Markdown.pl REST.md > REST.html 2>/dev/null
+    fi
+
+    if ! b.path.file? "Plugins.html"; then
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/Documentation/Plugins.md"
+        perl Markdown.pl Plugins.md > Plugins.html 2>/dev/null
+    fi
+
+    if ! b.path.file? "Deamon.html"; then
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/Documentation/Daemon.md"
+        perl Markdown.pl Daemon.md > Daemon.html 2>/dev/null
+    fi
+
+    if ! b.path.file? "Config.html"; then
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch_SourceCode/master/Documentation/Config.md"
+        perl Markdown.pl Config.md > Config.html 2>/dev/null
+    fi
+
+    if ! b.path.file? "HowToUse.html"; then
+        wget -nd -q "https://raw.githubusercontent.com/MediaArea/MediaConch-Website/master/_documentation/HowToUse.md"
+
+        mkdir img
+
+        for i in $(sed -n 's/.*\(..\/images\/[^\")]*\).*/\1/p' HowToUse.md) ; do
+            if ! b.path.file? "img/$(basename $i)" ; then
+                wget -nd -q -P img "https://raw.githubusercontent.com/MediaArea/MediaConch-Website/master/_documentation/$i"
+            fi
+        done
+
+        sed -i '1,6d' HowToUse.md
+        sed -i 's/\.\.\/images/img/g' HowToUse.md
+        sed -i -e 's/“/\&#8220;/g' -e 's/”/\&#8221;/g' HowToUse.md
+        perl Markdown.pl HowToUse.md > HowToUse.html 2>/dev/null
+    fi
+}
+
 function run () {
     load_options
     b.opt.init "$@"
@@ -130,9 +180,9 @@ function run () {
         echo
 
         getLicensesFiles
+        getReadmeFiles
 
         b.task.run Executables
-
         b.task.run Sources
 
         b.task.run Buildenv_fedora
