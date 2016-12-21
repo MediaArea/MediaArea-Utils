@@ -1,6 +1,6 @@
 #!/usr/bin/env bang run
 
-# MediaArea-Utils/tarballs_preforma/TarballsPreforma.sh 
+# MediaArea-Utils/tarballs_preforma/TarballsPreforma.sh
 # Generate the tarballs asked by Preforma
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
@@ -66,7 +66,7 @@ popd () {
 }
 
 function getLicensesFiles () {
-    
+
     echo
     echo "Download licenses files..."
     echo

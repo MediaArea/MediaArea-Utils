@@ -36,7 +36,10 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="License.html"
     MC_files[((index++))]="Source/CLI/Help.cpp"
     MC_files[((index++))]="Source/Daemon/Daemon.cpp"
+    MC_files[((index++))]="Project/GNU/mediaconch.dsc"
     MC_files[((index++))]="debian/changelog"
+    MC_files[((index++))]="Project/OBS/deb7.dsc"
+    MC_files[((index++))]="Project/OBS/deb7.debian/changelog"
 
     for MC_file in ${MC_files[@]}
     do
@@ -47,13 +50,6 @@ function btask.UpgradeVersion.run () {
     echo
     echo "Update ${MC_source}/Project/GNU/mediaconch.spec"
     updateFile "%define mediaconch_version          $Version_old_escaped" "%define mediaconch_version          $Version_new" "${MC_source}"/Project/GNU/mediaconch.spec
-
-    echo
-    echo "Update ${MC_source}/Project/GNU/mediaconch.dsc"
-    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
-    # sed will take the last of the longuest strings first and
-    # will replace the 3 lines
-    updateFile "00000000000000000000000000000000 000000 mediaconch_$Version_old_escaped" "00000000000000000000000000000000 000000 mediaconch_$Version_new" "${MC_source}"/Project/GNU/mediaconch.dsc
 
     echo "Update ${MC_source}/Project/GNU/PKGBUILD"
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
