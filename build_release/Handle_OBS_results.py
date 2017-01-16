@@ -50,6 +50,7 @@ class mysql:
         print "---------------- SQL QUERY ----------------"
         print query
         print "-------------------------------------------"
+        self.sql.ping(True)
         self.cursor = self.sql.cursor()
         self.cursor.execute(query)
         self.sql.commit()
@@ -278,13 +279,15 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
         if os.path.isfile(Name_final):
             if Config["Enable_repo"]:
                 if Package_type == "rpm":
-                    print "Export package %s to repository" % Name_final
-                    print
-                    Repo.Add_rpm_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                    if Config["Export_debug"] or not fnmatch.fnmatch(Name, "*-debuginfo"):
+                        print "Export package %s to repository" % Name_final
+                        print
+                        Repo.Add_rpm_package(Name_final, Name, Version, Arch, Distrib_name, Release)
                 elif Package_type == "deb":
-                    print "Export package %s to repository" % Name_final
-                    print
-                    Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                    if Config["Export_debug"] or not fnmatch.fnmatch(Name, "*-dbg"):
+                        print "Export package %s to repository" % Name_final
+                        print
+                        Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
         else:
         # This is potentially a spam tank, but I leave the
         # mails here because:
