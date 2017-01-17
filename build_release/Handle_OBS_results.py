@@ -424,7 +424,8 @@ def Get_packages_on_OBS():
 
             if Bin_name == "mediaconch" and (not Distrib_name == "CentOS_5" and \
                                              not Distrib_name == "CentOS_6" and \
-                                             not fnmatch.fnmatch(Distrib_name, "RHEL_*") and \
+                                             not Distrib_name == "RHEL_5" and \
+                                             not Distrib_name == "RHEL_6" and \
                                              not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
                                              not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
                 Server_name_wanted = Get_package(Bin_name + "-server", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
@@ -552,7 +553,8 @@ def Verify_states_and_files():
             if fnmatch.fnmatch(OBS_package, "MediaConch*") and \
                (not Distrib_name == "CentOS_5" and \
                 not Distrib_name == "CentOS_6" and \
-                not fnmatch.fnmatch(Distrib_name, "RHEL_*") and \
+                not Distrib_name == "RHEL_5" and \
+                not Distrib_name == "RHEL_6" and \
                 not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
                 not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
                 Number_srv_wanted = Number_srv_wanted + 1
