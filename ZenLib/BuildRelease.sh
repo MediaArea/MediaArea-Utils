@@ -95,7 +95,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$ZL_tmp"/upgrade_version/ZenLib
     else
         pushd "$ZL_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" ZenLib
         popd
     fi
 

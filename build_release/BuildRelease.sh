@@ -34,6 +34,8 @@ function load_options () {
     b.opt.add_opt --repo "Source repository URL"
     b.opt.add_alias --repo -r
 
+    b.opt.add_opt --obs-repo "Overwrite OBS repository URL"
+
     b.opt.add_opt --git-state "Ask for a specific git state of the current project"
     b.opt.add_alias --git-state -gs
 
@@ -130,6 +132,10 @@ function run () {
 
         # Load sensible configuration we don’t want on github
         source "$(dirname ${BASH_SOURCE[0]})"/Config.sh
+
+        if b.opt.get_opt --obs-repo > /dev/null ; then
+            OBS_project="$(sanitize_arg $(b.opt.get_opt --obs-repo))"
+        fi
 
         Target="all"
         PS_target="-all"

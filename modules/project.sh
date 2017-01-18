@@ -31,7 +31,7 @@ function project_get () {
     if [ "$Project" = "qc" ] || [ "$Project" = "QC" ] || [ "$Project" = "QCTools" ]; then
         Project=QCTools
         Dirname="qctools"
-        Repo="https://github.com/g-maxime/qctools.git"
+        Repo="https://github.com/bavc/qctools.git"
     fi
     if [ "$Project" = "da" ] || [ "$Project" = "DA" ] || [ "$Project" = "DVAnalyzer" ]; then
         Project=DVAnalyzer

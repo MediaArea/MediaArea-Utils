@@ -86,10 +86,60 @@ def Create_repo_rpm(Path, Repo, Distribution, Release = False):
         shutil.move(Package_filename, Package_destination)
         Sign_rpm_package(Package_destination)
 
-    #clean
+    # Clean
     for File in [Package_filename, Repo_filename, Spec_filename, Key_filename]:
         if os.path.exists(File):
             os.remove(File)
+
+#
+# Create_repo_deb - create repo activation package
+def Create_repo_deb(Path, Repo, Distribution, Release = False):
+    Control_file = Configuration["Repo_control_template"].replace("REPO_NAME", Repo)
+    Control_file = Control_file.replace("DISTRIBUTION", Distribution)
+
+    List_file = "deb %s/deb/%s %s main" % (Configuration["Repo_url"], os.path.basename(Path), Distribution)
+
+    Build_root = "/tmp"
+    Build_dir = "repo-" + Repo + "-1.0-1" + Distribution.replace("-snapshots", "") + "_all"
+
+    if os.path.exists(os.path.join(Build_root, Build_dir)):
+        shutil.rmtree(os.path.join(Build_root, Build_dir))
+
+    os.makedirs(os.path.join(Build_root, Build_dir))
+    os.makedirs(os.path.join(Build_root, Build_dir, "DEBIAN"))
+    os.makedirs(os.path.join(Build_root, Build_dir, "etc"))
+    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt"))
+    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt", "sources.list.d"))
+    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt", "trusted.gpg.d"))
+
+    Control_filename = os.path.join(Build_root, Build_dir, "DEBIAN", "control")
+    List_filename = os.path.join(Build_root, Build_dir, "etc", "apt", "sources.list.d", Repo + ".list")
+    Key_filename = os.path.join(Build_root, Build_dir, "etc", "apt", "trusted.gpg.d", Repo + ".gpg")
+
+    # Add Control file
+    Destination = open(Control_filename, "w")
+    Destination.write(Control_file)
+    Destination.close()
+
+    # Add list file
+    Destination = open(List_filename, "w")
+    Destination.write(List_file)
+    Destination.close()
+
+    # Add key
+    shutil.copy(os.path.join(Path, "keyring.gpg"), Key_filename)
+
+    # Make deb package
+    Command = ["dpkg-deb", "--build", os.path.join(Build_root, Build_dir)]
+    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+
+    if not os.path.exists(os.path.join(Build_root, Build_dir) + ".deb"):
+        print("ERROR: activation package failed for distribution %s" % Distribution)
+    else:
+        shutil.move(os.path.join(Build_root, Build_dir) + ".deb", os.path.join(Path, Build_dir) + ".deb" )
+
+    # Clean
+    shutil.rmtree(os.path.join(Build_root, Build_dir))
 
 #
 # Add_rpm_package - add package to his repository, create the repository if don't exist 
@@ -144,18 +194,18 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
 # Add_deb_package - add package to his repository, create the repository if don't exist.
 #
 def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False):
-    Repo = "Debian" if fnmatch.fnmatch(Distribution, "Debian_*") else "Ubuntu"
+    Dest = "Debian" if fnmatch.fnmatch(Distribution, "Debian_*") else "Ubuntu"
     Arch = "amd64" if Arch == "x86_64" else "i386"
 
-    if not Configuration[Repo + "_names"].has_key(Distribution):
+    if not Configuration[Dest + "_names"].has_key(Distribution):
         print("ERROR: unable to import package %s, unknown distribution %s" % (Package, Distribution))
         return
 
-    Dist = Configuration[Repo + "_names"][Distribution]
+    Dist = Configuration[Dest + "_names"][Distribution]
     if not Release:
         Dist += "-snapshots"
 
-    Cache_directory = os.path.join(Configuration["Repo_path"], "deb", Repo.lower())
+    Cache_directory = os.path.join(Configuration["Repo_path"], "deb", Dest.lower())
     Lib_directory = os.path.join(Cache_directory, "conf", "lib")
     Deb_directory = os.path.join(Lib_directory, "apt", Dist)
 
@@ -188,6 +238,16 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
                 "apt/" + Dist
               ]
     subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+
+    # Create activation package if needed
+    Repo = Configuration["Repo_name"]
+    if not Release:
+        Repo += "-snapshots"
+
+    Distribution_file = "repo-%s-1.0-1%s_all.deb" % (Repo, Configuration[Dest + "_names"][Distribution])
+
+    if not os.path.isfile(os.path.join(Cache_directory, Distribution_file)):
+        Create_repo_deb(Cache_directory, Repo, Dist, Release)
 
 #
 # Main

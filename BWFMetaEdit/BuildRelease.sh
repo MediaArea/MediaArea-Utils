@@ -339,7 +339,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$BM_tmp"/upgrade_version/BWF_MetaEdit
     else
         pushd "$BM_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" BWF_MetaEdit
         popd
     fi
 

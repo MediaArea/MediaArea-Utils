@@ -353,7 +353,7 @@ function btask.BuildRelease.run () {
         cp -r "$Source_dir" "$DA_tmp"/upgrade_version/DV_Analyzer
     else
         pushd "$DA_tmp"/upgrade_version
-        git clone "$Repo"
+        git clone "$Repo" DV_Analyzer
         popd
     fi
 

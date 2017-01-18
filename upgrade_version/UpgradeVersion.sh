@@ -85,7 +85,7 @@ function getRepo () {
     cd "$Path"
     rm -fr "$Project"
 
-    if ! git clone "$Repo" ; then
+    if ! git clone "$Repo" "$Project" ; then
         echo "Error : Unable to clone repository $Repo!"
         echo
         echo "Use --source-path to specify a valid and accecible location"

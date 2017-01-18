@@ -184,8 +184,10 @@ function btask.UpgradeVersion.run () {
         updateFile "libmediainfo0 (>= [0-9.-]\+)" "libmediainfo0 (>= $MIL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
         echo "Update MediaInfoLib in Project/OBS/deb7.debian/control"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
+        updateFile "libmediainfo0 (>= [0-9.-]\+)" "libmediainfo0 (>= $MIL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
         echo "Update MediaInfoLib in Project/OBS/deb9.debian/control"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
+        updateFile "libmediainfo0v5 (>= [0-9.-]\+)" "libmediainfo0v5 (>= $MIL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
         echo "Update MediaInfoLib in Project/OBS/deb6.dsc"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb6.dsc
         echo "Update MediaInfoLib in Project/OBS/deb7.dsc"
@@ -194,6 +196,7 @@ function btask.UpgradeVersion.run () {
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/OBS/deb9.dsc
         echo "Update MediaInfoLib in debian/control"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/debian/control
+        updateFile "libmediainfo0 (>= [0-9.-]\+)" "libmediainfo0 (>= $MIL_version)" "${MI_source}"/debian/control
     fi
 
     # Update ZenLib required version
@@ -211,8 +214,10 @@ function btask.UpgradeVersion.run () {
         updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MI_source}"/Project/OBS/deb6.debian/control
         echo "Update ZenLib in Project/OBS/deb7.debian/control"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
+        updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MI_source}"/Project/OBS/deb7.debian/control
         echo "Update ZenLib in Project/OBS/deb9.debian/control"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
+        updateFile "libzen0v5 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MI_source}"/Project/OBS/deb9.debian/control
         echo "Update ZenLib in Project/OBS/deb6.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb6.dsc
         echo "Update ZenLib in Project/OBS/deb7.dsc"
@@ -221,5 +226,6 @@ function btask.UpgradeVersion.run () {
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/OBS/deb9.dsc
         echo "Update ZenLib in debian/control"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/debian/control
+        updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MI_source}"/debian/control
     fi
 }
