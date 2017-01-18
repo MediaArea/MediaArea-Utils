@@ -150,7 +150,6 @@ def Initialize_DB():
 
 ##################################################################
 def Waiting_loop():
-
     Count = 0
 
     # We wait for max 9h (600*20)+(1200*17)
@@ -182,45 +181,55 @@ def Waiting_loop():
             time.sleep(1200)
 
         # Check if the builds are done on OBS
-        Params = "osc results 2>&1 " + MA_project \
-               + " |awk '{print $3}' |sed 's/*//' |grep -v 'excluded\|disabled\|broken\|unresolvable\|failed\|succeeded' |wc -l"
-        Result = subprocess.check_output(Params, shell=True).strip()
-        # When all the distros are build, Result will equal 0
-        if Result == "0":
+        # Use dict and list for make à copy of the arrays and avoid runtime errors
+        for Distrib_name in dict(Distribs):
+                for Arch in list(Distribs[Distrib_name]):
+                        # We take "grep 'Distrib_name '" instead of "grep Distrib_name"
+                        # because the name of a distrib can be included in the
+                        # names of another distribs (ie SLE_11 and SLE_11_SPx)
+                    Params = "osc results '%s' |grep '%s '  |grep '%s' |awk '{print $3}' |sed 's/*//'" % \
+                             (MA_project, Distrib_name, Arch)
+
+                    Result = subprocess.check_output(Params, shell=True).strip()
+                    Remove = False
+
+                    if Result == "excluded" or Result == "disabled":
+                        State = "0"
+                        Remove = True
+                    elif Result == "succeeded":
+                        State = "1"
+                        Remove = True
+                        # Download packages
+                        Get_packages_on_OBS(Distrib_name, Arch)
+                    elif Result == "scheduled" or Result == "building":
+                        State = "2"
+                    elif  Result == "broken" or Result == "unresolvable" or Result == "failed":
+                        State = "2"
+                        Remove = True
+                    else:
+                        State = "3"
+
+                    # Update DB
+                    Cursor.execute("UPDATE `%s` SET state= '%s' WHERE distrib = '%s' AND arch = '%s';" % \
+                                   (Table, State, Distrib_name, Arch))
+
+                    if Remove:
+                        Distribs[Distrib_name].remove(Arch)
+                        if not Distribs[Distrib_name]:
+                            del Distribs[Distrib_name]
+
+
+        # When all the distros are build, array will be empty
+        if not Distribs:
             break
 
-        # If Result ≠ 0 and Count = 37, then we have wait for 9h
+        # If Count = 37, then we have wait for 9h
         # and all the distros aren’t build. This while loop will
         # exit at the next iteration, and in the error mail we’ll
         # specify that the timeout was reached.
         Timeout = False
         if Count == 37:
             Timeout = True
-
-##################################################################
-def Update_DB():
-
-    # We update the table with the results of the build
-    for Distrib_name in Distribs:
-        for Arch in Distribs[Distrib_name]:
-            # We take "grep 'Distrib_name '" instead of "grep Distrib_name"
-            # because the name of a distrib can be included in the
-            # names of another distribs (ie SLE_11 and SLE_11_SPx)
-            Params = "osc results " + MA_project \
-                   + " |grep '" + Distrib_name + " '"\
-                   + " |grep " + Arch \
-                   + " |awk '{print $3}' |sed 's/*//'"
-            Result = subprocess.check_output(Params, shell=True).strip()
-            # First case : if the state is disabled, excluded or
-            # unknown
-            State = "0"
-            if Result == "succeeded":
-                State = "1"
-            elif Result == "broken" or Result == "unresolvable" or Result == "failed" or Result == "blocked" or Result == "scheduled" or Result == "building" or Result == "finished":
-                State = "2"
-            elif Result == "":
-                State = "3"
-            Cursor.execute("UPDATE `" + Table + "` SET state= '" + State + "' WHERE distrib = '" + Distrib_name + "' AND arch = '" + Arch + "';")
 
 ##################################################################
 def Trigger_rebuild():
@@ -316,199 +325,187 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
     return Name_wanted
 
 ##################################################################
-def Get_packages_on_OBS():
+def Get_packages_on_OBS(Distrib_name, Arch):
     global FS_filter
 
-    Cursor.execute("SELECT * FROM `" + Table + "`" + DB_filter)
-    DB_distribs = Cursor.fetchall()
+    print
+    print "API commands for " + Distrib_name + " (" + Arch + ")"
+    print
 
-    for DB_dist in DB_distribs:
-
-        Distrib_name = DB_dist[0]
-        Arch = DB_dist[1]
-        State = DB_dist[2]
-
-        # State == 1 if build succeeded
-        if State == 1:
-
-            print
-            print "API commands for " + Distrib_name + " (" + Arch + ")"
-            print
-
-            # Initialization depending on the distrib’s family
-            Revision = ""
-            if fnmatch.fnmatch(Distrib_name, "Debian*") or \
-               fnmatch.fnmatch(Distrib_name, "*Ubuntu*"):
-                Package_type = "deb"
-                Revision = "-1"
-            if fnmatch.fnmatch(Distrib_name, "RHEL*") or \
-                    fnmatch.fnmatch(Distrib_name, "CentOS*") or \
-                    fnmatch.fnmatch(Distrib_name, "Fedora*"):
-                Package_type = "rpm"
-                # We must reassign even if it’s the default value, in case SLE/openSUSE/Mageia came
-                # before and assign it to i586
-                Package_infos[Package_type]["i586"] = "i686"
-            if fnmatch.fnmatch(Distrib_name, "SLE*") or \
-                    fnmatch.fnmatch(Distrib_name, "openSUSE*") or \
-                    fnmatch.fnmatch(Distrib_name, "Mageia*"):
-                Package_type = "rpm"
-                Package_infos[Package_type]["i586"] = "i586"
-            if fnmatch.fnmatch(Distrib_name, "Arch*"):
-                Package_type = "pkg.tar.xz"
+    # Initialization depending on the distrib’s family
+    Revision = ""
+    if fnmatch.fnmatch(Distrib_name, "Debian*") or \
+       fnmatch.fnmatch(Distrib_name, "*Ubuntu*"):
+        Package_type = "deb"
+        Revision = "-1"
+    if fnmatch.fnmatch(Distrib_name, "RHEL*") or \
+            fnmatch.fnmatch(Distrib_name, "CentOS*") or \
+            fnmatch.fnmatch(Distrib_name, "Fedora*"):
+        Package_type = "rpm"
+        # We must reassign even if it’s the default value, in case SLE/openSUSE/Mageia came
+        # before and assign it to i586
+        Package_infos[Package_type]["i586"] = "i686"
+    if fnmatch.fnmatch(Distrib_name, "SLE*") or \
+            fnmatch.fnmatch(Distrib_name, "openSUSE*") or \
+            fnmatch.fnmatch(Distrib_name, "Mageia*"):
+        Package_type = "rpm"
+        Package_infos[Package_type]["i586"] = "i586"
+    if fnmatch.fnmatch(Distrib_name, "Arch*"):
+        Package_type = "pkg.tar.xz"
 
 
-            # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
-            Bin_or_lib_name = Bin_name
-            if Project_kind == "lib":
-                if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
-                   (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
-                   fnmatch.fnmatch(Distrib_name, "Fedora*") or \
-                   fnmatch.fnmatch(Distrib_name, "Arch*"):
-                    Bin_or_lib_name = Devel_name
-                elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
-                     or Distrib_name == "Ubuntu_Next_standard" \
-                     or Distrib_name == "Debian_Next_ga" :
-                    Bin_or_lib_name = Bin_name + "v5"
+    # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
+    Bin_or_lib_name = Bin_name
+    if Project_kind == "lib":
+        if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
+           (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
+           fnmatch.fnmatch(Distrib_name, "Fedora*") or \
+           fnmatch.fnmatch(Distrib_name, "Arch*"):
+            Bin_or_lib_name = Devel_name
+        elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
+             or Distrib_name == "Ubuntu_Next_standard" \
+             or Distrib_name == "Debian_Next_ga" :
+            Bin_or_lib_name = Bin_name + "v5"
 
-            ### Bin package ###
-            Bin_name_wanted = Get_package(Bin_or_lib_name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+    ### Bin package ###
+    Bin_name_wanted = Get_package(Bin_or_lib_name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
-            ### Debug package ###
-            if not fnmatch.fnmatch(Distrib_name, "Arch*") and \
-               not Distrib_name == "RHEL_5" and \
-               not Distrib_name == "CentOS_5":
-                Debug_name_wanted = Get_package(Bin_or_lib_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-            else:
-                Debug_name_wanted = ''
+    ### Debug package ###
+    if not fnmatch.fnmatch(Distrib_name, "Arch*") and \
+       not Distrib_name == "RHEL_5" and \
+       not Distrib_name == "CentOS_5":
+        Debug_name_wanted = Get_package(Bin_or_lib_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+    else:
+        Debug_name_wanted = ''
 
-            ### Dev package ###
-            # Arch devel dependencies usually come with the library itself
-            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
-                Dev_name_wanted =  Get_package(Devel_name + Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-            else:
-                Dev_name_wanted = ''
+    ### Dev package ###
+    # Arch devel dependencies usually come with the library itself
+    if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+        Dev_name_wanted =  Get_package(Devel_name + Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+    else:
+        Dev_name_wanted = ''
 
-            ### Doc package ###
-            # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
-            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "Debian_6.0":
-                Doc_name_wanted = Get_package(Devel_name + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-            else:
-                Doc_name_wanted = ''
+    ### Doc package ###
+    # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
+    if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "Debian_6.0":
+        Doc_name_wanted = Get_package(Devel_name + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+    else:
+        Doc_name_wanted = ''
 
-            ### GUI package ###
-            if Project_kind == "gui" and not Bin_name == "qctools" and \
-                                        (not Bin_name == "mediaconch" or \
-                                        (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
-                                         not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
-                                         not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                         not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
-                Gui_name_wanted = Get_package(Bin_name + "-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+    ### GUI package ###
+    if Project_kind == "gui" and not Bin_name == "qctools" and \
+                                (not Bin_name == "mediaconch" or \
+                                (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
+                                 not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
+                                 not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                 not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
+        Gui_name_wanted = Get_package(Bin_name + "-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
 
-                # GUI debug package
-                if not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "RHEL_5" and not Distrib_name == "CentOS_5":
-                    if Package_type == "deb" \
-                       or fnmatch.fnmatch(Distrib_name, "openSUSE_*") \
-                       or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
+        # GUI debug package
+        if not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "RHEL_5" and not Distrib_name == "CentOS_5":
+            if Package_type == "deb" \
+               or fnmatch.fnmatch(Distrib_name, "openSUSE_*") \
+               or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
                         Gui_debug_name_wanted = Get_package(Bin_name + "-gui" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
-                    else:
-                        Gui_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
-                else:
-                        Gui_debug_name_wanted = ''
             else:
-                Gui_name_wanted = ''
+                Gui_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+        else:
                 Gui_debug_name_wanted = ''
+    else:
+        Gui_name_wanted = ''
+        Gui_debug_name_wanted = ''
 
-            ##################
-            # Server package #
-            ##################
+    ##################
+    # Server package #
+    ##################
 
-            if Bin_name == "mediaconch" and (not Distrib_name == "CentOS_5" and \
-                                             not Distrib_name == "CentOS_6" and \
-                                             not Distrib_name == "RHEL_5" and \
-                                             not Distrib_name == "RHEL_6" and \
-                                             not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                             not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
-                Server_name_wanted = Get_package(Bin_name + "-server", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+    if Bin_name == "mediaconch" and (not Distrib_name == "CentOS_5" and \
+                                     not Distrib_name == "CentOS_6" and \
+                                     not Distrib_name == "RHEL_5" and \
+                                     not Distrib_name == "RHEL_6" and \
+                                     not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
+                                     not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
+        Server_name_wanted = Get_package(Bin_name + "-server", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
 
-                # Server debug package
-                if not fnmatch.fnmatch(Distrib_name, "Arch*"):
-                    if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or fnmatch.fnmatch(Distrib_name, "SLE_*"):
-                        Server_debug_name_wanted = Get_package(Bin_name + "-server" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
-                    else:
-                        Server_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
-                else:
-                    Server_debug_name_wanted = ''
-            else :
-                Server_name_wanted = ''
-                Server_debug_name_wanted = ''
+        # Server debug package
+        if not fnmatch.fnmatch(Distrib_name, "Arch*"):
+            if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or fnmatch.fnmatch(Distrib_name, "SLE_*"):
+                Server_debug_name_wanted = Get_package(Bin_name + "-server" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+            else:
+                Server_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+        else:
+            Server_debug_name_wanted = ''
+    else :
+        Server_name_wanted = ''
+        Server_debug_name_wanted = ''
 
-            if Rebuild:
-                FS_filter += "\|" if FS_filter else ""
-                FS_filter += "%s\.%s" % (Package_infos[Package_type][Arch], Distrib_name)
+    if Rebuild:
+        FS_filter += "\|" if FS_filter else ""
+        FS_filter += "%s\.%s" % (Package_infos[Package_type][Arch], Distrib_name)
 
-            ###########################
-            # Put the filenames in DB #
-            ###########################
+    ###########################
+    # Put the filenames in DB #
+    ###########################
 
-            # If we run for a release
-            if Release == True:
+    # If we run for a release
+    if Release == True:
 
-                # First, ensure that all the succeeded distribs are
-                # presents in the DB
-                Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
-                Result = 0
-                Result = Cursor.rowcount()
-                if Result == 0:
-                    Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
+        # First, ensure that all the succeeded distribs are
+        # presents in the DB
+        Cursor.execute("SELECT * FROM `" + DL_pages_table + "` WHERE platform = '" + Distrib_name + "' AND arch = '" + Arch + "';")
+        Result = 0
+        Result = Cursor.rowcount()
+        if Result == 0:
+            Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
-                # For the libs
-                if Project_kind == "lib":
-                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                            + " version = '" + Version + "'," \
-                            + " libname = '" + Bin_name_wanted + "'," \
-                            + " libnamedbg = '" + Debug_name_wanted + "'," \
-                            + " libnamedev = '" + Dev_name_wanted + "'," \
-                            + " libnamedoc = '" + Doc_name_wanted + "'"
-                            + " WHERE platform = '" + Distrib_name + "'" \
-                            + " AND arch = '" + Arch + "';")
+        # For the libs
+        if Project_kind == "lib":
+            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                    + " version = '" + Version + "'," \
+                    + " libname = '" + Bin_name_wanted + "'," \
+                    + " libnamedbg = '" + Debug_name_wanted + "'," \
+                    + " libnamedev = '" + Dev_name_wanted + "'," \
+                    + " libnamedoc = '" + Doc_name_wanted + "'"
+                    + " WHERE platform = '" + Distrib_name + "'" \
+                    + " AND arch = '" + Arch + "';")
 
-                # For MC
-                if Bin_name == "mediaconch":
-                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                            + " version = '" + Version + "'," \
-                            + " cliname = '" + Bin_name_wanted + "'," \
-                            + " clinamedbg = '" + Debug_name_wanted + "'," \
-                            + " servername = '" + Server_name_wanted + "'," \
-                            + " servernamedbg = '" + Server_debug_name_wanted + "'," \
-                            + " guiname = '" + Gui_name_wanted + "'," \
-                            + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
-                            + " WHERE platform = '" + Distrib_name + "'" \
-                            + " AND arch = '" + Arch + "';")
+        # For MC
+        if Bin_name == "mediaconch":
+            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                    + " version = '" + Version + "'," \
+                    + " cliname = '" + Bin_name_wanted + "'," \
+                    + " clinamedbg = '" + Debug_name_wanted + "'," \
+                    + " servername = '" + Server_name_wanted + "'," \
+                    + " servernamedbg = '" + Server_debug_name_wanted + "'," \
+                    + " guiname = '" + Gui_name_wanted + "'," \
+                    + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
+                    + " WHERE platform = '" + Distrib_name + "'" \
+                    + " AND arch = '" + Arch + "';")
 
-                # For MI, DA, AM, BM
-                if Bin_name == "mediainfo" or Bin_name == "dvanalyzer" or \
-                   Bin_name == "avimetaedit" or Bin_name == "bwfmetaedit":
-                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                            + " version = '" + Version + "'," \
-                            + " cliname = '" + Bin_name_wanted + "'," \
-                            + " clinamedbg = '" + Debug_name_wanted + "'," \
-                            + " guiname = '" + Gui_name_wanted + "'," \
-                            + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
-                            + " WHERE platform = '" + Distrib_name + "'" \
-                            + " AND arch = '" + Arch + "';")
+        # For MI, DA, AM, BM
+        if Bin_name == "mediainfo" or Bin_name == "dvanalyzer" or \
+           Bin_name == "avimetaedit" or Bin_name == "bwfmetaedit":
+            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                    + " version = '" + Version + "'," \
+                    + " cliname = '" + Bin_name_wanted + "'," \
+                    + " clinamedbg = '" + Debug_name_wanted + "'," \
+                    + " guiname = '" + Gui_name_wanted + "'," \
+                    + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
+                    + " WHERE platform = '" + Distrib_name + "'" \
+                    + " AND arch = '" + Arch + "';")
 
-                # For QC
-                if Bin_name == "qctools":
-                    Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                            + " version = '" + Version + "'," \
-                            + " cliname = ''," \
-                            + " clinamedbg = ''," \
-                            + " guiname = '" + Bin_name_wanted + "'," \
-                            + " guinamedbg = '" + Debug_name_wanted + "'" \
-                            + " WHERE platform = '" + Distrib_name + "'" \
-                            + " AND arch = '" + Arch + "';")
+        # For QC
+        if Bin_name == "qctools":
+            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
+                    + " version = '" + Version + "'," \
+                    + " cliname = ''," \
+                    + " clinamedbg = ''," \
+                    + " guiname = '" + Bin_name_wanted + "'," \
+                    + " guinamedbg = '" + Debug_name_wanted + "'" \
+                    + " WHERE platform = '" + Distrib_name + "'" \
+                    + " AND arch = '" + Arch + "';")
 
-            print "-----------------------"
+    print "-----------------------"
 
 ##################################################################
 def Verify_states_and_files():
@@ -1094,13 +1091,6 @@ Initialize_DB()
 # Once the initialisation of this script is done, the first thing
 # to do is wait until everything is build on OBS.
 Waiting_loop()
-
-# At this point, each enabled distros will be either in succeeded
-# or failed state. We can update the DB.
-Update_DB()
-
-# Then, fetch the packages.
-Get_packages_on_OBS()
 
 # Send a confirmation mail if everything is ok, or else notify when
 # a build has failed or a succeeded package has not been downloaded
