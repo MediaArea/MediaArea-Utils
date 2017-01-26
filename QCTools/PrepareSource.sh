@@ -65,7 +65,7 @@ function _all_inclusive () {
 
     cp -r qctools/debian .
 
-    git clone "git://source.ffmpeg.org/ffmpeg.git"
+    git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git"
 
     wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar -zxf yasm-1.3.0.tar.gz
@@ -104,7 +104,7 @@ function _all_inclusive () {
         # Generate Windows and public AllInclusive archive
         mv qctools qctools_AllInclusive
         pushd qctools_AllInclusive
-        git clone "git://github.com/MediaArea/zlib.git"
+        git clone --depth 1 "git://github.com/MediaArea/zlib.git"
         rm -fr debian
         # Placeholder for pre-compiled Qt
         mkdir Qt

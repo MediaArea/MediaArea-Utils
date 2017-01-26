@@ -27,7 +27,7 @@ function btask.Buildenv_win.run () {
     rm -fr mediaconch_AllInclusive/README.md
 
     # Add Qt binaries
-    git clone "https://github.com/MediaArea/MediaArea-Utils-Binaries.git"
+    git clone --depth 1 "https://github.com/MediaArea/MediaArea-Utils-Binaries.git"
     mv MediaArea-Utils-Binaries/Windows/Qt/Qt5.5-msvc2013 mediaconch_AllInclusive/
     mv MediaArea-Utils-Binaries/Windows/Qt/Qt5.6-msvc2015 mediaconch_AllInclusive/
 

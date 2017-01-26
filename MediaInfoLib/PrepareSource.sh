@@ -39,7 +39,7 @@ function _get_source () {
 
     # Dependency : zlib
     cd "$WDir"/repos
-    git clone https://github.com/MediaArea/zlib
+    git clone --depth 1 https://github.com/MediaArea/zlib
 
 }
 

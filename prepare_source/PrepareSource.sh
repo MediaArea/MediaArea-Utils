@@ -19,7 +19,7 @@ function load_options () {
 
     b.opt.add_flag --help "Show this help"
     b.opt.add_alias --help -h
-    
+
     b.opt.add_opt --project "The project to work with"
     b.opt.add_alias --project -p
 
@@ -49,7 +49,7 @@ function load_options () {
 
     b.opt.add_flag --source-package "Generate the source package"
     b.opt.add_alias --source-package -sa
-    
+
     b.opt.add_flag --all "Prepare all the targets for a project"
     # Required for the call in _get_source
     b.opt.add_alias --all -all
@@ -99,7 +99,7 @@ function run () {
         b.opt.show_usage
         exit 1
     fi
-    
+
     if b.opt.check_required_args; then
 
         project_get

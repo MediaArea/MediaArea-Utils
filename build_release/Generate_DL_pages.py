@@ -129,7 +129,7 @@ def DL_pages(OS_name):
 
 ##################################################################
 def Sources():
-    
+
     print "Generating " + Project.upper() + " download pages for sources"
     print
 
@@ -294,7 +294,7 @@ def OBS():
         Distrib_name_lower = Distrib_name.lower()
         if Distrib_name_lower == "xubuntu":
             Distrib_name_lower = "ubuntu"
-    
+
         # Verbose mode
         #print
 
@@ -311,7 +311,7 @@ def OBS():
         Header_file = open(Header_file_path, "r")
         Header = Header_file.read()
         Header_file.close()
-    
+
         if Project == "mc":
             Filename = Distrib_name_lower + ".md"
         else:
@@ -443,7 +443,7 @@ def OBS():
                 else:
                     Release_rowspan = ""
                 Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
-                
+
                 if Release_status == "old" and Project == "mi":
                     Release_class = " class=\"old-files\""
                 else:

@@ -54,7 +54,7 @@ function _windows () {
 
     # Build
     echo "Compile QC for Windows..."
-    
+
     $SSHP "$win_ps_utils
 
            # Save env
@@ -330,7 +330,7 @@ function btask.BuildRelease.run () {
         cd qctools
         git fetch https://github.com/g-maxime/qctools.git
 
-        git merge FETCH_HEAD
+        git merge --no-edit FETCH_HEAD
 
         if [ $? -ne 0 ] ; then
             echo -e "Unable to merge patches" | mailx -s "[BR] Problem with QCTools" ${Email_CC/$Email_CC/-c $Email_CC} $Email_to
