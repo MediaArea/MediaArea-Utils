@@ -37,6 +37,18 @@ function _get_source () {
         ZL_gs="--zl-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
 
+    cd "$WDir"/repos
+
+    # zlib, libxml2, libxslt, jansson, libevent, sqlite
+    git clone https://github.com/MediaArea/zlib.git
+    git clone https://git.gnome.org/browse/libxml2
+    git clone https://git.gnome.org/browse/libxslt
+    git clone https://github.com/MediaArea/jansson.git
+    git clone https://github.com/MediaArea/libevent.git
+    curl -s http://www.sqlite.org/2017/sqlite-autoconf-3160200.tar.gz | tar -xz
+    mv sqlite-autoconf-3160200 sqlite
+
+
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
@@ -45,7 +57,6 @@ function _get_source () {
     else
         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
     fi
-
 }
 
 function _unix_cli () {
@@ -72,7 +83,17 @@ function _unix_cli () {
     # Dependency : zlib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
-    # ? Dependency : libxml2
+    mkdir -p Shared/Source
+    cp -r "$WDir"/repos/zlib Shared/Source
+
+    # ? Dependencies : libxml2...
+    cp -r "$WDir"/repos/libxml2 .
+    cp -r "$WDir"/repos/libxslt .
+    cp -r "$WDir"/repos/jansson .
+    cp -r "$WDir"/repos/libevent .
+    cp -r "$WDir"/repos/sqlite .
+
+    rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
 
     echo "2: remove what isn’t wanted..."
     cd MediaConch
@@ -89,8 +110,11 @@ function _unix_cli () {
     cd ..
 
     echo "3: Autotools..."
-    cd MediaConch/Project/GNU/CLI
-    ./autogen.sh > /dev/null 2>&1
+    (cd MediaConch/Project/GNU/CLI && ./autogen.sh > /dev/null 2>&1)
+    (cd libxml2 && autoreconf -i -f > /dev/null 2>&1)
+    (cd libxslt && autoreconf -i -f > /dev/null 2>&1)
+    (cd jansson && autoreconf -i -f  > /dev/null 2>&1)
+    (cd libevent && autoreconf -i -f > /dev/null 2>&1)
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -129,6 +153,19 @@ function _unix_server () {
     # Dependency : zlib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
+
+    mkdir -p Shared/Source
+    cp -r "$WDir"/repos/zlib Shared/Source
+
+    # ? Dependencies : libxml2...
+    cp -r "$WDir"/repos/libxml2 .
+    cp -r "$WDir"/repos/libxslt .
+    cp -r "$WDir"/repos/jansson .
+    cp -r "$WDir"/repos/libevent .
+    cp -r "$WDir"/repos/sqlite .
+
+    rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
+
     echo "2: remove what isn’t wanted..."
     cd MediaConch
         rm -fr .cvsignore .git*
@@ -145,8 +182,11 @@ function _unix_server () {
     cd ..
 
     echo "3: Autotools..."
-    cd MediaConch/Project/GNU/Server
-    ./autogen.sh > /dev/null 2>&1
+    (cd MediaConch/Project/GNU/Server && ./autogen.sh > /dev/null 2>&1)
+    (cd libxml2 && autoreconf -i -f > /dev/null 2>&1)
+    (cd libxslt && autoreconf -i -f > /dev/null 2>&1)
+    (cd jansson && autoreconf -i -f > /dev/null 2>&1)
+    (cd libevent && autoreconf -i -f > /dev/null 2>&1)
 
     if $MakeArchives; then
         echo "4: compressing..."
@@ -185,6 +225,18 @@ function _unix_gui () {
     # Dependency : zlib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
+    mkdir -p Shared/Source
+    cp -r "$WDir"/repos/zlib Shared/Source
+
+    # ? Dependencies : libxml2...
+    cp -r "$WDir"/repos/libxml2 .
+    cp -r "$WDir"/repos/libxslt .
+    cp -r "$WDir"/repos/jansson .
+    cp -r "$WDir"/repos/libevent .
+    cp -r "$WDir"/repos/sqlite .
+
+    rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
+
     echo "2: remove what isn’t wanted..."
     cd MediaConch
         rm -fr .cvsignore .git*
@@ -198,8 +250,14 @@ function _unix_gui () {
         cd ..
     cd ..
 
+    echo "3: Autotools..."
+    (cd libxml2 && ./autoreconf -i -f > /dev/null 2>&1)
+    (cd libxslt && ./autoreconf -i -f > /dev/null 2>&1)
+    (cd jansson && ./autoreconf -i -f > /dev/null 2>&1)
+    (cd libevent && ./autoreconf -i -f > /dev/null 2>&1)
+
     if $MakeArchives; then
-        echo "3: compressing..."
+        echo "4: compressing..."
         cd "$WDir"/MC
         if ! b.path.dir? ../archives; then
             mkdir ../archives
