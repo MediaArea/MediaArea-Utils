@@ -40,11 +40,11 @@ function _get_source () {
     cd "$WDir"/repos
 
     # zlib, libxml2, libxslt, jansson, libevent, sqlite
-    git clone https://github.com/MediaArea/zlib.git
-    git clone https://git.gnome.org/browse/libxml2
-    git clone https://git.gnome.org/browse/libxslt
-    git clone https://github.com/MediaArea/jansson.git
-    git clone https://github.com/MediaArea/libevent.git
+    git clone --depth 1 https://github.com/MediaArea/zlib.git
+    git clone --depth 1 https://git.gnome.org/browse/libxml2
+    git clone --depth 1 https://git.gnome.org/browse/libxslt
+    git clone --depth 1 https://github.com/MediaArea/jansson.git
+    git clone --depth 1 https://github.com/MediaArea/libevent.git
     curl -s http://www.sqlite.org/2017/sqlite-autoconf-3160200.tar.gz | tar -xz
     mv sqlite-autoconf-3160200 sqlite
 

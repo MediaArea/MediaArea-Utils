@@ -48,10 +48,10 @@ function win_copy_utils () {
                git rebase --quiet origin/master
 
                Set-Location $DST
-               git clone --quiet \"$Win_working_dir\\MediaArea-Utils\"
+               git clone --depth 1 --quiet \"$Win_working_dir\\MediaArea-Utils\"
            } else {
                Set-Location $DST
-               git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\"
+               git clone --depth 1 --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\"
            }"
 }
 
@@ -70,10 +70,10 @@ function win_copy_binaries () {
                git rebase --quiet origin/master
 
                Set-Location $DST
-               git clone --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"
+               git clone --depth 1 --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"
            } else {
                Set-Location $DST
-               git clone --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
+               git clone --depth 1 --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
            }"
 }
 

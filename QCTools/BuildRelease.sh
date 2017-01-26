@@ -54,7 +54,7 @@ function _windows () {
 
     # Build
     echo "Compile QC for Windows..."
-    
+
     $SSHP "$win_ps_utils
 
            # Save env

@@ -141,7 +141,7 @@ function _windows () {
 
     # Build
     echo "Compile DA for Windows..."
-    
+
     $SSHP "$win_ps_utils
 
            # Save env
