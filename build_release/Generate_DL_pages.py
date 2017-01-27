@@ -86,12 +86,12 @@ class mysql:
 #        subprocess.call(["git clone https://github.com/MediaArea/MediaConch.git /tmp/MediaConch"], shell=True)
 #        subprocess.call(["cd /tmp/MediaConch ; git checkout -b gh-pages origin/gh-pages"], shell=True)
 #        dl_files_dir = "/tmp/MediaConch/downloads"
-#        
+#
 #    #if OBS_Package == "MediaInfo" or fnmatch.fnmatch(OBS_Package, "MediaInfo_*"):
 
 ##################################################################
 def DL_pages(OS_name):
-    
+
     print "Generating " + Project.upper() + " download pages for " + OS_name
     print
 
