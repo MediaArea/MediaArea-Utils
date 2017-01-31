@@ -6,6 +6,7 @@ import os.path
 import fnmatch
 import pexpect
 import shutil
+import sys
 import os
 import re
 
@@ -22,7 +23,7 @@ def Sign_rpm_package(Package):
 
     # Verify signature
     Command = ["rpm", "-K", Package]
-    if subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT) != 0:
+    if subprocess.call(Command, stdout=OUT, stderr=OUT) != 0:
         print("ERROR: unable to sign rpm package %s" % Package)
 
 #
@@ -76,7 +77,7 @@ def Create_repo_rpm(Path, Repo, Distribution, Release = False):
 
     # Make rpm package
     Command = ["rpmbuild", "-bb", Spec_filename]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     Package_destination = os.path.join(Path, "repo-%s-1.0-1.%s.noarch.rpm" % (Repo, Distribution))
 
@@ -131,7 +132,7 @@ def Create_repo_deb(Path, Repo, Distribution, Release = False):
 
     # Make deb package
     Command = ["dpkg-deb", "--build", os.path.join(Build_root, Build_dir)]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     if not os.path.exists(os.path.join(Build_root, Build_dir) + ".deb"):
         print("ERROR: activation package failed for distribution %s" % Distribution)
@@ -167,14 +168,14 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
 
     # Update repository
     Command = ["createrepo", "--update", os.path.join(Package_directory, "..")]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Sign repository
     Command = [ "gpg", "-s", "-b", "--batch", "--yes", "--armor", "--passphrase-file", 
                 Configuration["Repo_key"]["passfile"], "-u", Configuration["Repo_key"]["key"],
                 os.path.join(Package_directory, "..", "repodata", "repomd.xml")
               ]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Create activation package if needed
     if fnmatch.fnmatch(Distribution, "CentOS_*") \
@@ -216,6 +217,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Freight_conf = Configuration["Freight_conf_template"]
         Freight_conf = Freight_conf.replace("CACHE_DIR", Cache_directory)
         Freight_conf = Freight_conf.replace("LIB_DIR", Lib_directory)
+        Freight_conf = Freight_conf.replace("KEY_NAME", Configuration["Repo_key"]["key"])
         Freight_conf_file.write(Freight_conf)
         Freight_conf_file.close()
     else:
@@ -229,7 +231,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
     Command = [ "freight-add", "-c", os.path.join(Cache_directory, "conf", "freight.conf"),
                 Package, "apt/" + Dist
               ]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Update repository
     Command = [ "freight-cache", "-c", os.path.join(Cache_directory, "conf", "freight.conf"),
@@ -237,7 +239,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
                 "-p", Configuration["Repo_key"]["passfile"],
                 "apt/" + Dist
               ]
-    subprocess.call(Command, stdout=NULLOUT, stderr=NULLOUT)
+    subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Create activation package if needed
     Repo = Configuration["Repo_name"]
@@ -253,10 +255,36 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
 # Main
 #
 
-NULLOUT= open(os.devnull, 'w')
-
 # Read configuration
 
 Configuration = {}
-execfile( os.path.join(os.path.dirname(os.path.realpath(__file__)), "Repo.conf"), Configuration)
+execfile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Repo.conf"), Configuration)
 
+# Output
+if Configuration.get("log", False):
+    OUT = open(os.devnull, 'w')
+else:
+    OUT = sys.stdout
+
+# Command line invocation
+if __name__ == "__main__":
+    import argparse
+
+    # always print commands output in interactive mode
+    OUT = sys.stdout
+
+    Args_parser = argparse.ArgumentParser()
+    Args_parser.add_argument("package")
+    Args_parser.add_argument("name")
+    Args_parser.add_argument("arch")
+    Args_parser.add_argument("distribution")
+    Args_parser.add_argument("channel", choices=['release', 'snapshots'], default="release", nargs="?")
+    Args = Args_parser.parse_args()
+
+    Type = os.path.splitext(Args.package)[1]
+    if Type == ".deb":
+        Add_deb_package(Args.package, Args.name, 0, Args.arch, Args.distribution, True if Args.channel == "release" else False)
+    elif Type == ".rpm":
+        Add_rpm_package(Args.package, Args.name, 0, Args.arch, Args.distribution, True if Args.channel == "release" else False)
+    else:
+        print("ERROR: unknown filetype %s" % Type)
