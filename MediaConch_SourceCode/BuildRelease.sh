@@ -130,42 +130,34 @@ function _mac () {
     $SSHP "$Mac_working_dir/MediaConch_CLI_GNU_FromSource/MediaConch/Project/GNU/CLI/mediaconch --version" &>/dev/null
     if [ $? -ne 0 ] ; then
         MSG="${MSG}Error $? when trying execute mediaconch.\n"
-        if b.opt.has_flag? --log; then
-            xz --keep --force -9e $Log/mac-cli.log
-            PJ="${PJ} -a $Log/mac-cli.log.xz"
-        fi
     fi
 
     # If the CLI dmg is less than 3 Mo
     if [ 0`stat -c %s "$MCC_dir"/MediaConch_CLI_${Version_new}_Mac.dmg 2>/dev/null` -lt 3000000 ]; then
         MSG="${MSG}The CLI dmg is less than 3 Mo.\n"
-        if b.opt.has_flag? --log; then
-            xz --keep --force -9e $Log/mac-cli.log
-            PJ="${PJ} -a $Log/mac-cli.log.xz"
-        fi
     fi
 
     # If the server dmg is less than 3 Mo
     if [ 0`stat -c %s "$MCD_dir"/MediaConch_Server_${Version_new}_Mac.dmg 2>/dev/null` -lt 3000000 ]; then
         MSG="${MSG}The server dmg is less than 3 Mo.\n"
-        if b.opt.has_flag? --log; then
-            xz --keep --force -9e $Log/mac-server.log
-            PJ="${PJ} -a $Log/mac-server.log.xz"
-        fi
     fi
 
     # If the GUI dmg is less than 20 Mo
     if [ 0`stat -c %s "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg 2>/dev/null` -lt 20000000 ]; then
         MSG="${MSG}The GUI dmg is less than 20 Mo.\n"
-        if b.opt.has_flag? --log; then
-            xz --keep --force -9e $Log/mac-gui.log
-            PJ="${PJ} -a $Log/mac-gui.log.xz"
-        fi
     fi
 
     # Check non fatals errors
     if [ -n "$MSG" ]; then
         print_e "$MSG"
+
+        if b.opt.has_flag? --log; then
+            xz --keep --force -9e $Log/mac.log
+            PJ="${PJ} -a $Log/mac.log.xz"
+            xz --keep --force -9e $Log/mac-error.log
+            PJ="${PJ} -a $Log/mac-error.log.xz"
+        fi
+
         return 1
     fi
 }
