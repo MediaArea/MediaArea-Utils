@@ -251,10 +251,10 @@ function _unix_gui () {
     cd ..
 
     echo "3: Autotools..."
-    (cd libxml2 && ./autoreconf -i -f > /dev/null 2>&1)
-    (cd libxslt && ./autoreconf -i -f > /dev/null 2>&1)
-    (cd jansson && ./autoreconf -i -f > /dev/null 2>&1)
-    (cd libevent && ./autoreconf -i -f > /dev/null 2>&1)
+    (cd libxml2 && autoreconf -i -f > /dev/null 2>&1)
+    (cd libxslt && autoreconf -i -f > /dev/null 2>&1)
+    (cd jansson && autoreconf -i -f > /dev/null 2>&1)
+    (cd libevent && autoreconf -i -f > /dev/null 2>&1)
 
     if $MakeArchives; then
         echo "4: compressing..."
