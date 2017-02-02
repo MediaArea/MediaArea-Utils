@@ -225,37 +225,37 @@ function _windows () {
 
     File="MediaConch_CLI_${Version_new}_Windows_i386.zip"
     test -e "$MCC_dir/$File" && rm "$MCC_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_CLI_$(cut -d. -f1-2 <<<$Version_new)_Windows_i386.zip" \
                          "$MCC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_CLI_${Version_new}_Windows_x64.zip"
     test -e "$MCC_dir/$File" && rm "$MCC_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\${Version_new%.????????}\\MediaConch_CLI_${Version_new%.????????}_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_CLI_$(cut -d. -f1-2 <<<$Version_new)_Windows_x64.zip" \
                          "$MCC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
     test -e "$MCG_dir/$File" && rm "$MCG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_GUI_$(cut -d. -f1-2 <<<$Version_new)_Windows_i386_WithoutInstaller.7z" \
                          "$MCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     test -e "$MCG_dir/$File" && rm "$MCG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_GUI_$(cut -d. -f1-2 <<<$Version_new)_Windows_x64_WithoutInstaller.7z" \
                          "$MCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_GUI_${Version_new}_Windows.exe"
     test -e "$MCG_dir/$File" && rm "$MCG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\${Version_new%.????????}\\MediaConch_GUI_${Version_new%.????????}_Windows.exe" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-gui\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_GUI_$(cut -d. -f1-2 <<<$Version_new)_Windows.exe" \
                          "$MCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_Server_${Version_new}_Windows_i386.zip"
     test -e "$MCD_dir/$File" && rm "$MCD_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_Server_$(cut -d. -f1-2 <<<$Version_new)_Windows_i386.zip" \
                          "$MCD_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaConch_Server_${Version_new}_Windows_x64.zip"
     test -e "$MCD_dir/$File" && rm "$MCD_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\${Version_new%.????????}\\MediaConch_Server_${Version_new%.????????}_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediaconch-server\\$(cut -d. -f1-2 <<<$Version_new)\\MediaConch_Server_$(cut -d. -f1-2 <<<$Version_new)_Windows_x64.zip" \
                          "$MCD_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Cleaning
