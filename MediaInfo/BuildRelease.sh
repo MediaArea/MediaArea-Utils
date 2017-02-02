@@ -241,53 +241,53 @@ function _windows () {
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386_WithoutInstaller.7z"
     test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_DLL_$(cut -d. -f1-3 <<<$Version_new)_Windows_i386_WithoutInstaller.7z" \
                          "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64_WithoutInstaller.7z"
     test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_DLL_$(cut -d. -f1-3 <<<$Version_new)_Windows_x64_WithoutInstaller.7z" \
                          "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_i386.exe"
     test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_i386.exe" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_DLL_$(cut -d. -f1-3 <<<$Version_new)_Windows_i386.exe" \
                          "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_DLL_${Version_new}_Windows_x64.exe"
     test -e "$MIL_dir/$File" && rm "$MIL_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\${Version_new%.????????}\\MediaInfo_DLL_${Version_new%.????????}_Windows_x64.exe" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\libmediainfo0\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_DLL_$(cut -d. -f1-3 <<<$Version_new)_Windows_x64.exe" \
                          "$MIL_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_i386.zip"
     test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_CLI_$(cut -d. -f1-3 <<<$Version_new)_Windows_i386.zip" \
                          "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_CLI_${Version_new}_Windows_x64.zip"
     test -e "$MIC_dir/$File" && rm "$MIC_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\${Version_new%.????????}\\MediaInfo_CLI_${Version_new%.????????}_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_CLI_$(cut -d. -f1-3 <<<$Version_new)_Windows_x64.zip" \
                          "$MIC_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
     test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_i386_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_GUI_$(cut -d. -f1-3 <<<$Version_new)_Windows_i386_WithoutInstaller.7z" \
                          "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows_x64_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_GUI_$(cut -d. -f1-3 <<<$Version_new)_Windows_x64_WithoutInstaller.7z" \
                          "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="MediaInfo_GUI_${Version_new}_Windows.exe"
     test -e "$MIG_dir/$File" && rm "$MIG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\mediainfo-gui\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_GUI_$(cut -d. -f1-3 <<<$Version_new)_Windows.exe" \
                          "$MIG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     # Download thank version only in release mode
     if [ -n "$Win_donors_dir" ] && [ "${Version_new%.????????}" == "${Version_new}" ] ; then
         File="MediaInfo_GUI_${Version_new}_Windows.exe"
-        scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\..\\..\\..\\ThankYou\\${Version_new%.????????}\\MediaInfo_GUI_${Version_new%.????????}_Windows.exe" \
+        scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$Win_working_dir\\$Build_dir\\$DLPath\\..\\..\\..\\ThankYou\\$(cut -d. -f1-3 <<<$Version_new)\\MediaInfo_GUI_$(cut -d. -f1-3 <<<$Version_new)_Windows.exe" \
                              "win_donors/$Sub_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
     fi
 
