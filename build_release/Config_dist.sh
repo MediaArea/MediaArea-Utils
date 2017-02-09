@@ -10,6 +10,7 @@ Mac_IP=""
 Mac_SSH_port=""
 Mac_SSH_user=""
 Key_chain=""
+Dev_team=""
 Mac_working_dir=""
 Mac_binaries_dir=""
 
