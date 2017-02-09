@@ -80,11 +80,16 @@ function _mac_gui () {
                     cd ../MediaInfo_GUI_GNU_FromSource ;
                     MediaInfo/Project/Mac/Prepare_for_Xcode.sh
                     sed -i '' \\
-                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1\"CODE_SIGN_IDENTITY[sdk=macosx*]\" = \"3rd Party Mac Developer Application\";/g' \\
+                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1CODE_SIGN_IDENTITY = \"Mac Developer\";/g' \\
                         MediaInfo/Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj
                     sed -i '' \\
-                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1CODE_SIGN_IDENTITY = \"3rd Party Mac Developer Application\";/g' \\
+                        -e 's/^\([[:space:]]*\)CODE_SIGN_ENTITLEMENTS = MediaInfo.entitlements;\$/&\'\$'\n''\1DEVELOPMENT_TEAM = \"$Dev_team\";/g' \\
                         MediaInfo/Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj
+                    sed -i '' \\
+                        -e 's/^\([[:space:]]*\)ORGANIZATIONNAME = MediaArea.net;\$/&\'\$'\n''\1TargetAttributes = { 8D1107260486CEB800E47090 = { DevelopmentTeam = $Dev_team; ProvisioningStyle = Automatic; }; };/g' \\
+                        MediaInfo/Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj
+
+
                     cd MediaInfo/Source/GUI/Cocoa/
                     $Key_chain
                     xcodebuild -scheme MediaInfo archive"
