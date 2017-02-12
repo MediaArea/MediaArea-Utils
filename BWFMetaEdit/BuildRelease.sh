@@ -284,23 +284,21 @@ function _obs () {
 
 function _linux () {
 
-    if [ ! $(b.opt.get_opt --rebuild) ] ; then
-        _obs
-    fi
+    _obs
 
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
     echo
     echo The command line is:
-    echo python Handle_OBS_results.py $* $OBS_project BWFMetaEdit $Version_new "$BMB_dir" "$BMG_dir"
+    echo python Handle_OBS_results.py $Filter $OBS_project BWFMetaEdit $Version_new "$BMB_dir" "$BMG_dir"
     echo
 
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$BM_tmp", the current directory, will
     # be deleted)
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $* $OBS_project BWFMetaEdit $Version_new "$BMB_dir" "$BMG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    python Handle_OBS_results.py $Filter $OBS_project BWFMetaEdit $Version_new "$BMB_dir" "$BMG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
@@ -320,11 +318,6 @@ function btask.BuildRelease.run () {
 
     mkdir -p "$BMB_dir"
     mkdir -p "$BMG_dir"
-
-    if [ $(b.opt.get_opt --rebuild) ] ; then
-        _linux --filter $(b.opt.get_opt --rebuild)
-        exit 0
-    fi
 
     mkdir -p "$BMS_dir"
     mkdir -p "$BM_tmp"

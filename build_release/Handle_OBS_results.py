@@ -133,7 +133,7 @@ def Initialize_DB():
     # affected since a distrib can be removed from builds but still
     # wanted in the download tables.
 
-    if not Rebuild:
+    if not Filter:
         Cursor.execute("SELECT * FROM `" + Table + "`")
         DB_distribs = Cursor.fetchall()
 
@@ -439,7 +439,7 @@ def Get_packages_on_OBS(Distrib_name, Arch):
         Server_name_wanted = ''
         Server_debug_name_wanted = ''
 
-    if Rebuild:
+    if Filter:
         FS_filter += "\|" if FS_filter else ""
         FS_filter += "%s\.%s" % (Package_infos[Package_type][Arch], Distrib_name)
 
@@ -509,7 +509,7 @@ def Get_packages_on_OBS(Distrib_name, Arch):
 
 ##################################################################
 def Verify_states_and_files():
-    Filter = " |grep '%s'" % FS_filter if Rebuild else ""
+    Grep_filter = " |grep '%s'" % FS_filter if Filter else ""
 
     Cursor.execute("SELECT * FROM `" + Table + "`" + DB_filter)
     DB_distribs = Cursor.fetchall()
@@ -582,7 +582,7 @@ def Verify_states_and_files():
     Params = "ls " + Destination + "/" + Devel_name + "*" + Version + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
-           + Filter \
+           + Grep_filter \
            + " |wc -l"
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
@@ -610,7 +610,7 @@ def Verify_states_and_files():
     Params = "ls " + Destination + "/" + Devel_name + "*" \
            + " |grep 'rpm\|deb\|pkg.tar.xz'" \
            + " |grep 'dbg\|debug'" \
-           + Filter \
+           + Grep_filter \
            + " |wc -l"
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_debug = int(Result)
@@ -638,7 +638,7 @@ def Verify_states_and_files():
         Params = "ls " + Destination + "/" + Devel_name + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
                + " |grep 'dev\|devel'" \
-               + Filter \
+               + Grep_filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_dev = int(Result)
@@ -663,7 +663,7 @@ def Verify_states_and_files():
         Number_doc = 0
         Params = "ls " + Destination + "/" + Devel_name + "-doc*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Filter \
+               + Grep_filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_doc = int(Result)
@@ -689,7 +689,7 @@ def Verify_states_and_files():
         Number_server = 0
         Params = "ls " + Destination_server + "/" + Bin_name + "-server" + "?" + Version + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Filter \
+               + Grep_filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_server = int(Result)
@@ -715,7 +715,7 @@ def Verify_states_and_files():
         Number_gui = 0
         Params = "ls " + Destination_gui + "/" + Bin_name + "-gui" + "?" + Version + "*" \
                + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Filter \
+               + Grep_filter \
                + " |wc -l"
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_gui = int(Result)
@@ -839,6 +839,7 @@ Time_start = time.time()
 #
 
 Args_parser = argparse.ArgumentParser()
+Args_parser.add_argument("--rebuild", help="trigger OBS rebuild", action="store_true", default=False)
 Args_parser.add_argument("--filter", help="filter distributions/archs")
 Args_parser.add_argument("project")
 Args_parser.add_argument("package")
@@ -1038,10 +1039,11 @@ for Element in XML_root.iter('result'):
     Distribs[Distrib] = Distribs.get(Distrib, []) + [Arch]
 
 # Filter to cmdline distributions
-Rebuild = False
+Filter = False
 DB_filter = ""
 FS_filter = ""
 if Args.filter:
+    Filter = True
     Distribs_filter = {}
     for Element in Args.filter.split(","):
         Distrib = Element.split("/")[0].strip()
@@ -1049,8 +1051,8 @@ if Args.filter:
             Arch = Element.split("/")[1].strip()
             if Arch not in Distribs_filter.get(Distrib, []):
                 Distribs_filter[Distrib] = Distribs_filter.get(Distrib, []) + [Arch]
-            else:
-                Distribs_filter[Distrib] = Distribs.get(Distrib)
+        else:
+            Distribs_filter[Distrib] = Distribs.get(Distrib)
 
     Distribs = Distribs_filter
 
@@ -1065,8 +1067,8 @@ if Args.filter:
             DB_filter += " OR arch='%s'" % Arch
         DB_filter += "))"
 
-    Rebuild = True
-
+# Trigger rebuild if requested
+if Args.rebuild:
     Trigger_rebuild()
 
 #

@@ -519,23 +519,21 @@ function _obs () {
 function _linux () {
 
     if ! b.opt.has_flag? --only-images ; then
-        if ! b.opt.get_opt --rebuild ; then
-            _obs
-        fi
+        _obs
 
         echo
         echo Launch in background the python script which check
         echo the build results and download the packages...
         echo
         echo The command line is:
-        echo python Handle_OBS_results.py $* $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
+        echo python Handle_OBS_results.py $Filter $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir"
         echo
 
         cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-        python Handle_OBS_results.py $* $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+        python Handle_OBS_results.py $Filter $OBS_project MediaInfo $Version_new "$MIC_dir" "$MIG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
     fi
 
-    if ! b.opt.has_flag? --skip-images && ! b.opt.get_opt --rebuild ; then
+    if ! b.opt.has_flag? --skip-images && ! b.opt.get_opt --filter ; then
         _linux_images
     fi
 }
@@ -558,11 +556,6 @@ function btask.BuildRelease.run () {
     mkdir -p "$MIL_dir"
     mkdir -p "$MIC_dir"
     mkdir -p "$MIG_dir"
-
-    if [ $(b.opt.get_opt --rebuild) ] ; then
-        _linux --filter $(b.opt.get_opt --rebuild)
-        exit 0
-    fi
 
     mkdir -p "$MIS_dir"
     mkdir -p "$MI_tmp"

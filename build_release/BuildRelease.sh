@@ -55,7 +55,7 @@ function load_options () {
     b.opt.add_flag --build-linux "Build only for Linux"
     b.opt.add_alias --build-linux -bl
 
-    b.opt.add_opt --rebuild "Trigger rebuild of package on OBS"
+    b.opt.add_opt --filter "Only download for thoses distributions/archs on obs"
 
     b.opt.add_flag --skip-images "Skip build of Linux images (AppImages, Snap...)"
     b.opt.add_alias --skip-images -ski
@@ -135,6 +135,11 @@ function run () {
 
         if b.opt.get_opt --obs-repo > /dev/null ; then
             OBS_project="$(sanitize_arg $(b.opt.get_opt --obs-repo))"
+        fi
+
+        Filter=""
+        if b.opt.get_opt --filter > /dev/null ; then
+            Filter="--filter $(sanitize_arg $(b.opt.get_opt --filter))"
         fi
 
         Target="all"
@@ -267,7 +272,7 @@ function run () {
             echo
         fi
 
-        unset -v Project Repo
+        unset -v Project Repo Filter
         unset -v Date Version_old Version_new
         unset -v OBS_project Target PS_target
         unset -v Working_dir Source_dir Sub_dir
