@@ -147,20 +147,18 @@ function _obs () {
 
 function _linux () {
 
-    if [ ! $(b.opt.get_opt --rebuild) ] ; then
-        _obs
-    fi
+    _obs
 
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
     echo
     echo The command line is:
-    echo python Handle_OBS_results.py $* $OBS_project MediaInfoLib $Version_new "$MILB_dir"
+    echo python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir"
     echo
 
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $* $OBS_project MediaInfoLib $Version_new "$MILB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
@@ -178,11 +176,6 @@ function btask.BuildRelease.run () {
     rm -fr "$MIL_tmp"
 
     mkdir -p "$MILB_dir"
-
-    if [ $(b.opt.get_opt --rebuild) ] ; then
-        _linux --filter $(b.opt.get_opt --rebuild)
-        exit 0
-    fi
 
     mkdir -p "$MILS_dir"
     mkdir -p "$MIL_tmp"
@@ -229,7 +222,7 @@ function btask.BuildRelease.run () {
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PS_target -nc
 
-    if [ "$Target" = "mac" ]; then
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
         else
@@ -238,7 +231,7 @@ function btask.BuildRelease.run () {
         mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
     fi
 
-    if [ "$Target" = "windows" ]; then
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
         else
@@ -247,27 +240,12 @@ function btask.BuildRelease.run () {
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
     fi
 
-    if [ "$Target" = "linux" ]; then
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
             _linux
         fi
-        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
-    fi
-
-    if [ "$Target" = "all" ]; then
-        if b.opt.has_flag? --log; then
-            _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
-            _mac >"$Log"/mac.log 2>"$Log"/mac-error.log
-            echo _windows >"$Log"/windows.log 2>"$Log"/windows-error.log
-        else
-            _linux
-            _mac
-            echo _windows
-        fi
-        mv "$MIL_tmp"/prepare_source/archives/MediaInfo_DLL_${Version_new}_GNU_FromSource.* "$MILB_dir"
-        mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}_AllInclusive.7z "$MILS_dir"
         mv "$MIL_tmp"/prepare_source/archives/libmediainfo_${Version_new}.* "$MILS_dir"
     fi
 

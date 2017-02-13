@@ -185,6 +185,12 @@ function _windows () {
                Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
                cmd /s /c \"Release_CLI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_CLI_Windows_x64.bat 2>&1\"
+
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_CLI_Windows_i386_DebugInfo.zip \`
+              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\\Win32\\Release\\AVPS_DV_Analyzer_CLI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_CLI_Windows_x64_DebugInfo.zip \`
+               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\\x64\\Release\\AVPS_DV_Analyzer_CLI.pdb\"
            }
 
            #
@@ -205,6 +211,12 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
+              # Make DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_GUI_Windows_i386_DebugInfo.zip \`
+              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\\Win32\\Release\\AVPS_DV_Analyzer_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_GUI_Windows_x64_DebugInfo.zip \`
+               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\\x64\\Release\\AVPS_DV_Analyzer_GUI.pdb\"
+
                # Sign installers
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
            }
@@ -222,9 +234,19 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_i386.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
+    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_i386_DebugInfo.zip" \
+                         "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
     File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_x64.zip"
     test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_x64.zip" \
+                         "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
+    test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_x64_DebugInfo.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
@@ -232,9 +254,20 @@ function _windows () {
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_i386_WithoutInstaller.7z" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
+    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_i386_DebugInfo.zip" \
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_x64_WithoutInstaller.7z" \
+                         "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
+    test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_x64_DebugInfo.zip" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe"
@@ -298,23 +331,21 @@ function _obs () {
 
 function _linux () {
 
-    if [ ! $(b.opt.get_opt --rebuild) ] ; then
-        _obs
-    fi
+    _obs
 
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
     echo
     echo The command line is:
-    echo python Handle_OBS_results.py $* $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir"
+    echo python Handle_OBS_results.py $Filter $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir"
     echo
 
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$DA_tmp", the current directory, will
     # be deleted)
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $* $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    python Handle_OBS_results.py $Filter $OBS_project DVAnalyzer $Version_new "$DAB_dir" "$DAG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
@@ -334,11 +365,6 @@ function btask.BuildRelease.run () {
 
     mkdir -p "$DAB_dir"
     mkdir -p "$DAG_dir"
-
-    if [ $(b.opt.get_opt --rebuild) ] ; then
-        _linux --filter $(b.opt.get_opt --rebuild)
-        exit 0
-    fi
 
     mkdir -p "$DAS_dir"
     mkdir -p "$DA_tmp"
