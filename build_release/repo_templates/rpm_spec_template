@@ -1,0 +1,123 @@
+Name:           repo-REPO_NAME
+Version:        PKG_VERSION
+Release:        PKG_RELEASE
+Summary:        REPO_NAME packages repository
+Group:          System Environment/Base
+License:        MIT
+URL:            mediaarea.net
+Packager:       MediaArea.net SARL <info@mediaarea.net>
+
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildArch:      noarch
+
+%description
+MediaArea.net SARL softwares repository for RPM based distributions
+
+%files
+
+%pre
+if test -f %{_sysconfdir}/os-release ; then
+    case `grep ^ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2` in
+        fedora)
+            DIST=Fedora
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            ;;
+        centos)
+            DIST=CentOS
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            ;;
+        rhel)
+            DIST=RHEL
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            ;;
+#        mageia)
+#            DIST=Mageia
+#            VERSION=`grep ^VERSION= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`_standard
+#            ;;
+        opensuse)
+            DIST=OpenSUSE
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`
+            ;;
+        sle?)
+            DIST=SLE
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`
+            VERSION=${VERSION/./_SP}
+            VERSION=${VERSION%_SP0}
+            ;;
+    esac
+elif test -f %{_sysconfdir}/redhat-release ; then
+    if grep '^Red Hat Entreprise Linux' %{_sysconfdir}/redhat-release; then
+        DIST=RHEL
+    elif grep '^CentOS' %{_sysconfdir}/redhat-release ; then
+        DIST=CentOS
+    elif grep '^Fedora' %{_sysconfdir}/redhat-release ; then
+        DIST=Fedora
+    fi
+    VERSION=`grep -o 'release [0-9]\+' %{_sysconfdir}/redhat-release | cut -d' ' -f2`
+fi
+
+case `arch` in
+    i?86)
+        ARCH="i586"
+        ;;
+    *)
+        ARCH=`arch`
+        ;;
+esac
+
+if test "$DIST" = "OpenSUSE" && test "$ARCH" = "ppc64le" ; then
+    VERSION="Factory_PowerPC"
+elif test "$DIST" = "OpenSUSE" && test "$ARCH" = "aarch64" -o "$ARCH" = "armv7l" ; then
+    VERSION="Factory_ARM"
+elif test "$DIST" = "OpenSUSE" && test -z "${VERSION%????????}" ; then
+    VERSION="Tumbleweed"
+fi
+
+if test -z "$DIST" -o -z "$VERSION" -o -z "$ARCH"; then
+    echo "ERROR: unable to identify OS"
+    exit 1
+fi
+
+case "$DIST" in
+    Fedora|CentOS|RHEL)
+        cat > %{_sysconfdir}/yum.repos.d/repo-REPO_NAME.repo <<EOF
+[REPO_NAME]
+name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
+baseurl=REPO_URL/${DIST}_${VERSION}/${ARCH}
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/GPG-KEY-REPO_NAME
+EOF
+        cat > %{_sysconfdir}/pki/rpm-gpg/GPG-KEY-REPO_NAME <<EOF
+REPO_KEY
+EOF
+        ;;
+    OpenSUSE|SLE)
+        cat > %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo <<EOF
+[REPO_NAME]
+name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
+baseurl=REPO_URL/${DIST}_${VERSION}/${ARCH}
+enabled=1
+gpgcheck=1
+autorefresh=1
+type=rpm-md
+EOF
+        ;;
+esac
+
+%preun
+if test "$1" = "0" ; then
+    if test -f %{_sysconfdir}/yum.repos.d/repo-REPO_NAME.repo ; then
+        rm -f %{_sysconfdir}/yum.repos.d/repo-REPO_NAME.repo
+    fi
+    if test -f %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo ; then
+        rm -f %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo
+    fi
+    if test -f %{_sysconfdir}/pki/rpm-gpg/GPG-KEY-REPO_NAME ; then
+        rm -f %{_sysconfdir}/pki/rpm-gpg/GPG-KEY-REPO_NAME
+    fi
+fi
+
+%changelog
+* DATE MediaArea.net SARL <info@mediaarea.net> - PKG_VERSION-PKG_RELEASE
+- Initial RPM Release

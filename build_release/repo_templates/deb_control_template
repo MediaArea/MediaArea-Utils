@@ -1,0 +1,8 @@
+Package: REPO_NAME
+Version: VERSION_FULL
+Section: custom
+Priority: optional
+Architecture: all
+Essential: no
+Maintainer: info@mediaarea.net
+Description: Add MediaArea.net packages repository for Debian/Ubuntu
