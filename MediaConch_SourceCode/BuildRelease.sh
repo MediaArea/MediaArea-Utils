@@ -624,7 +624,7 @@ function btask.BuildRelease.run () {
         fi
 
         if [ $? -ne 0 ] ; then
-            echo "echo -e \"$MSG\" | mailx -s \"[BR Mac] Problem building MC\" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to"
+            echo -e "$MSG" | mailx -s "[BR Mac] Problem building MC" ${Email_CC/$Email_CC/-c $Email_CC} ${PJ} $Email_to
         fi
 
         mv "$MC_tmp"/prepare_source/archives/MediaConch_CLI_${Version_new}_GNU_FromSource.* "$MCC_dir"
