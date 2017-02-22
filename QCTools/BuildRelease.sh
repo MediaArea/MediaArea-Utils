@@ -207,7 +207,7 @@ function _mac () {
     # Compile
     echo "Compile QC for mac..."
     $SSHP "cd \"$Mac_working_dir\"
-           export PATH=\"/Users/mymac/Qt/5.3/clang_64/bin:\$PATH\"
+           export PATH=\"$Mac_qt_path/clang_64/bin:\$PATH\"
 
            tar xf qctools_${Version_new}-1.tar.gz
            cd qctools/qctools

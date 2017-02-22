@@ -1,0 +1,35 @@
+#!/bin/sh
+
+debian="DEBIAN_RELEASES"
+ubuntu="UBUNTU_RELEASES"
+
+eval `grep ^ID= /etc/os-release`
+eval `grep ^VERSION_ID= /etc/os-release`
+
+if ! test "$ID" = "debian" -o "$ID" = "ubuntu" -o "$ID" = "linuxmint" ; then
+    echo "ERROR: unable to identify OS, guessing ubuntu"
+    ID="ubuntu"
+fi
+
+case "$ID" in
+    "debian")
+        DISTRIBUTION=debian
+        CODENAME=`echo $debian | grep -o "$VERSION_ID:[a-z]\+" | cut -d: -f2`
+        ;;
+    "ubuntu")
+        DISTRIBUTION=ubuntu
+        CODENAME=`echo $ubuntu | grep -o "$VERSION_ID:[a-z]\+" | cut -d: -f2`
+        ;;
+    "linuxmint")
+        DISTRIBUTION=ubuntu
+        eval `grep UBUNTU_CODENAME= /etc/os-release`
+        CODENAME=$UBUNTU_CODENAME
+        ;;
+esac
+
+if test -z "CODENAME" ; then
+    echo "ERROR: unable to identify $DISTRIBUTION version, guessing testing"
+    CODENAME="testing"
+fi
+
+sed -i -e "s/DISTRIBUTION/$DISTRIBUTION/g" -e "s/CODENAME/$CODENAME/g" /etc/apt/sources.list.d/REPO_NAME.list

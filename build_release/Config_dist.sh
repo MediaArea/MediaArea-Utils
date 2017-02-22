@@ -13,6 +13,7 @@ Key_chain=""
 Dev_team=""
 Mac_working_dir=""
 Mac_binaries_dir=""
+Mac_qt_path=""
 
 # Ubuntu
 Ubuntu_IP=""

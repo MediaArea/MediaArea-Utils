@@ -58,8 +58,8 @@ function _mac_gui () {
            tar xf BWFMetaEdit_GUI_${Version_new}_GNU_FromSource.tar.xz
            cd BWFMetaEdit_GUI_GNU_FromSource
 
-           export PATH=~/Qt/5.3/clang_64/bin:\$PATH
-           ln -s ~/Qt/5.3/clang_64 qt
+           export PATH=$Mac_qt_path/clang_64/bin:\$PATH
+           ln -s $Mac_qt_path/clang_64 qt
 
            ./Project/Mac/BR_extension_GUI.sh
            test -x Project/GNU/GUI/bwfmetaedit-gui || exit 1

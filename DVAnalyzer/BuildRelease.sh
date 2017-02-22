@@ -58,8 +58,8 @@ function _mac_gui () {
            tar xf DVAnalyzer_GUI_${Version_new}_GNU_FromSource.tar.xz
            cd DVAnalyzer_GUI_GNU_FromSource
 
-           export PATH=~/Qt/5.3/clang_64/bin:\$PATH
-           ln -s ~/Qt/5.3/clang_64 qt
+           export PATH=$Mac_qt_path/clang_64/bin:\$PATH
+           ln -s $Mac_qt_path/clang_64 qt
 
            AVPS_DV_Analyzer/Project/Mac/BR_extension_GUI.sh
            test -x AVPS_DV_Analyzer/Project/GNU/GUI/dvanalyzer-gui || exit 1
