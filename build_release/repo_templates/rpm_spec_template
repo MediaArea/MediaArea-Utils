@@ -42,7 +42,7 @@ if test -f %{_sysconfdir}/os-release ; then
             DIST=SLE
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`
             VERSION=${VERSION/./_SP}
-            VERSION=${VERSION%_SP0}
+            VERSION=${VERSION%%_SP0}
             ;;
     esac
 elif test -f %{_sysconfdir}/redhat-release ; then
@@ -69,8 +69,10 @@ if test "$DIST" = "OpenSUSE" && test "$ARCH" = "ppc64le" ; then
     VERSION="Factory_PowerPC"
 elif test "$DIST" = "OpenSUSE" && test "$ARCH" = "aarch64" -o "$ARCH" = "armv7l" ; then
     VERSION="Factory_ARM"
-elif test "$DIST" = "OpenSUSE" && test -z "${VERSION%????????}" ; then
+elif test "$DIST" = "OpenSUSE" && test -z "${VERSION%%????????}" ; then
     VERSION="Tumbleweed"
+elif test "$DIST" = "OpenSUSE" && grep '^NAME=\"\?openSUSE Leap\"\?$' ; then
+    VERSION="Leap_$VERSION"
 fi
 
 if test -z "$DIST" -o -z "$VERSION" -o -z "$ARCH"; then
