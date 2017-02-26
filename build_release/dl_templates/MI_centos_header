@@ -19,9 +19,11 @@
 </tr>
 </thead>
 <tbody>
-
 <tr>
-    <th colspan="3">EPEL distribution packages (Starting from CentOS 6)<br />search for "MediaInfo" in your package manager<br />or "yum install mediainfo-gui" (for GUI)<br /> or "yum install mediainfo" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for CentOS<br />search for "MediaInfo" in your package manager<br />or "yum install mediainfo-gui" (for GUI)<br /> or "yum install mediainfo" (for CLI)</th>
+    <td><a href='//mediaarea.net/MediaInfo/Repositories.html'>Activate MediaArea Repository</a></td>
+</tr>
+<tr>
+    <th colspan="4">EPEL distribution packages (Starting from CentOS 6)<br />search for "MediaInfo" in your package manager<br />or "yum install mediainfo-gui" (for GUI)<br /> or "yum install mediainfo" (for CLI)</th>
     <td><a href="https://fedoraproject.org/wiki/EPEL">How to install CentOS EPEL</a></td>
-    <td>&nbsp;</td>
 </tr>

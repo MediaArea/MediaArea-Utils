@@ -1,0 +1,63 @@
+---
+layout: default
+permalink: repo.html
+title: "Softwares Repositories"
+---
+
+# Softwares Repositories
+
+<section id="Repositories"></section>
+
+<p>MediaArea softwares repositories are available for automatic update of our softwaresfor the distributions listed below.<br />
+</p>
+
+<p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
+<p>Repositories key fingerprint is: FINGERPRINT</p>
+
+<div id='rpm'>
+<h2>Commands for rpm based distributions</h2>
+<p>For releases repository, download and install <a href='RPM_PKG_URL'>this package</a><br/>or type the following command in a root terminal:</p>
+<table border="1">
+<thead>
+  <tr class="table-header">
+    <th style='width: 8%'>Repository</th>
+    <th>Command</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <th>Releases</th>
+    <td><pre>RPM_COMMAND_RELEASES</pre></td>
+  </tr>
+  <tr>
+    <th>Snapshots</th>
+    <td><pre>RPM_COMMAND_SNAPSHOTS</pre></td>
+  </tr>
+</tbody>
+</table>
+
+<div id='deb'>
+<h2>Commands for deb based distributions</h2>
+<p>For releases repository, download and install <a href='DEB_PKG_URL'>this package</a><br/>or type the following command in a root terminal:</p>
+<table border="1">
+<thead>
+<tr class="table-header">
+    <th style='width: 8%'>Repository</th>
+    <th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <th>Releases</th>
+    <td><pre>DEB_COMMAND_RELEASES</pre></td>
+</tr>
+<tr>
+    <th>Snapshots</th>
+    <td><pre>DEB_COMMAND_SNAPSHOTS</pre></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h2>Supported distributions versions and architectures</h2>
+

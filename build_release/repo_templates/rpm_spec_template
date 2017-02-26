@@ -71,7 +71,7 @@ elif test "$DIST" = "OpenSUSE" && test "$ARCH" = "aarch64" -o "$ARCH" = "armv7l"
     VERSION="Factory_ARM"
 elif test "$DIST" = "OpenSUSE" && test -z "${VERSION%%????????}" ; then
     VERSION="Tumbleweed"
-elif test "$DIST" = "OpenSUSE" && grep '^NAME=\"\?openSUSE Leap\"\?$' ; then
+elif test "$DIST" = "OpenSUSE" && grep -q '^NAME=\"\?openSUSE Leap\"\?$' ; then
     VERSION="Leap_$VERSION"
 fi
 

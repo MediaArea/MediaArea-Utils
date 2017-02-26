@@ -164,7 +164,7 @@ def Create_repo_deb(Path, Repo, Release = False):
     Destination = open(Script_filename, "w")
     Destination.write(Script_file)
     Destination.close()
-    os.chmod(Script_filename, 775)
+    os.chmod(Script_filename, 0775)
 
     # Add list file
     Destination = open(List_filename, "w")
