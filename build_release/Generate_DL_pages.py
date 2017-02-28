@@ -162,6 +162,103 @@ def Sources():
     Destination.close()
 
 ##################################################################
+def Repos():
+
+    print "Generating " + Project.upper() + " repositories page"
+    print
+
+    Cursor = mysql()
+
+    Table_releases_obs = "`releases_obs_%s`" % Project
+
+    Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_repo"
+
+    Header_file_path = Skeletons_path + "_header"
+    Template_file_path = Skeletons_path + "_template"
+
+    Header_file = open(Header_file_path, "r")
+    Header = Header_file.read()
+    Header_file.close()
+
+    Fingerprint = subprocess.check_output("gpg --with-colons --fingerprint %s" % Repo_config["Repo_key"]["key"], shell=True)
+    Fingerprint = re.search("fpr:{9}(.+):$", Fingerprint, re.MULTILINE).group(1)
+    Fingerprint = re.sub("(....(?!$))", "\\1 ", Fingerprint)
+
+    Header = Header.replace("FINGERPRINT", Fingerprint)
+
+    Header = Header.replace("DEB_PKG_URL", "%s/deb/repo-%s-%s_all.deb" \
+             % (Repo_config["Repo_url"], Repo_config["Repo_name"], Repo_config["Repo_version"]))
+
+    Header = Header.replace("RPM_PKG_URL", "%s/rpm/releases/repo-%s-%s-noarch.rpm" \
+             % (Repo_config["Repo_url"], Repo_config["Repo_name"], Repo_config["Repo_version"]))
+
+    Header = Header.replace("RPM_COMMAND_RELEASES", Config["rpm_repo_command"] \
+                            .replace("REPO_URL", Repo_config["Repo_url"]) \
+                            .replace("REPO_NAME", Repo_config["Repo_name"]) \
+                            .replace("VERSION", Repo_config["Repo_version"]) \
+                            .replace("RELEASE", "releases"))
+    Header = Header.replace("RPM_COMMAND_SNAPSHOTS", Config["rpm_repo_command"] \
+                            .replace("REPO_URL", Repo_config["Repo_url"]) \
+                            .replace("REPO_NAME", Repo_config["Repo_name"] + "-snapshots") \
+                            .replace("VERSION", Repo_config["Repo_version"]) \
+                            .replace("RELEASE", "snapshots"))
+    Header = Header.replace("DEB_COMMAND_RELEASES", Config["deb_repo_command"] \
+                            .replace("REPO_URL", Repo_config["Repo_url"]) \
+                            .replace("REPO_NAME", Repo_config["Repo_name"]) \
+                            .replace("VERSION", Repo_config["Repo_version"]) \
+                            .replace("RELEASE", "releases"))
+    Header = Header.replace("DEB_COMMAND_SNAPSHOTS", Config["deb_repo_command"] \
+                            .replace("REPO_URL", Repo_config["Repo_url"]) \
+                            .replace("REPO_NAME", Repo_config["Repo_name"] + "-snapshots") \
+                            .replace("VERSION", Repo_config["Repo_version"]) \
+                            .replace("RELEASE", "snapshots"))
+
+    Filename = "Repositories.md" if Project == "mc" else "Repositories.html"
+
+    Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
+    Destination.write(Header)
+
+    for Distrib in Config[Project.upper() + "_repo_distributions"]:
+        Cursor.execute("SELECT DISTINCT distrib FROM %s WHERE (distrib REGEXP '^x?%s.*') AND state = '1' ORDER BY distrib DESC" \
+                       % (Table_releases_obs, Distrib))
+        Results = Cursor.fetchall()
+
+        if not Results:
+            continue
+
+        Title = Distrib
+        if Distrib == "Ubuntu":
+            Title = "Ubuntu/LinuxMint"
+
+        Destination.write("<div id='%s'>\n" % Title)
+        Destination.write("<h3>%s</h3>\n" % Title)
+
+        Template_file = open(Template_file_path, "r")
+        Template = Template_file.read()
+        Template_file.close()
+
+        for Result in Results:
+            Version = Config[Result[0].replace("xUbuntu", "Ubuntu").replace(".", "_").lower() + "_title" ].replace("<br /><br />", "<br />")
+
+            Cursor.execute("SELECT arch FROM %s WHERE distrib = '%s' AND state = '1'"  % (Table_releases_obs, Result[0]))
+            Results = Cursor.fetchall()
+
+            Archs = Results
+
+            Template = Template + "<tr>\n"
+            Template = Template + "<td>%s</td>\n" % Version
+            Template = Template + "<td>%s</td>\n" % ", ".join(str(s[0]) for s in Archs)
+            Template = Template + "</tr>\n"
+
+        Template = Template + "</tbody>\n</table>\n"
+        Destination.write(Template)
+        Destination.write("</div>\n")
+
+    if Project != "mc":
+        Destination.write("</body>\n</html>\n")
+    Destination.close()
+
+##################################################################
 def OBS():
 
     print "Generating " + Project.upper() + " download pages for linux"
@@ -622,9 +719,9 @@ if Project != "mc" and Project != "mi" and Project != "qc":
 
 if OS_name != "windows" and OS_name != "mac" \
 and OS_name != "linux" and OS_name != "sources" \
-and OS_name != "all":
+and OS_name != "repos" and OS_name != "all":
     print
-    print "The second argument must be windows, mac, linux, sources, or all"
+    print "The second argument must be windows, mac, linux, sources, repos, or all"
     print
     sys.exit(1)
 
@@ -649,6 +746,9 @@ execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
 HOR_config = {}
 execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), HOR_config)
 
+Repo_config = {}
+execfile( os.path.join( Script_emplacement, "Repo.conf"), Repo_config)
+
 Package_infos = HOR_config["Package_infos"]
 
 subprocess.call(["rm -fr /tmp/" + Project + "_dl_pages"], shell=True)
@@ -663,8 +763,12 @@ if OS_name == "linux":
 if OS_name == "sources":
     Sources()
 
+if OS_name == "repos":
+    Repos()
+
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
     OBS()
     Sources()
+    Repos()

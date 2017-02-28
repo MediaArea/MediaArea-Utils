@@ -19,7 +19,10 @@
 </tr>
 </thead>
 <tbody>
-
+<tr>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Debian<br />Search for "QCTools" in your package manager or "apt-get install qctools"</th>
+    <td><a href='//mediaarea.net/MediaInfo/Repositories.html'>Activate MediaArea Repository</a></td>
+</tr>
 <tr>
     <th colspan="5"><br />Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"<br /><br /></th>
 </tr>
