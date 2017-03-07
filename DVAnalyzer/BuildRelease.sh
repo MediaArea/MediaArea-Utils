@@ -403,7 +403,16 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p da -n $Version_new $UV_flags -sp "$DA_tmp"/upgrade_version/DV_Analyzer
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$DAS_dir" -mindepth 1 -delete
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        find "$DAS_dir" -name 'dvanalyzer_*.tar.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        find "$DAB_dir" "$DAG_dir" -name 'DVAnalyzer_*_GNU_FromSource.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        find "$DAS_dir" -name 'dvanalyzer_*_AllInclusive.7z' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p da -v $Version_new -wp "$DA_tmp"/prepare_source -sp "$DA_tmp"/upgrade_version/DV_Analyzer $PS_target -nc
 
