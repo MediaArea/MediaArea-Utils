@@ -286,7 +286,7 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
         subprocess.call(Params_getpackage, shell=True)
 
         if os.path.isfile(Name_final):
-            if Config["Enable_repo"]:
+            if Config["Enable_repo"] and Distrib_name not in Config["Repo_exclude"]:
                 if Package_type == "rpm":
                     if Config["Export_debug"] or not fnmatch.fnmatch(Name, "*-debuginfo"):
                         print "Export package %s to repository" % Name_final

@@ -12,6 +12,7 @@
 
 <p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
 <p>Repositories key fingerprint is: FINGERPRINT</p>
+<p>Up to date packages are: mediainfo, mediainfo-gui, mediaconch, mediaconch-gui, qctools.</p>
 
 <div id='rpm'>
 <h2>Commands for rpm based distributions</h2>
@@ -26,11 +27,11 @@
 <tbody>
   <tr>
     <th>Releases</th>
-    <td><pre>RPM_COMMAND_RELEASES</pre></td>
+    <td>"RPM_COMMAND_RELEASES"</td>
   </tr>
   <tr>
     <th>Snapshots</th>
-    <td><pre>RPM_COMMAND_SNAPSHOTS</pre></td>
+    <td>"RPM_COMMAND_SNAPSHOTS"</td>
   </tr>
 </tbody>
 </table>
@@ -48,11 +49,11 @@
 <tbody>
 <tr>
     <th>Releases</th>
-    <td><pre>DEB_COMMAND_RELEASES</pre></td>
+    <td>"DEB_COMMAND_RELEASES"</td>
 </tr>
 <tr>
     <th>Snapshots</th>
-    <td><pre>DEB_COMMAND_SNAPSHOTS</pre></td>
+    <td>"DEB_COMMAND_SNAPSHOTS"</td>
 </tr>
 </tbody>
 </table>

@@ -21,7 +21,7 @@
 <tbody>
 <tr>
     <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for RHEL<br />search for "QCTools" in your package manager or "yum install qctools"</th>
-    <td><a href='//mediaarea.net/MediaInfo/Repositories.html'>Activate MediaArea Repository</a></td>
+    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
 </tr>
 
 
