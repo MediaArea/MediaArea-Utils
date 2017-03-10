@@ -200,7 +200,7 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
     else:
         # Clean old packages
         for File in os.listdir(Package_directory):
-            if re.match(Package_name.rsplit("-", 1)[0] + "-[0-9\.]\..*\.rpm", File):
+            if re.match(Package_name.rsplit("-", 1)[0] + "-[0-9\.]+\..*\.rpm", File):
                 os.remove(os.path.join(Package_directory, File))
 
     # Import rpm
