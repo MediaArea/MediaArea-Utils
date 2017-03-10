@@ -218,7 +218,16 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mil -n $Version_new $UV_flags -sp "$MIL_tmp"/upgrade_version/MediaInfoLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$MILS_dir" -mindepth 1 -delete
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        find "$MILS_dir" -name 'libmediainfo_*.tar.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        find "$MILS_dir" -name 'MediaInfo_DLL_*_GNU_FromSource.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        find "$MILS_dir" -name 'libmediainfo_*_AllInclusive.7z' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p mil -v $Version_new -wp "$MIL_tmp"/prepare_source -sp "$MIL_tmp"/upgrade_version/MediaInfoLib $PS_target -nc
 

@@ -358,7 +358,13 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p qc -n $Version_new $UV_flags -sp "$QC_tmp"/upgrade_version/qctools
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$QCS_dir" -mindepth 1 -delete
+    if [ "$Target" = "linux" ] || [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        find "$QCS_dir" -name 'qctools_*.tar.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        find "$QCS_dir" -name 'qctools_*_AllInclusive.7z' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p qc -v $Version_new -wp "$QC_tmp"/prepare_source -sp "$QC_tmp"/upgrade_version/qctools  $PS_target -nc
 

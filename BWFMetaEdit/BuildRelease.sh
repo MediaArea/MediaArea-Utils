@@ -389,11 +389,20 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p bm -n $Version_new $UV_flags -sp "$BM_tmp"/upgrade_version/BWF_MetaEdit
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$BMS_dir" -mindepth 1 -delete
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        find "$BMS_dir" -name 'bfwmetaedit_*.tar.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        find "$BMB_dir" "$BMG_dir" -name 'BFWMetaEdit_*_GNU_FromSource.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        find "$BMS_dir" -name 'bfwmetaedit_*.7z' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p bm -v $Version_new -wp "$BM_tmp"/prepare_source -sp "$BM_tmp"/upgrade_version/BWF_MetaEdit -nc
 
-    if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else

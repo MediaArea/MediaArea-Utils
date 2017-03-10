@@ -112,7 +112,10 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p zl -n $Version_new $UV_flags -sp "$ZL_tmp"/upgrade_version/ZenLib
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$ZLS_dir" -mindepth 1 -delete
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        find "$ZLS_dir" -name 'libzen_*.tar.*' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p zl -v $Version_new -wp "$ZL_tmp"/prepare_source -sp "$ZL_tmp"/upgrade_version/ZenLib -sa -nc
 

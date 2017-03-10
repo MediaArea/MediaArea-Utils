@@ -388,11 +388,21 @@ function btask.BuildRelease.run () {
     $(b.get bang.src_path)/bang run UpgradeVersion.sh -p am -n $Version_new $UV_flags -sp "$AM_tmp"/upgrade_version/AVI_MetaEdit
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    find "$AMS_dir" -mindepth 1 -delete
+
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
+        find "$AMS_dir" -name 'avimetaedit_*.tar.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "mac" ] || [ "$Target" = "all" ] ; then
+        find "$AMB_dir" "$AMG_dir" -name 'AVIMetaEdit_*_GNU_FromSource.*' -mindepth 1 -delete
+    fi
+    if [ "$Target" = "windows" ] || [ "$Target" = "all" ] ; then
+        find "$AMS_dir" -name 'avimetaedit_*.7z' -mindepth 1 -delete
+    fi
+
     # Do NOT remove -nc, mandatory for the .dsc and .spec
     $(b.get bang.src_path)/bang run PrepareSource.sh -p am -v $Version_new -wp "$AM_tmp"/prepare_source -sp "$AM_tmp"/upgrade_version/AVI_MetaEdit -nc
 
-    if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
+    if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then
             _linux >"$Log"/linux.log 2>"$Log"/linux-error.log
         else
