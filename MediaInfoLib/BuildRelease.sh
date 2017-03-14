@@ -95,7 +95,7 @@ function _mac () {
 
 function _windows () {
 
-    local sp RWorking_dir
+    local SSHP RWorking_dir
 
     # SSH prefix
     SSHP="ssh -x -p $Win_SSH_port $Win_SSH_user@$Win_IP"
@@ -149,17 +149,22 @@ function _linux () {
 
     _obs
 
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
-    echo The command line is:
-    echo python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir"
-    echo
+    if ! b.opt.has_flag? --jenkins ; then
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
+        echo The command line is:
+        echo python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir"
+        echo
 
-    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-
+        cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
+        python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new "$MILB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    else
+        echo "#!/bin/bash" > "$WORKSPACE/STAGE"
+        echo "python Handle_OBS_results.py $Filter $OBS_project MediaInfoLib $Version_new \"$MILB_dir\"" >> "$WORKSPACE/STAGE"
+        chmod +x "$WORKSPACE/STAGE"
+    fi
 }
 
 function btask.BuildRelease.run () {
@@ -261,5 +266,4 @@ function btask.BuildRelease.run () {
     if $Clean_up; then
         rm -fr "$MIL_tmp"
     fi
-
 }
