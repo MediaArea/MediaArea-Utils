@@ -75,10 +75,11 @@ function _windows () {
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
            & .\\build.bat /static /target x86 2>&1
 
-           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\") {
+           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\") {
 
-              # Sign binary
-              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
+              # Sign binaries
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\"
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.exe\"
 
               # Make installer
               Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Source\\Install\"
@@ -91,14 +92,27 @@ function _windows () {
               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
               Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_i386\"
 
-              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.exe\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\"
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_i386_WithoutInstaller.zip *
 
               # Make DebugInfo archive
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_i386_DebugInfo.zip \`
-                                                   \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\StaticRelease\\QCTools.pdb\"
+                                           \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.pdb\"
+
+              # Make CLI Archive
+              New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCli_${Version_new}_i386\"
+              Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCli_${Version_new}_i386\"
+
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.exe\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCli_${Version_new}_Windows_i386.zip *
+
+              # Make CLI DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCli_${Version_new}_Windows_i386_DebugInfo.zip \`
+                                           \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.pdb\"
            }
 
            # Compile qctools 64 bits
@@ -115,23 +129,38 @@ function _windows () {
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
            & .\\build.bat /static /target x64 2>&1
 
-           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\") {
-              # Sign binary
-              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
+           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\") {
 
-               # Make WithoutInstaller archive
-               New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
-               Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
+              # Sign binaries
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\"
+              signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d QCTools /du http://mediaarea.net \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.exe\"
 
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.exe\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
-               Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
-               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip *
+              # Make WithoutInstaller archive
+              New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
+              Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCTools_${Version_new}_x64\"
+
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.exe\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip *
 
               # Make DebugInfo archive
               $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCTools_${Version_new}_Windows_x64_DebugInfo.zip \`
-                                             \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\MSVC2015\\x64\\StaticRelease\\QCTools.pdb\"
-            }
+                                           \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-gui\\release\\QCTools.pdb\"
+
+              # Make CLI Archive
+              New-Item -Type \"directory\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCli_${Version_new}_x64\"
+              Set-Location  \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\QCli_${Version_new}_x64\"
+
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.exe\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\History.txt\"
+              Copy-Item \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\License.html\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCli_${Version_new}_Windows_x64.zip *
+
+              # Make CLI DebugInfo archive
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 ..\\QCli_${Version_new}_Windows_x64_DebugInfo.zip \`
+                                           \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\QtCreator\\qctools-cli\\release\\qcli.pdb\"
+           }
 
            # Restore env
            Load-Env(\$OldEnv)"
@@ -143,26 +172,46 @@ function _windows () {
     DLPath="$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools"
 
     File="QCTools_${Version_new}_Windows.exe"
-    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="QCTools_${Version_new}_Windows_i386_WithoutInstaller.zip"
-    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="QCTools_${Version_new}_Windows_i386_DebugInfo.zip"
-    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
-                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+                         "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
     File="QCTools_${Version_new}_Windows_x64_WithoutInstaller.zip"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="QCTools_${Version_new}_Windows_x64_DebugInfo.zip"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="QCli_${Version_new}_Windows_i386.zip"
     test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="QCTools_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="QCli_${Version_new}_Windows_i386_DebugInfo.zip"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="QCli_${Version_new}_Windows_x64.zip"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
+                         "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
+
+    File="QCli_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
@@ -214,7 +263,7 @@ function _mac () {
 
            ./Project/BuildAllFromSource/build
 
-           test -e Project/QtCreator/QCTools.app/Contents/MacOS/QCTools || exit 1
+           test -e Project/QtCreator/qctools-gui/QCTools.app/Contents/MacOS/QCTools || exit 1
            $Key_chain
            cd Project/Mac
            ./mkdmg
@@ -224,7 +273,7 @@ function _mac () {
     DLPath="$Mac_working_dir/qctools/qctools/Project/Mac"
 
     File="QCTools_${Version_new}_mac.dmg"
-    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
 
     # Cleaning
     echo "Cleaning..."
@@ -271,28 +320,31 @@ function _obs () {
 
 function _linux () {
 
-    _obs
+    if [ ! $(b.opt.get_opt --rebuild) ] ; then
+        _obs
+    fi
 
     echo
     echo Launch in background the python script which check
     echo the build results and download the packages...
     echo
     echo The command line is:
-    echo python Handle_OBS_results.py $Filter $OBS_project QCTools $Version_new "$QCB_dir"
+    echo python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir"
     echo
 
     # To avoid "os.getcwd() failed: No such file or directory" if
     # $Clean_up is set (ie "$QC_tmp", the current directory, will
     # be deleted)
     cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $Filter $OBS_project QCTools $Version_new "$QCB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
 
 }
 
 function btask.BuildRelease.run () {
 
     local UV_flags
-    local QCB_dir="$Working_dir"/binary/qctools/$Sub_dir
+    local QCB_dir="$Working_dir"/binary/qcli/$Sub_dir
+    local QCG_dir="$Working_dir"/binary/qctools/$Sub_dir
     local QCS_dir="$Working_dir"/source/qctools/$Sub_dir
     local QC_tmp="$Working_dir"/tmp/qctools/$Sub_dir
 
@@ -303,6 +355,7 @@ function btask.BuildRelease.run () {
     rm -fr "$QC_tmp"
 
     mkdir -p "$QCB_dir"
+    mkdir -p "$QCG_dir"
 
     mkdir -p "$QCS_dir"
     mkdir -p "$QC_tmp"

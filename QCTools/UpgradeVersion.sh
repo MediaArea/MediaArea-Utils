@@ -14,7 +14,7 @@ function btask.UpgradeVersion.run () {
         Source="$SDir"
     else
         getRepo $Repo "$WDir"
-        Source="$WDir"/qctools
+        Source="$WDir"/$Project
         # For lisibility after git
         echo
     fi
@@ -30,6 +30,9 @@ function btask.UpgradeVersion.run () {
 
     echo "Update version.txt"
     echo "${Version_new}" > "$Source/Project/version.txt"
+
+    echo "Update Sources/Cli/version.h"
+    updateFile "VERSION = \\\"[^\\\"]\\+\\\"" "VERSION = \"$Version_new\"" "$Source/Source/Cli/version.h"
 
     echo
     echo "Passage for version with dots..."

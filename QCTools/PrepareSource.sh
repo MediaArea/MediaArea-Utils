@@ -72,11 +72,6 @@ function _all_inclusive () {
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
-    wget -q http://slackware.uk/sbosrcarch/by-name/multimedia/vlc/Blackmagic_DeckLink_SDK_10.1.4.zip
-    unzip Blackmagic_DeckLink_SDK_10.1.4.zip
-    rm Blackmagic_DeckLink_SDK_10.1.4.zip
-    mv "Blackmagic DeckLink SDK 10.1.4" "Blackmagic DeckLink SDK"
-
     wget -q http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2
     tar jxf qwt-6.1.2.tar.bz2
     rm qwt-6.1.2.tar.bz2

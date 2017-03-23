@@ -107,7 +107,7 @@ def Initialize_DB():
                             + ") DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;")
         else:
             # Update table schema to add doc package name
-            if Project_kind == "lib":
+            if Project["kind"] == "lib":
                 Cursor.execute("SELECT * FROM information_schema.columns WHERE table_schema = '" + Config["MySQL_db"] \
                                + "' AND table_name = '" + DL_pages_table + "' AND column_name = 'libnamedoc';")
                 if Cursor.rowcount() == 0:
@@ -150,22 +150,23 @@ def Initialize_DB():
 
 ##################################################################
 def Waiting_loop():
+    global Timeout
     Count = 0
 
-    # We wait for max 9h (600*20)+(1200*17)
-    while Count < 38:
+    # We wait for max 4h (600*18)+(1200*3)
+    while Count < 21:
 
         Count = Count + 1
 
-        # At first, check every 10mn during 3h20
-        if Count < 20:
+        # At first, check every 10mn during 3h
+        if Count < 18:
             if Count == 1:
                 print "Wait 10mn..."
             else:
                 print "All builds aren’t finished yet, wait another 10mn..."
             time.sleep(600)
 
-        # Past 3h30, trigger rebuilds
+        # Past 3h, trigger rebuilds
         else:
             print "All builds aren’t finished yet, trigger rebuild(s) if there are still distribs in scheduled state, and wait 20mn..."
             for Distrib_name in Distribs:
@@ -223,13 +224,11 @@ def Waiting_loop():
         if not Distribs:
             break
 
-        # If Count = 37, then we have wait for 9h
+        # If Count = 20, then we have wait for 4h
         # and all the distros aren’t build. This while loop will
         # exit at the next iteration, and in the error mail we’ll
         # specify that the timeout was reached.
-        Timeout = False
-        if Count == 37:
-            Timeout = True
+        Timeout = True if Count == 20 else False
 
 ##################################################################
 def Trigger_rebuild():
@@ -248,7 +247,7 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
     Name_wanted = Name \
                 + Package_infos[Package_type]["dash"] + Version \
                 + Revision \
-                + Package_infos[Package_type]["separator"] + Package_infos[Package_type][Arch] \
+                + Package_infos[Package_type]["separator"] + Package_infos[Package_type].get(Arch, Arch) \
                 + "." + Distrib_name \
                 + "." + Package_type
     Name_final = os.path.join(Destination, Name_wanted)
@@ -299,12 +298,9 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
                         Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
         else:
         # This is potentially a spam tank, but I leave the
-        # mails here because:
-        # 1. it allows to have the command that have
-        # failed = more convenient to understand the issue
-        # 2. because of the multiple runs for the
-        # multiple OBS repos (Project_debX), the final test
-        # can miss some download errors.
+        # mails here because it allows to have the command
+        # that have failed = more convenient to understand
+        # the issue
 
         # If the bin package is build, but hasn’t been
         # downloaded for some raison.
@@ -355,93 +351,65 @@ def Get_packages_on_OBS(Distrib_name, Arch):
 
 
     # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
-    Bin_or_lib_name = Bin_name
-    if Project_kind == "lib":
+    Bin_name = Project["bin_name"]
+    if Project["kind"] == "lib":
         if (fnmatch.fnmatch(Distrib_name, "RHEL*") and Distrib_name != "RHEL_5") or \
            (fnmatch.fnmatch(Distrib_name, "CentOS*") and Distrib_name != "CentOS_5") or \
            fnmatch.fnmatch(Distrib_name, "Fedora*") or \
            fnmatch.fnmatch(Distrib_name, "Arch*"):
-            Bin_or_lib_name = Devel_name
+            Bin_name = Project["dev_name"]
         elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
              or Distrib_name == "Ubuntu_Next_standard" \
              or Distrib_name == "Debian_Next_ga" :
-            Bin_or_lib_name = Bin_name + "v5"
+            Bin_name += "v5"
 
     ### Bin package ###
-    Bin_name_wanted = Get_package(Bin_or_lib_name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+    Bin_name_wanted = Get_package(Bin_name, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
     ### Debug package ###
-    if not fnmatch.fnmatch(Distrib_name, "Arch*") and \
-       not Distrib_name == "RHEL_5" and \
-       not Distrib_name == "CentOS_5":
-        Debug_name_wanted = Get_package(Bin_or_lib_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-    else:
-        Debug_name_wanted = ''
+    Debug_name_wanted = ''
+    if not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "RHEL_5", "CentOS_5"]):
+        Debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
     ### Dev package ###
     # Arch devel dependencies usually come with the library itself
-    if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
-        Dev_name_wanted =  Get_package(Devel_name + Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-    else:
-        Dev_name_wanted = ''
+    Dev_name_wanted = ''
+    if Project["kind"] == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+        Dev_name_wanted = Get_package(Project["dev_name"] + Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
     ### Doc package ###
     # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
-    if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "Debian_6.0":
-        Doc_name_wanted = Get_package(Devel_name + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
-    else:
-        Doc_name_wanted = ''
+    Doc_name_wanted = ''
+    if Project["kind"] == "lib" and not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "Debian_6"]):
+        Doc_name_wanted = Get_package(Project["dev_name"] + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
     ### GUI package ###
-    if Project_kind == "gui" and not Bin_name == "qctools" and \
-                                (not Bin_name == "mediaconch" or \
-                                (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
-                                 not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
-                                 not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                 not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
-        Gui_name_wanted = Get_package(Bin_name + "-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
-
-        # GUI debug package
-        if not fnmatch.fnmatch(Distrib_name, "Arch*") and not Distrib_name == "RHEL_5" and not Distrib_name == "CentOS_5":
-            if Package_type == "deb" \
-               or fnmatch.fnmatch(Distrib_name, "openSUSE_*") \
-               or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
-                        Gui_debug_name_wanted = Get_package(Bin_name + "-gui" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+    Gui_name_wanted = ''
+    Gui_debug_name_wanted = ''
+    if Project.get("gui_name") and not any(fnmatch.fnmatch(Distrib_name, p) for p in Project.get("gui_exclude", [])):
+        Gui_name_wanted = Get_package(Project["gui_name"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+    # GUI debug package
+        if not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "RHEL_5", "CentOS_5"]):
+            if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
+                Gui_debug_name_wanted = Get_package(Project["gui_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
             else:
-                Gui_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
-        else:
-                Gui_debug_name_wanted = ''
-    else:
-        Gui_name_wanted = ''
-        Gui_debug_name_wanted = ''
+                Gui_debug_name_wanted = Get_package(Project["bin_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
 
-    ##################
-    # Server package #
-    ##################
-
-    if Bin_name == "mediaconch" and (not Distrib_name == "CentOS_5" and \
-                                     not Distrib_name == "CentOS_6" and \
-                                     not Distrib_name == "RHEL_5" and \
-                                     not Distrib_name == "RHEL_6" and \
-                                     not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                     not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
-        Server_name_wanted = Get_package(Bin_name + "-server", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
-
+    ### Server package ###
+    Server_name_wanted = ''
+    Server_debug_name_wanted = ''
+    if Project.get("srv_name") and not any(fnmatch.fnmatch(Distrib_name, p) for p in Project.get("srv_exclude", [])):
+        Server_name_wanted = Get_package(Project["srv_name"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
         # Server debug package
-        if not fnmatch.fnmatch(Distrib_name, "Arch*"):
-            if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or fnmatch.fnmatch(Distrib_name, "SLE_*"):
-                Server_debug_name_wanted = Get_package(Bin_name + "-server" + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+        if not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "RHEL_5", "CentOS_5"]):
+            if Package_type == "deb" or fnmatch.fnmatch(Distrib_name, "openSUSE_*") or (fnmatch.fnmatch(Distrib_name, "SLE_*") and not fnmatch.fnmatch(Distrib_name, "SLE_11*")):
+                Server_debug_name_wanted = Get_package(Project["srv_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
             else:
-                Server_debug_name_wanted = Get_package(Bin_name + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
-        else:
-            Server_debug_name_wanted = ''
-    else :
-        Server_name_wanted = ''
-        Server_debug_name_wanted = ''
+                Server_debug_name_wanted = Get_package(Project["bin_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
 
     if Filter:
         FS_filter += "\|" if FS_filter else ""
-        FS_filter += "%s\.%s" % (Package_infos[Package_type][Arch], Distrib_name)
+        FS_filter += "%s\.%s" % (Package_infos[Package_type].get(Arch, Arch), Distrib_name)
 
     ###########################
     # Put the filenames in DB #
@@ -458,52 +426,19 @@ def Get_packages_on_OBS(Distrib_name, Arch):
         if Result == 0:
             Cursor.execute("INSERT INTO `" + DL_pages_table + "` (platform, arch) VALUES ('" + Distrib_name + "', '" + Arch + "');")
 
-        # For the libs
-        if Project_kind == "lib":
-            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                    + " version = '" + Version + "'," \
-                    + " libname = '" + Bin_name_wanted + "'," \
-                    + " libnamedbg = '" + Debug_name_wanted + "'," \
-                    + " libnamedev = '" + Dev_name_wanted + "'," \
-                    + " libnamedoc = '" + Doc_name_wanted + "'"
-                    + " WHERE platform = '" + Distrib_name + "'" \
-                    + " AND arch = '" + Arch + "';")
+        Request = "UPDATE `%s` SET version = '%s', " % (DL_pages_table, Version)
+        if Project["kind"] == "lib":
+            Request += "libname = '%s', libnamedbg = '%s', " % (Bin_name_wanted, Debug_name_wanted)
+            Request += "libnamedev = '%s', libnamedoc = '%s' " % (Dev_name_wanted, Doc_name_wanted)
+        else:
+            Request += "cliname = '%s', clinamedbg = '%s' " % (Bin_name_wanted, Debug_name_wanted)
+            if Project.get("srv_name"):
+                Request += ", servername = '%s', servernamedbg = '%s' " % (Server_name_wanted, Server_debug_name_wanted)
+            if Project.get("gui_name"):
+                Request += ", guiname = '%s', guinamedbg = '%s' " % (Gui_name_wanted, Gui_debug_name_wanted)
+        Request += "WHERE platform ='%s' AND arch = '%s';" % (Distrib_name, Arch)
 
-        # For MC
-        if Bin_name == "mediaconch":
-            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                    + " version = '" + Version + "'," \
-                    + " cliname = '" + Bin_name_wanted + "'," \
-                    + " clinamedbg = '" + Debug_name_wanted + "'," \
-                    + " servername = '" + Server_name_wanted + "'," \
-                    + " servernamedbg = '" + Server_debug_name_wanted + "'," \
-                    + " guiname = '" + Gui_name_wanted + "'," \
-                    + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
-                    + " WHERE platform = '" + Distrib_name + "'" \
-                    + " AND arch = '" + Arch + "';")
-
-        # For MI, DA, AM, BM
-        if Bin_name == "mediainfo" or Bin_name == "dvanalyzer" or \
-           Bin_name == "avimetaedit" or Bin_name == "bwfmetaedit":
-            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                    + " version = '" + Version + "'," \
-                    + " cliname = '" + Bin_name_wanted + "'," \
-                    + " clinamedbg = '" + Debug_name_wanted + "'," \
-                    + " guiname = '" + Gui_name_wanted + "'," \
-                    + " guinamedbg = '" + Gui_debug_name_wanted + "'" \
-                    + " WHERE platform = '" + Distrib_name + "'" \
-                    + " AND arch = '" + Arch + "';")
-
-        # For QC
-        if Bin_name == "qctools":
-            Cursor.execute("UPDATE `" + DL_pages_table + "` SET"\
-                    + " version = '" + Version + "'," \
-                    + " cliname = ''," \
-                    + " clinamedbg = ''," \
-                    + " guiname = '" + Bin_name_wanted + "'," \
-                    + " guinamedbg = '" + Debug_name_wanted + "'" \
-                    + " WHERE platform = '" + Distrib_name + "'" \
-                    + " AND arch = '" + Arch + "';")
+        Cursor.execute(Request)
 
     print "-----------------------"
 
@@ -517,10 +452,16 @@ def Verify_states_and_files():
     Number_succeeded = 0
     Number_bin_wanted = 0
     Number_dev_wanted = 0
-    Number_gui_wanted = 0
     Number_srv_wanted = 0
+    Number_gui_wanted = 0
     Number_doc_wanted = 0
     Number_dbg_wanted = 0
+    Number_bin = 0
+    Number_dev = 0
+    Number_srv = 0
+    Number_gui = 0
+    Number_doc = 0
+    Number_dbg = 0
     Dists_failed = []
 
     for DB_dist in DB_distribs:
@@ -534,30 +475,19 @@ def Verify_states_and_files():
             Number_succeeded = Number_succeeded + 1
             Number_bin_wanted = Number_bin_wanted + 1
 
-            if Project_kind == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+            if Project["kind"] == "lib" and not fnmatch.fnmatch(Distrib_name, "Arch*"):
                 Number_dev_wanted = Number_dev_wanted + 1
                 # Doc packages aren’t generated for Debian_6.0
                 if not Distrib_name == "Debian_6.0":
                     Number_doc_wanted = Number_doc_wanted + 1
-            elif Project_kind == "gui" and (not fnmatch.fnmatch(OBS_package, "MediaConch*") and \
-                                            not fnmatch.fnmatch(OBS_package, "QCTools*") or \
-                                           (not fnmatch.fnmatch(Distrib_name, "CentOS*") and \
-                                            not fnmatch.fnmatch(Distrib_name, "RHEL*") and \
-                                            not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                                            not fnmatch.fnmatch(Distrib_name, "openSUSE_11*"))):
-                Number_gui_wanted = Number_gui_wanted + 1
 
-            if fnmatch.fnmatch(OBS_package, "MediaConch*") and \
-               (not Distrib_name == "CentOS_5" and \
-                not Distrib_name == "CentOS_6" and \
-                not Distrib_name == "RHEL_5" and \
-                not Distrib_name == "RHEL_6" and \
-                not fnmatch.fnmatch(Distrib_name, "SLE_11*") and \
-                not fnmatch.fnmatch(Distrib_name, "openSUSE_11*")):
+            if Project.get("srv_name") and not any(fnmatch.fnmatch(Distrib_name, p) for p in Project.get("srv_exclude", [])):
                 Number_srv_wanted = Number_srv_wanted + 1
 
-            # Neither MediaInfo nor MediaInfoLib provides debuginfo package
-            if not fnmatch.fnmatch(OBS_package, "MediaInfo*") and not fnmatch.fnmatch(Distrib_name, "Arch*"):
+            if Project.get("gui_name") and not any(fnmatch.fnmatch(Distrib_name, p) for p in Project.get("gui_exclude", [])):
+                Number_gui_wanted = Number_gui_wanted + 1
+
+            if not fnmatch.fnmatch(Distrib_name, "Arch*"):
                 Number_dbg_wanted = Number_dbg_wanted + 1
 
         # State == 2 if build failed
@@ -573,17 +503,8 @@ def Verify_states_and_files():
     # Bin packages #
     ################
 
-    # Careful: if multiple instances run at the same time (debX)
-    # and one of them doesn’t download its packages, the problem
-    # may not be detected. Because the packages downloaded by other
-    # instances will be counted in Number_bin.
-
-    Number_bin = 0
-    Params = "ls " + Destination + "/" + Devel_name + "*" + Version + "*" \
-           + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-           + " |grep -v 'dbg\|debug\|dev\|devel\|doc'" \
-           + Grep_filter \
-           + " |wc -l"
+    Params = "ls %s/%s*%s*  |grep 'rpm\|deb\|pkg.tar.xz'  |grep -v 'dbg\|debug\|dev\|devel\|doc' %s |wc -l" % \
+           (Destination, (Project["dev_name"] if Project["kind"] == "lib" else Project["bin_name"]), Version, Grep_filter)
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
 
@@ -606,40 +527,33 @@ def Verify_states_and_files():
     # Debug packages #
     ##################
 
-    Number_debug = 0
-    Params = "ls " + Destination + "/" + Devel_name + "*" \
-           + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-           + " |grep 'dbg\|debug'" \
-           + Grep_filter \
-           + " |wc -l"
-    Result = subprocess.check_output(Params, shell=True).strip()
-    Number_debug = int(Result)
 
-    print "dbg: " + str(Number_debug)
+    Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.xz' |grep 'dbg\|debug' %s |wc -l" % \
+           (Destination, (Project["dev_name"] if Project["kind"] == "lib" else Project["bin_name"]), Grep_filter)
+    Result = subprocess.check_output(Params, shell=True).strip()
+    Number_dbg = int(Result)
+
+    print "dbg: " + str(Number_dbg)
 
     # Debug packages aren’t perfectly handled on OBS
-    #if Number_debug < Number_dbg_wanted:
+    #if Number_dbg < Number_dbg_wanted:
     #    Params = \
     #           "echo 'OBS project: " + OBS_project + "\n" \
     #           + "OBS package: " + OBS_package + "\n" \
     #           + "Version: " + Version + "\n\n" \
     #           "The number of downloaded debug packages is lower than the number of succeeded debug packages on OBS:\n" \
-    #           + str(Number_succeeded) + " succeeded and " + str(Number_debug) + " downloaded.'" \
+    #           + str(Number_succeeded) + " succeeded and " + str(Number_dbg) + " downloaded.'" \
     #           + " |mailx -s '[BR lin] Problem with " + OBS_package + "'"
     #           + " " + Config["Email_to"]
     #    subprocess.call(Params, shell=True)
 
-    ################
-    # Dev packages #
-    ################
+    ######################
+    # Dev & doc packages #
+    ######################
 
-    if Project_kind == "lib":
-        Number_dev = 0
-        Params = "ls " + Destination + "/" + Devel_name + "*" \
-               + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + " |grep 'dev\|devel'" \
-               + Grep_filter \
-               + " |wc -l"
+    if Project["kind"] == "lib":
+        Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.xz' |grep 'dev\|devel' %s |wc -l" % \
+               (Destination, Project["dev_name"], Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_dev = int(Result)
 
@@ -656,15 +570,8 @@ def Verify_states_and_files():
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
 
-        ################
-        # Doc packages #
-        ################
-
-        Number_doc = 0
-        Params = "ls " + Destination + "/" + Devel_name + "-doc*" \
-               + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Grep_filter \
-               + " |wc -l"
+        Params = "ls %s/%s-doc* |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+               (Destination, Project["dev_name"], Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_doc = int(Result)
 
@@ -685,24 +592,21 @@ def Verify_states_and_files():
     # Server packages #
     ###################
 
-    if Bin_name == "mediaconch":
-        Number_server = 0
-        Params = "ls " + Destination_server + "/" + Bin_name + "-server" + "?" + Version + "*" \
-               + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Grep_filter \
-               + " |wc -l"
+    if Project.get("srv_name"):
+        Params = "ls %s/%s?%s*  |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+               (Destination_server, Project["srv_name"], Version, Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
-        Number_server = int(Result)
+        Number_srv = int(Result)
 
-        print "server: " + str(Number_server)
+        print "server: " + str(Number_srv)
 
-        if Number_server < Number_srv_wanted:
+        if Number_srv < Number_srv_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
                    + "Version: " + Version + "\n\n" \
                    "The number of downloaded server packages is lower than the number of succeeded server packages on OBS:\n" \
-                   + str(Number_succeeded) + " succeeded and " + str(Number_server) + " downloaded.'" \
+                   + str(Number_succeeded) + " succeeded and " + str(Number_srv) + " downloaded.'" \
                    + " |mailx -s '[BR lin] Problem with " + OBS_package + "'" \
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
@@ -711,12 +615,9 @@ def Verify_states_and_files():
     # GUI packages #
     ################
 
-    if Project_kind == "gui" and Bin_name != "qctools":
-        Number_gui = 0
-        Params = "ls " + Destination_gui + "/" + Bin_name + "-gui" + "?" + Version + "*" \
-               + " |grep 'rpm\|deb\|pkg.tar.xz'" \
-               + Grep_filter \
-               + " |wc -l"
+    if Project.get("gui_name"):
+        Params = "ls %s/%s?%s* |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+               (Destination_gui, Project["gui_name"], Version, Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_gui = int(Result)
 
@@ -750,7 +651,7 @@ def Verify_states_and_files():
 
         Timeout_message = ""
         if Timeout:
-            Timeout_message = "After more than 9 hours, the builds weren’t over. The script will download whatever is available.\n\n"
+            Timeout_message = "After more than 4 hours, the builds weren’t over. The script will download whatever is available.\n\n"
 
         Params = \
                "echo 'OBS project: " + OBS_project + "\n" \
@@ -783,10 +684,7 @@ def Verify_states_and_files():
 
     print "\nHandle_OBS_results.py has run during: " + Total_time
 
-    # Don’t send a confirmation mail for the debX repos
-    if Project_kind == "lib":
-        # We use >= and not ==, because there may be other repos
-        # which have ran into the same directory (Project_debX).
+    if Project["kind"] == "lib":
         if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_dev >= Number_dev_wanted and Number_doc >= Number_doc_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
@@ -794,17 +692,16 @@ def Verify_states_and_files():
                    + "Version: " + Version + "\n\n" \
                    + "SUCCESS\n\n" \
                    + "* " + str(Number_succeeded) + " builds succeeded;\n" \
-                   + "* " + str(Number_bin) + " bin (" + Bin_name + ") packages downloaded;\n" \
+                   + "* " + str(Number_bin) + " bin (" + Project["bin_name"] + ") packages downloaded;\n" \
                    + "* " + str(Number_dev) + " dev packages downloaded;\n" \
-                   + "* " + str(Number_debug) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(Number_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
                    + "* " + str(Number_doc) + " doc packages downloaded.\n\n" \
                    + "Handle_OBS_results.py has run during: " + Total_time + "'" \
                    + " |mailx -s '[BR lin] OK for " + OBS_package + "'" \
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
-
-    if Project_kind == "gui":
-        if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_gui >= Number_gui_wanted:
+    else:
+        if len(Dists_failed) == 0 and Number_bin >= Number_bin_wanted and Number_srv >= Number_srv_wanted and Number_gui >= Number_gui_wanted:
             Params = \
                    "echo 'OBS project: " + OBS_project + "\n" \
                    + "OBS package: " + OBS_package + "\n" \
@@ -812,7 +709,8 @@ def Verify_states_and_files():
                    + "SUCCESS\n\n" \
                    + "* " + str(Number_succeeded) + " builds succeeded;\n" \
                    + "* " + str(Number_bin) + " bin (CLI) packages downloaded;\n" \
-                   + "* " + str(Number_debug) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(Number_dbg) + " debug packages downloaded (debug packages aren’t perfectly handled on OBS);\n" \
+                   + "* " + str(Number_srv) + " server packages downloaded.\n\n" \
                    + "* " + str(Number_gui) + " gui packages downloaded.\n\n" \
                    + "Handle_OBS_results.py has run during: " + Total_time + "'" \
                    + " |mailx -s '[BR lin] OK for " + OBS_package + "'" \
@@ -850,7 +748,7 @@ Args = Args_parser.parse_args()
 OBS_project = Args.project
 OBS_package = Args.package
 Version = Args.version
-Destination = Args.destination[0]
+Destination = Args.destination.pop(0)
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
@@ -860,6 +758,7 @@ Config = {}
 execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
 
 Package_infos = Config["Package_infos"]
+Project = Config["Projects"][OBS_package]
 
 # Various initializations
 DL_pages_table = "0"
@@ -869,158 +768,26 @@ Timeout = False
 Count = 0
 Result = 0
 
-if OBS_package == "ZenLib":
-    Project_kind = "lib"
-    Bin_name = "libzen0"
-    Devel_name = "libzen"
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_zl"
-    else:
-        DL_pages_table = "releases_dlpages_zl"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            libname varchar(120),
-            libnamedbg varchar(120),
-            libnamedev varchar(120),
-            libnamedoc varchar(120)"""
-        Table = "releases_obs_zl"
+if fnmatch.fnmatch(OBS_project, "*:snapshots"):
+    Table = "snapshots_obs_%s" % Project["short"]
+else:
+    Table = "releases_obs_%s" % Project["short"]
+    DL_pages_table = "releases_dlpages_%s" % Project["short"]
 
-if OBS_package == "MediaInfoLib":
-    Project_kind = "lib"
-    Bin_name = "libmediainfo0"
-    Devel_name = "libmediainfo"
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_mil"
-    else:
-        DL_pages_table = "releases_dlpages_mil"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            libname varchar(120),
-            libnamedbg varchar(120),
-            libnamedev varchar(120),
-            libnamedoc varchar(120)"""
-        Table = "releases_obs_mil"
+DB_structure = "platform varchar(50), arch varchar(10), version varchar(18)"
+if Project["kind"] == "lib":
+    DB_structure += " , libname varchar(120), libnamedbg varchar(120)"
+    DB_structure += " , libnamedev varchar(120), libnamedoc varchar(120)"
+else:
+    DB_structure += " , cliname varchar(120), clinamedbg varchar(120)"
 
-if OBS_package == "MediaConch":
-    Project_kind = "gui"
-    Bin_name = "mediaconch"
-    Devel_name = "mediaconch"
-    Destination_server = Args.destination[1]
-    Destination_gui = Args.destination[2]
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_mc"
-    else:
-        DL_pages_table = "releases_dlpages_mc"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            servername varchar(120),
-            servernamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_mc"
+if Project.get("srv_name"):
+    DB_structure += " , servername varchar(120), servernamedbg varchar(120)"
+    Destination_server = Args.destination.pop(0)
 
-if OBS_package == "MediaInfo":
-    Project_kind = "gui"
-    Bin_name = "mediainfo"
-    Devel_name = "mediainfo"
-    Destination_gui = Args.destination[1]
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_mi"
-    else:
-        DL_pages_table = "releases_dlpages_mi"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_mi"
-
-if OBS_package == "QCTools":
-    Project_kind = "gui"
-    Bin_name = "qctools"
-    Devel_name = "qctools"
-    Destination_gui = Destination
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_qc"
-    else:
-        DL_pages_table = "releases_dlpages_qc"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_qc"
-
-if OBS_package == "DVAnalyzer":
-    Project_kind = "gui"
-    Bin_name = "dvanalyzer"
-    Devel_name = "dvanalyzer"
-    Destination_gui = Args.destination[1]
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_da"
-    else:
-        DL_pages_table = "releases_dlpages_da"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_da"
-
-if OBS_package == "AVIMetaEdit":
-    Project_kind = "gui"
-    Bin_name = "avimetaedit"
-    Devel_name = "avimetaedit"
-    Destination_gui = Args.destination[1]
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_am"
-    else:
-        DL_pages_table = "releases_dlpages_am"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_am"
-
-if OBS_package == "BWFMetaEdit":
-    Project_kind = "gui"
-    Bin_name = "bwfmetaedit"
-    Devel_name = "bwfmetaedit"
-    Destination_gui = Args.destination[1]
-    if fnmatch.fnmatch(OBS_project, "*:snapshots"):
-        Table = "snapshots_obs_bm"
-    else:
-        DL_pages_table = "releases_dlpages_bm"
-        DB_structure = """
-            platform varchar(50),
-            arch varchar(10),
-            version varchar(18),
-            cliname varchar(120),
-            clinamedbg varchar(120),
-            guiname varchar(120),
-            guinamedbg varchar(120)"""
-        Table = "releases_obs_bm"
+if Project.get("gui_name"):
+    DB_structure += " , guiname varchar(120), guinamedbg varchar(120)"
+    Destination_gui = Args.destination.pop(0)
 
 if len(DL_pages_table) > 1:
     Release = True
@@ -1077,10 +844,10 @@ if Args.rebuild:
 
 if not os.path.exists(Destination):
     os.makedirs(Destination)
-if Bin_name == "mediaconch":
+if Project.get("srv_name"):
     if not os.path.exists(Destination_server):
         os.makedirs(Destination_server)
-if Project_kind == "gui":
+if Project.get("gui_name"):
     if not os.path.exists(Destination_gui):
         os.makedirs(Destination_gui)
 
