@@ -228,7 +228,7 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
             shutil.copyfile(os.path.join(Package_directory, "..", "..", "..", Activation_rpm_file), os.path.join(Package_directory, Activation_rpm_file))
 
     # Update repository
-    Command = ["createrepo", "--update", os.path.join(Package_directory, "..")]
+    Command = ["createrepo", os.path.join(Package_directory, "..")]
     subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Sign repository
