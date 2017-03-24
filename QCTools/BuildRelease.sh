@@ -256,7 +256,7 @@ function _mac () {
     # Compile
     echo "Compile QC for mac..."
     $SSHP "cd \"$Mac_working_dir\"
-           export PATH=\"$Mac_qt_path/clang_64/bin:\$PATH\"
+           export PATH=\"~/Qt/5.3_static/clang_64/bin:\$PATH\"
 
            tar xf qctools_${Version_new}-1.tar.gz
            cd qctools/qctools
@@ -266,14 +266,18 @@ function _mac () {
            test -e Project/QtCreator/qctools-gui/QCTools.app/Contents/MacOS/QCTools || exit 1
            $Key_chain
            cd Project/Mac
-           ./mkdmg
-           mv QCTools.dmg QCTools_${Version_new}_mac.dmg"
+           ./mkdmg_qctools
+           ./mkdmg_qcli
+           mv QCTools.dmg QCTools_${Version_new}_mac.dmg
+           mv qcli.dmg qcli_${Version_new}_mac.dmg"
 
     echo "Retreive files"
     DLPath="$Mac_working_dir/qctools/qctools/Project/Mac"
 
     File="QCTools_${Version_new}_mac.dmg"
     scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+    File="qcli_${Version_new}_mac.dmg"
+    scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
 
     # Cleaning
     echo "Cleaning..."
