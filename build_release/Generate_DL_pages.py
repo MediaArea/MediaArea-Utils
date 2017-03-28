@@ -96,7 +96,9 @@ def DL_pages(OS_name):
     print
 
     Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + OS_name
-    OS_title = Config[ Project.upper() + "_" + OS_name + "_title" ]
+
+    if not OS_name == "appimage":
+        OS_title = Config[ Project.upper() + "_" + OS_name + "_title" ]
 
     Header_file_path = Skeletons_path + "_header"
     Header_file = open(Header_file_path, "r")
@@ -116,7 +118,8 @@ def DL_pages(OS_name):
         Content = Content.replace("VERSIONS_APPLESTORE", Config[ Project.upper() + "_" + OS_name + "_applestore" ])
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
-    Content = Content.replace("OS_TITLE", OS_title)
+    if not OS_name == "appimage":
+        Content = Content.replace("OS_TITLE", OS_title)
 
     if Project != "qc":
         Content = Content.replace("MIL_VERSION", MIL_version)
@@ -551,7 +554,7 @@ def OBS():
 
                 Content = Content.replace("ARCH_ROWSPAN", Arch_rowspan)
                 Content = Content.replace("RELEASE_VERSION", Release_name_formated)
-                Content = Content.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
+                Content = Content.replace("RELEASE_ARCH", Package_infos[Package_type].get(Arch, Arch))
 
                 Request = "SELECT version, cliname, clinamedbg, guiname, guinamedbg"
                 if Project == "mc":
@@ -648,7 +651,7 @@ def OBS():
                 if Release_with_wx == True:
                     Wx_package = Config[ Release_in_config_file + "_wx" ]
                     Wx_package = Wx_package.replace("DISTRIB_RELEASE", Distrib_name + "_" + Release_name)
-                    Wx_package = Wx_package.replace("RELEASE_ARCH", Package_infos[Package_type][Arch])
+                    Wx_package = Wx_package.replace("RELEASE_ARCH", Package_infos[Package_type].get(Arch, Arch))
                 else:
                     Wx_package = ""
                 Content = Content.replace("WX_PACKAGE", Wx_package)
@@ -733,7 +736,7 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
        Project_version = sys.argv[3]
     elif len(sys.argv) < 6:
         print
-        print "If you ask windows, mac, sources or all, you must provide the version"
+        print "If you ask windows, mac, appimage, sources or all, you must provide the version"
         print "numbers of QC or MC|MI + MIL and ZL respectively as 3rd, 4th and 5th arguments."
         print
         sys.exit(1)
@@ -756,7 +759,7 @@ Package_infos = HOR_config["Package_infos"]
 subprocess.call(["rm -fr /tmp/" + Project + "_dl_pages"], shell=True)
 subprocess.call(["mkdir /tmp/" + Project + "_dl_pages"], shell=True)
 
-if OS_name == "windows" or OS_name == "mac":
+if OS_name == "windows" or OS_name == "mac" or OS_name == "appimage":
     DL_pages(OS_name)
 
 if OS_name == "linux":
@@ -771,6 +774,7 @@ if OS_name == "repos":
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
+    DL_pages("appimage")
     OBS()
     Sources()
     if Project == "mi":
