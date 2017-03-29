@@ -78,6 +78,9 @@ function load_options () {
     b.opt.add_flag --force "Force run even if the master is older than the last build"
     b.opt.add_alias --force -f
 
+    b.opt.add_flag --jenkins "Do not run Handle_OBS_results.py"
+    b.opt.add_alias --jenkins -j
+
     # Mandatory arguments
     b.opt.required_args --project
 }
@@ -85,6 +88,8 @@ function load_options () {
 function displayHelp () {
     b.raised_message
     b.opt.show_usage
+
+    exit 1
 }
 
 function update_PKGBUILD () {
@@ -259,7 +264,12 @@ function run () {
                 b.task.run BuildRelease > "$Log"/init.log 2> "$Log"/init-error.log
             else
                 echo
-                b.task.run BuildRelease
+                if ! b.task.run BuildRelease ; then
+                    echo
+                    echo "Error : task failed for $Project!"
+                    echo
+                    exit 1
+                fi
                 echo
             fi
         else
@@ -270,6 +280,7 @@ function run () {
             echo "e.g. /path/to/MediaArea-Utils/buildrelease"
             echo "and the project repository must be in the same directory than MediaArea-Utils"
             echo
+            exit 1
         fi
 
         unset -v Project Repo Filter
@@ -290,3 +301,5 @@ b.module.require project
 b.try.do run "$@"
 b.catch RequiredOptionNotSet displayHelp
 b.try.end
+
+exit 0

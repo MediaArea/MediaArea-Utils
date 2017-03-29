@@ -1,0 +1,22 @@
+<tr>
+    <th rowspan="2">64 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/mediainfo-gui-MI_VERSION-x86_64.AppImage">vMI_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediainfo/MI_VERSION/mediainfo-MI_VERSION-x86_64.AppImage">vMI_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th rowspan="2">32 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/mediainfo-gui-MI_VERSION-i686.AppImage">vMI_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediainfo/MI_VERSION/mediainfo-MI_VERSION-i686.AppImage">vMI_VERSION</td>
+    <td>&nbsp;</td>
+</tr>

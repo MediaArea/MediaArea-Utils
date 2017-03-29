@@ -36,7 +36,6 @@ function _obs () {
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 
@@ -44,20 +43,25 @@ function _linux () {
 
     _obs
 
-    echo
-    echo Launch in background the python script which check
-    echo the build results and download the packages...
-    echo
-    echo The command line is:
-    echo python Handle_OBS_results.py $Filter $OBS_project ZenLib $Version_new "$ZLB_dir"
-    echo
+    if ! b.opt.has_flag? --jenkins ; then
+        echo
+        echo Launch in background the python script which check
+        echo the build results and download the packages...
+        echo
+        echo The command line is:
+        echo python Handle_OBS_results.py $Filter $OBS_project ZenLib $Version_new "$ZLB_dir"
+        echo
 
-    # To avoid "os.getcwd() failed: No such file or directory" if
-    # $Clean_up is set (ie "$ZL_tmp", the current directory, will
-    # be deleted)
-    cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-    python Handle_OBS_results.py $Filter $OBS_project ZenLib $Version_new "$ZLB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-
+        # To avoid "os.getcwd() failed: No such file or directory" if
+        # $Clean_up is set (ie "$ZL_tmp", the current directory, will
+        # be deleted)
+        cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
+        python Handle_OBS_results.py $Filter $OBS_project ZenLib $Version_new "$ZLB_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+    else
+        echo "#!/bin/bash" > "$WORKSPACE/STAGE"
+        echo "python Handle_OBS_results.py $Filter $OBS_project ZenLib $Version_new \"$ZLB_dir\"" >> "$WORKSPACE/STAGE"
+        chmod +x "$WORKSPACE/STAGE"
+    fi
 }
 
 function btask.BuildRelease.run () {

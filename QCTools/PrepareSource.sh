@@ -99,7 +99,6 @@ function _all_inclusive () {
         # Generate Windows and public AllInclusive archive
         mv qctools qctools_AllInclusive
         pushd qctools_AllInclusive
-        git clone --depth 1 "git://github.com/MediaArea/zlib.git"
         rm -fr debian
         # Placeholder for pre-compiled Qt
         mkdir Qt
