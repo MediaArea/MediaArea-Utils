@@ -14,7 +14,7 @@ function btask.UpgradeVersion.run () {
         Source="$SDir"
     else
         getRepo $Repo "$WDir"
-        Source="$WDir"/DV_Analyzer
+        Source="$WDir/$Project"
         # For lisibility after git
         echo
     fi

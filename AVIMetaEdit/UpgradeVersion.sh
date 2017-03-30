@@ -14,7 +14,7 @@ function btask.UpgradeVersion.run () {
         Source="$SDir"
     else
         getRepo $Repo "$WDir"
-        Source="$WDir"/AVI_MetaEdit
+        Source="$WDir/$Project"
         # For lisibility after git
         echo
     fi
