@@ -181,6 +181,10 @@ function _all_inclusive () {
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
 
+    wget -q https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.7z
+    7z x wxWidgets-3.1.0.7z -owxWidgets
+    rm -f wxWidgets-3.1.0.7z
+
     echo "2: remove what isn’t wanted..."
     cd MediaInfo
         rm -f .cvsignore .gitignore
