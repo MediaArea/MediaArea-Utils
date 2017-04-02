@@ -462,7 +462,7 @@ def OBS():
             Release_with_mil = True
             Release_with_zl = True
             if Project == "qc":
-                Release_with_gui = False
+                Release_with_gui = True
                 Release_with_mil = False
                 Release_with_zl = False
 
