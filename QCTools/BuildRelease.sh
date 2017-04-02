@@ -323,28 +323,151 @@ function _obs () {
 }
 
 function _linux () {
-    _obs
+    if ! b.opt.has_flag? --only-images ; then
+        _obs
 
-    if ! b.opt.has_flag? --jenkins ; then
-        echo
-        echo Launch in background the python script which check
-        echo the build results and download the packages...
-        echo
-        echo The command line is:
-        echo python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir"
-        echo
+        if ! b.opt.has_flag? --jenkins ; then
+            echo
+            echo Launch in background the python script which check
+            echo the build results and download the packages...
+            echo
+            echo The command line is:
+            echo python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir"
+            echo
 
-        # To avoid "os.getcwd() failed: No such file or directory" if
-        # $Clean_up is set (ie "$QC_tmp", the current directory, will
-        # be deleted)
-        cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
-        python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
-    else
-        echo "#!/bin/bash" > "$WORKSPACE/STAGE"
-        echo "python Handle_OBS_results.py $Filter $OBS_project QCTools $Version_new \"$QCB_dir\" \"$QCG_dir\"" >> "$WORKSPACE/STAGE"
-        chmod +x "$WORKSPACE/STAGE"
+            # To avoid "os.getcwd() failed: No such file or directory" if
+            # $Clean_up is set (ie "$QC_tmp", the current directory, will
+            # be deleted)
+            cd "$(dirname ${BASH_SOURCE[0]})/../build_release"
+            python Handle_OBS_results.py $* $OBS_project QCTools $Version_new "$QCB_dir" "$QCG_dir" >"$Log"/obs_main.log 2>"$Log"/obs_main-error.log &
+        else
+            echo "#!/bin/bash" > "$WORKSPACE/STAGE"
+            echo "python Handle_OBS_results.py $Filter $OBS_project QCTools $Version_new \"$QCB_dir\" \"$QCG_dir\"" >> "$WORKSPACE/STAGE"
+            chmod +x "$WORKSPACE/STAGE"
+        fi
     fi
 
+    if ! b.opt.has_flag? --skip-images && ! b.opt.get_opt --filter ; then
+        _linux_images
+    fi
+}
+
+function _linux_images () {
+
+    local SSHP Build_dir File Container_name
+
+    SSHP="ssh -x -p $Ubuntu_SSH_port $Ubuntu_SSH_user@$Ubuntu_IP"
+    Build_dir="build_$RANDOM"
+    Container_name=$RANDOM
+
+    cd "$QC_tmp"
+
+    # Start the VM if needed
+    if [ -n "$Ubuntu_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        if ! vm_start "$Virsh_uri" "$Ubuntu_VM_name" "$Ubuntu_IP" "$Ubuntu_SSH_port"; then
+            MSG="ERROR: unable to start VM"
+            print_e "$MSG"
+            return 1
+        fi
+    fi
+
+    # Test connection
+    if ! $SSHP "exit"; then
+        MSG="ERROR: unable to connect to host"
+        print_e "$MSG"
+        return 1
+    fi
+
+    # Prepare build directory
+    echo "Prepare build directory..."
+    $SSHP "cd \"$Ubuntu_working_dir\"
+           if [ -e \"$Build_dir\" ] ; then
+               rf -fr \"$Build_dir\"
+           fi
+           mkdir \"$Build_dir\""
+
+    # Get the sources
+    scp -qrP $Ubuntu_SSH_port prepare_source/archives/qctools_${Version_new}-1.tar.gz \
+             "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir\\"
+
+    # Build AppImage
+    echo "Make QC AppImage..."
+
+    $SSHP "cd \"$Ubuntu_working_dir/$Build_dir\"
+           lxc launch -e -c 'security.privileged=true' images:centos/6/amd64 centos64$Container_name
+           sleep 10
+           # setup container
+           lxc exec centos64$Container_name -- curl -L -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+           lxc exec centos64$Container_name -- rpm -i --nodeps epel-release-latest-6.noarch.rpm
+           lxc exec centos64$Container_name -- yum install -y file wget tar fuse-libs fuse gcc-c++ pkgconfig libtool automake autoconf zlib-devel bzip2-devel qt5-qtbase-devel
+           # upload sources
+           lxc file push -r qctools_${Version_new}-1.tar.gz centos64$Container_name/root
+           lxc exec centos64$Container_name -- mv ctools_${Version_new}-1.tar.gz qctools_${Version_new}-1.tar.gz # Bug, lxc eat first filename letter
+           lxc exec centos64$Container_name -- tar -xpf qctools_${Version_new}-1.tar.gz
+           # compile and generate images
+           lxc exec centos64$Container_name -- sh qctools/qctools/Project/AppImage/Recipe.sh
+           lxc file pull -r centos64$Container_name/root/out/qctools-${Version_new}-x86_64.AppImage .
+           lxc file pull -r centos64$Container_name/root/out/qcli-${Version_new}-x86_64.AppImage .
+           lxc delete -f centos64$Container_name
+
+           lxc launch -e -c 'security.privileged=true' images:centos/6/i386 centos$Container_name
+           sleep 10
+           # setup container
+           lxc exec centos$Container_name -- curl -L -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+           lxc exec centos$Container_name -- rpm -i --nodeps epel-release-latest-6.noarch.rpm
+           lxc exec centos$Container_name -- yum install -y file wget tar fuse-libs fuse gcc-c++ pkgconfig libtool automake autoconf zlib-devel bzip2-devel qt5-qtbase-devel
+           # upload sources
+           lxc file push -r qctools_${Version_new}-1.tar.gz centos$Container_name/root
+           lxc exec centos$Container_name -- mv ctools_${Version_new}-1.tar.gz qctools_${Version_new}-1.tar.gz # Bug, lxc eat first filename letter
+           lxc exec centos$Container_name -- tar -xpf qctools_${Version_new}-1.tar.gz
+           # compile and generate images
+           lxc exec centos$Container_name -- sh qctools/qctools/Project/AppImage/Recipe.sh
+           lxc file pull -r centos$Container_name/root/out/qctools-${Version_new}-i686.AppImage .
+           lxc file pull -r centos$Container_name/root/out/qcli-${Version_new}-i686.AppImage .
+           lxc delete -f centos$Container_name
+"
+
+    # Retrieve files
+    echo "Retreive files"
+
+    File="qctools-${Version_new}-x86_64.AppImage"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="qctools-${Version_new}-i686.AppImage"
+    test -e "$QCG_dir/$File" && rm "$QCG_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$QCG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="qcli-${Version_new}-x86_64.AppImage"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    File="qcli-${Version_new}-i686.AppImage"
+    test -e "$QCB_dir/$File" && rm "$QCB_dir/$File"
+    scp -P $Ubuntu_SSH_port "$Ubuntu_SSH_user@$Ubuntu_IP:$Ubuntu_working_dir/$Build_dir/$File" \
+           "$QCB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+
+    # Cleaning
+    echo "Cleaning..."
+
+    $SSHP "cd \"$Ubuntu_working_dir\" && rm -fr \"$Build_dir\""
+
+    # Stop the VM
+    if [ -n "$Ubuntu_VM_name" ] && [ -n "$Virsh_uri" ]; then
+        vm_stop "$Virsh_URI" "$Ubuntu_VM_name"
+    fi
+
+    # Check non fatals errors
+    if [ -n "$MSG" ]; then
+        print_e "$MSG"
+        return 1
+    fi
+
+    return 0
 }
 
 function btask.BuildRelease.run () {
