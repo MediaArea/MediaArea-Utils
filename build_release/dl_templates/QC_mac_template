@@ -1,7 +1,12 @@
 <tr>
-    <th>OS_TITLE</th>
-    <th>x86_64</th>
-    <td>GUI</td>
+    <th rowspan="2">OS_TITLE</th>
+    <th rowspan="2">x86_64</th>
+    <td><abbr title="Graphical User Interface">GUI</abbr></td>
     <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_mac.dmg">vQC_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><abbr title="Command Line Interface">CLI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/qcli/QC_VERSION/qcli_QC_VERSION_mac.dmg">vQC_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>

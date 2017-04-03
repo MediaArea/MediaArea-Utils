@@ -221,7 +221,7 @@ def Waiting_loop():
 
 
         # When all the distros are build, array will be empty
-        if not Distribs:
+        if not Distribs or all(i in Config.get("Buggy_dist", []) for i in Distribs):
             break
 
         # If Count = 20, then we have wait for 4h

@@ -32,7 +32,7 @@ function btask.UpgradeVersion.run () {
     echo "${Version_new}" > "$Source/Project/version.txt"
 
     echo "Update Sources/Cli/version.h"
-    updateFile "VERSION = \\\"[^\\\"]\\+\\\"" "VERSION = \"$Version_new\"" "$Source/Source/Cli/version.h"
+    updateFile "VERSION = \\\"[^\\\"]\\+\\\"" "VERSION = \"$Version_new\" " "$Source/Source/Cli/version.h"
 
     echo
     echo "Passage for version with dots..."
@@ -40,6 +40,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/qctools.spec"
     Files[((index++))]="Project/GNU/qctools.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/AppImage/Recipe.sh"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Install/QCTools.nsi"
     Files[((index++))]="License.html"

@@ -109,6 +109,8 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/MSVC2013/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2015/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2015/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/MSVC2017/GUI/MediaInfo_GUI.rc"
+    MI_files[((index++))]="Project/MSVC2017/CLI/MediaInfo_CLI.rc"
 
     for MI_file in ${MI_files[@]}
     do
