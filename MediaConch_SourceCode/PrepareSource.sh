@@ -45,8 +45,8 @@ function _get_source () {
     git clone --depth 1 https://git.gnome.org/browse/libxslt
     git clone --depth 1 https://github.com/MediaArea/jansson.git
     git clone --depth 1 https://github.com/MediaArea/libevent.git
-    curl -s http://www.sqlite.org/2017/sqlite-autoconf-3160200.tar.gz | tar -xz
-    mv sqlite-autoconf-3160200 sqlite
+    curl -s http://www.sqlite.org/2017/sqlite-autoconf-3180000.tar.gz | tar -xzp
+    mv sqlite-autoconf-3180000 sqlite
 
 
     # MediaInfoLib (will also bring ZenLib and zlib)
