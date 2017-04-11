@@ -32,7 +32,7 @@ function btask.UpgradeVersion.run () {
     echo "${Version_new}" > "$Source/Project/version.txt"
 
     echo "Update Sources/Cli/version.h"
-    updateFile "VERSION = \\\"[^\\\"]\\+\\\"" "VERSION = \"$Version_new\" " "$Source/Source/Cli/version.h"
+    updateFile "VERSION = \\\"[^\\\"]\\+\\\"" "VERSION = \"$Version_new \"" "$Source/Source/Cli/version.h"
 
     echo
     echo "Passage for version with dots..."
