@@ -49,7 +49,7 @@ function _windows () {
     sleep 3
 
     $SSHP "Set-Location \"$Win_working_dir\\$Build_dir\"
-           MediaArea-Utils-Binaries\\Windows\\7-Zip\7z x -y \"qctools_${Version_new}_AllInclusive.7z\" > \$null"
+           MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z x -y \"qctools_${Version_new}_AllInclusive.7z\" > \$null"
     sleep 3
 
     # Build
@@ -69,7 +69,7 @@ function _windows () {
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
 
            # Compile qctools 32 bits
-           Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+           Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\"
            Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static\\5.7\\msvc2015_static\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
 
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
