@@ -307,19 +307,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/qctools_${Version_new}-1.tar.gz $OBS_package/qctools_${Version_new}-1.tar.gz
-
-    cp prepare_source/QC/ALL/qctools_AllInclusive/qctools/Project/GNU/qctools.spec $OBS_package
-    cp prepare_source/QC/ALL/qctools_AllInclusive/qctools/Project/GNU/qctools.dsc $OBS_package
-    cp prepare_source/QC/ALL/qctools_AllInclusive/qctools/Project/GNU/PKGBUILD $OBS_package
-
-    update_dsc "$QC_tmp"/$OBS_package qctools_${Version_new}-1.tar.gz qctools.dsc
-    update_PKGBUILD "$QC_tmp"/$OBS_package qctools_${Version_new}-1.tar.gz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {

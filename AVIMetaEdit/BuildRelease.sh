@@ -299,19 +299,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/avimetaedit_${Version_new}.tar.gz $OBS_package/avimetaedit_${Version_new}-1.tar.gz
-
-    cp prepare_source/AM/avimetaedit/Project/GNU/avimetaedit.spec $OBS_package
-    cp prepare_source/AM/avimetaedit/Project/GNU/avimetaedit.dsc $OBS_package
-    cp prepare_source/AM/avimetaedit/Project/GNU/PKGBUILD $OBS_package
-
-    update_dsc "$AM_tmp"/$OBS_package avimetaedit_${Version_new}-1.tar.gz avimetaedit.dsc
-    update_PKGBUILD "$AM_tmp"/$OBS_package avimetaedit_${Version_new}-1.tar.gz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {

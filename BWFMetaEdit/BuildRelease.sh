@@ -300,19 +300,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/bwfmetaedit_${Version_new}.tar.gz $OBS_package/bwfmetaedit_${Version_new}-1.tar.gz
-
-    cp prepare_source/BM/bwfmetaedit/Project/GNU/bwfmetaedit.spec $OBS_package
-    cp prepare_source/BM/bwfmetaedit/Project/GNU/bwfmetaedit.dsc $OBS_package
-    cp prepare_source/BM/bwfmetaedit/Project/GNU/PKGBUILD $OBS_package
-
-    update_dsc "$BM_tmp"/$OBS_package bwfmetaedit_${Version_new}-1.tar.gz bwfmetaedit.dsc
-    update_PKGBUILD "$BM_tmp"/$OBS_package bwfmetaedit_${Version_new}-1.tar.gz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {

@@ -95,12 +95,21 @@ function _source_package () {
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libzen${Version}.tar.gz ZenLib)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libzen${Version}.tar.bz2 ZenLib)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/libzen${Version}.tar.xz ZenLib)
+
+        mkdir ../archives/obs
+
+        cp ../archives/libzen${Version}.tar.xz ../archives/obs/libzen${Version}.orig.tar.xz
+        cp ../archives/libzen${Version}.tar.gz ../archives/obs
+        cp "$WDir/ZL/ZenLib/Project/GNU/libzen.spec" ../archives/obs
+        cp "$WDir/ZL/ZenLib/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/libzen${Version}.orig.tar.xz ../archives/obs/PKGBUILD
+        deb_obs ZenLib "$WDir/ZL/ZenLib" "$WDir/archives/obs/libzen${Version}.orig.tar.xz"
     fi
 
 }
 
 function btask.PrepareSource.run () {
-
     local ZL_source
 
     cd "$WDir"
@@ -113,18 +122,17 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "cu" ]; then
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$ZL_source/Project/version.txt")
+    fi
+
+    if [ "$Target" = "cu" ] || [ "$Target" = "all" ] ; then
         _unix
     fi
-    if [ "$Target" = "ai" ]; then
+    if [ "$Target" = "ai" ] || [ "$Target" = "all" ] ; then
         _all_inclusive
     fi
-    if [ "$Target" = "sa" ]; then
-        _source_package
-    fi
-    if [ "$Target" = "all" ]; then
-        _unix
-        _all_inclusive
+    if [ "$Target" = "sa" ] || [ "$Target" = "all" ] ; then
         _source_package
     fi
 

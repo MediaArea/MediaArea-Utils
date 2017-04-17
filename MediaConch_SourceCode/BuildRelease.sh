@@ -480,21 +480,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.xz $OBS_package/mediaconch_${Version_new}.orig.tar.xz
-    cp prepare_source/archives/mediaconch_${Version_new}.tar.gz $OBS_package
-
-    # Create Debian packages and dsc
-    deb_obs "$MC_tmp"/$OBS_package mediaconch_${Version_new}.orig.tar.xz
-
-    cp prepare_source/MC/MediaConch/Project/GNU/mediaconch.spec $OBS_package
-    cp prepare_source/MC/MediaConch/Project/GNU/PKGBUILD $OBS_package
-
-    update_PKGBUILD "$MC_tmp"/$OBS_package mediaconch_${Version_new}.orig.tar.xz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {
