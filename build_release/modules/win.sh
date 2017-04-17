@@ -11,10 +11,18 @@ win_ps_utils="
 function Load-Env {
     param([Array]\$Env)
 
-    Remove-Item Env:*
+    \$Hash = @{}
 
     \$Env | ForEach-Object {
-        Set-Content Env:\$(\$_.Name) \$_.Value
+        \$Hash.add(\$_.Name, \$_.Value)
+    }
+
+    Get-ChildItem Env: | ForEach-Object {
+        If (\$Hash.ContainsKey(\"\$_.Name\")) {
+            Set-Content Env:\$(\$_.Name) \$Hash[\"\$_.Name\"]
+        } Else {
+            Remove-Item Env:\$(\$_.Name)
+        }
     }
 }
 
@@ -42,15 +50,10 @@ function win_copy_utils () {
         return 2
     fi
 
-    $SSHP "If (Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {
-               Set-Location \"$Win_working_dir\\MediaArea-Utils\"
-               git fetch --quiet origin
-               git rebase --quiet origin/master
-
-               Set-Location $DST
-               git clone --depth 1 --quiet \"$Win_working_dir\\MediaArea-Utils\"
+    $SSHP "Set-Location $DST
+           If (Test-Path \"$Win_working_dir\\MediaArea-Utils\\.git\") {
+               git clone --depth 1 --quiet --reference \"$Win_working_dir\\MediaArea-Utils\" \"https://github.com/MediaArea/MediaArea-Utils.git\"
            } else {
-               Set-Location $DST
                git clone --depth 1 --quiet \"https://github.com/MediaArea/MediaArea-Utils.git\"
            }"
 }
@@ -64,15 +67,10 @@ function win_copy_binaries () {
         return 2
     fi
 
-    $SSHP "If (Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {
-               Set-Location \"$Win_working_dir\\MediaArea-Utils-Binaries\"
-               git fetch --quiet origin
-               git rebase --quiet origin/master
-
-               Set-Location $DST
-               git clone --depth 1 --quiet \"$Win_working_dir\\MediaArea-Utils-Binaries\"
+    $SSHP "Set-Location $DST
+           If (Test-Path \"$Win_working_dir\\MediaArea-Utils-Binaries\\.git\") {
+               git clone --depth 1 --quiet --reference \"$Win_working_dir\\MediaArea-Utils-Binaries\" \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
            } else {
-               Set-Location $DST
                git clone --depth 1 --quiet \"https://github.com/MediaArea/MediaArea-Utils-Binaries.git\"
            }"
 }
