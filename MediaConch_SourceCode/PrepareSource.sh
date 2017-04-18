@@ -69,7 +69,7 @@ function _unix_cli () {
     mkdir MediaConch_CLI_GNU_FromSource
     cd MediaConch_CLI_GNU_FromSource
 
-    cp -r "$MC_source" MediaConch
+    cp -a "$MC_source" MediaConch
     mv MediaConch/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
     chmod +x MediaConch/Project/GNU/CLI/autogen.sh
@@ -77,21 +77,21 @@ function _unix_cli () {
     chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     mkdir -p Shared/Source
-    cp -r "$WDir"/repos/zlib Shared/Source
+    cp -a "$WDir"/repos/zlib Shared/Source
 
     # ? Dependencies : libxml2...
-    cp -r "$WDir"/repos/libxml2 .
-    cp -r "$WDir"/repos/libxslt .
-    cp -r "$WDir"/repos/jansson .
-    cp -r "$WDir"/repos/libevent .
-    cp -r "$WDir"/repos/sqlite .
+    cp -a "$WDir"/repos/libxml2 .
+    cp -a "$WDir"/repos/libxslt .
+    cp -a "$WDir"/repos/jansson .
+    cp -a "$WDir"/repos/libevent .
+    cp -a "$WDir"/repos/sqlite .
 
     rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
 
@@ -139,7 +139,7 @@ function _unix_server () {
     mkdir MediaConch_Server_GNU_FromSource
     cd MediaConch_Server_GNU_FromSource
 
-    cp -r "$MC_source" MediaConch
+    cp -a "$MC_source" MediaConch
     mv MediaConch/Project/GNU/Server/AddThisToRoot_Server_compile.sh Server_Compile.sh
     chmod +x Server_Compile.sh
     chmod +x MediaConch/Project/GNU/Server/autogen.sh
@@ -147,22 +147,22 @@ function _unix_server () {
     chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
 
     mkdir -p Shared/Source
-    cp -r "$WDir"/repos/zlib Shared/Source
+    cp -a "$WDir"/repos/zlib Shared/Source
 
     # ? Dependencies : libxml2...
-    cp -r "$WDir"/repos/libxml2 .
-    cp -r "$WDir"/repos/libxslt .
-    cp -r "$WDir"/repos/jansson .
-    cp -r "$WDir"/repos/libevent .
-    cp -r "$WDir"/repos/sqlite .
+    cp -a "$WDir"/repos/libxml2 .
+    cp -a "$WDir"/repos/libxslt .
+    cp -a "$WDir"/repos/jansson .
+    cp -a "$WDir"/repos/libevent .
+    cp -a "$WDir"/repos/sqlite .
 
     rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
 
@@ -211,7 +211,7 @@ function _unix_gui () {
     mkdir MediaConch_GUI_GNU_FromSource
     cd MediaConch_GUI_GNU_FromSource
 
-    cp -r "$MC_source" MediaConch
+    cp -a "$MC_source" MediaConch
     mv MediaConch/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x MediaConch/Project/Qt/prepare
@@ -219,21 +219,21 @@ function _unix_gui () {
     chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     mkdir -p Shared/Source
-    cp -r "$WDir"/repos/zlib Shared/Source
+    cp -a "$WDir"/repos/zlib Shared/Source
 
     # ? Dependencies : libxml2...
-    cp -r "$WDir"/repos/libxml2 .
-    cp -r "$WDir"/repos/libxslt .
-    cp -r "$WDir"/repos/jansson .
-    cp -r "$WDir"/repos/libevent .
-    cp -r "$WDir"/repos/sqlite .
+    cp -a "$WDir"/repos/libxml2 .
+    cp -a "$WDir"/repos/libxslt .
+    cp -a "$WDir"/repos/jansson .
+    cp -a "$WDir"/repos/libevent .
+    cp -a "$WDir"/repos/sqlite .
 
     rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
 
@@ -305,7 +305,7 @@ function _source_package () {
 
     cd "$WDir"/MC
 
-    cp -r "$MC_source" MediaConch
+    cp -a "$MC_source" MediaConch
 
     echo "2: remove what isn’t wanted..."
     cd MediaConch
