@@ -8,22 +8,22 @@
 <tr>
     <th rowspan="2">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows_x64_WithoutInstaller.zip">64 bit only without installer</a>)</small></td>
     <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/qcli/QC_VERSION/qcli_QC_VERSION_Windows_x64.zip">vQC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/qcli/QC_VERSION/QCli_QC_VERSION_Windows_x64.zip">vQC_VERSION</a></td>
     <td></td>
 </tr>
 <tr>
     <th rowspan="2">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows.exe">vQC_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/qctools/QC_VERSION/QCTools_QC_VERSION_Windows_i386_WithoutInstaller.zip">32 bit only without installer</a>)</small></td>
     <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/qcli/QC_VERSION/qcli_QC_VERSION_Windows_i386.zip">vQC_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/qcli/QC_VERSION/QCli_QC_VERSION_Windows_i386.zip">vQC_VERSION</a></td>
     <td></td>
 </tr>
