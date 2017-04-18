@@ -128,21 +128,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/libmediainfo_${Version_new}.tar.xz $OBS_package/libmediainfo_${Version_new}.orig.tar.xz
-    cp prepare_source/archives/libmediainfo_${Version_new}.tar.gz $OBS_package
-
-    # Create Debian packages and dsc
-    deb_obs "$MIL_tmp"/$OBS_package libmediainfo_${Version_new}.orig.tar.xz
-
-    cp prepare_source/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec $OBS_package
-    cp prepare_source/MIL/MediaInfoLib/Project/GNU/PKGBUILD $OBS_package
-
-    update_PKGBUILD "$MIL_tmp"/$OBS_package libmediainfo_${Version_new}.orig.tar.xz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {

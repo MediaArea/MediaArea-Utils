@@ -314,19 +314,11 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/dvanalyzer_${Version_new}.tar.gz $OBS_package/dvanalyzer_${Version_new}-1.tar.gz
-
-    cp prepare_source/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.spec $OBS_package
-    cp prepare_source/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.dsc $OBS_package
-    cp prepare_source/DA/AVPS_DV_Analyzer/Project/GNU/PKGBUILD $OBS_package
-
-    update_dsc "$DA_tmp"/$OBS_package dvanalyzer_${Version_new}-1.tar.gz dvanalyzer.dsc
-    update_PKGBUILD "$DA_tmp"/$OBS_package dvanalyzer_${Version_new}-1.tar.gz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *
     osc commit -n
-
 }
 
 function _linux () {

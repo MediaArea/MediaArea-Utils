@@ -52,6 +52,16 @@ function _source_package () {
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/avimetaedit${Version}.tar.xz avimetaedit)
 
         7za a -t7z -mx=9 -bd ../archives/avimetaedit${Version}.7z avimetaedit >/dev/null
+
+        mkdir ../archives/obs
+
+        cp ../archives/avimetaedit${Version}.tar.gz ../archives/obs/avimetaedit${Version}-1.tar.gz
+        cp "$WDir/AM/avimetaedit/Project/GNU/avimetaedit.spec" ../archives/obs
+        cp "$WDir/AM/avimetaedit/Project/GNU/avimetaedit.dsc" ../archives/obs
+        cp "$WDir/AM/avimetaedit/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/avimetaedit${Version}-1.tar.gz ../archives/obs/PKGBUILD
+        update_dsc ../archives/obs/avimetaedit${Version}-1.tar.gz ../archives/obs/avimetaedit.dsc
     fi
 }
 
@@ -141,7 +151,6 @@ function _unix_gui () {
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/AVIMetaEdit_GUI${Version}_GNU_FromSource.tar.bz2 AVIMetaEdit_GUI_GNU_FromSource)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/AVIMetaEdit_GUI${Version}_GNU_FromSource.tar.xz AVIMetaEdit_GUI_GNU_FromSource)
     fi
-
 }
 
 function btask.PrepareSource.run () {
@@ -157,6 +166,10 @@ function btask.PrepareSource.run () {
     mkdir "$WDir"/AM
 
     _get_source
+
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$Source/Project/version.txt")
+    fi
 
     if [ "$Target" = "sa" ] || [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
         _source_package

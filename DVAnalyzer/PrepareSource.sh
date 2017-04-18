@@ -214,6 +214,16 @@ function _source_package () {
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.gz AVPS_DV_Analyzer)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.bz2 AVPS_DV_Analyzer)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.xz AVPS_DV_Analyzer)
+
+        mkdir ../archives/obs
+
+        cp ../archives/dvanalyzer${Version}.tar.gz ../archives/obs/dvanalyzer${Version}-1.tar.gz
+        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.spec" ../archives/obs
+        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.dsc" ../archives/obs
+        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/dvanalyzer${Version}-1.tar.gz ../archives/obs/PKGBUILD
+        update_dsc ../archives/obs/dvanalyzer${Version}-1.tar.gz ../archives/obs/dvanalyzer.dsc
     fi
 }
 
@@ -230,6 +240,10 @@ function btask.PrepareSource.run () {
     mkdir "$WDir"/DA
 
     _get_source
+
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$Source/Project/version.txt")
+    fi
 
     if [ "$Target" = "sa" ] || [ "$Target" = "all" ]; then
         _source_package

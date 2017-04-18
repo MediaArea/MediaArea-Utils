@@ -21,17 +21,7 @@ function _obs () {
     # Clean up
     rm -f $OBS_package/*
 
-    cp prepare_source/archives/libzen_${Version_new}.tar.xz $OBS_package/libzen_${Version_new}.orig.tar.xz
-    # Suse doesn’t handle xz
-    cp prepare_source/archives/libzen_${Version_new}.tar.gz $OBS_package
-
-    # Create Debian packages and dsc
-    deb_obs "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz
-
-    cp prepare_source/ZL/ZenLib/Project/GNU/libzen.spec $OBS_package
-    cp prepare_source/ZL/ZenLib/Project/GNU/PKGBUILD $OBS_package
-
-    update_PKGBUILD "$ZL_tmp"/$OBS_package libzen_${Version_new}.orig.tar.xz PKGBUILD
+    cp prepare_source/archives/obs/* $OBS_package
 
     cd $OBS_package
     osc addremove *

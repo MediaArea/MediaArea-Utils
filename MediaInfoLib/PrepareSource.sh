@@ -112,8 +112,8 @@ function _all_inclusive () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/MIL
-    mkdir libmediainfo${Version}_AllInclusive
-    cd libmediainfo${Version}_AllInclusive
+    mkdir libmediainfo_AllInclusive
+    cd libmediainfo_AllInclusive
 
     cp -r "$MIL_source" .
 
@@ -139,7 +139,7 @@ function _all_inclusive () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        7za a -t7z -mx=9 -bd ../archives/libmediainfo${Version}_AllInclusive.7z libmediainfo${Version}_AllInclusive >/dev/null
+        7za a -t7z -mx=9 -bd ../archives/libmediainfo${Version}_AllInclusive.7z libmediainfo_AllInclusive >/dev/null
     fi
 
 }
@@ -167,6 +167,17 @@ function _source_package () {
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/libmediainfo${Version}.tar.gz MediaInfoLib)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/libmediainfo${Version}.tar.bz2 MediaInfoLib)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/libmediainfo${Version}.tar.xz MediaInfoLib)
+
+        mkdir ../archives/obs
+
+        cp ../archives/libmediainfo${Version}.tar.xz ../archives/obs/libmediainfo${Version}.orig.tar.xz
+        cp ../archives/libmediainfo${Version}.tar.gz ../archives/obs
+        cp "$WDir/MIL/MediaInfoLib/Project/GNU/libmediainfo.spec" ../archives/obs
+        cp "$WDir/MIL/MediaInfoLib/Project/GNU/PKGBUILD" ../archives/obs
+
+
+        update_pkgbuild ../archives/obs/libmediainfo${Version}.orig.tar.xz ../archives/obs/PKGBUILD
+        deb_obs MediaInfoLib "$WDir/MIL/MediaInfoLib" "$WDir/archives/obs/libmediainfo${Version}.orig.tar.xz"
     fi
 
 }
@@ -188,18 +199,17 @@ function btask.PrepareSource.run () {
 
     _get_source
 
-    if [ "$Target" = "cu" ]; then
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$MIL_source/Project/version.txt")
+    fi
+
+    if [ "$Target" = "cu" ] || [ "$Target" = "all" ] ; then
         _unix
     fi
-    if [ "$Target" = "ai" ]; then
+    if [ "$Target" = "ai" ] || [ "$Target" = "all" ] ; then
         _all_inclusive
     fi
-    if [ "$Target" = "sa" ]; then
-        _source_package
-    fi
-    if [ "$Target" = "all" ]; then
-        _unix
-        _all_inclusive
+    if [ "$Target" = "sa" ] || [ "$Target" = "all" ]  ; then
         _source_package
     fi
 

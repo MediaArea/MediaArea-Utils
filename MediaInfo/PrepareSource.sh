@@ -230,6 +230,16 @@ function _source_package () {
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediainfo${Version}.tar.gz MediaInfo)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/mediainfo${Version}.tar.bz2 MediaInfo)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/mediainfo${Version}.tar.xz MediaInfo)
+
+        mkdir ../archives/obs
+
+        cp ../archives/mediainfo${Version}.tar.xz ../archives/obs/mediainfo${Version}.orig.tar.xz
+        cp ../archives/mediainfo${Version}.tar.gz ../archives/obs
+        cp "$WDir/MI/MediaInfo/Project/GNU/mediainfo.spec" ../archives/obs
+        cp "$WDir/MI/MediaInfo/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/mediainfo${Version}.orig.tar.xz ../archives/obs/PKGBUILD
+        deb_obs MediaInfo "$WDir/MI/MediaInfo" "$WDir/archives/obs/mediainfo${Version}.orig.tar.xz"
     fi
 
 }
@@ -250,6 +260,10 @@ function btask.PrepareSource.run () {
     mkdir MI
 
     _get_source
+
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$MI_source/Project/version.txt")
+    fi
 
     if [ "$Target" = "cu" ]; then
         _unix_cli

@@ -52,6 +52,16 @@ function _source_package () {
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/bwfmetaedit${Version}.tar.xz bwfmetaedit)
 
         7za a -t7z -mx=9 -bd ../archives/bwfmetaedit${Version}.7z bwfmetaedit >/dev/null
+
+        mkdir ../archives/obs
+
+        cp ../archives/bwfmetaedit${Version}.tar.gz ../archives/obs/bwfmetaedit${Version}-1.tar.gz
+        cp "$WDir/BM/bwfmetaedit/Project/GNU/bwfmetaedit.spec" ../archives/obs
+        cp "$WDir/BM/bwfmetaedit/Project/GNU/bwfmetaedit.dsc" ../archives/obs
+        cp "$WDir/BM/bwfmetaedit/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/bwfmetaedit${Version}-1.tar.gz ../archives/obs/PKGBUILD
+        update_dsc ../archives/obs/bwfmetaedit${Version}-1.tar.gz ../archives/obs/bwfmetaedit.dsc
     fi
 }
 
@@ -157,6 +167,10 @@ function btask.PrepareSource.run () {
     mkdir "$WDir"/BM
 
     _get_source
+
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$Source/Project/version.txt")
+    fi
 
     if [ "$Target" = "sa" ] || [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
         _source_package

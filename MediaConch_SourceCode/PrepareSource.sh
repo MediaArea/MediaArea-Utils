@@ -321,6 +321,16 @@ function _source_package () {
         (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/mediaconch${Version}.tar.gz MediaConch)
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/mediaconch${Version}.tar.bz2 MediaConch)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/mediaconch${Version}.tar.xz MediaConch)
+
+        mkdir ../archives/obs
+
+        cp ../archives/mediaconch${Version}.tar.xz ../archives/obs/mediaconch${Version}.orig.tar.xz
+        cp ../archives/mediaconch${Version}.tar.gz ../archives/obs
+        cp "$WDir/MC/MediaConch/Project/GNU/mediaconch.spec" ../archives/obs
+        cp "$WDir/MC/MediaConch/Project/GNU/PKGBUILD" ../archives/obs
+
+        update_pkgbuild ../archives/obs/mediaconch${Version}.orig.tar.xz ../archives/obs/PKGBUILD
+        deb_obs MediaConch "$WDir/MC/MediaConch" "$WDir/archives/obs/mediaconch${Version}.orig.tar.xz"
     fi
 
 }
@@ -344,6 +354,8 @@ function btask.PrepareSource.run () {
     # inclusive tarball.
     if ! [ "$Target" = "ai" ]; then
         _get_source
+    elif [ -z "$Version" ] ; then
+        Version=_$(cat "$MC_source/Project/version.txt")
     fi
 
     if [ "$Target" = "cu" ]; then
