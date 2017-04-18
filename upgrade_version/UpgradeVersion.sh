@@ -257,3 +257,5 @@ b.module.require project
 b.try.do run "$@"
 b.catch RequiredOptionNotSet displayHelp
 b.try.end
+
+exit 0
