@@ -354,8 +354,10 @@ function btask.PrepareSource.run () {
     # inclusive tarball.
     if ! [ "$Target" = "ai" ]; then
         _get_source
-    elif [ -z "$Version" ] ; then
-        Version=_$(cat "$MC_source/Project/version.txt")
+
+        if [ -z "$Version" ] ; then
+            Version=_$(cat "$MC_source/Project/version.txt")
+        fi
     fi
 
     if [ "$Target" = "cu" ]; then
