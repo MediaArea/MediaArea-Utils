@@ -67,6 +67,11 @@ function _all_inclusive () {
 
     git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git"
 
+    wget -q https://downloads.sf.net/project/freetype/freetype2/2.7.1/freetype-2.7.1.tar.bz2
+    tar -jxf freetype-2.7.1.tar.bz2
+    rm freetype-2.7.1.tar.bz2
+    mv freetype-2.7.1 freetype
+
     wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar -zxf yasm-1.3.0.tar.gz
     rm yasm-1.3.0.tar.gz
@@ -81,6 +86,9 @@ function _all_inclusive () {
         -e 's/\(^QWT_CONFIG\s\++= QwtSvg\)/#\1/g' \
         -e 's/\(^QWT_CONFIG\s\++= QwtOpenGL\)/#\1/g' \
         -e 's/\(^QWT_CONFIG\s\++= QwtDesigner\)/#\1/g' qwt/qwtconfig.pri
+
+    # fix ffmpeg configure for static freetype2
+    sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
 
     echo "2: remove what isn’t wanted..."
 

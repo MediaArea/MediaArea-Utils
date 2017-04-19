@@ -70,16 +70,16 @@ rem *** Global Helpers ***
 rem buggy rmdir sometimes does not delete all files and directories
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
-if EXIST %~1 timeout /t 3
+if EXIST %~1 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
-if EXIST %~1 timeout /t 3
+if EXIST %~1 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
-if EXIST %~1 timeout /t 3
+if EXIST %~1 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if EXIST %~1 rmdir %~1 /s /q
 if EXIST %~1 rmdir %~1 /s /q
-if EXIST %~1 timeout /t 3
+if EXIST %~1 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if EXIST %~1 exit /b 1
 GOTO:EOF
 
