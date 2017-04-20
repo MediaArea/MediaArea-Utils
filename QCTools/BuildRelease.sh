@@ -65,12 +65,11 @@ function _windows () {
 
            Set-Location \"$Win_working_dir\\$Build_dir\"
 
-           \$env:PATH=\"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Cygwin\\bin;\$env:PATH\"
+           \$env:PATH=\"$Win_working_dir\\MediaArea-Utils-Binaries\\Windows\\Cygwin\\bin;\$env:PATH\"
            \$CodeSigningCertificatePass = Get-Content \"\$env:USERPROFILE\\CodeSigningCertificate.pass\"
 
            # Compile qctools 32 bits
-           Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\Qt\"
-           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static\\5.7\\msvc2015_static\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+          \$env:PATH=\"$Win_working_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static\\5.7\\msvc2015_static\\bin;\$env:PATH\"
 
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
            & .\\build.bat /static /target x86 2>&1
@@ -116,15 +115,7 @@ function _windows () {
            }
 
            # Compile qctools 64 bits
-           Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
-           Start-Sleep 3
-
-           If (Test-Path \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\") {
-               Remove-Item -Force -Recurse \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
-               Start-Sleep 3
-           }
-
-           Move-Item \"$Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static_64\\5.7\\msvc2015_static_64\" \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive/Qt\"
+          \$env:PATH=\"$Win_working_dir\\MediaArea-Utils-Binaries\\Windows\\Qt\\Qt5.7-msvc2015_static_64\\5.7\\msvc2015_static_64\\bin;\$env:PATH\"
 
            Set-Location \"$Win_working_dir\\$Build_dir\\qctools_AllInclusive\\qctools\\Project\\BuildAllFromSource\"
            & .\\build.bat /static /target x64 2>&1
