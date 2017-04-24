@@ -143,10 +143,10 @@ if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-
 if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
 xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
 xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
-timeout /t 3
+ping 127.0.0.1 -n 5 -w 10000 > NUL
 cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
-timeout /t 3
+ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
     call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
@@ -154,7 +154,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
-timeout /t 3
+ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
     call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\

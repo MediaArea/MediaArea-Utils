@@ -140,6 +140,11 @@ function btask.PrepareSource.run () {
     mkdir "$WDir"/QC
 
     _get_source
+
+    if [ -z "$Version" ] ; then
+        Version=_$(cat "$QC_source/Project/version.txt")
+    fi
+
     _source_package
     _all_inclusive
 
