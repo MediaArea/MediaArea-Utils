@@ -1,32 +1,32 @@
 <tr>
     <th rowspan="3">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION-x86_64.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.3-x86_64.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch-MC_VERSION-x86_64.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch-MC_VERSION.glibc2.3-x86_64.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server-MC_VERSION-x86_64.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server-MC_VERSION.glibc2.3-x86_64.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th rowspan="3">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION-i686.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.3-i686.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch-MC_VERSION-i686.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch-MC_VERSION.glibc2.3-i686.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
     <th><abbr title="Server">Server</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server-MC_VERSION-i686.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server-MC_VERSION.glibc2.3-i686.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
