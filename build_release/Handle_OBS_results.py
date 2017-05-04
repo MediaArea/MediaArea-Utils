@@ -380,7 +380,7 @@ def Get_packages_on_OBS(Distrib_name, Arch):
     ### Doc package ###
     # No doc packages for Arch at this time, doc packages aren’t generated for Debian_6.0
     Doc_name_wanted = ''
-    if Project["kind"] == "lib" and not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "Debian_6"]):
+    if Project["kind"] == "lib" and not any(fnmatch.fnmatch(Distrib_name, p) for p in ["Arch*", "Debian_6.0"]):
         Doc_name_wanted = Get_package(Project["dev_name"] + "-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
 
     ### GUI package ###
