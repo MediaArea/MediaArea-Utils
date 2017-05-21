@@ -189,8 +189,8 @@ def Repos():
 
     Header = Header.replace("FINGERPRINT", Fingerprint)
 
-    Header = Header.replace("DEB_PKG_URL", "%s/deb/repo-%s-%s_all.deb" \
-             % (Repo_config["Repo_url"], Repo_config["Repo_name"], Repo_config["Repo_version"]))
+    Header = Header.replace("DEB_PKG_URL", "%s/deb/repo-%s_%s_all.deb" \
+             % (Repo_config["Repo_url"], Repo_config["Repo_name"].lower(), Repo_config["Repo_version"]))
 
     Header = Header.replace("RPM_PKG_URL", "%s/rpm/releases/repo-%s-%s.noarch.rpm" \
              % (Repo_config["Repo_url"], Repo_config["Repo_name"], Repo_config["Repo_version"]))

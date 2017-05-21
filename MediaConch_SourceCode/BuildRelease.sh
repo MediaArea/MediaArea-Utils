@@ -88,7 +88,7 @@ function _mac_gui () {
     test -e "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg && rm "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
-#    if ! b.opt.has_flag? --snapshot; then
+    if ! b.opt.has_flag? --snapshot; then
         # Prepare xcode archive
         $SSHP "cd $Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Qt
                 make distclean
@@ -101,7 +101,7 @@ function _mac_gui () {
                 $Key_chain
                 cd MediaConch/Project/Mac
                 ./Make_MC_xcarchive.sh MediaConch $Version_new net.mediaarea.mediaconch.mac $Dev_team"
-#    fi
+    fi
 
 }
 

@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+# always remove the conffiles
+rm -f /etc/apt/sources.list.d/REPO_NAME.list
+rm -f /etc/apt/trusted.gpg.d/REPO_NAME.gpg
+
+#DEBHELPER#
