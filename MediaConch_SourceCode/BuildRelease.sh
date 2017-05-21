@@ -88,6 +88,21 @@ function _mac_gui () {
     test -e "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg && rm "$MCG_dir"/MediaConch_GUI_${Version_new}_Mac.dmg
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Mac/MediaConch_GUI_${Version_new}_Mac.dmg "$MCG_dir"
 
+#    if ! b.opt.has_flag? --snapshot; then
+        # Prepare xcode archive
+        $SSHP "cd $Mac_working_dir/MediaConch_GUI_GNU_FromSource/MediaConch/Project/Qt
+                make distclean
+
+                cd $Mac_working_dir/MediaConch_GUI_GNU_FromSource
+                export PATH=~/Qt/5.8ms/clang_64/bin:\$PATH
+                sed -i '' -e 's/min=10.5/min=10.9/g' -e 's/STATIC_LIBS=1/STATIC_LIBS=1 MACSTORE=1/g' GUI_compile.sh
+                ./GUI_compile.sh
+
+                $Key_chain
+                cd MediaConch/Project/Mac
+                ./Make_MC_xcarchive.sh MediaConch $Version_new net.mediaarea.mediaconch.mac $Dev_team"
+#    fi
+
 }
 
 function _mac () {

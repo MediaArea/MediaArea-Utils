@@ -217,6 +217,7 @@ function _unix_gui () {
     chmod +x MediaConch/Project/Qt/prepare
     chmod +x MediaConch/Project/Mac/BR_extension_GUI.sh
     chmod +x MediaConch/Project/Mac/Make_MC_dmg.sh
+    chmod +x MediaConch/Project/Mac/Make_MC_xcarchive.sh
 
     # ZenLib and MediaInfoLib
     cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
