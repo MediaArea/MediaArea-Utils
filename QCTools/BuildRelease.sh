@@ -270,9 +270,19 @@ function _mac () {
     File="qcli_${Version_new}_mac.dmg"
     scp -P $Mac_SSH_port "$Mac_SSH_user@$Mac_IP:$DLPath/$File" "$QCB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
 
-    # Cleaning
-    echo "Cleaning..."
-    $SSHP "cd \"$Mac_working_dir\"; rm -fr \"$Build_dir\""
+    if ! b.opt.has_flag? --snapshot; then
+        # Prepare xcode archive
+        $SSHP "pushd $Mac_working_dir/qctools/qctools/Project/QtCreator
+                export PATH=~/Qt/5.6ms/clang_64/bin:\$PATH
+                make distclean
+                qmake MACSTORE=1
+                make
+                popd
+
+                $Key_chain
+                cd $Mac_working_dir/qctools/qctools/Project/Mac
+                ./Make_xcarchive.sh QCTools $Version_new net.mediaarea.qctools.mac $Dev_team"
+    fi
 
     # Check non fatals errors
     if [ -n "$MSG" ]; then

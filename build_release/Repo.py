@@ -97,6 +97,15 @@ def Create_repo_rpm(Path, Repo, Release = False):
 def Create_repo_deb(Path, Repo, Release = False):
     Version = Configuration["Repo_version"]
 
+    Install_file = "%s.gpg   /usr/share/%s" % (Repo, Repo)
+
+    Changelog_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_changelog_template"), "r")
+    Changelog_file = Changelog_file_template.read()
+    Changelog_file_template.close
+
+    Changelog_file = Changelog_file.replace("REPO_NAME", Repo)
+    Changelog_file = Changelog_file.replace("VERSION_FULL", Version)
+
     Control_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_control_template"), "r")
     Control_file = Control_file_template.read()
     Control_file_template.close()
@@ -104,11 +113,9 @@ def Create_repo_deb(Path, Repo, Release = False):
     Control_file = Control_file.replace("REPO_NAME", Repo)
     Control_file = Control_file.replace("VERSION_FULL", Version)
 
-    Script_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_postinst_template"), "r")
-    Script_file = Script_file_template.read()
-    Script_file_template.close()
-
-    Script_file = Script_file.replace("REPO_NAME", Repo)
+    Postinst_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_postinst_template"), "r")
+    Postinst_file =  Postinst_file_template.read()
+    Postinst_file_template.close()
 
     Debian_releases = ""
     for Debian_version, Debian_codename in sorted(Configuration["Debian_names"].items()):
@@ -132,51 +139,85 @@ def Create_repo_deb(Path, Repo, Release = False):
 
         Ubuntu_releases = Ubuntu_releases + Configuration["Ubuntu_names"][Ubuntu_version]
 
-    Script_file = Script_file.replace("DEBIAN_RELEASES", Debian_releases)
-    Script_file = Script_file.replace("UBUNTU_RELEASES", Ubuntu_releases)
+    Postinst_file = Postinst_file.replace("REPO_NAME", Repo)
+    Postinst_file = Postinst_file.replace("DEBIAN_RELEASES", Debian_releases)
+    Postinst_file = Postinst_file.replace("UBUNTU_RELEASES", Ubuntu_releases)
+    Postinst_file = Postinst_file.replace("REPO_URL", Configuration["Repo_url"])
+    Postinst_file = Postinst_file.replace("SNAPSHOT", "" if Release else "-snapshots")
 
-    List_file = "deb %s/deb/DISTRIBUTION CODENAME%s main" % (Configuration["Repo_url"], "" if Release else "-snapshots")
+    Postrm_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_postrm_template"), "r")
+    Postrm_file = Postrm_file_template.read()
+    Postrm_file_template.close()
+
+    Postrm_file = Postrm_file.replace("REPO_NAME", Repo)
+
+    Compat_file = "5"
 
     Build_root = "/tmp"
-    Build_dir = "repo-%s-%s_all" % (Repo, Version)
+    Build_dir = "repo-%s_%s_all" % (Repo, Version)
 
     if os.path.exists(os.path.join(Build_root, Build_dir)):
         shutil.rmtree(os.path.join(Build_root, Build_dir))
 
     os.makedirs(os.path.join(Build_root, Build_dir))
-    os.makedirs(os.path.join(Build_root, Build_dir, "DEBIAN"))
-    os.makedirs(os.path.join(Build_root, Build_dir, "etc"))
-    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt"))
-    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt", "sources.list.d"))
-    os.makedirs(os.path.join(Build_root, Build_dir, "etc", "apt", "trusted.gpg.d"))
+    os.makedirs(os.path.join(Build_root, Build_dir, "debian"))
 
-    Control_filename = os.path.join(Build_root, Build_dir, "DEBIAN", "control")
-    Script_filename= os.path.join(Build_root, Build_dir, "DEBIAN", "postinst")
-    List_filename = os.path.join(Build_root, Build_dir, "etc", "apt", "sources.list.d", Repo + ".list")
-    Key_filename = os.path.join(Build_root, Build_dir, "etc", "apt", "trusted.gpg.d", Repo + ".gpg")
+    Changelog_filename = os.path.join(Build_root, Build_dir, "debian", "changelog")
+    Copyright_filename = os.path.join(Build_root, Build_dir, "debian", "copyright")
+    Postinst_filename = os.path.join(Build_root, Build_dir, "debian", "postinst")
+    Control_filename = os.path.join(Build_root, Build_dir, "debian", "control")
+    Install_filename = os.path.join(Build_root, Build_dir, "debian", "install")
+    Postrm_filename = os.path.join(Build_root, Build_dir, "debian", "postrm")
+    Compat_filename = os.path.join(Build_root, Build_dir, "debian", "compat")
+    Rules_filename = os.path.join(Build_root, Build_dir, "debian", "rules")
+    Key_filename = os.path.join(Build_root, Build_dir, Repo + ".gpg")
 
-    # Add Control file
+    # Add changelog file
+    Destination = open(Changelog_filename, "w")
+    Destination.write(Changelog_file)
+    Destination.close()
+
+    # Add copyright file
+    shutil.copy(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_copyright_template"), Copyright_filename)
+
+    # Add control file
     Destination = open(Control_filename, "w")
     Destination.write(Control_file)
     Destination.close()
 
-    # Add Script file
-    Destination = open(Script_filename, "w")
-    Destination.write(Script_file)
+    # Add  postinst file
+    Destination = open(Postinst_filename, "w")
+    Destination.write(Postinst_file)
     Destination.close()
-    os.chmod(Script_filename, 0775)
+    os.chmod(Postinst_filename, 0755)
 
-    # Add list file
-    Destination = open(List_filename, "w")
-    Destination.write(List_file)
+    # Add  postrm file
+    Destination = open(Postrm_filename, "w")
+    Destination.write(Postrm_file)
     Destination.close()
+    os.chmod(Postrm_filename, 0775)
+
+    # Add install file
+    Destination = open(Install_filename, "w")
+    Destination.write(Install_file)
+    Destination.close()
+    os.chmod(Install_filename, 0755)
+
+    # Add compat file
+    Destination = open(Compat_filename, "w")
+    Destination.write(Compat_file)
+    Destination.close()
+
+
+    # Add rules
+    shutil.copy(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_rules_template"), Rules_filename)
 
     # Add key
     shutil.copy(os.path.join(Path, "keyring.gpg"), Key_filename)
 
     # Make deb package
-    Command = ["dpkg-deb", "--build", os.path.join(Build_root, Build_dir)]
-    subprocess.call(Command, stdout=OUT, stderr=OUT)
+    Command = ["dpkg-buildpackage", "-rfakeroot", "-b", "-d", "-us", "-uc"]
+    subprocess.call(Command, stdout=OUT, stderr=OUT, cwd=os.path.join(Build_root, Build_dir))
 
     if not os.path.exists(os.path.join(Build_root, Build_dir) + ".deb"):
         print("ERROR: deb activation package failed")
@@ -298,9 +339,9 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
     subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Create activation package if needed
-    Repo = Configuration["Repo_name"] + "" if Release else Configuration["Repo_name"] + "-snapshots"
+    Repo = Configuration["Repo_name"].lower() + "" if Release else Configuration["Repo_name"].lower() + "-snapshots"
 
-    Activation_deb_file = "repo-%s-%s_all.deb" % (Repo, Configuration["Repo_version"])
+    Activation_deb_file = "repo-%s_%s_all.deb" % (Repo, Configuration["Repo_version"])
 
     if not os.path.isfile(os.path.join(Deb_directory, Activation_deb_file)):
         # Remove old versions

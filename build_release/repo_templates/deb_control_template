@@ -1,8 +1,12 @@
-Package: REPO_NAME
-Version: VERSION_FULL
-Section: custom
+Source: repo-REPO_NAME
 Priority: optional
+Maintainer: MediaArea.net SARL <info@mediaarea.net>
+Standards-Version: 3.9.6
+Section: misc
+Homepage: http://MediaArea.net
+
+Package: repo-REPO_NAME
 Architecture: all
-Essential: no
-Maintainer: info@mediaarea.net
-Description: Add MediaArea.net packages repository for Debian/Ubuntu
+Depends: ${misc:Depends}
+Description: packages repository for Debian/Ubuntu
+ Add REPO_NAME packages repository for Debian/Ubuntu.

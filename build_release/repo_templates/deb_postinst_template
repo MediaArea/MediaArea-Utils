@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 debian="DEBIAN_RELEASES"
 ubuntu="UBUNTU_RELEASES"
@@ -32,4 +33,10 @@ if test -z "CODENAME" ; then
     CODENAME="testing"
 fi
 
-sed -i -e "s/DISTRIBUTION/$DISTRIBUTION/g" -e "s/CODENAME/$CODENAME/g" /etc/apt/sources.list.d/REPO_NAME.list
+mkdir -p /etc/apt/sources.list.d
+mkdir -p /etc/apt/trusted.gpg.d
+
+echo "deb REPO_URL/deb/$DISTRIBUTION ${CODENAME}SNAPSHOT main" > /etc/apt/sources.list.d/REPO_NAME.list
+cp -a /usr/share/REPO_NAME/REPO_NAME.gpg /etc/apt/trusted.gpg.d/REPO_NAME.gpg
+
+#DEBHELPER#
