@@ -1,4 +1,15 @@
 <tr>
+    <th rowspan="2" colspan="2"><a href="https://www.apple.com/itunes/affiliates/download/?id=510620098">Mac App Store</a></th>
+    <td colspan="3">VERSIONS_APPLESTORE</td>
+</tr>
+<tr>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br /><a href="http://itunes.apple.com/app/mediaconch/id1183720451">Get MediaConch vMC_VERSION from Mac App Store!</a></td>
+</tr>
+<tr>
+    <td colspan="5">&nbsp;<br />&nbsp;</td>
+</tr>
+<tr>
     <th rowspan="4">OS_TITLE</th>
     <th rowspan="5">x86_64</th>
     <th>GUI</th>

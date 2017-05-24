@@ -114,8 +114,8 @@ def DL_pages(OS_name):
     Content = Template_file.read()
     Template_file.close()
 
-    if Project == "mi" and OS_name == "mac":
-        Content = Content.replace("VERSIONS_APPLESTORE", Config[ Project.upper() + "_" + OS_name + "_applestore" ])
+    if OS_name == "mac":
+        Content = Content.replace("VERSIONS_APPLESTORE", Config.get(Project.upper() + "_" + OS_name + "_applestore", ""))
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
     if not OS_name == "appimage":
