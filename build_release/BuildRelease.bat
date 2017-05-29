@@ -323,6 +323,12 @@ if EXIST "%USERPROFILE%\MediaInfo_Donors.diff" (
     move /y ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
 )
 
+if EXIST "%USERPROFILE%\InstallerAdditions.bat" (
+    copy /y ..\Source\Install\MediaInfo_GUI_Windows.nsi ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig || exit /b 1
+    call %USERPROFILE%\InstallerAdditions.bat || exit /b 1
+    move /y ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
+)
+
 call Release_GUI_Windows.bat
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Release
 call Release_DLL_Windows_i386.bat
