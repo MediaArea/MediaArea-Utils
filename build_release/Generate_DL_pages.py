@@ -207,12 +207,12 @@ def Repos():
                             .replace("RELEASE", "snapshots"))
     Header = Header.replace("DEB_COMMAND_RELEASES", Config["deb_repo_command"] \
                             .replace("REPO_URL", Repo_config["Repo_url"]) \
-                            .replace("REPO_NAME", Repo_config["Repo_name"]) \
+                            .replace("REPO_NAME", Repo_config["Repo_name"].lower()) \
                             .replace("VERSION", Repo_config["Repo_version"]) \
                             .replace("RELEASE", "releases"))
     Header = Header.replace("DEB_COMMAND_SNAPSHOTS", Config["deb_repo_command"] \
                             .replace("REPO_URL", Repo_config["Repo_url"]) \
-                            .replace("REPO_NAME", Repo_config["Repo_name"] + "-snapshots") \
+                            .replace("REPO_NAME", Repo_config["Repo_name"].lower() + "-snapshots") \
                             .replace("VERSION", Repo_config["Repo_version"]) \
                             .replace("RELEASE", "snapshots"))
 
