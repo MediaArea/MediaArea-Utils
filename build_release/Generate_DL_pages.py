@@ -121,7 +121,7 @@ def DL_pages(OS_name):
     if not OS_name == "appimage":
         Content = Content.replace("OS_TITLE", OS_title)
 
-    if Project != "qc":
+    if Project != "qc" and Project != "bm":
         Content = Content.replace("MIL_VERSION", MIL_version)
 
     Destination.write(Content + "\n")
@@ -154,7 +154,7 @@ def Sources():
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
 
-    if Project != "qc":
+    if Project != "qc" and Project != "bm":
         Content = Content.replace("MIL_VERSION", MIL_version)
         Content = Content.replace("ZL_VERSION", ZL_version)
 
@@ -461,7 +461,7 @@ def OBS():
 
             Release_with_mil = True
             Release_with_zl = True
-            if Project == "qc":
+            if Project == "qc" or Project == "bm":
                 Release_with_gui = True
                 Release_with_mil = False
                 Release_with_zl = False
@@ -530,6 +530,8 @@ def OBS():
                     Template_file_path = Script_emplacement + "/dl_templates/MI_linux_template"
                 elif Project == "qc":
                     Template_file_path = Script_emplacement + "/dl_templates/QC_linux_template"
+                elif Project == "bm":
+                    Template_file_path = Script_emplacement + "/dl_templates/BM_linux_template"
 
                 Template_file = open(Template_file_path, "r")
                 Content = Template_file.read()
@@ -703,7 +705,7 @@ def OBS():
 #
 # Arguments
 #
-# 1 Project: mc, mi, qc
+# 1 Project: mc, mi, qc, bm
 # 2 OS name: windows, mac, linux
 # For Windows and Mac: 3 MC|MI version and 4 MIL version
 
@@ -716,9 +718,9 @@ OS_name = sys.argv[2]
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-if Project != "mc" and Project != "mi" and Project != "qc":
+if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm":
     print
-    print "The first argument must be mc, mi or qc"
+    print "The first argument must be mc, mi, bm or qc"
     print
     sys.exit(1)
 
@@ -732,7 +734,7 @@ and OS_name != "repos" and OS_name != "all":
 
 if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
     # sys.argv[0] == Generate_DL_pages.py
-    if len(sys.argv) == 4 and Project == "qc":
+    if len(sys.argv) == 4 and (Project == "qc" or Project == "bm"):
        Project_version = sys.argv[3]
     elif len(sys.argv) < 6:
         print
@@ -774,7 +776,8 @@ if OS_name == "repos":
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
-    DL_pages("appimage")
+    if Project != "bm":
+        DL_pages("appimage")
     OBS()
     Sources()
     if Project == "mi":

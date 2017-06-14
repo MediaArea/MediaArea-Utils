@@ -1,0 +1,12 @@
+<tr>
+    <th rowspan="2">OS_TITLE</th>
+    <th rowspan="2">x86_64</th>
+    <td><abbr title="Graphical User Interface">GUI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/BWFMetaEdit_GUI_BM_VERSION_Mac.dmg">vBM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><abbr title="Command Line Interface">CLI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit/BM_VERSION/BWFMetaEdit_CLI_BM_VERSION_Mac.dmg">vBM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>

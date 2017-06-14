@@ -1,0 +1,10 @@
+<tr>
+    <th colspan="5">Split sources with .spec,<br />.desc and debian dir<br /> for Linux package creation</th>
+</tr>
+<tr>
+    <td class="table-OS" id="Split">Source code, split packages</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><a href="//mediaarea.net/download/source/bwfmetaedit/BM_VERSION/bwfmetaedit_BM_VERSION.tar.xz">vBM_VERSION</a> (<a href="//mediaarea.net/download/source/bwfmetaedit/BM_VERSION/bwfmetaedit_BM_VERSION.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/source/bwfmetaedit/BM_VERSION/bwfmetaedit_BM_VERSION.tar.gz">gz</a>)</td>
+    <td>&nbsp;</td>
+</tr>
