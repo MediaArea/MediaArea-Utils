@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Download</title>
+</head>
+<body>
+<h1>Download - Debian</h1>
+<img src="/_/img/OS/Debian.png" width="229" height="61"><br />
+
+<table border="1" class="download">
+<thead>
+<tr class="table-header">
+    <th>Version</th>
+    <th>Architecture</th>
+    <th>Interface</th>
+    <td>Version</td>
+    <th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Debian<br />search for "AVI MetaEdit" in your package manager<br />or "apt-get install avimetaedit-gui" (for GUI)<br /> or "apt-get install avimetaedit" (for CLI)</th>
+    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
+</tr>
+<tr>
+    <th colspan="5"><br />Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"<br /><br /></th>
+</tr>
+

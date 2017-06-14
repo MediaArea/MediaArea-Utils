@@ -1,0 +1,12 @@
+<tr>
+    <th rowspan="2">OS_TITLE</th>
+    <th rowspan="2">x86_64</th>
+    <td><abbr title="Graphical User Interface">GUI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/avimetaedit-gui/AM_VERSION/AVIMetaEdit_GUI_AM_VERSION_Mac.dmg">vAM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><abbr title="Command Line Interface">CLI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/avimetaedit/AM_VERSION/AVIMetaEdit_CLI_AM_VERSION_Mac.dmg">vAM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
