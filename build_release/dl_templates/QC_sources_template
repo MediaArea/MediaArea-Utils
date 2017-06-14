@@ -3,7 +3,7 @@
 </tr>
 <tr>
     <td class="table-OS" id="Split">Source code, split packages</td>
-    <td>GUI</td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td><a href="//mediaarea.net/download/source/qctools/QC_VERSION/qctools_QC_VERSION.tar.xz">vQC_VERSION</a> (<a href="//mediaarea.net/download/source/qctools/QC_VERSION/qctools_QC_VERSION.tar.bz2">bz2</a> / <a href="//mediaarea.net/download/source/qctools/QC_VERSION/qctools_QC_VERSION.tar.gz">gz</a>)</td>
     <td>&nbsp;</td>
@@ -13,7 +13,7 @@
 </tr>
 <tr>
     <td class="table-OS" id="Split">Source code, all included</td>
-    <td>GUI</td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td><a href="//mediaarea.net/download/source/qctools/QC_VERSION/qctools_QC_VERSION_AllInclusive.7z">vQC_VERSION</a></td>
     <td>&nbsp;</td>
