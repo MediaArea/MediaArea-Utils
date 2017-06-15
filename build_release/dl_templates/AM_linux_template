@@ -1,0 +1,11 @@
+<trRELEASE_CLASS>RELEASE_ROWSPAN
+    <th rowspan="ARCH_ROWSPAN" id="RELEASE_VERSION.RELEASE_ARCH">RELEASE_ARCH</th>
+    <td><abbr title="Graphical User Interface">GUI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/avimetaedit-gui/AM_VERSION/GUI_PACKAGE">vAM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+<trRELEASE_CLASS>
+    <td><abbr title="Command Line Interface">CLI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/avimetaedit/AM_VERSION/CLI_PACKAGE">vAM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>

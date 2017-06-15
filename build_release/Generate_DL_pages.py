@@ -121,8 +121,7 @@ def DL_pages(OS_name):
     if not OS_name == "appimage":
         Content = Content.replace("OS_TITLE", OS_title)
 
-    if Project != "qc":
-        Content = Content.replace("MIL_VERSION", MIL_version)
+    Content = Content.replace("MIL_VERSION", MIL_version)
 
     Destination.write(Content + "\n")
     Destination.write("</tbody>\n</table>\n")
@@ -154,9 +153,8 @@ def Sources():
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
 
-    if Project != "qc":
-        Content = Content.replace("MIL_VERSION", MIL_version)
-        Content = Content.replace("ZL_VERSION", ZL_version)
+    Content = Content.replace("MIL_VERSION", MIL_version)
+    Content = Content.replace("ZL_VERSION", ZL_version)
 
     Destination.write(Content + "\n")
     Destination.write("</tbody>\n</table>\n")
@@ -461,7 +459,7 @@ def OBS():
 
             Release_with_mil = True
             Release_with_zl = True
-            if Project == "qc":
+            if Project == "qc" or Project == "bm" or Project == "am":
                 Release_with_gui = True
                 Release_with_mil = False
                 Release_with_zl = False
@@ -526,10 +524,8 @@ def OBS():
                         Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_gui"
                     else:
                         Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
-                elif Project == "mi":
-                    Template_file_path = Script_emplacement + "/dl_templates/MI_linux_template"
-                elif Project == "qc":
-                    Template_file_path = Script_emplacement + "/dl_templates/QC_linux_template"
+                else:
+                    Template_file_path = Script_emplacement + "/dl_templates/%s_linux_template" % Project.upper()
 
                 Template_file = open(Template_file_path, "r")
                 Content = Template_file.read()
@@ -703,7 +699,7 @@ def OBS():
 #
 # Arguments
 #
-# 1 Project: mc, mi, qc
+# 1 Project: mc, mi, qc, bm, am
 # 2 OS name: windows, mac, linux
 # For Windows and Mac: 3 MC|MI version and 4 MIL version
 
@@ -711,14 +707,18 @@ def OBS():
 # Handle the variables
 #
 
-Project = sys.argv[1]
-OS_name = sys.argv[2]
+Project = sys.argv[1] if len(sys.argv) > 1 else ""
+OS_name = sys.argv[2] if len(sys.argv) > 2 else ""
+Project_version = sys.argv[3] if len(sys.argv) > 3 else ""
+MIL_version = sys.argv[4] if len(sys.argv) > 4 else ""
+ZL_version = sys.argv[5] if len(sys.argv) > 5 else ""
+
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-if Project != "mc" and Project != "mi" and Project != "qc":
+if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm" and Project != "am":
     print
-    print "The first argument must be mc, mi or qc"
+    print "The first argument must be mc, mi, bm, am or qc"
     print
     sys.exit(1)
 
@@ -732,18 +732,18 @@ and OS_name != "repos" and OS_name != "all":
 
 if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
     # sys.argv[0] == Generate_DL_pages.py
-    if len(sys.argv) == 4 and Project == "qc":
-       Project_version = sys.argv[3]
-    elif len(sys.argv) < 6:
+    if len(sys.argv) < 4 and (Project == "qc" or Project == "bm" or Project == "am"):
         print
         print "If you ask windows, mac, appimage, sources or all, you must provide the version"
-        print "numbers of QC or MC|MI + MIL and ZL respectively as 3rd, 4th and 5th arguments."
+        print "numbers as 3rd arguments."
         print
         sys.exit(1)
-    else:
-        Project_version = sys.argv[3]
-        MIL_version = sys.argv[4]
-        ZL_version = sys.argv[5]
+    elif len(sys.argv) < 6 and (Project == "mi" or Project == "mc"):
+        print
+        print "If you ask windows, mac, appimage, sources or all, you must provide the version"
+        print "numbers of MC|MI + MIL and ZL respectively as 3rd, 4th and 5th arguments."
+        print
+        sys.exit(1)
 
 Config = {}
 execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
@@ -774,7 +774,8 @@ if OS_name == "repos":
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
-    DL_pages("appimage")
+    if Project != "bm" and Project != "am":
+        DL_pages("appimage")
     OBS()
     Sources()
     if Project == "mi":

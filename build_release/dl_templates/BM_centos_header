@@ -5,8 +5,8 @@
     <title>Download</title>
 </head>
 <body>
-<h1>Download - RedHat Entreprise Linux</h1>
-<img src="/_/img/OS/RedHat.png" width="200" height="61"><br />
+<h1>Download - CentOS</h1>
+<img src="/_/img/OS/CentOS.png" width="271" height="60"><br />
 
 <table border="1" class="download">
 <thead>
@@ -20,8 +20,6 @@
 </thead>
 <tbody>
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for RHEL<br />search for "QCTools" in your package manager<br />or "yum install qctools" (for GUI)<br /> or "yum install qcli" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for CentOS<br />search for "BWF MetaEdit" in your package manager<br />or "yum install bwfmetaedit-gui" (for GUI)<br /> or "yum install bwfmetaedit" (for CLI)</th>
     <td><a href='/Repos'>Activate MediaArea Repository</a></td>
 </tr>
-
-

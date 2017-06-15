@@ -1,0 +1,11 @@
+<trRELEASE_CLASS>RELEASE_ROWSPAN
+    <th rowspan="ARCH_ROWSPAN" id="RELEASE_VERSION.RELEASE_ARCH">RELEASE_ARCH</th>
+    <td><abbr title="Graphical User Interface">GUI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/GUI_PACKAGE">vBM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+<trRELEASE_CLASS>
+    <td><abbr title="Command Line Interface">CLI</abbr></td>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit/BM_VERSION/CLI_PACKAGE">vBM_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>

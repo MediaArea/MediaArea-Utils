@@ -1,0 +1,22 @@
+<tr>
+    <th rowspan="2">64 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/BWF_MetaEdit_GUI_BM_VERSION_Windows_x64.exe">vBM_VERSION</a> <small>(<a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/BWF_MetaEdit_GUI_BM_VERSION_Windows_x64_WithoutInstaller.zip"> without installer</a>)</small></td>
+    <td></td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit/BM_VERSION/BWF_MetaEdit_CLI_BM_VERSION_Windows_x64.zip">vBM_VERSION</a></td>
+    <td></td>
+</tr>
+<tr>
+    <th rowspan="2">32 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/BWF_MetaEdit_GUI_BM_VERSION_Windows_i386.exe">vBM_VERSION</a> <small> (<a href="//mediaarea.net/download/binary/bwfmetaedit-gui/BM_VERSION/BWF_MetaEdit_GUI_BM_VERSION_Windows_i386_WithoutInstaller.zip">without installer</a>)</small></td>
+    <td></td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/bwfmetaedit/BM_VERSION/BWF_MetaEdit_CLI_BM_VERSION_Windows_i386.zip">vBM_VERSION</a></td>
+    <td></td>
+</tr>

@@ -20,7 +20,7 @@
 </thead>
 <tbody>
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Debian<br />search for "QCTools" in your package manager<br />or "apt-get install qctools" (for GUI)<br /> or "apt-get install qcli" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Debian<br />search for "BWF MetaEdit" in your package manager<br />or "apt-get install bwfmetaedit-gui" (for GUI)<br /> or "apt-get install bwfmetaedit" (for CLI)</th>
     <td><a href='/Repos'>Activate MediaArea Repository</a></td>
 </tr>
 <tr>
