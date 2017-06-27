@@ -1,25 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Download</title>
-</head>
-<body>
-<h1>Download - Arch</h1>
-<img src="/_/img/OS/ArchLinux.png" width="350" height="103"><br />
-
-<table border="1" class="download">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <td>Comment</td>
-</tr>
-</thead>
-<tbody>
-
 <tr>
     <th colspan="3">Official distribution packages<br/>search for "MediaInfo" in your package manager<br/>or "pacman -S mediainfo-gui" (for GUI)<br/> or "pacman -S mediainfo" (for CLI)</th>
     <td><a href="http://www.archlinux.org/packages/?q=mediainfo">Arch Linux package database</a></td>

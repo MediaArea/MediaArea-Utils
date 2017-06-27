@@ -1,29 +1,22 @@
-<?php if (isset($Donated))
-{
- $Downloadi386='//mediaarea.net/download/donors/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe';
- $Downloadx64 ='//mediaarea.net/download/donors/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe';
- $AdSupported ='&nbsp;';
-}
-else
-{
- $Downloadi386='//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe';
- $Downloadx64 ='//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe';
- $AdSupported ='&nbsp;';
-}
-?>
-
+{% if 'Y' == app.request.attributes.get('donated') %}
+    {% set downloadLink = '//mediaarea.net/download/donors/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe' %}
+{% elseif 1 <= app.request.attributes.get('donated', -1) %}
+    {% set downloadLink = '//mediaarea.net/download/current/MediaInfo_GUI_MI_VERSION_Windows.exe' %}
+{% else %}
+    {% set downloadLink = '//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows.exe' %}
+{% endif %}
 <tr>
     <th rowspan="7">OS_TITLE</th>
     <th>Universal installer (32/64 bit)</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="<?php echo $Downloadi386; ?>">vMI_VERSION</a></td>
-    <td>If you don't know which one to download, download this one<?php echo $AdSupported; ?></td>
+    <td><a href="{{ downloadLink }}">vMI_VERSION</a></td>
+    <td>If you don't know which one to download, download this one</td>
 </tr>
 <tr>
     <th rowspan="3">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="<?php echo $Downloadx64; ?>">vMI_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
-    <td><?php echo $AdSupported; ?></td>
+    <td><a href="{{ downloadLink }}">vMI_VERSION Universal (32/64 bit)</a> <small>(<a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
+    <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
@@ -39,8 +32,8 @@ else
 <tr>
     <th rowspan="3">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="<?php echo $Downloadi386; ?>">vMI_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
-    <td><?php echo $AdSupported; ?></td>
+    <td><a href="{{ downloadLink }}">vMI_VERSION Universal (32/64 bit)</a> <small> (<a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
+    <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
@@ -58,7 +51,7 @@ else
     <th rowspan="3">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.60/MediaInfo_GUI_0.7.60_Windows_i386.exe">v0.7.60</a> <small> (<a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.60/MediaInfo_GUI_0.7.60_Windows_i386_WithoutInstaller.7z">without installer</a>)</small></td>
-    <td><?php echo $AdSupported; ?></td>
+    <td></td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>

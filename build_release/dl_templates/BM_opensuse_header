@@ -1,25 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Download</title>
-</head>
-<body>
-<h1>Download - openSUSE</h1>
-<img src="/_/img/OS/openSUSE.png" width="155" height="100"><br />
-
-<table border="1" class="download">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <th>Comment</th>
-</tr>
-</thead>
-<tbody>
 <tr>
     <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for OpenSuse<br />search for "BWF MetaEdit" in your package manager<br />or "zypper install bwfmetaedit-gui" (for GUI)<br /> or "zypper install bwfmetaedit" (for CLI)</th>
-    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
+    <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
 </tr>

@@ -100,14 +100,15 @@ def DL_pages(OS_name):
     if not OS_name == "appimage":
         OS_title = Config[ Project.upper() + "_" + OS_name + "_title" ]
 
-    Header_file_path = Skeletons_path + "_header"
-    Header_file = open(Header_file_path, "r")
-    Header = Header_file.read()
-    Header_file.close()
-
     Filename = Config[ Project.upper() + "_" + OS_name + "_filename" ]
     Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
-    Destination.write(Header)
+
+    Header_file_path = Skeletons_path + "_header"
+    if os.path.isfile(Header_file_path):
+        Header_file = open(Header_file_path, "r")
+        Header = Header_file.read()
+        Header_file.close()
+        Destination.write(Header)
 
     Template_file_path = Skeletons_path + "_template"
     Template_file = open(Template_file_path, "r")
@@ -123,10 +124,10 @@ def DL_pages(OS_name):
 
     Content = Content.replace("MIL_VERSION", MIL_version)
 
-    Destination.write(Content + "\n")
-    Destination.write("</tbody>\n</table>\n")
-    if Project != "mc":
-        Destination.write("</body>\n</html>\n")
+    Destination.write(Content)
+    if Project == "mc":
+        Destination.write("\n</tbody>\n</table>\n")
+
     Destination.close()
 
 ##################################################################
@@ -137,14 +138,15 @@ def Sources():
 
     Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_sources"
 
-    Header_file_path = Skeletons_path + "_header"
-    Header_file = open(Header_file_path, "r")
-    Header = Header_file.read()
-    Header_file.close()
-
     Filename = Config[ Project.upper() + "_sources_filename" ]
     Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
-    Destination.write(Header)
+
+    Header_file_path = Skeletons_path + "_header"
+    if os.path.isfile(Header_file_path):
+        Header_file = open(Header_file_path, "r")
+        Header = Header_file.read()
+        Header_file.close()
+        Destination.write(Header)
 
     Template_file_path = Skeletons_path + "_template"
     Template_file = open(Template_file_path, "r")
@@ -156,10 +158,10 @@ def Sources():
     Content = Content.replace("MIL_VERSION", MIL_version)
     Content = Content.replace("ZL_VERSION", ZL_version)
 
-    Destination.write(Content + "\n")
-    Destination.write("</tbody>\n</table>\n")
-    if Project != "mc":
-        Destination.write("</body>\n</html>\n")
+    Destination.write(Content)
+    if Project == "mc":
+        Destination.write("\n</tbody>\n</table>\n")
+
     Destination.close()
 
 ##################################################################
@@ -407,23 +409,24 @@ def OBS():
             Package_type = "rpm"
             Package_infos[Package_type]["i586"] = "i586"
 
-        Header_file_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + Distrib_name_lower + "_header"
-        Header_file = open(Header_file_path, "r")
-        Header = Header_file.read()
-        Header_file.close()
-
         if Project == "mc":
             Filename = Distrib_name_lower + ".md"
         else:
             if Distrib_name == "xUbuntu":
-                Filename = "Ubuntu.html"
+                Filename = "ubuntuTable.html.twig"
             elif Distrib_name == "Arch":
-                Filename = "Arch_Linux.html"
+                Filename = "archlinuxTable.html.twig"
             else:
-                Filename = Distrib_name + ".html"
+                Filename = Distrib_name.lower() + "Table.html.twig"
 
         Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
-        Destination.write(Header)
+
+        Header_file_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + Distrib_name_lower + "_header"
+        if os.path.isfile(Header_file_path):
+            Header_file = open(Header_file_path, "r")
+            Header = Header_file.read()
+            Header_file.close()
+            Destination.write(Header)
 
         # Build the list of the releases for a distrib
 
@@ -683,11 +686,11 @@ def OBS():
                         ZL_deb6_version = Result[0]
                     Old_releases = Old_releases.replace("ZL_VERSION", ZL_deb6_version)
 
-                Destination.write(Old_releases)
+                Destination.write("\n" + Old_releases)
 
-        Destination.write("</tbody>\n</table>\n")
-        if Project != "mc":
-            Destination.write("</body>\n</html>\n")
+        if Project == "mc":
+            Destination.write("</tbody>\n</table>\n")
+
         Destination.close()
 
     # Close the access to the DB
