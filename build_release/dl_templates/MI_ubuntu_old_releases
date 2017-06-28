@@ -63,7 +63,7 @@
     <td><a href="//mediaarea.net/download/binary/libzen0/0.4.31/libzen0_0.4.31-1_amd64.xUbuntu_13.04.deb">v0.4.31</a><small> (<a href="//mediaarea.net/download/binary/libzen0/0.4.31/libzen-dev_0.4.31-1_amd64.xUbuntu_13.04.deb">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
-<tr class="old-files">à)0
+<tr class="old-files">
     <th rowspan="4">i386</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.73/mediainfo-gui_0.7.73-1_i386.Debian_7.0.deb">v0.7.73</a><small> (Debian 7.0 package)</small></td>
@@ -127,24 +127,24 @@
     <td><a href="//mediaarea.net/download/binary/libzen0/0.4.31/libzen0_0.4.31-1_i386.xUbuntu_12.10.deb">v0.4.31</a><small> (<a href="//mediaarea.net/download/binary/libzen0/0.4.31/libzen-dev_0.4.31-1_i386.xUbuntu_12.10.deb">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th rowspan="8">Ubuntu 12.04<br/>(Precise Pangolin)<br/><br/>Linux Mint 13<br/>(Maya)</th>
     <th rowspan="4">amd64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/mediainfo-gui_MI_VERSION-1_amd64.Debian_6.0.deb">vMI_VERSION</a><small> (Debian 6.0 package)</small></td>
     <td>requires libmediainfo0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo/MI_VERSION/mediainfo_MI_VERSION-1_amd64.Debian_6.0.deb">vMI_VERSION</a><small> (Debian 6.0 package)</small></td>
     <td>requires libmediainfo0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th>libmediainfo0</th>
     <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/libmediainfo0_MI_VERSION-1_amd64.xUbuntu_12.04.deb">vMI_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/libmediainfo-dev_MI_VERSION-1_amd64.xUbuntu_12.04.deb">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th>libzen0</th>
     <td><a href="//mediaarea.net/download/binary/libzen0/ZL_VERSION/libzen0_ZL_VERSION-1_amd64.xUbuntu_12.04.deb">vZL_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libzen0/ZL_VERSION/libzen-dev_ZL_VERSION-1_amd64.xUbuntu_12.04.deb">devel</a>)</small></td>
     <td>&nbsp;</td>
@@ -155,17 +155,17 @@
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/mediainfo-gui_MI_VERSION-1_i386.Debian_6.0.deb">vMI_VERSION</a><small> (Debian 6.0 package)</small></td>
     <td>requires libmediainfo0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo/MI_VERSION/mediainfo_MI_VERSION-1_i386.Debian_6.0.deb">vMI_VERSION</a><small> (Debian 6.0 package)</small></td>
     <td>requires libmediainfo0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th>libmediainfo0</th>
     <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/libmediainfo0_MI_VERSION-1_i386.xUbuntu_12.04.deb">vMI_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/libmediainfo-dev_MI_VERSION-1_i386.xUbuntu_12.04.deb">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
-<tr>
+<tr class="old-files">
     <th>libzen0</th>
     <td><a href="//mediaarea.net/download/binary/libzen0/ZL_VERSION/libzen0_ZL_VERSION-1_i386.xUbuntu_12.04.deb">vZL_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libzen0/ZL_VERSION/libzen-dev_ZL_VERSION-1_i386.xUbuntu_12.04.deb">devel</a>)</small></td>
     <td>&nbsp;</td>

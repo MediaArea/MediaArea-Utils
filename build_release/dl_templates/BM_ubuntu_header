@@ -1,29 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Download</title>
-</head>
-<body>
-<h1>Download - Ubuntu (Ubuntu, Kubuntu, Xbuntu...), Linux Mint</h1>
-<img src="/_/img/OS/Ubuntu.png" width="304" height="79" alt="Ubuntu"><img src="/_/img/OS/Linux_Mint.png" width="256" height="75" alt="Linux Mint"><br />
-
-<table border="1" class="download">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <th>Comment</th>
-</tr>
-</thead>
-<tbody>
 <tr>
     <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Ubuntu<br />search for "BWF MetaEdit" in your package manager<br />or "apt-get install bwfmetaedit-gui" (for GUI)<br /> or "apt-get install bwfmetaedit" (for CLI)</th>
-    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
+    <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
 </tr>
 <tr>
-    <th colspan="5"><br />Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"<br /><br /></th>
+    <th colspan="5">Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"</th>
 </tr>
 
