@@ -162,6 +162,43 @@ function _unix_gui () {
 
 }
 
+function _all_inclusive () {
+
+    echo
+    echo "Generate the MM all inclusive tarball:"
+    echo "1: copy what is wanted..."
+
+    cd "$WDir"/MM
+    mkdir movmetaedit_AllInclusive
+    cd movmetaedit_AllInclusive
+
+    cp -r "$Source" MOV_MetaEdit
+
+    # Dependencies
+    # Dependency : ZenLib
+    cp -r "$WDir"/ZL/ZenLib_AllInclusive ZenLib
+
+    echo "2: configure dependencies for use static runtime..."
+    find ZenLib  -type f -name "*.vcxproj" -exec \
+         sed -i \
+             -e 's/MultiThreadedDebugDLL/MultiThreadedDebug/g' \
+             -e 's/MultiThreadedDLL/MultiThreaded/g' {} \;
+
+    echo "3: remove what isn’t wanted..."
+    rm -fr MOV_MetaEdit/.git*
+    rm -fr MOV_MetaEdit/debian
+
+    if $MakeArchives; then
+        echo "4: compressing..."
+        cd "$WDir"/MM
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
+        fi
+        7za a -t7z -mx=9 -bd ../archives/movmetaedit${Version}_AllInclusive.7z movmetaedit_AllInclusive >/dev/null
+    fi
+
+}
+
 function btask.PrepareSource.run () {
 
     local Source
@@ -180,13 +217,17 @@ function btask.PrepareSource.run () {
         Version=_$(cat "$Source/Project/version.txt")
     fi
 
-    if [ "$Target" = "sa" ] || [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
+    if [ "$Target" = "sa" ] || [ "$Target" = "all" ]; then
         _source_package
     fi
 
     if [ "$Target" = "cu" ] || [ "$Target" = "all" ]; then
         _unix_cli
         _unix_gui
+    fi
+
+    if [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
+        _all_inclusive
     fi
 
     if $CleanUp; then
