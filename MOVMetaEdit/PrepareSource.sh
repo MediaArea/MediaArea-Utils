@@ -179,7 +179,7 @@ function _all_inclusive () {
     cp -r "$WDir"/ZL/ZenLib_AllInclusive ZenLib
 
     echo "2: configure dependencies for use static runtime..."
-    find ZenLib  -type f -name "*.vcxproj" -exec \
+    find ZenLib MOV_MetaEdit -type f -name "*.vcxproj" -exec \
          sed -i \
              -e 's/MultiThreadedDebugDLL/MultiThreadedDebug/g' \
              -e 's/MultiThreadedDLL/MultiThreaded/g' {} \;
