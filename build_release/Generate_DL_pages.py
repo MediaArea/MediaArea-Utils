@@ -719,9 +719,9 @@ ZL_version = sys.argv[5] if len(sys.argv) > 5 else ""
 # The directory from where the python script is executed
 Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 
-if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm" and Project != "am":
+if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm" and Project != "am" and Project != "da":
     print
-    print "The first argument must be mc, mi, bm, am or qc"
+    print "The first argument must be mc, mi, bm, am, da or qc"
     print
     sys.exit(1)
 
@@ -741,10 +741,10 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
         print "numbers as 3rd arguments."
         print
         sys.exit(1)
-    elif len(sys.argv) < 6 and (Project == "mi" or Project == "mc"):
+    elif len(sys.argv) < 6 and (Project == "mi" or Project == "mc" or Project == "da"):
         print
         print "If you ask windows, mac, appimage, sources or all, you must provide the version"
-        print "numbers of MC|MI + MIL and ZL respectively as 3rd, 4th and 5th arguments."
+        print "numbers of MC|MI|DA + MIL and ZL respectively as 3rd, 4th and 5th arguments."
         print
         sys.exit(1)
 
@@ -777,7 +777,7 @@ if OS_name == "repos":
 if OS_name == "all":
     DL_pages("windows")
     DL_pages("mac")
-    if Project != "bm" and Project != "am":
+    if Project != "bm" and Project != "am" and Project != "da":
         DL_pages("appimage")
     OBS()
     Sources()
