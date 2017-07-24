@@ -38,6 +38,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/movmetaedit.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
     Files[((index++))]="Project/Mac/Info.plist"
+    Files[((index++))]="Project/OBS/deb7.dsc"
+    Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/GUI/Qt/config.h"
     Files[((index++))]="Source/Install/MOV_MetaEdit_GUI_Windows_i386.nsi"
@@ -54,7 +56,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version AA,BB,CC,DD ..."
     unset -v Files
     index=0
-    Files[((index++))]="Project/Qt/MOVMetaEdit.rc"
+    Files[((index++))]="Project/Qt/movmetaedit-gui.rc"
 
     for File in ${Files[@]}
     do
