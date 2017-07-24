@@ -1,0 +1,5 @@
+<tr>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for SUSE Linux Entreprise<br />search for "DVAnalyzer" in your package manager<br />or "zypper install dvanalyzer-gui" (for GUI)<br /> or "zypper install dvanalyzer" (for CLI)</th>
+    <td><a href='{{ path('ma_repos') }}'>Activate MediaArea Repository</a></td>
+</tr>
+

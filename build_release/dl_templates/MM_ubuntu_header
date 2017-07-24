@@ -1,0 +1,8 @@
+<tr>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Ubuntu<br />Search for "MOVMetaEdit" in your package manager<br />or "apt-get install movmetaedit-gui" (for GUI)<br /> or "apt-get install movmetaedit" (for CLI)</th></th>
+    <td><a href='{{ path('ma_repos') }}'>Activate MediaArea Repository</a></td>
+</tr>
+<tr>
+    <th colspan="5">Notes for installing the packages below:<br />"sudo dpkg -i *deb"</th>
+</tr>
+

@@ -1,0 +1,13 @@
+<tr>
+    <th rowspan="3">OS_TITLE</th>
+    <th rowspan="3">x86_64</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Mac.dmg">vDA_VERSION</a></td>
+    <td></td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer/DA_VERSION/DVAnalyzer_CLI_DA_VERSION_Mac.dmg">vDA_VERSION</a></td>
+    <td>&nbsp;</td>
+</tr>
+
