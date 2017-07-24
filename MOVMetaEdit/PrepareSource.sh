@@ -59,11 +59,14 @@ function _source_package () {
         mkdir ../archives/obs
 
         cp ../archives/movmetaedit${Version}.tar.gz ../archives/obs/movmetaedit${Version}-1.tar.gz
+
+        cp ../archives/movmetaedit${Version}.tar.xz ../archives/obs/movmetaedit${Version}.orig.tar.xz
+
         cp "$WDir/MM/movmetaedit/Project/GNU/movmetaedit.spec" ../archives/obs
-        cp "$WDir/MM/movmetaedit/Project/GNU/movmetaedit.dsc" ../archives/obs
         cp "$WDir/MM/movmetaedit/Project/GNU/PKGBUILD" ../archives/obs
 
         update_pkgbuild ../archives/obs/movmetaedit${Version}-1.tar.gz ../archives/obs/PKGBUILD
+        deb_obs movmetaedit "$WDir/MM/movmetaedit" "$WDir/archives/obs/movmetaedit${Version}.orig.tar.xz"
         update_dsc ../archives/obs/movmetaedit${Version}-1.tar.gz ../archives/obs/movmetaedit.dsc
     fi
 }
