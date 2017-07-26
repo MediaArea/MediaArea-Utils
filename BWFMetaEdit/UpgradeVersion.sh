@@ -37,6 +37,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/bwfmetaedit.spec"
     Files[((index++))]="Project/GNU/bwfmetaedit.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/OBS/deb7.dsc"
+    Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Common/Common_About.cpp"
     Files[((index++))]="Source/Install/BWF_MetaEdit_GUI_Windows_i386.nsi"

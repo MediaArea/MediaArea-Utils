@@ -56,12 +56,13 @@ function _source_package () {
         mkdir ../archives/obs
 
         cp ../archives/bwfmetaedit${Version}.tar.gz ../archives/obs/bwfmetaedit${Version}-1.tar.gz
+        cp ../archives/bwfmetaedit${Version}.tar.xz ../archives/obs/bwfmetaedit${Version}.orig.tar.xz
+
         cp "$WDir/BM/bwfmetaedit/Project/GNU/bwfmetaedit.spec" ../archives/obs
-        cp "$WDir/BM/bwfmetaedit/Project/GNU/bwfmetaedit.dsc" ../archives/obs
         cp "$WDir/BM/bwfmetaedit/Project/GNU/PKGBUILD" ../archives/obs
 
         update_pkgbuild ../archives/obs/bwfmetaedit${Version}-1.tar.gz ../archives/obs/PKGBUILD
-        update_dsc ../archives/obs/bwfmetaedit${Version}-1.tar.gz ../archives/obs/bwfmetaedit.dsc
+        deb_obs bwfmetaedit "$WDir/BM/bwfmetaedit" "$WDir/archives/obs/bwfmetaedit${Version}.orig.tar.xz"
     fi
 }
 

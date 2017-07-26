@@ -67,7 +67,6 @@ function _source_package () {
 
         update_pkgbuild ../archives/obs/movmetaedit${Version}-1.tar.gz ../archives/obs/PKGBUILD
         deb_obs movmetaedit "$WDir/MM/movmetaedit" "$WDir/archives/obs/movmetaedit${Version}.orig.tar.xz"
-        update_dsc ../archives/obs/movmetaedit${Version}-1.tar.gz ../archives/obs/movmetaedit.dsc
     fi
 }
 
