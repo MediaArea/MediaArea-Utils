@@ -37,6 +37,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/dvanalyzer.spec"
     Files[((index++))]="Project/GNU/dvanalyzer.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/OBS/deb7.dsc"
+    Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Common/Common_About.cpp"
     Files[((index++))]="Source/Install/AVPS_DV_Analyzer_GUI_Windows_i386.nsi"

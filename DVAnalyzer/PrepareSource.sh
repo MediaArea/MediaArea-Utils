@@ -218,12 +218,13 @@ function _source_package () {
         mkdir ../archives/obs
 
         cp ../archives/dvanalyzer${Version}.tar.gz ../archives/obs/dvanalyzer${Version}-1.tar.gz
+        cp ../archives/dvanalyzer${Version}.tar.xz ../archives/obs/dvanalyzer${Version}.orig.tar.xz
+
         cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.spec" ../archives/obs
-        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.dsc" ../archives/obs
         cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/PKGBUILD" ../archives/obs
 
         update_pkgbuild ../archives/obs/dvanalyzer${Version}-1.tar.gz ../archives/obs/PKGBUILD
-        update_dsc ../archives/obs/dvanalyzer${Version}-1.tar.gz ../archives/obs/dvanalyzer.dsc
+        deb_obs dvanalyzer "$WDir/DA/AVPS_DV_Analyzer" "$WDir/archives/obs/dvanalyzer${Version}.orig.tar.xz"
     fi
 }
 
