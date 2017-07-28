@@ -37,6 +37,9 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/avimetaedit.spec"
     Files[((index++))]="Project/GNU/avimetaedit.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/Mac/Info.plist"
+    Files[((index++))]="Project/OBS/deb7.dsc"
+    Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Common/Common_About.cpp"
     Files[((index++))]="Source/Install/AVI_MetaEdit_GUI_Windows_i386.nsi"
@@ -53,10 +56,9 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version AA,BB,CC,DD ..."
     unset -v Files
     index=0
-    Files[((index++))]="Project/MSVC2010/CLI/AVI_MetaEdit_CLI.rc"
-    Files[((index++))]="Project/MSVC2010/GUI/AVI_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2015/CLI/AVI_MetaEdit_CLI.rc"
-    Files[((index++))]="Project/MSVC2015/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2015/AVCI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/QtCreator/avimetaedit-gui.rc"
 
     for File in ${Files[@]}
     do

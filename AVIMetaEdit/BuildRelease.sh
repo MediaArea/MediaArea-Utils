@@ -62,10 +62,10 @@ function _mac_gui () {
            ln -s $Mac_qt_path/clang_64 qt
 
            ./Project/Mac/BR_extension_GUI.sh
-           test -x Project/GNU/GUI/avimetaedit-gui || exit 1
+           test -x \"Project/QtCreator/AVI MetaEdit.app/Contents/MacOS/AVI MetaEdit\" || exit 1
            $Key_chain
            cd Project/Mac
-           ./mkdmg.sh AVIMetaEdit gui $Version_new"
+           ./mkdmg.sh \"AVI MetaEdit\" gui $Version_new"
 
     DLPath="$Mac_working_dir/AVIMetaEdit_GUI_GNU_FromSource/Project/Mac"
     File="AVIMetaEdit_GUI_${Version_new}_Mac.dmg"
