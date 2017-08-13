@@ -42,6 +42,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/qctools.spec"
     Files[((index++))]="Project/GNU/qctools.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/OBS/deb7.dsc"
+    Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="Project/AppImage/Recipe.sh"
     Files[((index++))]="debian/changelog"
