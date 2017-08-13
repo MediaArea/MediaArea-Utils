@@ -104,16 +104,17 @@ function _all_inclusive () {
 
         # Generate OBS and MacOS archive
         (GZIP=-9 tar -cz --owner=root --group=root -f ../../archives/qctools${Version}-1.tar.gz qctools)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../../archives/qctools${Version}.orig.tar.xz qctools)
 
         mkdir ../../archives/obs
 
         cp ../../archives/qctools${Version}-1.tar.gz ../../archives/obs
+        cp ../../archives/qctools${Version}.orig.tar.xz ../../archives/obs
         cp "$QC_source/Project/GNU/qctools.spec" ../../archives/obs
-        cp "$QC_source/Project/GNU/qctools.dsc" ../../archives/obs
         cp "$QC_source/Project/GNU/PKGBUILD" ../../archives/obs
 
         update_pkgbuild ../../archives/obs/qctools${Version}-1.tar.gz ../../archives/obs/PKGBUILD
-        update_dsc ../../archives/obs/qctools${Version}-1.tar.gz ../../archives/obs/qctools.dsc
+        deb_obs qctools "$WDir/QC/ALL/qctools/qctools" "$WDir/archives/obs/qctools${Version}.orig.tar.xz"
 
         # Generate Windows and public AllInclusive archive
         mv qctools qctools_AllInclusive
