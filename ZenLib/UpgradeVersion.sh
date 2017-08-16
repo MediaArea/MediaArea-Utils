@@ -44,7 +44,6 @@ function btask.UpgradeVersion.run () {
     ZL_files[((index++))]="Project/OBS/deb9.dsc"
     ZL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     ZL_files[((index++))]="Project/Solaris/mkpkg"
-    ZL_files[((index++))]="Project/CMake/CMakeLists.txt"
 
     # Make the replacements
     for ZL_file in ${ZL_files[@]}
@@ -52,4 +51,17 @@ function btask.UpgradeVersion.run () {
         echo "${ZL_source}/${ZL_file}"
         updateFile "$Version_old_escaped" $Version_new "${ZL_source}/${ZL_file}"
     done
+
+    echo
+    echo "Replace major/minor/patch in ${ZL_source}/Project/CMake/CMakeLists.txt"
+    updateFile "set(ZenLib_MAJOR_VERSION $Version_old_major)" \
+        "set(ZenLib_MAJOR_VERSION $Version_new_major)" \
+        "${ZL_source}/Project/CMake/CMakeLists.txt"
+    updateFile "set(ZenLib_MINOR_VERSION $Version_old_minor)" \
+        "set(ZenLib_MINOR_VERSION $Version_new_minor)" \
+        "${ZL_source}/Project/CMake/CMakeLists.txt"
+    updateFile "set(ZenLib_PATCH_VERSION $Version_old_patch)" \
+        "set(ZenLib_PATCH_VERSION $Version_new_patch)" \
+        "${ZL_source}/Project/CMake/CMakeLists.txt"
+
 }
