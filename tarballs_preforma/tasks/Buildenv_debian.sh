@@ -133,8 +133,7 @@ function btask.Buildenv_debian.run () {
     Debian_names[8]="jessie"
     Debian_names[9]="stretch"
 
-    #Debian_handle_version 7
-    Debian_handle_version 8
+    Debian_handle_version 9
 
     echo "Create Debian package (buildenv17)..."
 

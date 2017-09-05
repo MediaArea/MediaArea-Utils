@@ -76,7 +76,22 @@ function btask.Sources.run () {
     chmod +x CLI_compile.sh
     chmod +x Server_compile.sh
     chmod +x GUI_compile.sh
-    
+
+    sed -i -e '/# Configure zlib/,/cd $Home/d' \
+           -e '/# Configure libxml2/,/cd $Home/d' \
+           -e '/# Configure libxslt/,/cd $Home/d' \
+           -e '/# Configure jansson/,/cd $Home/d' \
+           -e '/# Configure libevent/,/cd $Home/d' \
+           -e '/# Configure sqlite/,/cd $Home/d' \
+           -e '/# Compile zlib/,/cd $Home/d' \
+           -e '/# Compile libxml2/,/cd $Home/d' \
+           -e '/# Compile libxslt/,/cd $Home/d' \
+           -e '/# Compile jansson/,/cd $Home/d' \
+           -e '/# Compile libevent/,/cd $Home/d' \
+           -e '/# Compile sqlite/,/cd $Home/d' \
+           CLI_compile.sh Server_compile.sh GUI_compile.sh
+
+
     cd ..
 
     # Mac

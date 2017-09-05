@@ -113,7 +113,7 @@ function btask.Buildenv_opensuse.run () {
     echo "Generate Opensuse build environment..."
 
     #Opensuse_handle_version "13.2"
-    Opensuse_handle_version "42.1"
+    Opensuse_handle_version "42.3"
 
     echo "Create the Opensuse package (buildenv21)..."
 
