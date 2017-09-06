@@ -130,6 +130,8 @@ function Fedora_handle_version () {
     # Get the vanilla packages
     Mirror=http://download.fedoraproject.org/pub/fedora/linux/releases/$Version/Everything
     Fedora_get_packages x86_64
+    Version=25
+    Mirror=http://download.fedoraproject.org/pub/fedora/linux/releases/$Version/Everything
     Fedora_get_packages i386
 
     # Get the updates packages
@@ -144,8 +146,7 @@ function btask.Buildenv_fedora.run () {
     echo
     echo "Generate Fedora build environment..."
 
-    #Fedora_handle_version 22
-    Fedora_handle_version 24
+    Fedora_handle_version 26
 
     echo "Create Fedora package (buildenv13)..."
 

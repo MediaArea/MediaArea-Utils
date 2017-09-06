@@ -9,10 +9,10 @@
 function Ubuntu_get_packages () {
 
     local Arch=$1
-    #local Updates_mirror=http://archive.ubuntu.com/ubuntu
-    #local Updates_Packages_gz=$Updates_mirror/dists/$Ubuntu_name-updates/main/binary-$Arch/Packages.gz
-    #local Security_mirror=http://security.ubuntu.com/ubuntu
-    #local Security_Packages_gz=$Security_mirror/dists/$Ubuntu_name/main/binary-$Arch/Packages.gz
+    local Updates_mirror=http://archive.ubuntu.com/ubuntu
+    local Updates_Packages_gz=$Updates_mirror/dists/$Ubuntu_name-updates/main/binary-$Arch/Packages.gz
+    local Security_mirror=http://security.ubuntu.com/ubuntu
+    local Security_Packages_gz=$Security_mirror/dists/$Ubuntu_name/main/binary-$Arch/Packages.gz
     local Main_mirror=http://ftp.ubuntu.com/ubuntu
     local Main_Packages_gz=$Main_mirror/dists/$Ubuntu_name/main/binary-$Arch/Packages.gz
     local Universe_mirror=http://ftp.ubuntu.com/ubuntu
@@ -30,26 +30,26 @@ function Ubuntu_get_packages () {
     mkdir -p $Destination
 
     # Get the file Packages.gz for the updates repo
-    #rm -f Updates_packages*
-    #if ! wget -nd -q $Updates_Packages_gz || ! b.path.file? Packages.gz; then
-    #    echo
-    #    echo "Error downloading $Updates_Packages_gz"
-    #    echo
-    #    exit 1
-    #fi
-    #gzip -d Packages.gz
-    #mv Packages Updates_packages-$Version-$Arch
+    rm -f Updates_packages*
+    if ! wget -nd -q $Updates_Packages_gz || ! b.path.file? Packages.gz; then
+        echo
+        echo "Error downloading $Updates_Packages_gz"
+        echo
+        exit 1
+    fi
+    gzip -d Packages.gz
+    mv Packages Updates_packages-$Version-$Arch
 
     # Get the file Packages.gz for the security repo
-    #rm -f Security_packages*
-    #if ! wget -nd -q $Security_Packages_gz || ! b.path.file? Packages.gz; then
-    #    echo
-    #    echo "Error downloading $Security_Packages_gz"
-    #    echo
-    #    exit 1
-    #fi
-    #gzip -d Packages.gz
-    #mv Packages Security_packages-$Version-$Arch
+    rm -f Security_packages*
+    if ! wget -nd -q $Security_Packages_gz || ! b.path.file? Packages.gz; then
+        echo
+        echo "Error downloading $Security_Packages_gz"
+        echo
+        exit 1
+    fi
+    gzip -d Packages.gz
+    mv Packages Security_packages-$Version-$Arch
 
     # Get the file Packages.gz for the main repo
     rm -f Main_packages*
@@ -79,53 +79,53 @@ function Ubuntu_get_packages () {
 
         ## First we try the updates repo
 
-        #Package_URL_part=$(grep -A 100 "^Package: $Package$" Updates_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
+        Package_URL_part=$(grep -A 100 "^Package: $Package$" Updates_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
 
-        #if [[ -n $Package_URL_part ]]; then
+        if [[ -n $Package_URL_part ]]; then
 
-        #    Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
-        #    Package_URL=$Updates_mirror/$Package_URL_part
-    
-        #    # Verbose mode
-        #    echo -n "Downloading (from updates repo) $Package ..."
-        #    if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
-        #        echo
-        #        echo "Error while downloading $Package"
-        #        echo "$Package_URL"
-        #        echo
-        #        rm -f $Destination/index.html
-        #    # Verbose mode
-        #    else
-        #        echo " OK"
-        #    fi
+            Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
+            Package_URL=$Updates_mirror/$Package_URL_part
+
+            # Verbose mode
+            #echo -n "Downloading (from updates repo) $Package ..."
+            if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
+                echo
+                echo "Error while downloading $Package"
+                echo "$Package_URL"
+                echo
+                rm -f $Destination/index.html
+            # Verbose mode
+            #else
+            #    echo " OK"
+            fi
 
         # If the package is not in the updates repo, we try the
         # security repo
-        #else
+        else
 
-        #    Package_URL_part=$(grep -A 100 "^Package: $Package$" Security_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
-    
-        #    if [[ -n $Package_URL_part ]]; then
-    
-        #        Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
-        #        Package_URL=$Security_mirror/$Package_URL_part
-        #
-        #        # Verbose mode
-        #        echo -n "Downloading (from security repo) $Package ..."
-        #        if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
-        #            echo
-        #            echo "Error while downloading $Package"
-        #            echo "$Package_URL"
-        #            echo
-        #            rm -f $Destination/index.html
-        #        # Verbose mode
-        #        else
-        #            echo " OK"
-        #        fi
-    
+            Package_URL_part=$(grep -A 100 "^Package: $Package$" Security_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
+
+            if [[ -n $Package_URL_part ]]; then
+
+                Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
+                Package_URL=$Security_mirror/$Package_URL_part
+
+                # Verbose mode
+                #echo -n "Downloading (from security repo) $Package ..."
+                if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
+                    echo
+                    echo "Error while downloading $Package"
+                    echo "$Package_URL"
+                    echo
+                    rm -f $Destination/index.html
+                # Verbose mode
+                #else
+                #    echo " OK"
+                fi
+
         #    # If the package is neither in the updates or the
         #    # security repo, we try the main repo
-        #    else
+            else
     
                 Package_URL_part=$(grep -A 100 "^Package: $Package$" Main_packages-$Version-$Arch |grep -m1 Filename |cut -d " " -f2)
 
@@ -133,7 +133,7 @@ function Ubuntu_get_packages () {
 
                     Package_name=$(echo $Package_URL_part | awk -F/ '{print $NF}')
                     Package_URL=$Main_mirror/$Package_URL_part
-            
+
                     # Verbose mode
                     #echo -n "Downloading $Package ..."
                     if ! wget -P $Destination -nd -q $Package_URL || ! b.path.file? $Destination/$Package_name; then
@@ -173,13 +173,10 @@ function Ubuntu_get_packages () {
                         #echo "$Package not found neither in updates, security, main or universe repositories."
                         echo "$Package not found neither in main repositories or universe repositories."
                     fi
-
-                #fi
-    
+                fi
             fi
+        fi
 
-        #fi
-    
     done < $List_packages
 
     # Verbose mode
