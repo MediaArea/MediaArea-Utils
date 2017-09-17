@@ -1,23 +1,23 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Repositories</title>
-</head>
-<body>
-<h1>Softwares Repositories</h1>
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block title %}{% trans %}repos.page.title{% endtrans %}{% endblock %}
+{% block description %}{% trans %}about.page.description{% endtrans %}{% endblock %}
+{% block keywords %}{% trans %}about.page.keywords{% endtrans %}{% endblock %}
+
+{% block body %}
+<h1>{% trans %}repos.title{% endtrans %}</h1>
 
 <p>MediaArea softwares repositories are available for automatic update of our softwaresfor the distributions listed below.<br />
 </p>
 
 <p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
 <p>Repositories key fingerprint is: FINGERPRINT</p>
-<p>Up to date packages are: mediainfo, mediainfo-gui, mediaconch, mediaconch-gui, qctools.</p>
+<p>Up to date packages are: mediainfo, mediainfo-gui, mediaconch, mediaconch-gui, qctools, qcli.</p>
 
 <div id='rpm'>
 <h2>Commands for rpm based distributions</h2>
 <p>For releases repository, download and install <a href='RPM_PKG_URL'>this package</a><br/>or type the following command in a root terminal:</p>
-<table border="1">
+<table class="download table table-bordered table-condensed">
 <thead>
   <tr class="table-header">
     <th style='width: 8%'>Repository</th>
@@ -27,19 +27,20 @@
 <tbody>
   <tr>
     <th>Releases</th>
-    <td>"RPM_COMMAND_RELEASES"</td>
+    <td><pre>"RPM_COMMAND_RELEASES"</pre></td>
   </tr>
   <tr>
     <th>Snapshots</th>
-    <td>"RPM_COMMAND_SNAPSHOTS"</td>
+    <td><pre>"RPM_COMMAND_SNAPSHOTS"</pre></td>
   </tr>
 </tbody>
 </table>
+</div>
 
 <div id='deb'>
 <h2>Commands for deb based distributions</h2>
-<p>For releases repository, download and install <a href='DEB_PKG_URL'>this package</a><br/>or type the following command in a root terminal:</p>
-<table border="1">
+<p>For releases repository, download and install <a href='DEB_PKG_URL'>this package</a> (don't forget to do 'apt-get update' before trying to install something)<br/> or type the following command in a root terminal: </p>
+<table class="download table table-bordered table-condensed">
 <thead>
 <tr class="table-header">
     <th style='width: 8%'>Repository</th>
@@ -49,11 +50,11 @@
 <tbody>
 <tr>
     <th>Releases</th>
-    <td>"DEB_COMMAND_RELEASES"</td>
+    <td><pre>"DEB_COMMAND_RELEASES"</pre></td>
 </tr>
 <tr>
     <th>Snapshots</th>
-    <td>"DEB_COMMAND_SNAPSHOTS"</td>
+    <td><pre>"DEB_COMMAND_SNAPSHOTS"</pre></td>
 </tr>
 </tbody>
 </table>

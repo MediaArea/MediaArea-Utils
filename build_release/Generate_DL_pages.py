@@ -216,7 +216,7 @@ def Repos():
                             .replace("VERSION", Repo_config["Repo_version"]) \
                             .replace("RELEASE", "snapshots"))
 
-    Filename = "Repos.html"
+    Filename = "repos.html.twig"
 
     Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
     Destination.write(Header)
@@ -260,7 +260,7 @@ def Repos():
         Destination.write(Template)
         Destination.write("</div>\n")
 
-    Destination.write("</body>\n</html>\n")
+    Destination.write("{% endblock %}")
     Destination.close()
 
 ##################################################################
