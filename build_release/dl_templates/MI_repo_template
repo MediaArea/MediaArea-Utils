@@ -1,4 +1,4 @@
-<table border="1">
+<table class="download table table-bordered table-condensed">
 <thead>
 <tr class="table-header">
     <th style='width: 20%'>Version</th>
