@@ -71,6 +71,21 @@ function _mac_gui () {
     File="AVIMetaEdit_GUI_${Version_new}_Mac.dmg"
     test -e "$AMG_dir"/$File && rm "$AMG_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$AMG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    if ! b.opt.has_flag? --snapshot; then
+        # Prepare xcode archive
+        $SSHP "cd $Mac_working_dir/AVIMetaEdit_GUI_GNU_FromSource/Project/QtCreator
+                make distclean
+
+                cd $Mac_working_dir/AVIMetaEdit_GUI_GNU_FromSource
+                export PATH=~/Qt/5.6/clang_64/bin:\$PATH
+                sed -i '' 's/.\\/prepare/prepare MACSTORE=1/g' GUI_compile.sh
+                ./GUI_compile.sh
+
+                $Key_chain
+                cd AVIMetaEdit_GUI_GNU_FromSource/Project/Mac
+                ./Make_MC_xcarchive.sh \"AVI MetaEdit\" $Version_new net.mediaarea.avimetaedit.mac $Dev_team"
+    fi
 }
 
 function _mac () {

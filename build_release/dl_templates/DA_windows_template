@@ -1,22 +1,23 @@
 <tr>
-    <th rowspan="3">64 bit</th>
+    <th> rowspan="4">OS_TITLE</th>
+    <th rowspan="2">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/AVPS_DV_Analyzer_GUI_DA_VERSION_Windows_x64.exe">vDA_VERSION</a> <small>(<a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/AVPS_DV_Analyzer_GUI_DA_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_x64.exe">vDA_VERSION</a> <small>(<a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
     <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/dvanalyzer/DA_VERSION/AVPS_DV_Analyzer_CLI_DA_VERSION_Windows_x64.zip">vDA_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer/DA_VERSION/DVAnalyzer_CLI_DA_VERSION_Windows_x64.zip">vDA_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <th rowspan="3">32 bit</th>
+    <th rowspan="2">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/AVPS_DV_Analyzer_GUI_DA_VERSION_Windows_i386.exe">vDA_VERSION</a> <small> (<a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/AVPS_DV_Analyzer_GUI_DA_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_i386.exe">vDA_VERSION</a> <small> (<a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
     <td></td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/dvanalyzer/DA_VERSION/AVPS_DV_Analyzer_CLI_DA_VERSION_Windows_i386.zip">vDA_VERSION</a></td>
+    <td><a href="//mediaarea.net/download/binary/dvanalyzer/DA_VERSION/DVAnalyzer_CLI_DA_VERSION_Windows_i386.zip">vDA_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
