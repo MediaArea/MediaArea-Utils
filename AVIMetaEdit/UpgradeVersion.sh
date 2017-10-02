@@ -42,6 +42,9 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Common/Common_About.cpp"
+    Files[((index++))]="Project/MSVC2015/CLI/AVI_MetaEdit_CLI.rc"
+    Files[((index++))]="Project/MSVC2015/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/QtCreator/avimetaedit-gui.rc"
     Files[((index++))]="Source/Install/AVI_MetaEdit_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/AVI_MetaEdit_GUI_Windows_x64.nsi"
 
@@ -57,7 +60,7 @@ function btask.UpgradeVersion.run () {
     unset -v Files
     index=0
     Files[((index++))]="Project/MSVC2015/CLI/AVI_MetaEdit_CLI.rc"
-    Files[((index++))]="Project/MSVC2015/AVCI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2015/GUI/AVI_MetaEdit_GUI.rc"
     Files[((index++))]="Project/QtCreator/avimetaedit-gui.rc"
 
     for File in ${Files[@]}

@@ -37,10 +37,14 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/bwfmetaedit.spec"
     Files[((index++))]="Project/GNU/bwfmetaedit.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="Project/OBS/deb7.dsc"
     Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Source/Common/Common_About.cpp"
+    Files[((index++))]="Project/MSVC2015/CLI/BWF_MetaEdit_CLI.rc"
+    Files[((index++))]="Project/MSVC2015/GUI/BWF_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/QtCreator/bwfmetaedit-gui.rc"
     Files[((index++))]="Source/Install/BWF_MetaEdit_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/BWF_MetaEdit_GUI_Windows_x64.nsi"
 
@@ -55,10 +59,9 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version AA,BB,CC,DD ..."
     unset -v Files
     index=0
-    Files[((index++))]="Project/MSVC2010/CLI/BWF_MetaEdit_CLI.rc"
-    Files[((index++))]="Project/MSVC2010/GUI/BWF_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2015/CLI/BWF_MetaEdit_CLI.rc"
     Files[((index++))]="Project/MSVC2015/GUI/BWF_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/QtCreator/bwfmetaedit-gui.rc"
 
     for File in ${Files[@]}
     do

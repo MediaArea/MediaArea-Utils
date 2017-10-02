@@ -62,15 +62,30 @@ function _mac_gui () {
            ln -s $Mac_qt_path/clang_64 qt
 
            AVPS_DV_Analyzer/Project/Mac/BR_extension_GUI.sh
-           test -x AVPS_DV_Analyzer/Project/GNU/GUI/dvanalyzer-gui || exit 1
+           test -x \"AVPS_DV_Analyzer/Project/QtCreator/DV Analyzer.app/Contents/MacOS/DV Analyzer\" || exit 1
            $Key_chain
            cd AVPS_DV_Analyzer/Project/Mac
-           ./mkdmg.sh DVAnalyzer gui $Version_new"
+           ./mkdmg.sh \"DV Analyzer\" gui $Version_new"
 
     DLPath="$Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/Mac"
     File="DVAnalyzer_GUI_${Version_new}_Mac.dmg"
     test -e "$DAG_dir"/$File && rm "$DAG_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$DAG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
+
+    if ! b.opt.has_flag? --snapshot; then
+        # Prepare xcode archive
+        $SSHP "cd $Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/QtCreator
+                make distclean
+
+                cd $Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource
+                export PATH=~/Qt/5.6/clang_64/bin:\$PATH
+                sed -i '' 's/STATIC_LIBS=1/STATICLIBS=1 MACSTORE=1/g' GUI_compile.sh
+                ./GUI_compile.sh
+
+                $Key_chain
+                cd DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/Mac
+                ./Make_MC_xcarchive.sh \"DV Analyzer\" $Version_new net.mediaarea.dvanalyzer.mac $Dev_team"
+    fi
 }
 
 function _mac () {

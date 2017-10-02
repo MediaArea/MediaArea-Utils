@@ -111,7 +111,7 @@ function _unix_gui () {
     cd DVAnalyzer_GUI_GNU_FromSource
 
     cp -r "$Source" AVPS_DV_Analyzer
-    mv AVPS_DV_Analyzer/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    mv AVPS_DV_Analyzer/Project/QtCreator/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x AVPS_DV_Analyzer/Project/GNU/GUI/autogen.sh
     chmod +x AVPS_DV_Analyzer/Project/Mac/BR_extension_GUI.sh
@@ -136,12 +136,8 @@ function _unix_gui () {
         cd ..
     cd ..
 
-    echo "3: Autotools..."
-    cd AVPS_DV_Analyzer/Project/GNU/GUI
-    ./autogen.sh > /dev/null 2>&1
-
     if $MakeArchives; then
-        echo "4: compressing..."
+        echo "3: compressing..."
         cd "$WDir"/DA
         if ! b.path.dir? ../archives; then
             mkdir ../archives

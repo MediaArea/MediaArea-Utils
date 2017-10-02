@@ -122,7 +122,7 @@ function _unix_gui () {
     cd BWFMetaEdit_GUI_GNU_FromSource
 
     cp -r "$Source"/* .
-    mv Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    mv Project/QtCreator/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
     chmod +x Project/GNU/GUI/autogen.sh
     chmod +x Project/Mac/BR_extension_GUI.sh
@@ -138,12 +138,8 @@ function _unix_gui () {
         rm -fr MSVC2010 MSVC2015 OBS
     cd ..
 
-    echo "3: Autotools..."
-    cd Project/GNU/GUI
-    ./autogen.sh > /dev/null 2>&1
-
     if $MakeArchives; then
-        echo "4: compressing..."
+        echo "3: compressing..."
         cd "$WDir"/BM
         if ! b.path.dir? ../archives; then
             mkdir ../archives
