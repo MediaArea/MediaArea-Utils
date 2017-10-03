@@ -17,7 +17,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         Source="$SDir"
     else
-        Source="$WDir"/repos/MOV_MetaEdit
+        Source="$WDir"/repos/MOVMetaEdit
         getRepo $Repo "$Source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
@@ -25,10 +25,6 @@ function _get_source () {
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
-
-    # Dependency : ZenLib
-    cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" $ZL_gs -${Target} -na
 }
 
 function _source_package () {
@@ -80,33 +76,25 @@ function _unix_cli () {
     mkdir MOVMetaEdit_CLI_GNU_FromSource
     cd MOVMetaEdit_CLI_GNU_FromSource
 
-    cp -r "$Source" .
-    mv MOV_MetaEdit/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
+    cp -r "$Source"/* .
+    mv Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
-    chmod +x MOV_MetaEdit/Project/GNU/CLI/autogen.sh
-    chmod +x MOV_MetaEdit/Project/Mac/BR_extension_CLI.sh
-    chmod +x MOV_MetaEdit/Project/Mac/mkdmg.sh
-
-    # Dependency : ZenLib
-    cp -r "$WDir"/ZL/ZenLib_compilation_under_unix ZenLib
+    chmod +x Project/GNU/CLI/autogen.sh
+    chmod +x Project/Mac/BR_extension_CLI.sh
+    chmod +x Project/Mac/mkdmg.sh
 
     echo "2: remove what isn’t wanted..."
-    pushd MOV_MetaEdit
-        rm -fr .git*
-        rm -fr debian
-        pushd Project
-            rm -fr Qt
-            rm -f GNU/movmetaedit.dsc GNU/movmetaedit.spec GNU/PKGBUILD
-            rm -fr MSVC2015
-        popd
-        rm -fr Source/GUI
+    rm -fr .git*
+    rm -fr debian
+    pushd Project
+        rm -fr Qt
+        rm -f GNU/movmetaedit.dsc GNU/movmetaedit.spec GNU/PKGBUILD
+        rm -fr MSVC2015
     popd
+    rm -fr Source/GUI
 
     echo "3: Autotools..."
-    pushd ZenLib/Project/GNU/Library
-    ./autogen.sh > /dev/null 2>&1
-    popd
-    pushd MOV_MetaEdit/Project/GNU/CLI
+    pushd Project/GNU/CLI
     ./autogen.sh > /dev/null 2>&1
     popd
 
@@ -133,20 +121,18 @@ function _unix_gui () {
     mkdir MOVMetaEdit_GUI_GNU_FromSource
     cd MOVMetaEdit_GUI_GNU_FromSource
 
-    cp -r "$Source"/ .
-    mv MOV_MetaEdit/Project/Qt/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    cp -r "$Source"/* .
+    mv Project/Qt/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
-    chmod +x MOV_MetaEdit/Project/Mac/BR_extension_GUI.sh
-    chmod +x MOV_MetaEdit/Project/Mac/mkdmg.sh
+    chmod +x Project/Mac/BR_extension_GUI.sh
+    chmod +x Project/Mac/mkdmg.sh
 
     echo "2: remove what isn’t wanted..."
-    pushd MOV_MetaEdit
-        rm -fr .git*
-        rm -fr debian
-        pushd Project
-            rm -fr GNU/
-            rm -fr MSVC2015
-        popd
+    rm -fr .git*
+    rm -fr debian
+    pushd Project
+        rm -fr GNU/
+        rm -fr MSVC2015
     popd
 
     ./autogen.sh > /dev/null 2>&1
@@ -164,43 +150,6 @@ function _unix_gui () {
 
 }
 
-function _all_inclusive () {
-
-    echo
-    echo "Generate the MM all inclusive tarball:"
-    echo "1: copy what is wanted..."
-
-    cd "$WDir"/MM
-    mkdir movmetaedit_AllInclusive
-    cd movmetaedit_AllInclusive
-
-    cp -r "$Source" MOV_MetaEdit
-
-    # Dependencies
-    # Dependency : ZenLib
-    cp -r "$WDir"/ZL/ZenLib_AllInclusive ZenLib
-
-    echo "2: configure dependencies for use static runtime..."
-    find ZenLib MOV_MetaEdit -type f -name "*.vcxproj" -exec \
-         sed -i \
-             -e 's/MultiThreadedDebugDLL/MultiThreadedDebug/g' \
-             -e 's/MultiThreadedDLL/MultiThreaded/g' {} \;
-
-    echo "3: remove what isn’t wanted..."
-    rm -fr MOV_MetaEdit/.git*
-    rm -fr MOV_MetaEdit/debian
-
-    if $MakeArchives; then
-        echo "4: compressing..."
-        cd "$WDir"/MM
-        if ! b.path.dir? ../archives; then
-            mkdir ../archives
-        fi
-        7za a -t7z -mx=9 -bd ../archives/movmetaedit${Version}_AllInclusive.7z movmetaedit_AllInclusive >/dev/null
-    fi
-
-}
-
 function btask.PrepareSource.run () {
 
     local Source
@@ -209,7 +158,7 @@ function btask.PrepareSource.run () {
 
     # Clean up
     rm -fr archives
-    rm -fr repos/MOV_MetaEdit
+    rm -fr repos/MOVMetaEdit
     rm -fr "$WDir"/MM
     mkdir "$WDir"/MM
 
@@ -219,17 +168,13 @@ function btask.PrepareSource.run () {
         Version=_$(cat "$Source/Project/version.txt")
     fi
 
-    if [ "$Target" = "sa" ] || [ "$Target" = "all" ]; then
+    if [ "$Target" = "sa" ] || [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
         _source_package
     fi
 
     if [ "$Target" = "cu" ] || [ "$Target" = "all" ]; then
         _unix_cli
         _unix_gui
-    fi
-
-    if [ "$Target" = "ai" ] || [ "$Target" = "all" ]; then
-        _all_inclusive
     fi
 
     if $CleanUp; then

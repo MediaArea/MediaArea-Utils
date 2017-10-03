@@ -187,9 +187,9 @@ function _windows () {
                cmd /s /c \"Release_CLI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWF_MetaEdit_CLI_Windows_i386_DebugInfo.zip \`
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWFMetaEdit_CLI_Windows_i386_DebugInfo.zip \`
                                                  \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\CLI\\Win32\\Release\\bwfmetaedit.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWF_MetaEdit_CLI_Windows_x64_DebugInfo.zip \`
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWFMetaEdit_CLI_Windows_x64_DebugInfo.zip \`
                                                   \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\CLI\\x64\\Release\\bwfmetaedit.pdb\"
            }
 
@@ -203,9 +203,9 @@ function _windows () {
            MSBuild /p:Configuration=Release\`;Platform=Win32
            MSBuild /p:Configuration=Release\`;Platform=x64
 
-           If ((Test-Path \"Win32\\Release\\BWF_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\BWF_MetaEdit_GUI.exe\")) {
+           If ((Test-Path \"Win32\\Release\\BWFMetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\BWFMetaEdit_GUI.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWF_MetaEdit_GUI.exe\" \"x64\\Release\\BWF_MetaEdit_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d BWFMetaEdit /du http://mediaarea.net \"Win32\\Release\\BWFMetaEdit_GUI.exe\" \"x64\\Release\\BWFMetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release\"
@@ -213,13 +213,13 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWF_MetaEdit_GUI_Windows_i386_DebugInfo.zip \`
-                                            \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\GUI\\Win32\\Release\\BWF_MetaEdit_GUI.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWF_MetaEdit_GUI_Windows_x64_DebugInfo.zip \`
-                                             \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\GUI\\x64\\Release\\BWF_MetaEdit_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWFMetaEdit_GUI_Windows_i386_DebugInfo.zip \`
+                                            \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\GUI\\Win32\\Release\\BWFMetaEdit_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 BWFMetaEdit_GUI_Windows_x64_DebugInfo.zip \`
+                                             \"$Win_working_dir\\$Build_dir\\bwfmetaedit\\Project\\MSVC2015\\GUI\\x64\\Release\\BWFMetaEdit_GUI.pdb\"
 
                # Sign installers
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"BWFMetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"BWFMetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }
 
            # Restore env
@@ -230,53 +230,53 @@ function _windows () {
     echo "Retreive files"
     DLPath="$Win_working_dir\\$Build_dir\\bwfmetaedit\\Release"
 
-    File="BWF_MetaEdit_CLI_${Version_new}_Windows_i386.zip"
+    File="BWFMetaEdit_CLI_${Version_new}_Windows_i386.zip"
     test -e "$BMB_dir/$File" && rm "$BMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_CLI_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_CLI_Windows_i386.zip" \
                          "$BMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="BWFMetaEdit_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$BMB_dir/$File" && rm "$BMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_CLI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_CLI_Windows_i386_DebugInfo.zip" \
                          "$BMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_CLI_${Version_new}_Windows_x64.zip"
+    File="BWFMetaEdit_CLI_${Version_new}_Windows_x64.zip"
     test -e "$BMB_dir/$File" && rm "$BMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_CLI_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_CLI_Windows_x64.zip" \
                          "$BMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="BWFMetaEdit_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$BMB_dir/$File" && rm "$BMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_CLI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_CLI_Windows_x64_DebugInfo.zip" \
                          "$BMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
     test -e "$BMG_dir/$File" && rm "$BMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$MMG_dir/$File" && rm "$MMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_GUI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_GUI_Windows_i386_DebugInfo.zip" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
     test -e "$BMG_dir/$File" && rm "$BMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$BMG_dir/$File" && rm "$BMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWF_MetaEdit_GUI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\BWFMetaEdit_GUI_Windows_x64_DebugInfo.zip" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_i386.exe"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_i386.exe"
     test -e "$BMG_dir/$File" && rm "$BMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="BWF_MetaEdit_GUI_${Version_new}_Windows_x64.exe"
+    File="BWFMetaEdit_GUI_${Version_new}_Windows_x64.exe"
     test -e "$BMG_dir/$File" && rm "$BMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$BMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
@@ -375,21 +375,21 @@ function btask.BuildRelease.run () {
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         # Made a copy, because UV.sh -sp modify the files in place
-        cp -r "$Source_dir" "$BM_tmp"/upgrade_version/BWF_MetaEdit
+        cp -r "$Source_dir" "$BM_tmp"/upgrade_version/BWFMetaEdit
     else
         pushd "$BM_tmp"/upgrade_version
-        git clone "$Repo" BWF_MetaEdit
+        git clone "$Repo" BWFMetaEdit
         popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        pushd  "$BM_tmp"/upgrade_version/BWF_MetaEdit
+        pushd  "$BM_tmp"/upgrade_version/BWFMetaEdit
         git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
         popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
-        Version_new="$(cat $BM_tmp/upgrade_version/BWF_MetaEdit/Project/version.txt).$Date"
+        Version_new="$(cat $BM_tmp/upgrade_version/BWFMetaEdit/Project/version.txt).$Date"
     else
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
@@ -399,7 +399,7 @@ function btask.BuildRelease.run () {
         UV_flags="-c"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p bm -n $Version_new $UV_flags -sp "$BM_tmp"/upgrade_version/BWF_MetaEdit
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p bm -n $Version_new $UV_flags -sp "$BM_tmp"/upgrade_version/BWFMetaEdit
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
@@ -413,7 +413,7 @@ function btask.BuildRelease.run () {
     fi
 
     # Do NOT remove -nc, mandatory for the .dsc and .spec
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p bm -v $Version_new -wp "$BM_tmp"/prepare_source -sp "$BM_tmp"/upgrade_version/BWF_MetaEdit -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p bm -v $Version_new -wp "$BM_tmp"/prepare_source -sp "$BM_tmp"/upgrade_version/BWFMetaEdit -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then

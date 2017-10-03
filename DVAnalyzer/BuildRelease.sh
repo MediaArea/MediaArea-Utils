@@ -25,14 +25,14 @@ function _mac_cli () {
     $SSHP "cd $Mac_working_dir
            tar xf DVAnalyzer_CLI_${Version_new}_GNU_FromSource.tar.xz
            cd DVAnalyzer_CLI_GNU_FromSource
-           AVPS_DV_Analyzer/Project/Mac/BR_extension_CLI.sh
-           test -x AVPS_DV_Analyzer/Project/GNU/CLI/dvanalyzer || exit 1
-           file AVPS_DV_Analyzer/Project/GNU/CLI/dvanalyzer | grep \"Mach-O universal binary with 2 architectures\" || exit 1
+           DVAnalyzer/Project/Mac/BR_extension_CLI.sh
+           test -x DVAnalyzer/Project/GNU/CLI/dvanalyzer || exit 1
+           file DVAnalyzer/Project/GNU/CLI/dvanalyzer | grep \"Mach-O universal binary with 2 architectures\" || exit 1
            $Key_chain
-           cd AVPS_DV_Analyzer/Project/Mac
+           cd DVAnalyzer/Project/Mac
            ./mkdmg.sh DVAnalyzer cli $Version_new"
 
-    DLPath="$Mac_working_dir/DVAnalyzer_CLI_GNU_FromSource/AVPS_DV_Analyzer/Project/Mac"
+    DLPath="$Mac_working_dir/DVAnalyzer_CLI_GNU_FromSource/DVAnalyzer/Project/Mac"
     File="DVAnalyzer_CLI_${Version_new}_Mac.dmg"
     test -e "$DAB_dir"/$File && rm "$DAB_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$DAB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
@@ -61,29 +61,29 @@ function _mac_gui () {
            export PATH=$Mac_qt_path/clang_64/bin:\$PATH
            ln -s $Mac_qt_path/clang_64 qt
 
-           AVPS_DV_Analyzer/Project/Mac/BR_extension_GUI.sh
-           test -x \"AVPS_DV_Analyzer/Project/QtCreator/DV Analyzer.app/Contents/MacOS/DV Analyzer\" || exit 1
+           DVAnalyzer/Project/Mac/BR_extension_GUI.sh
+           test -x \"DVAnalyzer/Project/QtCreator/DV Analyzer.app/Contents/MacOS/DV Analyzer\" || exit 1
            $Key_chain
-           cd AVPS_DV_Analyzer/Project/Mac
+           cd DVAnalyzer/Project/Mac
            ./mkdmg.sh \"DV Analyzer\" gui $Version_new"
 
-    DLPath="$Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/Mac"
+    DLPath="$Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/DVAnalyzer/Project/Mac"
     File="DVAnalyzer_GUI_${Version_new}_Mac.dmg"
     test -e "$DAG_dir"/$File && rm "$DAG_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$DAG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
 
     if ! b.opt.has_flag? --snapshot; then
         # Prepare xcode archive
-        $SSHP "cd $Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/QtCreator
+        $SSHP "cd $Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource/DVAnalyzer/Project/QtCreator
                 make distclean
 
                 cd $Mac_working_dir/DVAnalyzer_GUI_GNU_FromSource
                 export PATH=~/Qt/5.6/clang_64/bin:\$PATH
-                sed -i '' 's/STATIC_LIBS=1/STATICLIBS=1 MACSTORE=1/g' GUI_compile.sh
+                sed -i '' 's/STATIC_LIBS=1/STATIC_LIBS=1 MACSTORE=1/g' GUI_compile.sh
                 ./GUI_compile.sh
 
                 $Key_chain
-                cd DVAnalyzer_GUI_GNU_FromSource/AVPS_DV_Analyzer/Project/Mac
+                cd DVAnalyzer_GUI_GNU_FromSource/DVAnalyzer/Project/Mac
                 ./Make_MC_xcarchive.sh \"DV Analyzer\" $Version_new net.mediaarea.dvanalyzer.mac $Dev_team"
     fi
 }
@@ -188,7 +188,7 @@ function _windows () {
            # Compile CLI
            #
 
-           Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\"
+           Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\CLI\"
            MSBuild /p:Configuration=Release\`;Platform=Win32
            MSBuild /p:Configuration=Release\`;Platform=x64
 
@@ -197,43 +197,43 @@ function _windows () {
                signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\dvanalyzer.exe\" \"x64\\Release\\dvanalyzer.exe\"
 
                # Make archives
-               Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
+               Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Release\"
                cmd /s /c \"Release_CLI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_CLI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_CLI_Windows_i386_DebugInfo.zip \`
-              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\\Win32\\Release\\AVPS_DV_Analyzer_CLI.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_CLI_Windows_x64_DebugInfo.zip \`
-               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\CLI\\x64\\Release\\AVPS_DV_Analyzer_CLI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 DVAnalyzer_CLI_Windows_i386_DebugInfo.zip \`
+              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\CLI\\Win32\\Release\\DVAnalyzer_CLI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 DVAnalyzer_CLI_Windows_x64_DebugInfo.zip \`
+               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\CLI\\x64\\Release\\DVAnalyzer_CLI.pdb\"
            }
 
            #
            # Compile GUI
            #
 
-           Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\"
+           Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\GUI\"
            cmd /s /c \"qt_update.bat 2>&1\"
            MSBuild /p:Configuration=Release\`;Platform=Win32
            MSBuild /p:Configuration=Release\`;Platform=x64
 
-           If ((Test-Path \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\") -And (Test-Path \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\")) {
+           If ((Test-Path \"Win32\\Release\\DVAnalyzer_GUI.exe\") -And (Test-Path \"x64\\Release\\DVAnalyzer_GUI.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\AVPS_DV_Analyzer_GUI.exe\" \"x64\\Release\\AVPS_DV_Analyzer_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"Win32\\Release\\DVAnalyzer_GUI.exe\" \"x64\\Release\\DVAnalyzer_GUI.exe\"
 
                # Make installers and archives
-               Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release\"
+               Set-Location \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Release\"
                cmd /s /c \"Release_GUI_Windows_i386.bat 2>&1\"
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_GUI_Windows_i386_DebugInfo.zip \`
-              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\\Win32\\Release\\AVPS_DV_Analyzer_GUI.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVPS_DV_Analyzer_GUI_Windows_x64_DebugInfo.zip \`
-               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Project\\MSVC2015\\GUI\\x64\\Release\\AVPS_DV_Analyzer_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 DVAnalyzer_GUI_Windows_i386_DebugInfo.zip \`
+              \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\GUI\\Win32\\Release\\DVAnalyzer_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 DVAnalyzer_GUI_Windows_x64_DebugInfo.zip \`
+               \"$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Project\\MSVC2015\\GUI\\x64\\Release\\DVAnalyzer_GUI.pdb\"
 
                # Sign installers
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe\" \"AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"DVAnalyzer_GUI_${Version_new}_Windows_i386.exe\" \"DVAnalyzer_GUI_${Version_new}_Windows_x64.exe\"
            }
 
            # Restore env
@@ -242,55 +242,55 @@ function _windows () {
 
     # Retrieve files
     echo "Retreive files"
-    DLPath="$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\AVPS_DV_Analyzer\\Release"
+    DLPath="$Win_working_dir\\$Build_dir\\dvanalyzer_AllInclusive\\DVAnalyzer\\Release"
 
-    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_i386.zip"
+    File="DVAnalyzer_CLI_${Version_new}_Windows_i386.zip"
     test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_CLI_Windows_i386.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="DVAnalyzer_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_CLI_Windows_i386_DebugInfo.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_x64.zip"
+    File="DVAnalyzer_CLI_${Version_new}_Windows_x64.zip"
     test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_CLI_Windows_x64.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="DVAnalyzer_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$DAB_dir/$File" && rm "$DAB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_CLI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_CLI_Windows_x64_DebugInfo.zip" \
                          "$DAB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_i386_WithoutInstaller.7z"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_i386_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_GUI_Windows_i386_WithoutInstaller.7z" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_GUI_Windows_i386_DebugInfo.zip" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_x64_WithoutInstaller.7z"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_x64_WithoutInstaller.7z" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_GUI_Windows_x64_WithoutInstaller.7z" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVPS_DV_Analyzer_GUI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\DVAnalyzer_GUI_Windows_x64_DebugInfo.zip" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_i386.exe"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_i386.exe"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVPS_DV_Analyzer_GUI_${Version_new}_Windows_x64.exe"
+    File="DVAnalyzer_GUI_${Version_new}_Windows_x64.exe"
     test -e "$DAG_dir/$File" && rm "$DAG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$DAG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
@@ -388,21 +388,21 @@ function btask.BuildRelease.run () {
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         # Made a copy, because UV.sh -sp modify the files in place
-        cp -r "$Source_dir" "$DA_tmp"/upgrade_version/DV_Analyzer
+        cp -r "$Source_dir" "$DA_tmp"/upgrade_version/DVAnalyzer
     else
         pushd "$DA_tmp"/upgrade_version
-        git clone "$Repo" DV_Analyzer
+        git clone "$Repo" DVAnalyzer
         popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        pushd  "$DA_tmp"/upgrade_version/DV_Analyzer
+        pushd  "$DA_tmp"/upgrade_version/DVAnalyzer
         git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
         popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
-        Version_new="$(cat $DA_tmp/upgrade_version/DV_Analyzer/Project/version.txt).$Date"
+        Version_new="$(cat $DA_tmp/upgrade_version/DVAnalyzer/Project/version.txt).$Date"
     else
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
@@ -412,7 +412,7 @@ function btask.BuildRelease.run () {
         UV_flags="-c"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p da -n $Version_new $UV_flags -sp "$DA_tmp"/upgrade_version/DV_Analyzer
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p da -n $Version_new $UV_flags -sp "$DA_tmp"/upgrade_version/DVAnalyzer
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
@@ -426,7 +426,7 @@ function btask.BuildRelease.run () {
     fi
 
     # Do NOT remove -nc, mandatory for the .dsc and .spec
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p da -v $Version_new -wp "$DA_tmp"/prepare_source -sp "$DA_tmp"/upgrade_version/DV_Analyzer $PS_target -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p da -v $Version_new -wp "$DA_tmp"/prepare_source -sp "$DA_tmp"/upgrade_version/DVAnalyzer $PS_target -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ]; then
         if b.opt.has_flag? --log; then

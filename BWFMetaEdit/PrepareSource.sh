@@ -17,7 +17,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         Source="$SDir"
     else
-        Source="$WDir"/repos/BWF_MetaEdit
+        Source="$WDir"/repos/BWFMetaEdit
         getRepo $Repo "$Source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
@@ -159,7 +159,7 @@ function btask.PrepareSource.run () {
 
     # Clean up
     rm -fr archives
-    rm -fr repos/BWF_MetaEdit
+    rm -fr repos/BWFMetaEdit
     rm -fr "$WDir"/BM
     mkdir "$WDir"/BM
 

@@ -36,22 +36,22 @@ function project_get () {
     if [ "$Project" = "da" ] || [ "$Project" = "DA" ] || [ "$Project" = "DVAnalyzer" ]; then
         Project=DVAnalyzer
         Dirname="dvanalyzer"
-        Repo="https://github.com/MediaArea/DV_Analyzer.git"
+        Repo="https://github.com/MediaArea/DVAnalyzer.git"
     fi
     if [ "$Project" = "am" ] || [ "$Project" = "AM" ] || [ "$Project" = "AVIMetaEdit" ]; then
         Project=AVIMetaEdit
         Dirname="avimetaedit"
-        Repo="https://github.com/g-maxime/AVI_MetaEdit.git"
+        Repo="https://github.com/MediaArea/AVIMetaEdit.git"
     fi
     if [ "$Project" = "bm" ] || [ "$Project" = "BM" ] || [ "$Project" = "BWFMetaEdit" ]; then
         Project=BWFMetaEdit
         Dirname="bwfmetaedit"
-        Repo="https://github.com/MediaArea/BWF_MetaEdit.git"
+        Repo="https://github.com/MediaArea/BWFMetaEdit.git"
     fi
     if [ "$Project" = "mm" ] || [ "$Project" = "MM" ] || [ "$Project" = "MOVMetaEdit" ]; then
         Project=MOVMetaEdit
         Dirname="movmetaedit"
-        Repo="https://github.com/MediaArea/MOV_MetaEdit.git"
+        Repo="https://github.com/MediaArea/MOVMetaEdit.git"
     fi
 
     if [ $(b.opt.get_opt --repo) ]; then
