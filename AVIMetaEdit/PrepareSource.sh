@@ -17,7 +17,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         Source="$SDir"
     else
-        Source="$WDir"/repos/AVI_MetaEdit
+        Source="$WDir"/repos/AVIMetaEdit
         getRepo $Repo "$Source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
@@ -158,7 +158,7 @@ function btask.PrepareSource.run () {
 
     # Clean up
     rm -fr archives
-    rm -fr repos/AVI_MetaEdit
+    rm -fr repos/AVIMetaEdit
     rm -fr "$WDir"/AM
     mkdir "$WDir"/AM
 

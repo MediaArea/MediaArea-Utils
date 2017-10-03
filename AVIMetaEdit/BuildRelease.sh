@@ -186,9 +186,9 @@ function _windows () {
                cmd /s /c \"Release_CLI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_CLI_Windows_i386_DebugInfo.zip \`
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVIMetaEdit_CLI_Windows_i386_DebugInfo.zip \`
                                                  \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\CLI\\Win32\\Release\\avimetaedit.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_CLI_Windows_x64_DebugInfo.zip \`
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVIMetaEdit_CLI_Windows_x64_DebugInfo.zip \`
                                                   \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\CLI\\x64\\Release\\avimetaedit.pdb\"
            }
 
@@ -202,9 +202,9 @@ function _windows () {
            MSBuild /p:Configuration=Release\`;Platform=Win32
            MSBuild /p:Configuration=Release\`;Platform=x64
 
-           If ((Test-Path \"Win32\\Release\\AVI_MetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\AVI_MetaEdit_GUI.exe\")) {
+           If ((Test-Path \"Win32\\Release\\AVIMetaEdit_GUI.exe\") -And (Test-Path \"x64\\Release\\AVIMetaEdit_GUI.exe\")) {
                # Sign binaries
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\AVI_MetaEdit_GUI.exe\" \"x64\\Release\\AVI_MetaEdit_GUI.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d AVIMetaEdit /du http://mediaarea.net \"Win32\\Release\\AVIMetaEdit_GUI.exe\" \"x64\\Release\\AVIMetaEdit_GUI.exe\"
 
                # Make installers and archives
                Set-Location \"$Win_working_dir\\$Build_dir\\avimetaedit\\Release\"
@@ -212,13 +212,13 @@ function _windows () {
                cmd /s /c \"Release_GUI_Windows_x64.bat 2>&1\"
 
               # Make DebugInfo archive
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_GUI_Windows_i386_DebugInfo.zip \`
-                                            \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\Win32\\Release\\AVI_MetaEdit_GUI.pdb\"
-              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVI_MetaEdit_GUI_Windows_x64_DebugInfo.zip \`
-                                             \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\x64\\Release\\AVI_MetaEdit_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVIMetaEdit_GUI_Windows_i386_DebugInfo.zip \`
+                                            \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\Win32\\Release\\AVIMetaEdit_GUI.pdb\"
+              $Win_working_dir\\$Build_dir\\MediaArea-Utils-Binaries\\Windows\\7-Zip\\7z a -r -tzip -mx9 AVIMetaEdit_GUI_Windows_x64_DebugInfo.zip \`
+                                             \"$Win_working_dir\\$Build_dir\\avimetaedit\\Project\\MSVC2015\\GUI\\x64\\Release\\AVIMetaEdit_GUI.pdb\"
 
                # Sign installers
-               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe\"
+               signtool.exe sign /f \$env:USERPROFILE\\CodeSigningCertificate.p12 /p \$CodeSigningCertificatePass /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d DVAnalyzer /du http://mediaarea.net \"AVIMetaEdit_GUI_${Version_new}_Windows_i386.exe\" \"AVIMetaEdit_GUI_${Version_new}_Windows_x64.exe\"
            }
 
            # Restore env
@@ -230,52 +230,52 @@ function _windows () {
     echo "Retreive files"
     DLPath="$Win_working_dir\\$Build_dir\\avimetaedit\\Release"
 
-    File="AVI_MetaEdit_CLI_${Version_new}_Windows_i386.zip"
+    File="AVIMetaEdit_CLI_${Version_new}_Windows_i386.zip"
     test -e "$AMB_dir/$File" && rm "$AMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_i386.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_CLI_Windows_i386.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="AVIMetaEdit_CLI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_CLI_Windows_i386_DebugInfo.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_CLI_${Version_new}_Windows_x64.zip"
+    File="AVIMetaEdit_CLI_${Version_new}_Windows_x64.zip"
     test -e "$AMB_dir/$File" && rm "$AMB_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_x64.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_CLI_Windows_x64.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="AVIMetaEdit_CLI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_CLI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_CLI_Windows_x64_DebugInfo.zip" \
                          "$AMB_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_i386_WithoutInstaller.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_GUI_Windows_i386_WithoutInstaller.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_i386_DebugInfo.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_i386_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_GUI_Windows_i386_DebugInfo.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_x64_WithoutInstaller.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_GUI_Windows_x64_WithoutInstaller.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_x64_DebugInfo.zip"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
-    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVI_MetaEdit_GUI_Windows_x64_DebugInfo.zip" \
+    scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\AVIMetaEdit_GUI_Windows_x64_DebugInfo.zip" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_i386.exe"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_i386.exe"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
 
-    File="AVI_MetaEdit_GUI_${Version_new}_Windows_x64.exe"
+    File="AVIMetaEdit_GUI_${Version_new}_Windows_x64.exe"
     test -e "$AMG_dir/$File" && rm "$AMG_dir/$File"
     scp -P $Win_SSH_port "$Win_SSH_user@$Win_IP:$DLPath\\$File" \
                          "$AMG_dir/$File" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n" ; sleep 3
@@ -374,21 +374,21 @@ function btask.BuildRelease.run () {
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         # Made a copy, because UV.sh -sp modify the files in place
-        cp -r "$Source_dir" "$AM_tmp"/upgrade_version/AVI_MetaEdit
+        cp -r "$Source_dir" "$AM_tmp"/upgrade_version/AVIMetaEdit
     else
         pushd "$AM_tmp"/upgrade_version
-        git clone "$Repo" AVI_MetaEdit
+        git clone "$Repo" AVIMetaEdit
         popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        pushd  "$AM_tmp"/upgrade_version/AVI_MetaEdit
+        pushd  "$AM_tmp"/upgrade_version/AVIMetaEdit
         git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
         popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
-        Version_new="$(cat $AM_tmp/upgrade_version/AVI_MetaEdit/Project/version.txt).$Date"
+        Version_new="$(cat $AM_tmp/upgrade_version/AVIMetaEdit/Project/version.txt).$Date"
     else
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
@@ -398,7 +398,7 @@ function btask.BuildRelease.run () {
         UV_flags="-c"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p am -n $Version_new $UV_flags -sp "$AM_tmp"/upgrade_version/AVI_MetaEdit
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p am -n $Version_new $UV_flags -sp "$AM_tmp"/upgrade_version/AVIMetaEdit
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
@@ -413,7 +413,7 @@ function btask.BuildRelease.run () {
     fi
 
     # Do NOT remove -nc, mandatory for the .dsc and .spec
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p am -v $Version_new -wp "$AM_tmp"/prepare_source -sp "$AM_tmp"/upgrade_version/AVI_MetaEdit -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p am -v $Version_new -wp "$AM_tmp"/prepare_source -sp "$AM_tmp"/upgrade_version/AVIMetaEdit -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then

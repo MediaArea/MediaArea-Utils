@@ -25,14 +25,14 @@ function _mac_cli () {
     $SSHP "cd $Mac_working_dir
            tar xf MOVMetaEdit_CLI_${Version_new}_GNU_FromSource.tar.xz
            cd MOVMetaEdit_CLI_GNU_FromSource
-           ./MOV_MetaEdit/Project/Mac/BR_extension_CLI.sh
-           test -x MOV_MetaEdit/Project/GNU/CLI/movmetaedit || exit 1
-           file MOV_MetaEdit/Project/GNU/CLI/movmetaedit | grep \"Mach-O universal binary with 2 architectures\" || exit 1
+           ./Project/Mac/BR_extension_CLI.sh
+           test -x Project/GNU/CLI/movmetaedit || exit 1
+           file Project/GNU/CLI/movmetaedit | grep \"Mach-O universal binary with 2 architectures\" || exit 1
            $Key_chain
-           cd MOV_MetaEdit/Project/Mac
+           cd Project/Mac
            ./mkdmg.sh MOVMetaEdit cli $Version_new"
 
-    DLPath="$Mac_working_dir/MOVMetaEdit_CLI_GNU_FromSource/MOV_MetaEdit/Project/Mac"
+    DLPath="$Mac_working_dir/MOVMetaEdit_CLI_GNU_FromSource/Project/Mac"
     File="MOVMetaEdit_CLI_${Version_new}_Mac.dmg"
     test -e "$MMB_dir"/$File && rm "$MMB_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$MMB_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
@@ -61,13 +61,13 @@ function _mac_gui () {
            export PATH=$Mac_qt_path/clang_64/bin:\$PATH
            ln -s $Mac_qt_path/clang_64 qt
 
-           ./MOV_MetaEdit/Project/Mac/BR_extension_GUI.sh
-           test -x MOV_MetaEdit/Project/Qt/MOVMetaEdit.app/Contents/MacOS/MOVMetaEdit || exit 1
+           ./Project/Mac/BR_extension_GUI.sh
+           test -x Project/Qt/MOV\ MetaEdit.app/Contents/MacOS/MOV\ MetaEdit || exit 1
            $Key_chain
-           cd MOV_MetaEdit/Project/Mac
-           ./mkdmg.sh MOVMetaEdit gui $Version_new"
+           cd Project/Mac
+           ./mkdmg.sh MOV\ MetaEdit gui $Version_new"
 
-    DLPath="$Mac_working_dir/MOVMetaEdit_GUI_GNU_FromSource/MOV_MetaEdit/Project/Mac"
+    DLPath="$Mac_working_dir/MOVMetaEdit_GUI_GNU_FromSource/Project/Mac"
     File="MOVMetaEdit_GUI_${Version_new}_Mac.dmg"
     test -e "$MMG_dir"/$File && rm "$MMG_dir"/$File
     scp -P $Mac_SSH_port $Mac_SSH_user@$Mac_IP:$DLPath/$File "$MMG_dir" || MSG="${MSG}Failed to retreive file ${File} build failed ?\n"
@@ -162,21 +162,21 @@ function btask.BuildRelease.run () {
     cd "$(dirname ${BASH_SOURCE[0]})/../upgrade_version"
     if [ $(b.opt.get_opt --source-path) ]; then
         # Made a copy, because UV.sh -sp modify the files in place
-        cp -r "$Source_dir" "$MM_tmp"/upgrade_version/MOV_MetaEdit
+        cp -r "$Source_dir" "$MM_tmp"/upgrade_version/MOVMetaEdit
     else
         pushd "$MM_tmp"/upgrade_version
-        git clone "$Repo" MOV_MetaEdit
+        git clone "$Repo" MOVMetaEdit
         popd
     fi
 
     if [ $(b.opt.get_opt --git-state) ]; then
-        pushd  "$MM_tmp"/upgrade_version/MOV_MetaEdit
+        pushd  "$MM_tmp"/upgrade_version/MOVMetaEdit
         git checkout "$(sanitize_arg $(b.opt.get_opt --git-state))"
         popd
     fi
 
     if b.opt.has_flag? --snapshot ; then
-        Version_new="$(cat $MM_tmp/upgrade_version/MOV_MetaEdit/Project/version.txt).$Date"
+        Version_new="$(cat $MM_tmp/upgrade_version/MOVMetaEdit/Project/version.txt).$Date"
     else
         Version_new="$(sanitize_arg $(b.opt.get_opt --new))"
     fi
@@ -186,7 +186,7 @@ function btask.BuildRelease.run () {
         UV_flags="-c"
     fi
 
-    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mm -n $Version_new $UV_flags -sp "$MM_tmp"/upgrade_version/MOV_MetaEdit
+    $(b.get bang.src_path)/bang run UpgradeVersion.sh -p mm -n $Version_new $UV_flags -sp "$MM_tmp"/upgrade_version/MOVMetaEdit
 
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
@@ -200,7 +200,7 @@ function btask.BuildRelease.run () {
     #fi
 
     # Do NOT remove -nc, mandatory for the .dsc and .spec
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p mm -v $Version_new -wp "$MM_tmp"/prepare_source -sp "$MM_tmp"/upgrade_version/MOV_MetaEdit -nc
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p mm -v $Version_new -wp "$MM_tmp"/prepare_source -sp "$MM_tmp"/upgrade_version/MOVMetaEdit -nc
 
     if [ "$Target" = "linux" ] || [ "$Target" = "all" ] ; then
         if b.opt.has_flag? --log; then

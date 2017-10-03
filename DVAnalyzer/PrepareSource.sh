@@ -17,7 +17,7 @@ function _get_source () {
     if [ $(b.opt.get_opt --source-path) ]; then
         Source="$SDir"
     else
-        Source="$WDir"/repos/DV_Analyzer
+        Source="$WDir"/repos/DVAnalyzer
         getRepo $Repo "$Source"
         # We ask a specific git state (a tag, a branch, a commit)
         if [ $(b.opt.get_opt --git-state) ]; then
@@ -56,12 +56,12 @@ function _unix_cli () {
     mkdir DVAnalyzer_CLI_GNU_FromSource
     cd DVAnalyzer_CLI_GNU_FromSource
 
-    cp -r "$Source" AVPS_DV_Analyzer
-    mv AVPS_DV_Analyzer/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
+    cp -r "$Source" DVAnalyzer
+    mv DVAnalyzer/Project/GNU/CLI/AddThisToRoot_CLI_compile.sh CLI_Compile.sh
     chmod +x CLI_Compile.sh
-    chmod +x AVPS_DV_Analyzer/Project/GNU/CLI/autogen.sh
-    chmod +x AVPS_DV_Analyzer/Project/Mac/BR_extension_CLI.sh
-    chmod +x AVPS_DV_Analyzer/Project/Mac/mkdmg.sh
+    chmod +x DVAnalyzer/Project/GNU/CLI/autogen.sh
+    chmod +x DVAnalyzer/Project/Mac/BR_extension_CLI.sh
+    chmod +x DVAnalyzer/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -71,7 +71,7 @@ function _unix_cli () {
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn’t wanted..."
-    cd AVPS_DV_Analyzer
+    cd DVAnalyzer
         rm -fr .cvsignore .git*
         rm -f History_GUI.txt
         rm -fr debian
@@ -84,7 +84,7 @@ function _unix_cli () {
     cd ..
 
     echo "3: Autotools..."
-    cd AVPS_DV_Analyzer/Project/GNU/CLI
+    cd DVAnalyzer/Project/GNU/CLI
     ./autogen.sh > /dev/null 2>&1
 
     if $MakeArchives; then
@@ -110,12 +110,12 @@ function _unix_gui () {
     mkdir DVAnalyzer_GUI_GNU_FromSource
     cd DVAnalyzer_GUI_GNU_FromSource
 
-    cp -r "$Source" AVPS_DV_Analyzer
-    mv AVPS_DV_Analyzer/Project/QtCreator/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    cp -r "$Source" DVAnalyzer
+    mv DVAnalyzer/Project/QtCreator/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
-    chmod +x AVPS_DV_Analyzer/Project/GNU/GUI/autogen.sh
-    chmod +x AVPS_DV_Analyzer/Project/Mac/BR_extension_GUI.sh
-    chmod +x AVPS_DV_Analyzer/Project/Mac/mkdmg.sh
+    chmod +x DVAnalyzer/Project/GNU/GUI/autogen.sh
+    chmod +x DVAnalyzer/Project/Mac/BR_extension_GUI.sh
+    chmod +x DVAnalyzer/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
@@ -125,7 +125,7 @@ function _unix_gui () {
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
     echo "2: remove what isn’t wanted..."
-    cd AVPS_DV_Analyzer
+    cd DVAnalyzer
         rm -fr .cvsignore .git*
         rm -f History_CLI.txt
         rm -fr debian
@@ -159,7 +159,7 @@ function _all_inclusive () {
     mkdir dvanalyzer_AllInclusive
     cd dvanalyzer_AllInclusive
 
-    cp -r "$Source" AVPS_DV_Analyzer
+    cp -r "$Source" DVAnalyzer
 
     # Dependencies
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
@@ -195,7 +195,7 @@ function _source_package () {
     echo "1: copy what is wanted..."
 
     cd "$WDir"/DA
-    cp -r "$Source" AVPS_DV_Analyzer
+    cp -r "$Source" DVAnalyzer
 
     echo "2: remove what isn’t wanted..."
     rm -fr dvanalyzer/.git*
@@ -207,20 +207,20 @@ function _source_package () {
         if ! b.path.dir? ../archives; then
             mkdir ../archives
         fi
-        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.gz AVPS_DV_Analyzer)
-        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.bz2 AVPS_DV_Analyzer)
-        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.xz AVPS_DV_Analyzer)
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.gz DVAnalyzer)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.bz2 DVAnalyzer)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvanalyzer${Version}.tar.xz DVAnalyzer)
 
         mkdir ../archives/obs
 
         cp ../archives/dvanalyzer${Version}.tar.gz ../archives/obs/dvanalyzer${Version}-1.tar.gz
         cp ../archives/dvanalyzer${Version}.tar.xz ../archives/obs/dvanalyzer${Version}.orig.tar.xz
 
-        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/dvanalyzer.spec" ../archives/obs
-        cp "$WDir/DA/AVPS_DV_Analyzer/Project/GNU/PKGBUILD" ../archives/obs
+        cp "$WDir/DA/DVAnalyzer/Project/GNU/dvanalyzer.spec" ../archives/obs
+        cp "$WDir/DA/DVAnalyzer/Project/GNU/PKGBUILD" ../archives/obs
 
         update_pkgbuild ../archives/obs/dvanalyzer${Version}-1.tar.gz ../archives/obs/PKGBUILD
-        deb_obs dvanalyzer "$WDir/DA/AVPS_DV_Analyzer" "$WDir/archives/obs/dvanalyzer${Version}.orig.tar.xz"
+        deb_obs dvanalyzer "$WDir/DA/DVAnalyzer" "$WDir/archives/obs/dvanalyzer${Version}.orig.tar.xz"
     fi
 }
 
@@ -232,7 +232,7 @@ function btask.PrepareSource.run () {
 
     # Clean up
     rm -fr archives
-    rm -fr repos/DV_Analyzer
+    rm -fr repos/DVAnalyzer
     rm -fr "$WDir"/DA
     mkdir "$WDir"/DA
 
