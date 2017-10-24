@@ -78,25 +78,8 @@ function btask.UpgradeVersion.run () {
     do
 
         echo "${MIL_source}/${MIL_file}"
-
-        # If $Version_old_build is set = it’s already include in
-        # $Version_old_escaped, so we will try to replace
-        # major.minor.patch.build.build, and that doesn’t exist in
-        # the file
-        if [ "$Version_old_build" = "0" ] && [ "$Version_new_build" != "0" ]; then
-            updateFile "$Version_old_escaped"\.0 $Version_new "${MIL_source}/${MIL_file}"
-            updateFile $Version_old_comma,0 $Version_new_comma "${MIL_source}/${MIL_file}"
-
-        elif [ "$Version_old_build" != "0" ] && [ "$Version_new_build" = "0" ]; then
-            updateFile "$Version_old_escaped" $Version_new.0 "${MIL_source}/${MIL_file}"
-            updateFile $Version_old_comma $Version_new_comma,0 "${MIL_source}/${MIL_file}"
-
-        # When $Version_old_build and $Version_and_build are set
-        # (or not set) together
-        else
-            updateFile "$Version_old_escaped" $Version_new "${MIL_source}/${MIL_file}"
-            updateFile $Version_old_comma $Version_new_comma "${MIL_source}/${MIL_file}"
-        fi
+        updateFile "$Version_old_major\.$Version_old_minor\.$Version_old_patch" $Version_new_major.$Version_new_minor.$Version_new_patch "${MIL_source}/${MIL_file}"
+        updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch "${MIL_source}/${MIL_file}"
 
     done
 
