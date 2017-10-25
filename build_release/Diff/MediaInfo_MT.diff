@@ -1,10 +1,10 @@
- Project/MSVC2015/CLI/MediaInfo.vcxproj | 4 ++--
+ Project/MSVC2017/CLI/MediaInfo.vcxproj | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Project/MSVC2015/CLI/MediaInfo.vcxproj b/Project/MSVC2015/CLI/MediaInfo.vcxproj
+diff --git a/Project/MSVC2017/CLI/MediaInfo.vcxproj b/Project/MSVC2017/CLI/MediaInfo.vcxproj
 index 2b70eb5..ba19bda 100644
---- a/Project/MSVC2015/CLI/MediaInfo.vcxproj
-+++ b/Project/MSVC2015/CLI/MediaInfo.vcxproj
+--- a/Project/MSVC2017/CLI/MediaInfo.vcxproj
++++ b/Project/MSVC2017/CLI/MediaInfo.vcxproj
 @@ -94,7 +94,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>

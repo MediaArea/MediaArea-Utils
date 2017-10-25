@@ -1,7 +1,7 @@
 @echo off
 
 rem ***********************************************************************************************
-rem * You need Visual Studio 2015 and Git installed at default places                             *
+rem * You need Visual Studio 2017 and Git installed at default places                             *
 rem * You need Embarcadero RAD Studio 9 installed at default place for official MediaInfo GUI     *
 rem * You need (Project)-AllInOne, MediaArea-Utils, MediaArea-Utils-Binaries repos                *
 rem * Code signing certificate is expected to be in %USERPROFILE%\CodeSigningCertificate.p12      *
@@ -34,7 +34,7 @@ if EXIST ThankYou call:Rtree ThankYou\ || exit /b 1
 rem *** Handling of paths for 64-bit compilation ***
 set OLD_PATH=%PATH%
 set OLD_CD=%CD%
-call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 set PATH=%PATH%;"C:\Program Files\Git\bin"
 
 rem *** Parse command line ***
@@ -132,49 +132,41 @@ set Version=%Version:"=%
 
 rem *** MediaConch CLI and Server ***
 call:Patch_MediaConch
-cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015
+cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
 cd %OLD_CD%
 
 rem *** MediaConch GUI ***
 call:Patch_MediaConch_GUI
-if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
-if EXIST ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
-xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015 ..\..\%MC_SOURCES%\Qt5.6-msvc2015\ || exit /b 1
-xcopy /S /Q ..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.6-msvc2015_64 ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\ || exit /b 1
+if NOT EXIST ..\..\%MC_SOURCES%\Qt5.9-msvc2017\ mklink /D ..\..\%MC_SOURCES%\Qt5.9-msvc2017\ %OLD_CD%\..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.9-msvc2017 || exit /b 1
+if NOT EXIST ..\..\%MC_SOURCES%\Qt5.9-msvc2017_64\ mklink /D ..\..\%MC_SOURCES%\Qt5.9-msvc2017_64\ %OLD_CD%\..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.9-msvc2017_64 || exit /b 1
 ping 127.0.0.1 -n 5 -w 10000 > NUL
-cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015
+cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
-    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
     exit /b 1
 )
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
-    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-    call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
     exit /b 1
 )
 cd %OLD_CD%
-call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015\
-call:RTree ..\..\%MC_SOURCES%\Qt5.6-msvc2015_64\
 
 rem *** libcurl ***
 cd %OLD_CD%
-copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\Win32\Release\* ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\Win32\Release\ || exit /b 1
-copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\x64\Release\* ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\x64\Release\ || exit /b 1
+copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\Win32\Release\* ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\ || exit /b 1
+copy ..\..\MediaArea-Utils-Binaries\Windows\libcurl\x64\Release\* ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\ || exit /b 1
 
 rem *** Signature of executables ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\Win32\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\x64\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\Win32\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\x64\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2015\win32\Release\MediaConch-GUI.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\win32\Release\MediaConch-GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
 
@@ -276,12 +268,12 @@ rem *** MediaInfo global ***
 call:Patch_MediaInfo || exit /b 1
 
 rem *** MediaInfoLib ***
-cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2015
+cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
 
 rem *** MediaInfo ***
-cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2015
+cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
 call set PATH_TEMP=%PATH%
@@ -302,7 +294,7 @@ rem *** Signature of executables ***
 call set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2015\Win32\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2015\x64\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2015\Win32\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2015\Win32\Release\MediaInfo_InfoTip.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2015\x64\Release\MediaInfo_InfoTip.dll  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2015\x64\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\win32\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\Win32\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo_InfoTip.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo_InfoTip.dll  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\x64\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\win32\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 call set CodeSigningCertificatePass=
 

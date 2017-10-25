@@ -89,6 +89,9 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc"
     MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc"
     MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/MSVC2017/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2017/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2017/GUI/MediaConch_GUI.rc"
     MC_files[((index++))]="Project/OBS/obs_mediaconch"
 
     for MC_file in ${MC_files[@]}
@@ -107,6 +110,9 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/MSVC2015/CLI/MediaConch_CLI.rc"
     MC_files[((index++))]="Project/MSVC2015/Server/MediaConch-Server.rc"
     MC_files[((index++))]="Project/MSVC2015/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/MSVC2017/CLI/MediaConch_CLI.rc"
+    MC_files[((index++))]="Project/MSVC2017/Server/MediaConch-Server.rc"
+    MC_files[((index++))]="Project/MSVC2017/GUI/MediaConch_GUI.rc"
 
     for MC_file in ${MC_files[@]}
     do

@@ -1,10 +1,10 @@
- Project/MSVC2015/MediaInfo.sln | 49 ------------------------------------------
- 1 file changed, 49 deletions(-)
+ Project/MSVC2017/MediaInfo.sln | 62 ------------------------------------------
+ 1 file changed, 62 deletions(-)
 
-diff --git a/Project/MSVC2015/MediaInfo.sln b/Project/MSVC2015/MediaInfo.sln
-index 1dec9b0..bf6ced8 100644
---- a/Project/MSVC2015/MediaInfo.sln
-+++ b/Project/MSVC2015/MediaInfo.sln
+diff --git a/Project/MSVC2017/MediaInfo.sln b/Project/MSVC2017/MediaInfo.sln
+index c9260ac5..cd4a8e90 100644
+--- a/Project/MSVC2017/MediaInfo.sln
++++ b/Project/MSVC2017/MediaInfo.sln
 @@ -29,30 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MediaInfoDll", "..\..\..\Me
  		{20E0F8D6-213C-460B-B361-9C725CB375C7} = {20E0F8D6-213C-460B-B361-9C725CB375C7}
  	EndProjectSection
@@ -33,7 +33,7 @@ index 1dec9b0..bf6ced8 100644
  EndProject
 -Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_custom_build", "..\..\..\wxWidgets\build\msw\wx_custom_build.vcxproj", "{01F4CE10-2CFB-41A8-B41F-E54337868A1D}"
 -EndProject
- Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstat", "..\..\..\zlib\contrib\vstudio\vc14\zlibstat.vcxproj", "{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}"
+ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstat", "..\..\..\zlib\contrib\vstudio\vc15\zlibstat.vcxproj", "{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}"
  EndProject
  Global
 @@ -76,9 +54,7 @@ Global

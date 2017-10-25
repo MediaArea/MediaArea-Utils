@@ -1,10 +1,10 @@
- win32/VC14/libxml2.vcxproj | 2 ++
+ win32/VC15/libxml2.vcxproj | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/win32/VC14/libxml2.vcxproj b/win32/VC14/libxml2.vcxproj
+diff --git a/win32/VC15/libxml2.vcxproj b/win32/VC15/libxml2.vcxproj
 index 3a961d8..0404288 100644
---- a/win32/VC14/libxml2.vcxproj
-+++ b/win32/VC14/libxml2.vcxproj
+--- a/win32/VC15/libxml2.vcxproj
++++ b/win32/VC15/libxml2.vcxproj
 @@ -102,6 +102,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>..\..\include;..\..\..\libiconv-1.14.vc12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

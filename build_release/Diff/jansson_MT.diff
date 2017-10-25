@@ -1,10 +1,10 @@
- Contrib/VC14/Jansson/Jansson.vcxproj | 2 ++
+ Contrib/VC15/Jansson/Jansson.vcxproj | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Contrib/VC14/Jansson/Jansson.vcxproj b/Contrib/VC14/Jansson/Jansson.vcxproj
+diff --git a/Contrib/VC15/Jansson/Jansson.vcxproj b/Contrib/VC15/Jansson/Jansson.vcxproj
 index d8cbee5..61888e7 100644
---- a/Contrib/VC14/Jansson/Jansson.vcxproj
-+++ b/Contrib/VC14/Jansson/Jansson.vcxproj
+--- a/Contrib/VC15/Jansson/Jansson.vcxproj
++++ b/Contrib/VC15/Jansson/Jansson.vcxproj
 @@ -81,6 +81,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>

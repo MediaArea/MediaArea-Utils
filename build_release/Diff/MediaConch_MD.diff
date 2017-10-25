@@ -1,10 +1,10 @@
- Project/MSVC2015/MediaConch.sln | 4 ----
+ Project/MSVC2017/MediaConch.sln | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/Project/MSVC2015/MediaConch.sln b/Project/MSVC2015/MediaConch.sln
+diff --git a/Project/MSVC2017/MediaConch.sln b/Project/MSVC2017/MediaConch.sln
 index 9e9db96..cdf3e36 100644
---- a/Project/MSVC2015/MediaConch.sln
-+++ b/Project/MSVC2015/MediaConch.sln
+--- a/Project/MSVC2017/MediaConch.sln
++++ b/Project/MSVC2017/MediaConch.sln
 @@ -43,9 +43,7 @@ Global
  		{8A1AE679-131A-493C-86CA-91179B0955A4}.Debug|x64.ActiveCfg = Debug|x64
  		{8A1AE679-131A-493C-86CA-91179B0955A4}.Debug|x64.Build.0 = Debug|x64

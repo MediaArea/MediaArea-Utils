@@ -1,10 +1,10 @@
- Contrib/VC14/event/event.vcxproj | 4 ++--
+ Contrib/VC15/event/event.vcxproj | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Contrib/VC14/event/event.vcxproj b/Contrib/VC14/event/event.vcxproj
+diff --git a/Contrib/VC15/event/event.vcxproj b/Contrib/VC15/event/event.vcxproj
 index 393e0b8..c28de3a 100644
---- a/Contrib/VC14/event/event.vcxproj
-+++ b/Contrib/VC14/event/event.vcxproj
+--- a/Contrib/VC15/event/event.vcxproj
++++ b/Contrib/VC15/event/event.vcxproj
 @@ -84,7 +84,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>..\..\..\WIN32-Code\nmake;..\..\..\include;..\..\..\compat;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
