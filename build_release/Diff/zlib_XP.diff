@@ -1,41 +1,6 @@
- contrib/vstudio/vc14/zlibstat.vcxproj | 8 ++++----
  contrib/vstudio/vc15/zlibstat.vcxproj | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/contrib/vstudio/vc14/zlibstat.vcxproj b/contrib/vstudio/vc14/zlibstat.vcxproj
-index c04b70e..d33005e 100644
---- a/contrib/vstudio/vc14/zlibstat.vcxproj
-+++ b/contrib/vstudio/vc14/zlibstat.vcxproj
-@@ -33,12 +33,12 @@
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithoutAsm|Win32'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
-     <UseOfMfc>false</UseOfMfc>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
-   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
-     <UseOfMfc>false</UseOfMfc>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
-   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
-@@ -49,12 +49,12 @@
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithoutAsm|x64'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
-     <UseOfMfc>false</UseOfMfc>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
-   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
-     <UseOfMfc>false</UseOfMfc>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
-   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-     <ConfigurationType>StaticLibrary</ConfigurationType>
 diff --git a/contrib/vstudio/vc15/zlibstat.vcxproj b/contrib/vstudio/vc15/zlibstat.vcxproj
 index 97f3871..a4eaba1 100644
 --- a/contrib/vstudio/vc15/zlibstat.vcxproj

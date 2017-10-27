@@ -1,14 +1,14 @@
- Project/MSVC2015/Dll/MediaInfoDll.vcxproj                 | 5 +++--
- Project/MSVC2015/Example/HowToUse_Dll.vcxproj             | 5 +++--
- Project/MSVC2015/Library/MediaInfoLib.vcxproj             | 5 +++--
- Project/MSVC2015/RegressionTest/RegressionTest.vcxproj    | 5 +++--
- Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj | 5 +++--
+ Project/MSVC2017/Dll/MediaInfoDll.vcxproj                 | 5 +++--
+ Project/MSVC2017/Example/HowToUse_Dll.vcxproj             | 5 +++--
+ Project/MSVC2017/Library/MediaInfoLib.vcxproj             | 5 +++--
+ Project/MSVC2017/RegressionTest/RegressionTest.vcxproj    | 5 +++--
+ Project/MSVC2017/ShellExtension/MediaInfoShellExt.vcxproj | 5 +++--
  5 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/Project/MSVC2015/Dll/MediaInfoDll.vcxproj b/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
+diff --git a/Project/MSVC2017/Dll/MediaInfoDll.vcxproj b/Project/MSVC2017/Dll/MediaInfoDll.vcxproj
 index f41b3d2..9d5cfdf 100644
---- a/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
-+++ b/Project/MSVC2015/Dll/MediaInfoDll.vcxproj
+--- a/Project/MSVC2017/Dll/MediaInfoDll.vcxproj
++++ b/Project/MSVC2017/Dll/MediaInfoDll.vcxproj
 @@ -22,12 +22,13 @@
      <ProjectGuid>{BE6D3EF8-2F82-4F1E-956A-890C3614A2D5}</ProjectGuid>
      <RootNamespace>MediaInfoDll</RootNamespace>
@@ -19,8 +19,8 @@ index f41b3d2..9d5cfdf 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -28,15 +28,15 @@ index f41b3d2..9d5cfdf 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>
-diff --git a/Project/MSVC2015/Example/HowToUse_Dll.vcxproj b/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
+diff --git a/Project/MSVC2017/Example/HowToUse_Dll.vcxproj b/Project/MSVC2017/Example/HowToUse_Dll.vcxproj
 index c1aedd2..77442da 100644
---- a/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
-+++ b/Project/MSVC2015/Example/HowToUse_Dll.vcxproj
+--- a/Project/MSVC2017/Example/HowToUse_Dll.vcxproj
++++ b/Project/MSVC2017/Example/HowToUse_Dll.vcxproj
 @@ -22,12 +22,13 @@
      <ProjectGuid>{51E7EE1D-D4DD-4374-976C-66519B3B94DF}</ProjectGuid>
      <RootNamespace>HowToUse_Dll</RootNamespace>
@@ -47,8 +47,8 @@ index c1aedd2..77442da 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
      <ConfigurationType>Application</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
      <ConfigurationType>Application</ConfigurationType>
@@ -56,15 +56,15 @@ index c1aedd2..77442da 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
      <ConfigurationType>Application</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
      <ConfigurationType>Application</ConfigurationType>
-diff --git a/Project/MSVC2015/Library/MediaInfoLib.vcxproj b/Project/MSVC2015/Library/MediaInfoLib.vcxproj
+diff --git a/Project/MSVC2017/Library/MediaInfoLib.vcxproj b/Project/MSVC2017/Library/MediaInfoLib.vcxproj
 index c8b8dd7..ca21524 100644
---- a/Project/MSVC2015/Library/MediaInfoLib.vcxproj
-+++ b/Project/MSVC2015/Library/MediaInfoLib.vcxproj
+--- a/Project/MSVC2017/Library/MediaInfoLib.vcxproj
++++ b/Project/MSVC2017/Library/MediaInfoLib.vcxproj
 @@ -22,12 +22,13 @@
      <ProjectGuid>{20E0F8D6-213C-460B-B361-9C725CB375C7}</ProjectGuid>
      <RootNamespace>MediaInfoLib</RootNamespace>
@@ -75,8 +75,8 @@ index c8b8dd7..ca21524 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
      <ConfigurationType>StaticLibrary</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
      <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -84,15 +84,15 @@ index c8b8dd7..ca21524 100644
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
      <ConfigurationType>StaticLibrary</ConfigurationType>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
      <ConfigurationType>StaticLibrary</ConfigurationType>
-diff --git a/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj b/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
+diff --git a/Project/MSVC2017/RegressionTest/RegressionTest.vcxproj b/Project/MSVC2017/RegressionTest/RegressionTest.vcxproj
 index bc3b7b7..440185b 100644
---- a/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
-+++ b/Project/MSVC2015/RegressionTest/RegressionTest.vcxproj
+--- a/Project/MSVC2017/RegressionTest/RegressionTest.vcxproj
++++ b/Project/MSVC2017/RegressionTest/RegressionTest.vcxproj
 @@ -38,6 +38,7 @@
      <ProjectGuid>{91C094CA-1170-4CE4-9B79-17324C8DACA8}</ProjectGuid>
      <Keyword>Win32Proj</Keyword>
@@ -105,22 +105,22 @@ index bc3b7b7..440185b 100644
      <ConfigurationType>Application</ConfigurationType>
      <UseDebugLibraries>false</UseDebugLibraries>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
      <ConfigurationType>Application</ConfigurationType>
      <UseDebugLibraries>false</UseDebugLibraries>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
    <ImportGroup Label="ExtensionSettings">
-diff --git a/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj b/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
+diff --git a/Project/MSVC2017/ShellExtension/MediaInfoShellExt.vcxproj b/Project/MSVC2017/ShellExtension/MediaInfoShellExt.vcxproj
 index cfa94c1..c3fd54b 100644
---- a/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
-+++ b/Project/MSVC2015/ShellExtension/MediaInfoShellExt.vcxproj
+--- a/Project/MSVC2017/ShellExtension/MediaInfoShellExt.vcxproj
++++ b/Project/MSVC2017/ShellExtension/MediaInfoShellExt.vcxproj
 @@ -22,13 +22,14 @@
      <ProjectGuid>{E987FD96-6BE1-45AF-9293-46B8A6695E6A}</ProjectGuid>
      <RootNamespace>MediaInfoShellExt</RootNamespace>
@@ -132,8 +132,8 @@ index cfa94c1..c3fd54b 100644
      <ConfigurationType>DynamicLibrary</ConfigurationType>
      <UseOfAtl>Static</UseOfAtl>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -141,8 +141,8 @@ index cfa94c1..c3fd54b 100644
      <ConfigurationType>DynamicLibrary</ConfigurationType>
      <UseOfAtl>Static</UseOfAtl>
      <CharacterSet>Unicode</CharacterSet>
--    <PlatformToolset>v140</PlatformToolset>
-+    <PlatformToolset>v140_xp</PlatformToolset>
+-    <PlatformToolset>v141</PlatformToolset>
++    <PlatformToolset>v141_xp</PlatformToolset>
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
      <ConfigurationType>DynamicLibrary</ConfigurationType>

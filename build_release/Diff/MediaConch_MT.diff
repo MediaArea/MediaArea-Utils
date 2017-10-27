@@ -1,15 +1,15 @@
- Project/MSVC2015/CLI/MediaConch.vcxproj           | 4 ++--
- Project/MSVC2015/MediaConch.sln                   | 2 --
- Project/MSVC2015/Server/MediaConch-Server.vcxproj | 4 ++--
+ Project/MSVC2017/CLI/MediaConch.vcxproj           | 4 ++--
+ Project/MSVC2017/MediaConch.sln                   | 2 --
+ Project/MSVC2017/Server/MediaConch-Server.vcxproj | 4 ++--
  3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Project/MSVC2015/CLI/MediaConch.vcxproj b/Project/MSVC2015/CLI/MediaConch.vcxproj
+diff --git a/Project/MSVC2017/CLI/MediaConch.vcxproj b/Project/MSVC2017/CLI/MediaConch.vcxproj
 index 991936f..a71fc6d 100644
---- a/Project/MSVC2015/CLI/MediaConch.vcxproj
-+++ b/Project/MSVC2015/CLI/MediaConch.vcxproj
+--- a/Project/MSVC2017/CLI/MediaConch.vcxproj
++++ b/Project/MSVC2017/CLI/MediaConch.vcxproj
 @@ -108,7 +108,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC14/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC15/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>HAVE_JANSSON;HAVE_LIBEVENT;HAVE_SQLITE;LIBEXSLT_STATIC;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -18,17 +18,17 @@ index 991936f..a71fc6d 100644
        <DebugInformationFormat>None</DebugInformationFormat>
 @@ -128,7 +128,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC14/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC15/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>HAVE_JANSSON;HAVE_LIBEVENT;HAVE_SQLITE;LIBEXSLT_STATIC;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <DebugInformationFormat>None</DebugInformationFormat>
        <MinimalRebuild>false</MinimalRebuild>
-diff --git a/Project/MSVC2015/MediaConch.sln b/Project/MSVC2015/MediaConch.sln
+diff --git a/Project/MSVC2017/MediaConch.sln b/Project/MSVC2017/MediaConch.sln
 index 9e9db96..604347a 100644
---- a/Project/MSVC2015/MediaConch.sln
-+++ b/Project/MSVC2015/MediaConch.sln
+--- a/Project/MSVC2017/MediaConch.sln
++++ b/Project/MSVC2017/MediaConch.sln
 @@ -51,9 +51,7 @@ Global
  		{2D3D1642-D55D-4EF6-AEC8-B8E1B8F8B226}.Debug|x64.ActiveCfg = Debug|x64
  		{2D3D1642-D55D-4EF6-AEC8-B8E1B8F8B226}.Debug|x64.Build.0 = Debug|x64
@@ -39,13 +39,13 @@ index 9e9db96..604347a 100644
  		{0DA1DA7D-F393-4E7C-A7CE-CB5C6A67BC94}.Debug|Win32.ActiveCfg = Debug|Win32
  		{0DA1DA7D-F393-4E7C-A7CE-CB5C6A67BC94}.Debug|Win32.Build.0 = Debug|Win32
  		{0DA1DA7D-F393-4E7C-A7CE-CB5C6A67BC94}.Debug|x64.ActiveCfg = Debug|x64
-diff --git a/Project/MSVC2015/Server/MediaConch-Server.vcxproj b/Project/MSVC2015/Server/MediaConch-Server.vcxproj
+diff --git a/Project/MSVC2017/Server/MediaConch-Server.vcxproj b/Project/MSVC2017/Server/MediaConch-Server.vcxproj
 index 7a5edd3..5fe5f08 100644
---- a/Project/MSVC2015/Server/MediaConch-Server.vcxproj
-+++ b/Project/MSVC2015/Server/MediaConch-Server.vcxproj
+--- a/Project/MSVC2017/Server/MediaConch-Server.vcxproj
++++ b/Project/MSVC2017/Server/MediaConch-Server.vcxproj
 @@ -103,7 +103,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC14/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;..\..\..\..\jansson\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC15/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;..\..\..\..\jansson\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>HAVE_JANSSON;HAVE_LIBEVENT;HAVE_SQLITE;LIBEXSLT_STATIC;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -54,7 +54,7 @@ index 7a5edd3..5fe5f08 100644
        <Optimization>Disabled</Optimization>
 @@ -123,7 +123,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC14/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;..\..\..\..\jansson\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/sqlite;../../../../libevent/WIN32-Code/nmake;../../../../libevent/include;../../../../jansson/src;../../../../jansson/Contrib/VC15/Jansson;../../../../zlib;../../../../libxslt;../../../../libxml2/include;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;..\..\..\..\jansson\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>HAVE_JANSSON;HAVE_LIBEVENT;HAVE_SQLITE;LIBEXSLT_STATIC;LIBXSLT_STATIC;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
