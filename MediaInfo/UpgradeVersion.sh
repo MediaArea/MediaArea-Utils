@@ -135,9 +135,9 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update Source/Install/MediaInfo_GUI_Windows.nsi ..."
-    updateFile $Version_old_major\.$Version_old_minor\.$Version_old_patch $Version_new_major.$Version_new_minor.$Version_new_patch "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
-    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_build\"" \
-        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" \
+    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_patch\.$Version_old_build\"" \
+        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" \
         "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
 
     # Update MediaInfoLib required version
