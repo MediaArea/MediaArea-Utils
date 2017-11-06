@@ -290,12 +290,20 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
                     if Config["Export_debug"] or not fnmatch.fnmatch(Name, "*-debuginfo"):
                         print "Export package %s to repository" % Name_final
                         print
-                        Repo.Add_rpm_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                        if not Args.repo_script:
+                            Repo.Add_rpm_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                        else:
+                            with open(Script_File, "a") as f:
+                                f.write("python Repo.py %s %s %s %s %s\n" % (Name_final, Name, Arch, Distrib_name, "release" if Release else "snapshots"))
                 elif Package_type == "deb":
                     if Config["Export_debug"] or not fnmatch.fnmatch(Name, "*-dbg"):
                         print "Export package %s to repository" % Name_final
                         print
-                        Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                        if not Args.repo_script:
+                            Repo.Add_deb_package(Name_final, Name, Version, Arch, Distrib_name, Release)
+                        else:
+                            with open(Script_File, "a") as f:
+                                f.write("python Repo.py %s %s %s %s %s\n" % (Name_final, Name, Arch, Distrib_name, "release" if Release else "snapshots"))
         else:
         # This is potentially a spam tank, but I leave the
         # mails here because it allows to have the command
@@ -738,6 +746,7 @@ Time_start = time.time()
 #
 
 Args_parser = argparse.ArgumentParser()
+Args_parser.add_argument("--repo-script", help="write script for export packages to repositories instead of directly exporting them", action="store_true", default=False)
 Args_parser.add_argument("--rebuild", help="trigger OBS rebuild", action="store_true", default=False)
 Args_parser.add_argument("--filter", help="filter distributions/archs")
 Args_parser.add_argument("project")
@@ -792,6 +801,14 @@ if Project.get("gui_name"):
 
 if len(DL_pages_table) > 1:
     Release = True
+
+if Config["Enable_repo"] and Args.repo_script:
+    Script_File=os.path.join(os.getcwd(), "repo_export.sh")
+    if os.path.isfile(Script_File):
+        os.remove(Script_File)
+    with open(Script_File, "a") as f:
+        f.write("#!/bin/sh\n")
+    os.chmod(Script_File, 0755)
 
 # Build the dictionnary from the active distributions on OBS
 Distribs = {}
