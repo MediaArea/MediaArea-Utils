@@ -1,5 +1,6 @@
 <tr>
-    <th rowspan="3">64 bit</th>
+    <th rowspan="4">Vista, 7, 8, 10</th>
+    <th rowspan="2">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/movmetaedit-gui/MM_VERSION/MOVMetaEdit_GUI_MM_VERSION_Windows_x64.exe">vMM_VERSION</a> <small>(<a href="//mediaarea.net/download/binary/movmetaedit-gui/MM_VERSION/MOVMetaEdit_GUI_MM_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>
     <td></td>
@@ -10,7 +11,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <th rowspan="3">32 bit</th>
+    <th rowspan="2">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/movmetaedit-gui/MM_VERSION/MOVMetaEdit_GUI_MM_VERSION_Windows_i386.exe">vMM_VERSION</a> <small> (<a href="//mediaarea.net/download/binary/movmetaedit-gui/MM_VERSION/MOVMetaEdit_GUI_MM_VERSION_Windows_i386_WithoutInstaller.7z">32 bit only without installer</a>)</small></td>
     <td></td>
