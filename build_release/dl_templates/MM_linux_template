@@ -7,11 +7,5 @@
 <trRELEASE_CLASS>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/movmetaedit/MM_VERSION/CLI_PACKAGE">vMM_VERSION</a></td>
-    <td>requires ZL_NAME</td>
-</tr>
-<trRELEASE_CLASS>
-    <th>ZL_NAME</th>
-    <td><a href="//mediaarea.net/download/binary/libzen0/ZL_VERSION/ZL_PACKAGE">vZL_VERSION</a>ZL_DEV_PACKAGE</td>
     <td>&nbsp;</td>
 </tr>
-

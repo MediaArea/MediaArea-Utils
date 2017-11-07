@@ -462,7 +462,7 @@ def OBS():
 
             Release_with_mil = True
             Release_with_zl = True
-            if Project == "qc" or Project == "bm" or Project == "am":
+            if Project == "qc" or Project == "bm" or Project == "am" or Project == "mm":
                 Release_with_gui = True
                 Release_with_mil = False
                 Release_with_zl = False
@@ -735,16 +735,10 @@ and OS_name != "repos" and OS_name != "all":
 
 if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
     # sys.argv[0] == Generate_DL_pages.py
-    if len(sys.argv) < 4 and (Project == "qc" or Project == "bm" or Project == "am"):
+    if len(sys.argv) < 4 and (Project == "qc" or Project == "bm" or Project == "am" or Project == "mm"):
         print
         print "If you ask windows, mac, appimage, sources or all, you must provide the version"
         print "numbers as 3rd arguments."
-        print
-        sys.exit(1)
-    elif len(sys.argv) < 5 and Project == "mm":
-        print
-        print "If you ask windows, mac, sources or all, you must provide the version"
-        print "numbers of MM + ZL respectively as 3rd, and 4th arguments."
         print
         sys.exit(1)
     elif len(sys.argv) < 6 and (Project == "mi" or Project == "mc" or Project == "da"):

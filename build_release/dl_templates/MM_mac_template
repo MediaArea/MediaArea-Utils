@@ -1,6 +1,17 @@
 <tr>
-    <th rowspan="3">OS_TITLE</th>
-    <th rowspan="3">x86_64</th>
+    <th rowspan="2" colspan="2"><a href="http://itunes.apple.com/app/movmetaedit/id1299543806">Mac App Store</a></th>
+    <td class="table-OS" colspan="3">VERSIONS_APPLESTORE</td>
+</tr>
+<tr>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br /><a href="http://itunes.apple.com/app/movmetaedit/id1299543806">Get MOVMetaEdit MM_VERSION from Mac App Store!</a></td>
+</tr>
+<tr>
+    <td colspan="5">&nbsp;<br />&nbsp;</td>
+</tr>
+<tr>
+    <th rowspan="2">OS_TITLE</th>
+    <th rowspan="2">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/movmetaedit-gui/MM_VERSION/MOVMetaEdit_GUI_MM_VERSION_Mac.dmg">vMM_VERSION</a></td>
     <td></td>
@@ -10,4 +21,3 @@
     <td><a href="//mediaarea.net/download/binary/movmetaedit/MM_VERSION/MOVMetaEdit_CLI_MM_VERSION_Mac.dmg">vMM_VERSION</a></td>
     <td>&nbsp;</td>
 </tr>
-
