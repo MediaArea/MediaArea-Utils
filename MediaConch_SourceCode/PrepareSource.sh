@@ -284,8 +284,14 @@ function _all_inclusive () {
     # Update submodules
     git submodule update --remote
 
+    # Use local MediaConch source tree if aviable
+    if [ "$Target" != "ai" ]; then
+        rm -fr MediaConch
+        cp -a "$MC_source" MediaConch
+    fi
+
     echo "2: remove what isn’t wanted..."
-    rm -fr .git*
+    rm -fr .git* */*.git*
 
     if $MakeArchives; then
         echo "3: compressing..."
