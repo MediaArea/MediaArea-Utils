@@ -749,13 +749,19 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
         sys.exit(1)
 
 Config = {}
-execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
+execfile(os.path.join(Script_emplacement, "Generate_DL_pages_dist.conf"), Config)
+if os.path.exists(os.path.join(Script_emplacement, "Generate_DL_pages.conf")):
+    execfile(os.path.join(Script_emplacement, "Generate_DL_pages.conf"), Config)
 
 HOR_config = {}
-execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), HOR_config)
+execfile( os.path.join(Script_emplacement, "Handle_OBS_results_dist.conf"), HOR_config)
+if os.path.exists(os.path.join(Script_emplacement, "Handle_OBS_results.conf")):
+    execfile(os.path.join(Script_emplacement, "Handle_OBS_results.conf"), Config)
 
 Repo_config = {}
-execfile( os.path.join( Script_emplacement, "Repo.conf"), Repo_config)
+execfile( os.path.join( Script_emplacement, "Repo_dist.conf"), Repo_config)
+if os.path.exists(os.path.join(Script_emplacement, "Repo.conf")):
+    execfile(os.path.join(Script_emplacement, "Repo.conf"), Config)
 
 Package_infos = HOR_config["Package_infos"]
 

@@ -765,7 +765,9 @@ Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 MA_project = OBS_project + "/" + OBS_package
 
 Config = {}
-execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
+execfile(os.path.join( Script_emplacement, "Handle_OBS_results_dist.conf"), Config)
+if os.path.exists(os.path.join( Script_emplacement, "Handle_OBS_results.conf")):
+    execfile(os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
 
 Package_infos = Config["Package_infos"]
 Project = Config["Projects"][OBS_package]
