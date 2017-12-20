@@ -725,9 +725,7 @@ if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm" a
     print
     sys.exit(1)
 
-if OS_name != "windows" and OS_name != "mac" \
-and OS_name != "linux" and OS_name != "sources" \
-and OS_name != "repos" and OS_name != "all":
+if OS_name not in {"windows", "mac", "linux", "sources", "repos", "all"}:
     print
     print "The second argument must be windows, mac, linux, sources, repos, or all"
     print
@@ -773,6 +771,10 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "appimage":
 
 if OS_name == "linux":
     OBS()
+    if Project != "bm" and Project != "am" and Project != "da" and Project != "mm":
+        DL_pages("appimage")
+    if Project == "mi":
+        DL_pages("javascript")
 
 if OS_name == "sources":
     Sources()
@@ -788,4 +790,5 @@ if OS_name == "all":
     OBS()
     Sources()
     if Project == "mi":
+        DL_pages("javascript")
         Repos()
