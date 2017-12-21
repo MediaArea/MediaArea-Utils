@@ -372,7 +372,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
 
 Configuration = {}
 execfile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Repo_dist.conf"), Configuration)
-if os.path.exists(os.path.dirname(os.path.realpath(__file__)), "Repo.conf")):
+if os.path.exists(os.path.dirname(os.path.realpath(__file__)), "Repo.conf"):
     execfile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Repo.conf"), Configuration)
 
 # Output
