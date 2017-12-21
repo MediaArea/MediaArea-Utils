@@ -754,12 +754,12 @@ if os.path.exists(os.path.join(Script_emplacement, "Generate_DL_pages.conf")):
 HOR_config = {}
 execfile( os.path.join(Script_emplacement, "Handle_OBS_results_dist.conf"), HOR_config)
 if os.path.exists(os.path.join(Script_emplacement, "Handle_OBS_results.conf")):
-    execfile(os.path.join(Script_emplacement, "Handle_OBS_results.conf"), Config)
+    execfile(os.path.join(Script_emplacement, "Handle_OBS_results.conf"), HOR_config)
 
 Repo_config = {}
 execfile( os.path.join( Script_emplacement, "Repo_dist.conf"), Repo_config)
 if os.path.exists(os.path.join(Script_emplacement, "Repo.conf")):
-    execfile(os.path.join(Script_emplacement, "Repo.conf"), Config)
+    execfile(os.path.join(Script_emplacement, "Repo.conf"), Repo_config)
 
 Package_infos = HOR_config["Package_infos"]
 
