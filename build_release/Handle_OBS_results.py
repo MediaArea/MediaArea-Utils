@@ -500,9 +500,9 @@ def Verify_states_and_files():
                 Number_dbg_wanted = Number_dbg_wanted + 1
 
         # State == 2 if build failed
-        if State == 2:
+        if State == 2 and Distrib_name not in Config.get("Buggy_dist", []):
             Dists_failed.append(DB_dist + ("Build failed",))
-        elif State == 3:
+        elif State == 3 and Distrib_name not in Config.get("Buggy_dist", []):
             Dists_failed.append(DB_dist + ("OBS error",))
 
     print "(In case the mails can’t be send:)"
@@ -765,7 +765,9 @@ Script_emplacement = os.path.dirname(os.path.realpath(__file__))
 MA_project = OBS_project + "/" + OBS_package
 
 Config = {}
-execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
+execfile(os.path.join( Script_emplacement, "Handle_OBS_results_dist.conf"), Config)
+if os.path.exists(os.path.join( Script_emplacement, "Handle_OBS_results.conf")):
+    execfile(os.path.join( Script_emplacement, "Handle_OBS_results.conf"), Config)
 
 Package_infos = Config["Package_infos"]
 Project = Config["Projects"][OBS_package]

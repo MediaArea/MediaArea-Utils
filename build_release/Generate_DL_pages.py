@@ -725,9 +725,7 @@ if Project != "mc" and Project != "mi" and Project != "qc" and Project != "bm" a
     print
     sys.exit(1)
 
-if OS_name != "windows" and OS_name != "mac" \
-and OS_name != "linux" and OS_name != "sources" \
-and OS_name != "repos" and OS_name != "all":
+if OS_name not in {"windows", "mac", "linux", "sources", "repos", "all"}:
     print
     print "The second argument must be windows, mac, linux, sources, repos, or all"
     print
@@ -749,13 +747,19 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "all":
         sys.exit(1)
 
 Config = {}
-execfile( os.path.join( Script_emplacement, "Generate_DL_pages.conf"), Config)
+execfile(os.path.join(Script_emplacement, "Generate_DL_pages_dist.conf"), Config)
+if os.path.exists(os.path.join(Script_emplacement, "Generate_DL_pages.conf")):
+    execfile(os.path.join(Script_emplacement, "Generate_DL_pages.conf"), Config)
 
 HOR_config = {}
-execfile( os.path.join( Script_emplacement, "Handle_OBS_results.conf"), HOR_config)
+execfile( os.path.join(Script_emplacement, "Handle_OBS_results_dist.conf"), HOR_config)
+if os.path.exists(os.path.join(Script_emplacement, "Handle_OBS_results.conf")):
+    execfile(os.path.join(Script_emplacement, "Handle_OBS_results.conf"), Config)
 
 Repo_config = {}
-execfile( os.path.join( Script_emplacement, "Repo.conf"), Repo_config)
+execfile( os.path.join( Script_emplacement, "Repo_dist.conf"), Repo_config)
+if os.path.exists(os.path.join(Script_emplacement, "Repo.conf")):
+    execfile(os.path.join(Script_emplacement, "Repo.conf"), Config)
 
 Package_infos = HOR_config["Package_infos"]
 
@@ -767,6 +771,10 @@ if OS_name == "windows" or OS_name == "mac" or OS_name == "appimage":
 
 if OS_name == "linux":
     OBS()
+    if Project != "bm" and Project != "am" and Project != "da" and Project != "mm":
+        DL_pages("appimage")
+    if Project == "mi":
+        DL_pages("javascript")
 
 if OS_name == "sources":
     Sources()
@@ -782,4 +790,5 @@ if OS_name == "all":
     OBS()
     Sources()
     if Project == "mi":
+        DL_pages("javascript")
         Repos()
