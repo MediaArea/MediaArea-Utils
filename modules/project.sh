@@ -53,10 +53,10 @@ function project_get () {
         Dirname="movmetaedit"
         Repo="https://github.com/MediaArea/MOVMetaEdit.git"
     fi
-    if [ "$Project" = "rc" ] || [ "$Project" = "RC" ] || [ "$Project" = "RAWCooked" ]; then
-        Project=RAWCooked
+    if [ "$Project" = "rc" ] || [ "$Project" = "RC" ] || [ "$Project" = "RAWcooked" ]; then
+        Project=RAWcooked
         Dirname="rawcooked"
-        Repo="https://github.com/g-maxime/RAWCooked.git"
+        Repo="https://github.com/MediaArea/RAWcooked.git"
     fi
 
     if [ $(b.opt.get_opt --repo) ]; then

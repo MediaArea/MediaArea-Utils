@@ -1,5 +1,5 @@
-# RAWCooked/Release/UpgradeVersion.sh
-# Upgrade the version number of RAWCooked
+# RAWcooked/Release/UpgradeVersion.sh
+# Upgrade the version number of RAWcooked
 
 # Copyright (c) MediaArea.net SARL. All Rights Reserved.
 # Use of this source code is governed by a BSD-style license that
@@ -39,7 +39,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/PKGBUILD"
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="debian/changelog"
-    Files[((index++))]="Project/MSVC2017/CLI/RAWCooked.rc"
+    Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
 
     # Make the replacements
     for File in ${Files[@]}
@@ -52,7 +52,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version AA,BB,CC,DD ..."
     unset -v Files
     index=0
-    Files[((index++))]="Project/MSVC2017/CLI/RAWCooked.rc"
+    Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
 
     for File in ${Files[@]}
     do
