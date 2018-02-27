@@ -1,25 +1,11 @@
----
-layout: default
-permalink: downloads/debian.html
-title: "Download MediaConch for Debian"
----
-
-# Download - Debian
-
-<img src="/MediaConch/images/Debian.png" width="229" height="61"><br />
-
-<table border="1">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <td>Comment</td>
-</tr>
-</thead>
-<tbody>
 <tr>
     <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Debian<br />Search for "MediaConch" in your package manager<br />or "apt-get install mediaconch-gui" (for GUI)<br /> or "apt-get install mediaconch-server" (for Server)<br /> or "apt-get install mediaconch" (for CLI)</th>
-    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
+    <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
+</tr>
+<tr>
+    <th colspan="4">Official distribution packages (Debian 9 AKA Stretch)<br />Search for "MediaConch" in your package manager<br />or "apt-get install mediaconch-gui" (for GUI)<br /> or "apt-get install mediaconch" (for CLI)</th>
+    <td><a href="http://packages.debian.org/search?suite=stretch&amp;searchon=names&amp;keywords=mediaconch" target="_blank">Debian Stretch package database</a></td>
+</tr>
+<tr>
+    <th colspan="5">Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"</th>
 </tr>

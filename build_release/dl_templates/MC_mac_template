@@ -1,10 +1,10 @@
 <tr>
     <th rowspan="2" colspan="2"><a href="https://www.apple.com/itunes/affiliates/download/?id=510620098">Mac App Store</a></th>
-    <td colspan="3">VERSIONS_APPLESTORE</td>
+    <td class="table-OS" colspan="3">VERSIONS_APPLESTORE</td>
 </tr>
 <tr>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br /><a href="http://itunes.apple.com/app/mediaconch/id1183720451">Get MediaConch vMC_VERSION from Mac App Store!</a></td>
+    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br /><a href="https://itunes.apple.com/app/mediaconch/id1183720451">Get MediaConch vMC_VERSION from Mac App Store!</a></td>
 </tr>
 <tr>
     <td colspan="5">&nbsp;<br />&nbsp;</td>
@@ -32,6 +32,6 @@
     <td>Currently with the same API as libmediainfo</td>
 </tr>
 <tr>
-    <th><a href="http://brew.sh/">Homebrew</a></th>
+    <th><a href="https://brew.sh/">Homebrew</a></th>
     <td colspan="4">You can install MediaConch CLI by typing <code>brew install mediaconch</code> into the Terminal, and the GUI by typing <code>brew tap caskroom/cask && brew cask install mediaconch-app</code></td>
 </tr>
