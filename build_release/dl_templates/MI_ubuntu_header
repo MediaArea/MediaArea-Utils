@@ -4,7 +4,7 @@
 </tr>
 <tr>
     <th colspan="4">Official distribution packages (Starting from Ubuntu 12.04)<br />Search for "MediaInfo" in your package manager<br />or "apt-get install mediainfo-gui" (for GUI)<br /> or "apt-get install mediainfo" (for CLI)</th>
-    <td><a href="http://packages.ubuntu.com/search?searchon=names&amp;keywords=mediainfo">Ubuntu packages search</a></td>
+    <td><a href="https://packages.ubuntu.com/search?searchon=names&amp;keywords=mediainfo">Ubuntu packages search</a></td>
 </tr>
 
 <tr>

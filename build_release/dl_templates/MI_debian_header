@@ -4,7 +4,7 @@
 </tr>
 <tr>
     <th colspan="4">Official distribution packages (Debian 8 AKA Jessie)<br />Search for "MediaInfo" in your package manager<br />or "apt-get install mediainfo-gui" (for GUI)<br /> or "apt-get install mediainfo" (for CLI)</th>
-    <td><a href="http://packages.debian.org/search?suite=jessie&amp;searchon=names&amp;keywords=mediainfo">Debian Jessie package database</a></td>
+    <td><a href="https://packages.debian.org/search?suite=jessie&amp;searchon=names&amp;keywords=mediainfo">Debian Jessie package database</a></td>
 </tr>
 
 <tr>

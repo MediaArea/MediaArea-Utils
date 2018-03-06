@@ -4,7 +4,7 @@
 </tr>
 <tr>
     <th colspan="4">Official distribution packages (Starting from Ubuntu 16.04)<br />Search for "MediaConch" in your package manager<br />or "apt-get install mediaconch-gui" (for GUI)<br /> or "apt-get install mediaconch" (for CLI)</th>
-    <td><a href="http://packages.ubuntu.com/search?searchon=names&amp;keywords=mediaconch" target="_blank">Ubuntu packages search</a></td>
+    <td><a href="https://packages.ubuntu.com/search?searchon=names&amp;keywords=mediaconch" target="_blank">Ubuntu packages search</a></td>
 </tr>
 <tr>
     <th colspan="5">Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"</th>

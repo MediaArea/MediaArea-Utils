@@ -4,6 +4,6 @@
 </tr>
 <tr>
     <th colspan="4">Official distribution packages (Starting from Fedora 19)<br />search for "MediaInfo" in your package manager<br />or "yum install mediainfo-gui" (for GUI)<br /> or "yum install mediainfo" (for CLI)</th>
-    <td><a href="http://koji.fedoraproject.org/koji/packageinfo?packageID=18110">Fedora packages search</a></td>
+    <td><a href="https://koji.fedoraproject.org/koji/packageinfo?packageID=18110">Fedora packages search</a></td>
 </tr>
 
