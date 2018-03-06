@@ -1,22 +1,3 @@
----
-layout: default
-permalink: downloads/arch.html
-title: "Download MediaConch for Archlinux"
----
-
-# Download - Arch
-
-<img src="/MediaConch/images/ArchLinux.png" width="205" height="68"><br />
-
-<table border="1">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <td>Comment</td>
+<tr>
+    <th colspan="5">Notes for installing the packages below:<br />"pacman -U *pkg.tar.xz"</th>
 </tr>
-</thead>
-<tbody>
-

@@ -1,25 +1,11 @@
----
-layout: default
-permalink: downloads/ubuntu.html
-title: "Download MediaConch for Ubuntu"
----
-
-# Download - Ubuntu (Ubuntu, Kubuntu, Xbuntu...), Linux Mint
-
-<img src="/MediaConch/images/Ubuntu.png" width="304" height="79" alt="Ubuntu"><img src="/MediaConch/images/Linux_Mint.png" width="256" height="75" alt="Linux Mint"><br />
- 
-<table border="1">
-<thead>
-<tr class="table-header">
-    <th>Version</th>
-    <th>Architecture</th>
-    <th>Interface</th>
-    <td>Version</td>
-    <td>Comment</td>
-</tr>
-</thead>
-<tbody>
 <tr>
     <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Ubuntu<br />Search for "MediaConch" in your package manager<br />or "apt-get install mediaconch-gui" (for GUI)<br /> or "apt-get install mediaconch-server" (for Server)<br /> or "apt-get install mediaconch" (for CLI)</th>
-    <td><a href='/Repos'>Activate MediaArea Repository</a></td>
+    <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
+</tr>
+<tr>
+    <th colspan="4">Official distribution packages (Starting from Ubuntu 16.04)<br />Search for "MediaConch" in your package manager<br />or "apt-get install mediaconch-gui" (for GUI)<br /> or "apt-get install mediaconch" (for CLI)</th>
+    <td><a href="http://packages.ubuntu.com/search?searchon=names&amp;keywords=mediaconch" target="_blank">Ubuntu packages search</a></td>
+</tr>
+<tr>
+    <th colspan="5">Notes for installing the packages below:<br />"sudo dpkg -i *deb"<br /><br />If you get an error message, use:<br />"sudo apt-get -f install"</th>
 </tr>

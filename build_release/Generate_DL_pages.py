@@ -125,8 +125,6 @@ def DL_pages(OS_name):
     Content = Content.replace("MIL_VERSION", MIL_version)
 
     Destination.write(Content)
-    if Project == "mc":
-        Destination.write("\n</tbody>\n</table>\n")
 
     Destination.close()
 
@@ -159,8 +157,6 @@ def Sources():
     Content = Content.replace("ZL_VERSION", ZL_version)
 
     Destination.write(Content)
-    if Project == "mc":
-        Destination.write("\n</tbody>\n</table>\n")
 
     Destination.close()
 
@@ -409,15 +405,12 @@ def OBS():
             Package_type = "rpm"
             Package_infos[Package_type]["i586"] = "i586"
 
-        if Project == "mc":
-            Filename = Distrib_name_lower + ".md"
+        if Distrib_name == "xUbuntu":
+            Filename = "ubuntuTable.html.twig"
+        elif Distrib_name == "Arch":
+            Filename = "archlinuxTable.html.twig"
         else:
-            if Distrib_name == "xUbuntu":
-                Filename = "ubuntuTable.html.twig"
-            elif Distrib_name == "Arch":
-                Filename = "archlinuxTable.html.twig"
-            else:
-                Filename = Distrib_name.lower() + "Table.html.twig"
+            Filename = Distrib_name.lower() + "Table.html.twig"
 
         Destination = open("/tmp/" + Project + "_dl_pages/" + Filename, "w")
 
@@ -545,7 +538,7 @@ def OBS():
                     Release_rowspan = ""
                 Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
 
-                if Release_status == "old" and Project == "mi":
+                if Release_status == "old" and (Project == "mi" or Project == "mc"):
                     Release_class = " class=\"old-files\""
                 else:
                     Release_class = ""
@@ -687,9 +680,6 @@ def OBS():
                     Old_releases = Old_releases.replace("ZL_VERSION", ZL_deb6_version)
 
                 Destination.write("\n" + Old_releases)
-
-        if Project == "mc":
-            Destination.write("</tbody>\n</table>\n")
 
         Destination.close()
 
