@@ -7,7 +7,7 @@
 {% block body %}
 <h1>{% trans %}repos.title{% endtrans %}</h1>
 
-<p>MediaArea softwares repositories are available for automatic update of our softwaresfor the distributions listed below.<br />
+<p>MediaArea softwares repositories are available for automatic update of our softwaresfor the distributions listed below.<br>
 </p>
 
 <p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
@@ -16,7 +16,7 @@
 
 <div id='rpm'>
 <h2>Commands for rpm based distributions</h2>
-<p>For releases repository, download and install <a href='RPM_PKG_URL'>this package</a><br/>or type the following command in a root terminal:</p>
+<p>For releases repository, download and install <a href='RPM_PKG_URL'>this package</a><br>or type the following command in a root terminal:</p>
 <table class="download table table-bordered table-condensed">
 <thead>
   <tr class="table-header">
@@ -39,7 +39,7 @@
 
 <div id='deb'>
 <h2>Commands for deb based distributions</h2>
-<p>For releases repository, download and install <a href='DEB_PKG_URL'>this package</a> (don't forget to do 'apt-get update' before trying to install something)<br/> or type the following command in a root terminal: </p>
+<p>For releases repository, download and install <a href='DEB_PKG_URL'>this package</a> (don't forget to do 'apt-get update' before trying to install something)<br> or type the following command in a root terminal: </p>
 <table class="download table table-bordered table-condensed">
 <thead>
 <tr class="table-header">

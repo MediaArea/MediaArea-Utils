@@ -240,7 +240,7 @@ def Repos():
             if Result[0] in HOR_config["Repo_exclude"]:
                 continue
 
-            Version = Config[Result[0].replace("xUbuntu", "Ubuntu").replace(".", "_").lower() + "_title" ].replace("<br /><br />", "<br />")
+            Version = Config[Result[0].replace("xUbuntu", "Ubuntu").replace(".", "_").lower() + "_title" ].replace("<br><br>", "<br>")
 
             Cursor.execute("SELECT arch FROM %s WHERE distrib = '%s' AND state = '1'"  % (Table_releases_obs, Result[0]))
             Results = Cursor.fetchall()

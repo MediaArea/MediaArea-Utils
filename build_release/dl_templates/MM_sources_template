@@ -1,5 +1,5 @@
 <tr>
-    <th rowspan="3" colspan="2">All in one package<br /> for an easy and quick compilation<br /> on Linux without install</th>
+    <th rowspan="3" colspan="2">All in one package<br> for an easy and quick compilation<br> on Linux without install</th>
     <td class="table-OS" colspan="3" id="AllInOne">Source code, all in one package</td>
 </tr>
 <tr>
@@ -13,7 +13,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <th rowspan="2" colspan="2">Split sources with .spec,<br />.desc and debian dir<br /> for Linux package creation</th>
+    <th rowspan="2" colspan="2">Split sources with .spec,<br>.desc and debian dir<br> for Linux package creation</th>
     <td class="table-OS" colspan="3" id="Split">Source code, split packages</td>
 </tr>
 <tr>
@@ -22,7 +22,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <th rowspan="2" colspan="2">Sources with all<br />third-party libs included,<br />(for quick compilation<br />with Microsoft Visual C++)</th>
+    <th rowspan="2" colspan="2">Sources with all<br>third-party libs included,<br>(for quick compilation<br>with Microsoft Visual C++)</th>
     <td class="table-OS" colspan="3" id="Split">Source code, All included</td>
 </tr>
 <tr>

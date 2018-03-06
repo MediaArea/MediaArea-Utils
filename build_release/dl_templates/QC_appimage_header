@@ -1,4 +1,4 @@
 <tr>
-    <th colspan="4">Download the AppImage corresponding to your architecture then, e.g for qctools:<br />- Make it executable "chmod +x qctools-*.AppImage"<br/>- Run the AppImage "./qctools-*.AppImage"</th>
+    <th colspan="4">Download the AppImage corresponding to your architecture then, e.g for qctools:<br>- Make it executable "chmod +x qctools-*.AppImage"<br>- Run the AppImage "./qctools-*.AppImage"</th>
 </tr>
 
