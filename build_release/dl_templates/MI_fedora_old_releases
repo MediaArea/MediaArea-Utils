@@ -1,5 +1,5 @@
 ﻿<tr class="old-files">
-    <th rowspan="8">19<br/>(Schrödinger's Cat)</th>
+    <th rowspan="8">19<br>(Schrödinger's Cat)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.73/mediainfo-gui-0.7.73-1.x86_64.Fedora_19.rpm">v0.7.73</a></td>
@@ -42,7 +42,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">18<br/>(Spherical Cow)</th>
+    <th rowspan="8">18<br>(Spherical Cow)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.72/mediainfo-gui-0.7.72-1.x86_64.Fedora_18.rpm">v0.7.72</a></td>
@@ -85,7 +85,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">17<br/>(Beefy Miracle)</th>
+    <th rowspan="8">17<br>(Beefy Miracle)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.72/mediainfo-gui-0.7.72-1.x86_64.Fedora_17.rpm">v0.7.72</a></td>
@@ -128,7 +128,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">16<br/>(Verne)</th>
+    <th rowspan="8">16<br>(Verne)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.62/mediainfo-gui-0.7.62-1.x86_64.Fedora_16.rpm">v0.7.62</a></td>
@@ -146,7 +146,7 @@
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.28-1.x86_64.Fedora_16.rpm">v0.4.28</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.28-1.x86_64.Fedora_16.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.28-1.x86_64.Fedora_16.rpm">v0.4.28</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.28-1.x86_64.Fedora_16.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
@@ -167,350 +167,350 @@
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.28-1.i686.Fedora_16.rpm">v0.4.28</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.28-1.i686.Fedora_16.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.28-1.i686.Fedora_16.rpm">v0.4.28</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.28-1.i686.Fedora_16.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">15<br/>(Lovelock)</th>
+    <th rowspan="8">15<br>(Lovelock)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.58-1.x86_64.Fedora_15.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.58-1.x86_64.Fedora_15.rpm">v0.7.58</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.58-1.x86_64.Fedora_15.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.26-1.x86_64.Fedora_15.rpm">v0.4.26</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.26-1.x86_64.Fedora_15.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.26-1.x86_64.Fedora_15.rpm">v0.4.26</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.26-1.x86_64.Fedora_15.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.58-1.i386.Fedora_15.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.58-1.i386.Fedora_15.rpm">v0.7.58</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.58-1.i386.Fedora_15.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.26-1.i386.Fedora_15.rpm">v0.4.26</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.26-1.i386.Fedora_15.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.26-1.i386.Fedora_15.rpm">v0.4.26</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.26-1.i386.Fedora_15.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">14<br/>(Laughlin)</th>
+    <th rowspan="8">14<br>(Laughlin)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.x86_64.Fedora_14.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.x86_64.Fedora_14.rpm">v0.7.53</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.x86_64.Fedora_14.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_14.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_14.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_14.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_14.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.i386.Fedora_14.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.i386.Fedora_14.rpm">v0.7.53</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.i386.Fedora_14.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_14.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_14.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_14.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_14.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">13<br/>(Goddard)</th>
+    <th rowspan="8">13<br>(Goddard)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.x86_64.Fedora_13.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.x86_64.Fedora_13.rpm">v0.7.45</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.x86_64.Fedora_13.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_13.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_13.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_13.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_13.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.i386.Fedora_13.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.i386.Fedora_13.rpm">v0.7.45</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.i386.Fedora_13.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_13.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_13.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_13.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_13.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">12<br/>(Constantine)</th>
+    <th rowspan="8">12<br>(Constantine)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.x86_64.Fedora_12.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.x86_64.Fedora_12.rpm">v0.7.45</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.x86_64.Fedora_12.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_12.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_12.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.Fedora_12.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.Fedora_12.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.i386.Fedora_12.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.45-1.i386.Fedora_12.rpm">v0.7.45</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.45-1.i386.Fedora_12.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_12.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_12.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i386.Fedora_12.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i386.Fedora_12.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">11<br/>(Leonidas)</th>
+    <th rowspan="8">11<br>(Leonidas)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_11.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_11.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_11.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_11.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_11.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_11.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_11.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_11.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_11.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_11.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_11.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_11.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_11.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_11.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">10<br/>(Cambridge)</th>
+    <th rowspan="8">10<br>(Cambridge)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_10.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_10.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_10.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_10.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_10.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_10.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_10.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_10.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_10.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_10.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_10.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_10.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_10.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_10.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">9<br/>(Sulphur)</th>
+    <th rowspan="8">9<br>(Sulphur)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_9.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.x86_64.Fedora_9.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.x86_64.Fedora_9.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_9.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_9.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.Fedora_9.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.Fedora_9.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_9.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.34-1.i386.Fedora_9.rpm">v0.7.34</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.34-1.i386.Fedora_9.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_9.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_9.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i386.Fedora_9.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i386.Fedora_9.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
-    <th rowspan="8">8<br/>(Wereworlf)</th>
+    <th rowspan="8">8<br>(Wereworlf)</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.11-1.x86_64.Fedora_8.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.11-1.x86_64.Fedora_8.rpm">v0.7.11</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.11-1.x86_64.Fedora_8.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.3.8-1.x86_64.Fedora_8.rpm">v0.3.8</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.3.8-1.x86_64.Fedora_8.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.3.8-1.x86_64.Fedora_8.rpm">v0.3.8</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.3.8-1.x86_64.Fedora_8.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i686</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.11-1.i386.Fedora_8.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.11-1.i386.Fedora_8.rpm">v0.7.11</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.11-1.i386.Fedora_8.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.3.8-1.i386.Fedora_8.rpm">v0.3.8</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.3.8-1.i386.Fedora_8.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.3.8-1.i386.Fedora_8.rpm">v0.3.8</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.3.8-1.i386.Fedora_8.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>

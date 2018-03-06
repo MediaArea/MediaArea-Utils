@@ -1,8 +1,8 @@
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Fedora<br />search for "MediaConch" in your package manager<br />or "yum install mediaconch-gui" (for GUI)<br /> or "yum install mediaconch-server" (for Server)<br /> or "yum install mediaconch" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Fedora<br>search for "MediaConch" in your package manager<br>or "yum install mediaconch-gui" (for GUI)<br> or "yum install mediaconch-server" (for Server)<br> or "yum install mediaconch" (for CLI)</th>
     <td><a href='{{ path('ma_repos') }}'>Activate MediaArea Repository</a></td>
 </tr>
 <tr>
-    <th colspan="4">Official distribution packages (Starting from Fedora 25)<br />search for "MediaConch" in your package manager<br />or "yum install mediaconch-gui" (for GUI)<br /> or "yum install mediaconch-server" (for Server)<br /> or "yum install mediaconch" (for CLI)</th>
+    <th colspan="4">Official distribution packages (Starting from Fedora 25)<br>search for "MediaConch" in your package manager<br>or "yum install mediaconch-gui" (for GUI)<br> or "yum install mediaconch-server" (for Server)<br> or "yum install mediaconch" (for CLI)</th>
     <td><a href="https://koji.fedoraproject.org/koji/packageinfo?packageID=24411" target="_blank">Fedora packages search</a></td>
 </tr>

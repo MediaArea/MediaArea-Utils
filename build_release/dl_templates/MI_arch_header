@@ -1,9 +1,9 @@
 <tr>
-    <th colspan="3">Official distribution packages<br/>search for "MediaInfo" in your package manager<br/>or "pacman -S mediainfo-gui" (for GUI)<br/> or "pacman -S mediainfo" (for CLI)</th>
-    <td><a href="http://www.archlinux.org/packages/?q=mediainfo">Arch Linux package database</a></td>
+    <th colspan="3">Official distribution packages<br>search for "MediaInfo" in your package manager<br>or "pacman -S mediainfo-gui" (for GUI)<br> or "pacman -S mediainfo" (for CLI)</th>
+    <td><a href="https://www.archlinux.org/packages/?q=mediainfo">Arch Linux package database</a></td>
     <td>Is currently up to date</td>
 </tr>
 <tr>
-    <th colspan="5">Notes for installing the packages below:<br />"pacman -U *pkg.tar.xz"</th>
+    <th colspan="5">Notes for installing the packages below:<br>"pacman -U *pkg.tar.xz"</th>
 </tr>
 

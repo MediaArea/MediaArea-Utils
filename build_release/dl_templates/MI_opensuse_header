@@ -1,9 +1,9 @@
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for OpenSUSE<br />search for "MediaInfo" in your package manager<br />or "zypper install mediainfo-gui" (for GUI)<br /> or "zypper install mediainfo" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for OpenSUSE<br>search for "MediaInfo" in your package manager<br>or "zypper install mediainfo-gui" (for GUI)<br> or "zypper install mediainfo" (for CLI)</th>
     <td><a href='{{ path('ma_repos') }}'>Activate MediaArea Repository</a></td>
 </tr>
 <tr>
-    <th colspan="3">Packman packages.<br />These packages are better included<br /> in your openSUSE distribution.<br /> It is preferable to use them.</th>
+    <th colspan="3">Packman packages.<br>These packages are better included<br> in your openSUSE distribution.<br> It is preferable to use them.</th>
     <td><a href="http://packman.links2linux.org/package/mediainfo">Packman website</a></td>
     <td class="warning">Warning: they are currently out of date.</td>
 </tr>

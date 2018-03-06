@@ -1,4 +1,4 @@
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for CentOS<br />search for "QCTools" in your package manager<br />or "yum install qctools" (for GUI)<br /> or "yum install qcli" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for CentOS<br>search for "QCTools" in your package manager<br>or "yum install qctools" (for GUI)<br> or "yum install qcli" (for CLI)</th>
     <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
 </tr>

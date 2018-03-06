@@ -174,214 +174,214 @@
     <th rowspan="8" id="11.3">11.3</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.x86_64.openSUSE_11.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.x86_64.openSUSE_11.3.rpm">v0.7.53</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.x86_64.openSUSE_11.3.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.3.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.3.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.3.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i586</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.i586.openSUSE_11.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.53-1.i586.openSUSE_11.3.rpm">v0.7.53</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.53-1.i586.openSUSE_11.3.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.3.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.3.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.3.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="8" id="11.2">11.2</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.44-1.x86_64.openSUSE_11.2.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.44-1.x86_64.openSUSE_11.2.rpm">v0.7.44</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.44-1.x86_64.openSUSE_11.2.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.2.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.2.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.2.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.2.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i586</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.44-1.i586.openSUSE_11.2.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.44-1.i586.openSUSE_11.2.rpm">v0.7.44</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.44-1.i586.openSUSE_11.2.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.2.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.2.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.2.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.2.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="8" id="11.1">11.1</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.41-1.x86_64.openSUSE_11.1.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.41-1.x86_64.openSUSE_11.1.rpm">v0.7.41</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.41-1.x86_64.openSUSE_11.1.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.1.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.1.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.x86_64.openSUSE_11.1.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.x86_64.openSUSE_11.1.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i586</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.41-1.i586.openSUSE_11.1.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.41-1.i586.openSUSE_11.1.rpm">v0.7.41</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.41-1.i586.openSUSE_11.1.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.1.rpm">v0.4.24</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.1.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.24-1.i586.openSUSE_11.1.rpm">v0.4.24</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.24-1.i586.openSUSE_11.1.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="8">11.0</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.28-1.x86_64.openSUSE_11.0.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.28-1.x86_64.openSUSE_11.0.rpm">v0.7.28</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.28-1.x86_64.openSUSE_11.0.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.openSUSE_11.0.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.openSUSE_11.0.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.x86_64.openSUSE_11.0.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.x86_64.openSUSE_11.0.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i586</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.28-1.i586.openSUSE_11.0.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.28-1.i586.openSUSE_11.0.rpm">v0.7.28</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.28-1.i586.openSUSE_11.0.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i586.openSUSE_11.0.rpm">v0.4.14</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i586.openSUSE_11.0.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.14-1.i586.openSUSE_11.0.rpm">v0.4.14</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.14-1.i586.openSUSE_11.0.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="8">10.3</th>
     <th rowspan="4">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.22-1.x86_64.openSUSE_10.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.22-1.x86_64.openSUSE_10.3.rpm">v0.7.22</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.22-1.x86_64.openSUSE_10.3.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.7-1.x86_64.openSUSE_10.3.rpm">v0.4.7</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.7-1.x86_64.openSUSE_10.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.7-1.x86_64.openSUSE_10.3.rpm">v0.4.7</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.7-1.x86_64.openSUSE_10.3.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 <tr class="old-files">
     <th rowspan="4">i586</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-gui-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th><abbr title="Command Line Interface">CLI</abbr></th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/mediainfo-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/mediainfo-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a></td>
     <td>requires libmediainfo0</td>
 </tr>
 <tr class="old-files">
     <th>libmediainfo0</th>
-    <td><a href="http://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a><small> (<a href="http://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.22-1.i586.openSUSE_10.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/mediainfo/libmediainfo0-0.7.22-1.i586.openSUSE_10.3.rpm">v0.7.22</a><small> (<a href="https://downloads.sourceforge.net/mediainfo/libmediainfo-devel-0.7.22-1.i586.openSUSE_10.3.rpm">devel</a>)</small></td>
     <td>requires libzen0</td>
 </tr>
 <tr class="old-files">
     <th>libzen0</th>
-    <td><a href="http://downloads.sourceforge.net/zenlib/libzen0-0.4.7-1.i586.openSUSE_10.3.rpm">v0.4.7</a><small> (<a href="http://downloads.sourceforge.net/zenlib/libzen-devel-0.4.7-1.i586.openSUSE_10.3.rpm">devel</a>)</small></td>
+    <td><a href="https://downloads.sourceforge.net/zenlib/libzen0-0.4.7-1.i586.openSUSE_10.3.rpm">v0.4.7</a><small> (<a href="https://downloads.sourceforge.net/zenlib/libzen-devel-0.4.7-1.i586.openSUSE_10.3.rpm">devel</a>)</small></td>
     <td>&nbsp;</td>
 </tr>

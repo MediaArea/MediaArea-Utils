@@ -1,5 +1,5 @@
 <tr>
-    <th colspan="5">Split sources with .spec,<br />.desc and debian dir<br /> for Linux package creation</th>
+    <th colspan="5">Split sources with .spec,<br>.desc and debian dir<br> for Linux package creation</th>
 </tr>
 <tr>
     <td class="table-OS" id="Split">Source code, split packages</td>
@@ -9,7 +9,7 @@
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <th colspan="5">Sources with<br />third-party libs included,<br />(for quick compilation<br />on all OS)</th>
+    <th colspan="5">Sources with<br>third-party libs included,<br>(for quick compilation<br>on all OS)</th>
 </tr>
 <tr>
     <td class="table-OS" id="Split">Source code, all included</td>

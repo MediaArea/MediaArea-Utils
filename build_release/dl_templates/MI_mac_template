@@ -4,17 +4,17 @@
 </tr>
 <tr>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br /><a href="http://itunes.apple.com/app/mediainfo/id510620098">Get MediaInfo vMI_VERSION from Mac App Store!</a><br />(there is a small fee)</td>
+    <td colspan="2">Mac App Store is the simplest way to find and download apps for your Mac.<br><a href="https://itunes.apple.com/app/mediainfo/id510620098">Get MediaInfo vMI_VERSION from Mac App Store!</a><br>(there is a small fee)</td>
 </tr>
 <tr>
-    <td colspan="5">&nbsp;<br />&nbsp;</td>
+    <td colspan="5">&nbsp;<br>&nbsp;</td>
 </tr>
 <tr>
     <th rowspan="3">OS_TITLE</th>
-    <th rowspan="3">i386,<br />x86_64</th>
+    <th rowspan="3">i386,<br>x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/MI_VERSION/MediaInfo_GUI_MI_VERSION_Mac.dmg">vMI_VERSION</a></td>
-    <td>The GUI is x86_64 only.<br />(free of charge GUI, but it is not well integrated in your OS: it is the old-style GUI I first used. Prefer the Mac App Store version)</td>
+    <td>The GUI is x86_64 only.<br>(free of charge GUI, but it is not well integrated in your OS: it is the old-style GUI I first used. Prefer the Mac App Store version)</td>
 </tr>
 <tr>
     <th><abbr title="Command Line Interface">CLI</abbr></th>
@@ -28,7 +28,7 @@
 </tr>
 <tr class="old-files">
     <th rowspan="3">10.4 (Tiger),<br>10.5 (Leopard)</th>
-    <th rowspan="3">PPC,<br />i386</th>
+    <th rowspan="3">PPC,<br>i386</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/mediainfo-gui/0.7.60/MediaInfo_GUI_0.7.60_Mac_Universal.dmg">v0.7.60</a></td>
     <td>(free of charge GUI, but it is not well integrated in your OS: it is the old-style GUI I first used.)</td>
