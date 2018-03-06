@@ -1,5 +1,5 @@
 <tr>
-    <th> rowspan="4">OS_TITLE</th>
+    <th rowspan="4">OS_TITLE</th>
     <th rowspan="2">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_x64.exe">vDA_VERSION</a> <small>(<a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Windows_x64_WithoutInstaller.7z">64 bit only without installer</a>)</small></td>

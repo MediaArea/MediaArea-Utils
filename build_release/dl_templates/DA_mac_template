@@ -10,8 +10,8 @@
     <td colspan="5">&nbsp;<br>&nbsp;</td>
 </tr>
 <tr>
-    <th rowspan="3">OS_TITLE</th>
-    <th rowspan="3">x86_64</th>
+    <th rowspan="2">OS_TITLE</th>
+    <th rowspan="2">x86_64</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
     <td><a href="//mediaarea.net/download/binary/dvanalyzer-gui/DA_VERSION/DVAnalyzer_GUI_DA_VERSION_Mac.dmg">vDA_VERSION</a></td>
     <td></td>
