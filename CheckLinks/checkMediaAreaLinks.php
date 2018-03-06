@@ -13,28 +13,43 @@ can be found in the License.txt file in the root of the source
 tree.
 */
 
-require(__DIR__ . '/checkLinks.class.php');
+require __DIR__.'/checkLinks.class.php';
 
+$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm');
 $options = getopt('', array('project:', 'directory::'));
-if (isset($options['project']) && in_array($options['project'], array('mi', 'mc'))) {
+if (isset($options['project']) && in_array($options['project'], $projects)) {
     switch ($options['project']) {
         case 'mi':
-            $directory = 'www/www_data/en/MediaInfo/Download/';
+            $directory = 'src/MediaInfoBundle/Resources/views/Download/';
             break;
         case 'mc':
-            $directory = 'downloads/';
+            $directory = 'src/MediaConchBundle/Resources/views/Download/';
+            break;
+        case 'qc':
+            $directory = 'src/QCToolsBundle/Resources/views/Download/';
+            break;
+        case 'am':
+            $directory = 'src/AVIMetaEditBundle/Resources/views/Download/';
+            break;
+        case 'bm':
+            $directory = 'src/BWFMetaEditBundle/Resources/views/Download/';
+            break;
+        case 'dv':
+            $directory = 'src/DVAnalyzerBundle/Resources/views/Download/';
+            break;
+        case 'mm':
+            $directory = 'src/MOVMetaEditBundle/Resources/views/Download/';
             break;
     }
-}
-else {
-    exit('You should specify a project to check (--project=)' . "\n" . 'Currently only MediaInfo (mi) and MediaConch (mc) are supported' . "\n");
+} else {
+    exit('You should specify a project to check (--project=)'."\n".'Supported: '.implode($projects, ', ')."\n");
 }
 
 if (isset($options['directory']) && '' != $options['directory']) {
     if ('/' != substr($options['directory'], -1)) {
-        $directory = '/' . $directory;
+        $directory = '/'.$directory;
     }
-    $directory = $options['directory'] . $directory;
+    $directory = $options['directory'].$directory;
 }
 
 $checkLinks = new checkLinks();
