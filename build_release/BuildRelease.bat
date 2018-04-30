@@ -269,8 +269,8 @@ call:Patch_MediaInfo || exit /b 1
 
 rem *** MediaInfoLib ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfoLib.sln || exit /b 1
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 MediaInfoLib.sln || exit /b 1
 
 rem *** MediaInfo ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017
