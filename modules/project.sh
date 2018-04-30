@@ -58,6 +58,11 @@ function project_get () {
         Dirname="rawcooked"
         Repo="https://github.com/MediaArea/RAWcooked.git"
     fi
+    if [ "$Project" = "at" ] || [ "$Project" = "AT" ] || [ "$Project" = "ADCTest" ]; then
+        Project=ADCTest
+        Dirname="adctest"
+        Repo="https://github.com/MediaArea/ADCTest.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
