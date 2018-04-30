@@ -34,6 +34,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version with dots..."
     index=0
     MI_files[((index++))]="Source/Common/Preferences.h"
+    MI_files[((index++))]="Source/GUI/Qt/mainwindow.cpp"
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
