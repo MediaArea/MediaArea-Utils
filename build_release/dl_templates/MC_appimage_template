@@ -1,7 +1,7 @@
 <tr>
     <th rowspan="3">64 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.3-x86_64.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.4-x86_64.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
@@ -17,7 +17,7 @@
 <tr>
     <th rowspan="3">32 bit</th>
     <th><abbr title="Graphical User Interface">GUI</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.3-i686.AppImage">vMC_VERSION</td>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui-MC_VERSION.glibc2.4-i686.AppImage">vMC_VERSION</td>
     <td>&nbsp;</td>
 </tr>
 <tr>
