@@ -65,10 +65,9 @@ function deb_obs () {
         return 1
     fi
 
-    local deb6="Debian_6.0"
     local deb7="Debian_7.0 xUbuntu_12.04"
-    local deb8="Debian_8.0 xUbuntu_14.04 xUbuntu_14.10 xUbuntu_15.04"
-    local deb9="Debian_9.0 xUbuntu_15.10 xUbuntu_16.04 xUbuntu_16.10 xUbuntu_17.04 xUbuntu_17.10 xUbuntu_18.04 Ubuntu_Next_standard Debian_Next_ga"
+    local deb8="Debian_8.0 xUbuntu_14.04"
+    local deb9="Debian_9.0 xUbuntu_16.04 xUbuntu_17.10 xUbuntu_18.04 Ubuntu_Next_standard Debian_Next_ga"
 
     local Targets="$deb7 $deb8 $deb9"
 
@@ -103,21 +102,12 @@ function deb_obs () {
             rm -fr debian
         fi
 
-        if [ "$Target" == "deb6" ] ; then
+        mv "Project/OBS/${Target}.debian" debian
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f "$Output/$Filename$Version-1$Target.debian.tar.xz" debian)
 
-            mv "Project/OBS/$Target.debian" debian
-            (GZIP=-9 tar -cz --owner=root --group=root --exclude Project/OBS -f "$Output/$Filename$Version-1$Target.tar.gz" .)
-
-            cp "Project/OBS/$Target.dsc" .
-            update_dsc "$Output/$Filename$Version-1$Target.tar.gz" "$Target.dsc"
-        else
-            mv "Project/OBS/${Target}.debian" debian
-            (XZ_OPT=-9e tar -cJ --owner=root --group=root -f "$Output/$Filename$Version-1$Target.debian.tar.xz" debian)
-
-            cp "Project/OBS/$Target.dsc" .
-            update_dsc "$Archive" "$Target.dsc"
-            update_dsc "$Output/$Filename$Version-1$Target.debian.tar.xz" "$Target.dsc"
-        fi
+        cp "Project/OBS/$Target.dsc" .
+        update_dsc "$Archive" "$Target.dsc"
+        update_dsc "$Output/$Filename$Version-1$Target.debian.tar.xz" "$Target.dsc"
 
         local DSC
         for DSC in $(eval echo '$'$Target); do
