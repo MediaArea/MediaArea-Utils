@@ -40,6 +40,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
+    Files[((index++))]="Source/Lib/RAWcooked/RAWcooked.cpp"
 
     # Make the replacements
     for File in ${Files[@]}
