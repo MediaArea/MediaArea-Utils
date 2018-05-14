@@ -538,7 +538,7 @@ def OBS():
                     Release_rowspan = ""
                 Content = Content.replace("RELEASE_ROWSPAN", Release_rowspan)
 
-                if Release_status == "old" and (Project == "mi" or Project == "mc"):
+                if Release_status == "old":
                     Release_class = " class=\"old-files\""
                 else:
                     Release_class = ""
