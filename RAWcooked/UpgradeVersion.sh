@@ -60,4 +60,7 @@ function btask.UpgradeVersion.run () {
         echo "${Source}/${File}"
         updateFile $Version_old_major,$Version_old_minor,$Version_old_patch,$Version_old_build $Version_new_major,$Version_new_minor,$Version_new_patch,$Version_new_build "${Source}/${File}"
     done
+
+    echo "Update ${Source}/Source/CLI/rawcooked.1"
+    updateFile "$(b.str.replace_all Version_old '.' '\\\.')" "$(b.str.replace_all Version_new '.' '\\.')" "${Source}/Source/CLI/rawcooked.1"
 }
