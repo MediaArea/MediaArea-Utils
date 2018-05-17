@@ -7,7 +7,7 @@
 {% block body %}
 <h1>{% trans %}repos.title{% endtrans %}</h1>
 
-<p>MediaArea softwares repositories are available for automatic update of our softwaresfor the distributions listed below.<br>
+<p>MediaArea softwares repositories are available for automatic update of our softwares for the distributions listed below.<br>
 </p>
 
 <p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
@@ -27,11 +27,11 @@
 <tbody>
   <tr>
     <th>Releases</th>
-    <td><pre>"RPM_COMMAND_RELEASES"</pre></td>
+    <td><pre>RPM_COMMAND_RELEASES</pre></td>
   </tr>
   <tr>
     <th>Snapshots</th>
-    <td><pre>"RPM_COMMAND_SNAPSHOTS"</pre></td>
+    <td><pre>RPM_COMMAND_SNAPSHOTS</pre></td>
   </tr>
 </tbody>
 </table>
@@ -50,11 +50,11 @@
 <tbody>
 <tr>
     <th>Releases</th>
-    <td><pre>"DEB_COMMAND_RELEASES"</pre></td>
+    <td><pre>DEB_COMMAND_RELEASES</pre></td>
 </tr>
 <tr>
     <th>Snapshots</th>
-    <td><pre>"DEB_COMMAND_SNAPSHOTS"</pre></td>
+    <td><pre>DEB_COMMAND_SNAPSHOTS</pre></td>
 </tr>
 </tbody>
 </table>
