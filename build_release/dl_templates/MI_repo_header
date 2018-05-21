@@ -7,10 +7,10 @@
 {% block body %}
 <h1>{% trans %}repos.title{% endtrans %}</h1>
 
-<p>MediaArea softwares repositories are available for automatic update of our softwares for the distributions listed below.<br>
+<p>MediaArea software repositories are available for automatic update of our software packages for the distributions listed below.<br>
 </p>
 
-<p>You can also enable snapshots repository to get the latest development builds of our softwares.</p>
+<p>You can also enable snapshots repository to get the latest development builds of our software packages.</p>
 <p>Repositories key fingerprint is: FINGERPRINT</p>
 <p>Up to date packages are: mediainfo, mediainfo-gui, mediaconch, mediaconch-gui, qctools, qcli.</p>
 
