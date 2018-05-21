@@ -432,6 +432,12 @@ def OBS():
 
             # Verbose mode
             #print Distrib_name + " " + Release_name
+            Release_with_cli = True
+            if Project == "qc":
+                Cursor.execute("SELECT cliname FROM " + Table_releases_dlpages + " WHERE platform = '" + Distrib_name + "_" + Release_name + "';")
+                Result = Cursor.fetchone()
+                if Result != None and Result[0] == "":
+                    Release_with_cli = False
 
             Release_with_server = False
             if Project == "mc":
@@ -460,7 +466,9 @@ def OBS():
                 Release_with_mil = False
                 Release_with_zl = False
 
-            Rowspan = 1
+            Rowspan = 0
+            if Release_with_cli == True:
+                Rowspan = Rowspan + 1
             if Release_with_mil == True:
                 Rowspan = Rowspan + 1
             if Release_with_zl == True:
@@ -520,6 +528,8 @@ def OBS():
                         Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template_no_gui"
                     else:
                         Template_file_path = Script_emplacement + "/dl_templates/MC_linux_template"
+                elif Project == "qc" and Release_with_cli == False:
+                    Template_file_path = Script_emplacement + "/dl_templates/QC_linux_template_no_cli"
                 else:
                     Template_file_path = Script_emplacement + "/dl_templates/%s_linux_template" % Project.upper()
 

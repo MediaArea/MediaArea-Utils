@@ -1,5 +1,5 @@
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for Ubuntu<br>search for "BWF MetaEdit" in your package manager<br>or "apt-get install bwfmetaedit-gui" (for GUI)<br> or "apt-get install bwfmetaedit" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea software repository for Ubuntu<br>search for "BWF MetaEdit" in your package manager<br>or "apt-get install bwfmetaedit-gui" (for GUI)<br> or "apt-get install bwfmetaedit" (for CLI)</th>
     <td><a href="{{ path('ma_repos') }}">Activate MediaArea Repository</a></td>
 </tr>
 <tr>

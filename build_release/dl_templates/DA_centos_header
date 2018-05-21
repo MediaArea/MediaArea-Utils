@@ -1,5 +1,5 @@
 <tr>
-    <th colspan="4">For automatic update and easiest installation, enable MediaArea softwares repository for CentOS<br>search for "DVAnalyzer" in your package manager<br>or "yum install dvanalyzer-gui" (for GUI)<br> or "yum install dvanalyzer" (for CLI)</th>
+    <th colspan="4">For automatic update and easiest installation, enable MediaArea software repository for CentOS<br>search for "DVAnalyzer" in your package manager<br>or "yum install dvanalyzer-gui" (for GUI)<br> or "yum install dvanalyzer" (for CLI)</th>
     <td><a href='{{ path('ma_repos') }}'>Activate MediaArea Repository</a></td>
 </tr>
 
