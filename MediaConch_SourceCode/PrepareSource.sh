@@ -41,8 +41,8 @@ function _get_source () {
 
     # zlib, libxml2, libxslt, jansson, libevent, sqlite
     git clone --depth 1 https://github.com/MediaArea/zlib.git
-    git clone --depth 1 https://git.gnome.org/browse/libxml2
-    git clone --depth 1 https://git.gnome.org/browse/libxslt
+    git clone --depth 1 https://gitlab.gnome.org/GNOME/libxml2.git
+    git clone --depth 1 https://gitlab.gnome.org/GNOME/libxslt.git
     git clone --depth 1 https://github.com/MediaArea/jansson.git
     git clone --depth 1 https://github.com/MediaArea/libevent.git
     curl -s http://www.sqlite.org/2017/sqlite-autoconf-3180000.tar.gz | tar -xzp
