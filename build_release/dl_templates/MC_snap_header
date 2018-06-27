@@ -1,0 +1,3 @@
+<tr>
+    <th colspan="4">Download the Snap corresponding to your architecture then, e.g for mediaconch-gui:<br>Install the Snap package "snap install --dangerous mediaconch-gui*.snap"<br>Then run the application "snap run mediaconch-gui"</th>
+</tr>

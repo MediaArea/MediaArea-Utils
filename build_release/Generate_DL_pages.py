@@ -97,7 +97,7 @@ def DL_pages(OS_name):
 
     Skeletons_path = Script_emplacement + "/dl_templates/" + Project.upper() + "_" + OS_name
 
-    if not OS_name == "appimage":
+    if not OS_name == "appimage" and not OS_name == "snap":
         OS_title = Config[ Project.upper() + "_" + OS_name + "_title" ]
 
     Filename = Config[ Project.upper() + "_" + OS_name + "_filename" ]
@@ -119,7 +119,7 @@ def DL_pages(OS_name):
         Content = Content.replace("VERSIONS_APPLESTORE", Config.get(Project.upper() + "_" + OS_name + "_applestore", ""))
 
     Content = Content.replace(Project.upper() + "_VERSION", Project_version)
-    if not OS_name == "appimage":
+    if not OS_name == "appimage" and not OS_name == "snap":
         Content = Content.replace("OS_TITLE", OS_title)
 
     Content = Content.replace("MIL_VERSION", MIL_version)
@@ -773,6 +773,8 @@ if OS_name == "linux":
     OBS()
     if Project != "bm" and Project != "am" and Project != "da" and Project != "mm":
         DL_pages("appimage")
+    if Project == "mi" or Project == "mc":
+        DL_pages("snap")
     if Project == "mi":
         DL_pages("javascript")
 
@@ -787,6 +789,8 @@ if OS_name == "all":
     DL_pages("mac")
     if Project != "bm" and Project != "am" and Project != "da" and Project != "mm":
         DL_pages("appimage")
+    if Project == "mi" or Project == "mc":
+        DL_pages("snap")
     OBS()
     Sources()
     if Project == "mi":
