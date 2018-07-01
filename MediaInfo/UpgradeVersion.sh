@@ -112,6 +112,8 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/MSVC2015/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2017/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2017/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/QMake/GUI/mediainfo-gui.rc"
+    MI_files[((index++))]="Project/QMake/GUI/MediaInfoQt.pro"
 
     for MI_file in ${MI_files[@]}
     do
