@@ -109,11 +109,11 @@ function btask.UpgradeVersion.run () {
         "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_x64.nsi
 
     echo "Replace major/minor in ${MIL_source}/Project/GNU/libmediainfo.spec"
-    updateFile "%define libmediainfo_version_major\(\s\+\)$Version_old_major" \
-        "%define libmediainfo_version_major\1$Version_new_major" \
+    updateFile "%global libmediainfo_version_major\(\s\+\)$Version_old_major" \
+        "%global libmediainfo_version_major\1$Version_new_major" \
         "${MIL_source}/Project/GNU/libmediainfo.spec"
-    updateFile "%define libmediainfo_version_minor\(\s\+\)$Version_old_minor" \
-        "%define libmediainfo_version_minor\1$Version_new_minor" \
+    updateFile "%global libmediainfo_version_minor\(\s\+\)$Version_old_minor" \
+        "%global libmediainfo_version_minor\1$Version_new_minor" \
         "${MIL_source}/Project/GNU/libmediainfo.spec"
 
     # Update ZenLib required version
@@ -122,10 +122,10 @@ function btask.UpgradeVersion.run () {
         ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
         ZL_version_array=( ${ZL_version//./ } )
         echo "Update ZenLib in Project/GNU/libmediainfo.spec"
-        updateFile "%define libzen_version\(\s\+\)[0-9.-]\+" "%define libzen_version\1$ZL_version" "${MIL_source}"/Project/GNU/libmediainfo.spec
-        updateFile "%define libzen_version_major\(\s\+\)[0-9]\+" "%define libzen_version_major\1${ZL_version_array[0]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
-        updateFile "%define libzen_version_minor\(\s\+\)[0-9]\+" "%define libzen_version_minor\1${ZL_version_array[1]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
-        updateFile "%define libzen_version_release\(\s\+\)[0-9]\+" "%define libzen_version_release\1${ZL_version_array[2]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
+        updateFile "%global libzen_version\(\s\+\)[0-9.-]\+" "%global libzen_version\1$ZL_version" "${MIL_source}"/Project/GNU/libmediainfo.spec
+        updateFile "%global libzen_version_major\(\s\+\)[0-9]\+" "%global libzen_version_major\1${ZL_version_array[0]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
+        updateFile "%global libzen_version_minor\(\s\+\)[0-9]\+" "%global libzen_version_minor\1${ZL_version_array[1]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
+        updateFile "%global libzen_version_release\(\s\+\)[0-9]\+" "%global libzen_version_release\1${ZL_version_array[2]:-0}" "${MIL_source}/Project/GNU/libmediainfo.spec"
         echo "Update ZenLib in Project/GNU/libmediainfo.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/GNU/libmediainfo.dsc
         echo "Update ZenLib in Project/GNU/PKGBUILD"

@@ -78,7 +78,7 @@ function btask.UpgradeVersion.run () {
         echo
         MIL_version=$(sanitize_arg $(b.opt.get_opt --mil-version))
         echo "Update MediaInfoLib in Project/GNU/dvanalyzer.spec"
-        updateFile "%define libmediainfo_version\(\s\+\)[0-9.-]\+" "%define libmediainfo_version\1$MIL_version" "${Source}"/Project/GNU/dvanalyzer.spec
+        updateFile "%global libmediainfo_version\(\s\+\)[0-9.-]\+" "%global libmediainfo_version\1$MIL_version" "${Source}"/Project/GNU/dvanalyzer.spec
         echo "Update MediaInfoLib in Project/GNU/dvanalyzer.dsc"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${Source}"/Project/GNU/dvanalyzer.dsc
         echo "Update MediaInfoLib in Project/GNU/PKGBUILD"
@@ -92,7 +92,7 @@ function btask.UpgradeVersion.run () {
         echo
         ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
         echo "Update ZenLib in Project/GNU/dvanalyzer.spec"
-        updateFile "%define libzen_version\(\s\+\)[0-9.-]\+" "%define libzen_version\1$ZL_version" "${Source}"/Project/GNU/dvanalyzer.spec
+        updateFile "%global libzen_version\(\s\+\)[0-9.-]\+" "%global libzen_version\1$ZL_version" "${Source}"/Project/GNU/dvanalyzer.spec
         echo "Update ZenLib in Project/GNU/dvanalyzer.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${Source}"/Project/GNU/dvanalyzer.dsc
         echo "Update ZenLib in Project/GNU/PKGBUILD"
