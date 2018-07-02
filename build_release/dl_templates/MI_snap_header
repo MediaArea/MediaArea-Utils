@@ -1,0 +1,3 @@
+<tr>
+    <th colspan="4">Download the Snap corresponding to your architecture then, e.g for mediainfo-gui:<br>Install the Snap package "snap install --dangerous mediainfo-gui*.snap"<br>then run the application "snap run mediainfo-gui"</th>
+</tr>

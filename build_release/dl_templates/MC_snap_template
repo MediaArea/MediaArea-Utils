@@ -1,0 +1,32 @@
+<tr>
+    <th rowspan="2">64 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui_MC_VERSION_amd64.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch_MC_VERSION_amd64.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th>Server</th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server_MC_VERSION_amd64.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th rowspan="2">32 bit</th>
+    <th><abbr title="Graphical User Interface">GUI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-gui/MC_VERSION/mediaconch-gui_MC_VERSION_i386.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th><abbr title="Command Line Interface">CLI</abbr></th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch/MC_VERSION/mediaconch_MC_VERSION_i386.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <th>Server</th>
+    <td><a href="//mediaarea.net/download/binary/mediaconch-server/MC_VERSION/mediaconch-server_MC_VERSION_i386.snap">vMC_VERSION</td>
+    <td>&nbsp;</td>
+</tr>
