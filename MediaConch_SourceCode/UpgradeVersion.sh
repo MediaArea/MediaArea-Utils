@@ -53,7 +53,7 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update ${MC_source}/Project/GNU/mediaconch.spec"
-    updateFile "%define mediaconch_version          $Version_old_escaped" "%define mediaconch_version          $Version_new" "${MC_source}"/Project/GNU/mediaconch.spec
+    updateFile "%global mediaconch_version          $Version_old_escaped" "%global mediaconch_version          $Version_new" "${MC_source}"/Project/GNU/mediaconch.spec
 
     echo "Update ${MC_source}/Project/GNU/PKGBUILD"
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
@@ -132,7 +132,7 @@ function btask.UpgradeVersion.run () {
         echo
         MIL_version=$(sanitize_arg $(b.opt.get_opt --mil-version))
         echo "Update MediaInfoLib in Project/GNU/mediainfo.spec"
-        updateFile "%define libmediainfo_version\(\s\+\)[0-9.-]\+" "%define libmediainfo_version\1$MIL_version" "${MC_source}"/Project/GNU/mediaconch.spec
+        updateFile "%global libmediainfo_version\(\s\+\)[0-9.-]\+" "%global libmediainfo_version\1$MIL_version" "${MC_source}"/Project/GNU/mediaconch.spec
         echo "Update MediaInfoLib in Project/GNU/mediainfo.dsc"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MC_source}"/Project/GNU/mediaconch.dsc
         updateFile "libmediainfo0 (>= [0-9.-]\+)" "libmediainfo0 (>= $MIL_version)" "${MC_source}"/Project/GNU/mediaconch.dsc
@@ -160,7 +160,7 @@ function btask.UpgradeVersion.run () {
         echo
         ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
         echo "Update ZenLib in Project/GNU/mediainfo.spec"
-        updateFile "%define libzen_version\(\s\+\)[0-9.-]\+" "%define libzen_version\1$ZL_version" "${MC_source}"/Project/GNU/mediaconch.spec
+        updateFile "%global libzen_version\(\s\+\)[0-9.-]\+" "%global libzen_version\1$ZL_version" "${MC_source}"/Project/GNU/mediaconch.spec
         echo "Update ZenLib in Project/GNU/mediainfo.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MC_source}"/Project/GNU/mediaconch.dsc
         updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MC_source}"/Project/GNU/mediaconch.dsc

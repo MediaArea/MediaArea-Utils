@@ -416,6 +416,22 @@ def Get_packages_on_OBS(Distrib_name, Arch):
             else:
                 Server_debug_name_wanted = Get_package(Project["bin_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
 
+    if fnmatch.fnmatch(Distrib_name, "RHEL*") or fnmatch.fnmatch(Distrib_name, "CentOS*"):
+        if OBS_package == "ZenLib":
+            Suffix="".join(Version.split(".")[0:3])
+            Get_package(Bin_name+Suffix, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+            Get_package(Project["dev_name"]+Suffix+Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+            Get_package(Project["dev_name"]+Suffix+"-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+        if OBS_package == "MediaInfoLib":
+            Suffix="".join(Version.split(".")[0:2])
+            Get_package(Bin_name+Suffix, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+            Get_package(Project["dev_name"]+Suffix+Package_infos[Package_type]["devsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+            Get_package(Project["dev_name"]+Suffix+"-doc", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+        if OBS_package == "MediaInfo":
+            Suffix="".join(Version.split(".")[0:2])
+            Get_package(Bin_name+Suffix, Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+            Get_package(Bin_name+Suffix+"-gui", Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+
     if Filter:
         FS_filter += "\|" if FS_filter else ""
         FS_filter += "%s\.%s" % (Package_infos[Package_type].get(Arch, Arch), Distrib_name)

@@ -58,7 +58,7 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update ${MI_source}/Project/GNU/mediainfo.spec"
-    updateFile "%define mediainfo_version           $Version_old_escaped" "%define mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
+    updateFile "%global mediainfo_version           $Version_old_escaped" "%global mediainfo_version           $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     #updateFile "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_old_escaped" "* Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - $Version_new" "${MI_source}"/Project/GNU/mediainfo.spec
     echo
 
@@ -143,12 +143,23 @@ function btask.UpgradeVersion.run () {
         "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" \
         "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
 
+    echo "Replace major/minor in ${MI_source}/Project/GNU/mediainfo.spec"
+    updateFile "%global mediainfo_version_major\(\s\+\)$Version_old_major" \
+        "%global mediainfo_version_major\1$Version_new_major" \
+        "${MI_source}/Project/GNU/mediainfo.spec"
+    updateFile "%global mediainfo_version_minor\(\s\+\)$Version_old_minor" \
+        "%global mediainfo_version_minor\1$Version_new_minor" \
+        "${MI_source}/Project/GNU/mediainfo.spec"
+
     # Update MediaInfoLib required version
     if [ $(b.opt.get_opt --mil-version) ]; then
         echo
         MIL_version=$(sanitize_arg $(b.opt.get_opt --mil-version))
+        MIL_version_array=( ${MIL_version//./ } )
         echo "Update MediaInfoLib in Project/GNU/mediainfo.spec"
-        updateFile "%define libmediainfo_version\(\s\+\)[0-9.-]\+" "%define libmediainfo_version\1$MIL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        updateFile "%global libmediainfo_version\(\s\+\)[0-9.-]\+" "%global libmediainfo_version\1$MIL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        updateFile "%global libmediainfo_version_major\(\s\+\)[0-9]\+" "%global libmediainfo_version_major\1${MIL_version_array[0]:-0}" "${MI_source}/Project/GNU/mediainfo.spec"
+        updateFile "%global libmediainfo_version_minor\(\s\+\)[0-9]\+" "%global libmediainfo_version_minor\1${MIL_version_array[1]:-0}" "${MI_source}/Project/GNU/mediainfo.spec"
         echo "Update MediaInfoLib in Project/GNU/mediainfo.dsc"
         updateFile "libmediainfo-dev (>= [0-9.-]\+)" "libmediainfo-dev (>= $MIL_version)" "${MI_source}"/Project/GNU/mediainfo.dsc
         echo "Update MediaInfoLib in Project/GNU/PKGBUILD"
@@ -177,8 +188,12 @@ function btask.UpgradeVersion.run () {
     if [ $(b.opt.get_opt --zl-version) ]; then
         echo
         ZL_version=$(sanitize_arg $(b.opt.get_opt --zl-version))
+        ZL_version_array=( ${ZL_version//./ } )
         echo "Update ZenLib in Project/GNU/mediainfo.spec"
-        updateFile "%define libzen_version\(\s\+\)[0-9.-]\+" "%define libzen_version\1$ZL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        updateFile "%global libzen_version\(\s\+\)[0-9.-]\+" "%global libzen_version\1$ZL_version" "${MI_source}"/Project/GNU/mediainfo.spec
+        updateFile "%global libzen_version_major\(\s\+\)[0-9]\+" "%global libzen_version_major\1${ZL_version_array[0]:-0}" "${MI_source}/Project/GNU/mediainfo.spec"
+        updateFile "%global libzen_version_minor\(\s\+\)[0-9]\+" "%global libzen_version_minor\1${ZL_version_array[1]:-0}" "${MI_source}/Project/GNU/mediainfo.spec"
+        updateFile "%global libzen_version_release\(\s\+\)[0-9]\+" "%global libzen_version_release\1${ZL_version_array[2]:-0}" "${MI_source}/Project/GNU/mediainfo.spec"
         echo "Update ZenLib in Project/GNU/mediainfo.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MI_source}"/Project/GNU/mediainfo.dsc
         echo "Update ZenLib in Project/GNU/PKGBUILD"

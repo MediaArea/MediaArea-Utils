@@ -53,6 +53,18 @@ function btask.UpgradeVersion.run () {
     done
 
     echo
+    echo "Replace major/minor/patch in ${ZL_source}/Project/GNU/libzen.spec"
+    updateFile "%global libzen_version_major\(\s\+\)$Version_old_major" \
+        "%global libzen_version_major\1$Version_new_major" \
+        "${ZL_source}/Project/GNU/libzen.spec"
+    updateFile "%global libzen_version_minor\(\s\+\)$Version_old_minor" \
+        "%global libzen_version_minor\1$Version_new_minor" \
+        "${ZL_source}/Project/GNU/libzen.spec"
+    updateFile "%global libzen_version_release\(\s\+\)$Version_old_path" \
+        "%global libzen_version_release\1$Version_new_path" \
+        "${ZL_source}/Project/GNU/libzen.spec"
+
+    echo
     echo "Replace major/minor/patch in ${ZL_source}/Project/CMake/CMakeLists.txt"
     updateFile "set(ZenLib_MAJOR_VERSION $Version_old_major)" \
         "set(ZenLib_MAJOR_VERSION $Version_new_major)" \
