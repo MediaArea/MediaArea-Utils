@@ -422,6 +422,10 @@ def OBS():
             Destination.write(Header)
 
         # Build the list of the releases for a distrib
+        if Distrib_name == "RHEL" and Project == "qc":
+            Destination.write(Config[ Project.upper() + "_RHEL_link" ])
+            Destination.close()
+            continue
 
         for Release_infos in Sorted_releases[Distrib_name]:
 
@@ -488,7 +492,7 @@ def OBS():
             Number_of_archs = len(DB_archs)
             Release_rowspan = Number_of_archs * Rowspan
             # For the link to RHEL7 ppc64
-            if Distrib_name + Release_name == "CentOS7":
+            if Distrib_name + Release_name == "CentOS7" and Config[ Project.upper() + "_" + Release_in_config_file + "_ppc64" ]:
                 Release_rowspan = Release_rowspan + 1
             Release_rowspan_number = str(Release_rowspan)
 
@@ -661,7 +665,7 @@ def OBS():
                 Destination.write(Content)
 
             # For the link to RHEL7 ppc64
-            if Distrib_name + Release_name == "CentOS7":
+            if Distrib_name + Release_name == "CentOS7" and Config[ Project.upper() + "_" + Release_in_config_file + "_ppc64" ]:
                 PPC_line = Config[ Project.upper() + "_" + Release_in_config_file + "_ppc64" ]
                 Destination.write(PPC_line + "\n")
 
