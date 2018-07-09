@@ -351,8 +351,10 @@ copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInsta
 mkdir Release\download\binary\libmediainfo0\ || exit /b 1
 mkdir Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_Windows_i386_WithoutInstaller.7z Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_Windows_i386_WithoutInstaller.zip Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_i386_WithoutInstaller.zip || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_Windows_x64_WithoutInstaller.7z Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_Windows_x64_WithoutInstaller.zip Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_x64_WithoutInstaller.zip || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
 
 rem *** Reset ***

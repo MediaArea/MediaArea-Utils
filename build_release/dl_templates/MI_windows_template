@@ -25,7 +25,7 @@
 </tr>
 <tr>
     <th><abbr title="Dynamic Link Library">DLL</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_x64.exe">vMI_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_x64_WithoutInstaller.7z">without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_x64.exe">vMI_VERSION</a><small> (without installer: <a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_x64_WithoutInstaller.7z">7z</a>, <a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_x64_WithoutInstaller.zip">zip</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 
@@ -42,7 +42,7 @@
 </tr>
 <tr>
     <th><abbr title="Dynamic Link Library">DLL</abbr></th>
-    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_i386.exe">vMI_VERSION</a><small> (<a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_i386_WithoutInstaller.7z">without installer</a>)</small></td>
+    <td><a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_i386.exe">vMI_VERSION</a><small> (without installer: <a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_i386_WithoutInstaller.7z">7z</a>, <a href="//mediaarea.net/download/binary/libmediainfo0/MI_VERSION/MediaInfo_DLL_MI_VERSION_Windows_i386_WithoutInstaller.zip">zip</a>)</small></td>
     <td>&nbsp;</td>
 </tr>
 
