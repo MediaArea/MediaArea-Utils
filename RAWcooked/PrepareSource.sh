@@ -50,6 +50,7 @@ function _source_package () {
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/rawcooked${Version}.tar.bz2 rawcooked)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/rawcooked${Version}.tar.xz rawcooked)
 
+        unix2dos "$WDir/RC/rawcooked/History_CLI.txt"
         7za a -t7z -mx=9 -bd ../archives/rawcooked${Version}.7z rawcooked >/dev/null
 
         mkdir ../archives/obs
