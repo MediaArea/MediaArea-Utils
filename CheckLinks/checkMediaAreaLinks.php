@@ -15,7 +15,7 @@ tree.
 
 require __DIR__.'/checkLinks.class.php';
 
-$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm');
+$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm', 'rc');
 $options = getopt('', array('project:', 'directory::'));
 if (isset($options['project']) && in_array($options['project'], $projects)) {
     switch ($options['project']) {
@@ -39,6 +39,9 @@ if (isset($options['project']) && in_array($options['project'], $projects)) {
             break;
         case 'mm':
             $directory = 'src/MOVMetaEditBundle/Resources/views/Download/';
+            break;
+        case 'rc':
+            $directory = 'src/RAWcookedBundle/Resources/views/Download/';
             break;
     }
 } else {
