@@ -41,7 +41,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/OBS/deb7.dsc"
     Files[((index++))]="Project/OBS/deb7.debian/changelog"
     Files[((index++))]="debian/changelog"
-    Files[((index++))]="Source/GUI/Qt/config.h"
+    Files[((index++))]="Source/Common/config.h"
     Files[((index++))]="Source/Install/MOV_MetaEdit_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/MOV_MetaEdit_GUI_Windows_x64.nsi"
 
