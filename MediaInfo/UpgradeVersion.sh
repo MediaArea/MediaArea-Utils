@@ -102,6 +102,10 @@ function btask.UpgradeVersion.run () {
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MI_source}"/Project/GNU/PKGBUILD
 
     echo
+    echo "Update ${MI_source}/Project/QMake/GUI/AppxManifest.xml"
+    updateFile "Version=\"$((10#$Version_old_major))\.$((10#$Version_old_minor))\.$((10#$Version_old_patch))\.0" "Version=\"$((10#$Version_new_major))\.$((10#$Version_new_minor))\.$((10#$Version_new_patch))\.0" "${MI_source}"/Project/QMake/GUI/AppxManifest.xml
+
+    echo
     echo "Passage for major.minor.patch.build..."
     unset -v MI_files
     index=0
