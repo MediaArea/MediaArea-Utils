@@ -42,6 +42,7 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/OBS/deb7.debian/changelog"
     MC_files[((index++))]="Project/OBS/deb9.dsc"
     MC_files[((index++))]="Project/OBS/deb9.debian/changelog"
+    MC_files[((index++))]="Project/Mac/Info-ns.plist"
     MC_files[((index++))]="Project/Mac/Info.plist"
 
     for MC_file in ${MC_files[@]}
