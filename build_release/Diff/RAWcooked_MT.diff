@@ -94,4 +94,4 @@ index 1e1c04d..6f9acbe 100644
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
        <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
        <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+     </ClCompile>
