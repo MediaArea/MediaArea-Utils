@@ -8,7 +8,7 @@
 
 function _get_source () {
 
-    local MIL_gs ZL_gs
+    local MIL_gs ZL_gs MIL_repo ZL_repo
 
     cd "$WDir"
     if ! b.path.dir? repos; then
@@ -36,6 +36,14 @@ function _get_source () {
     if [ $(b.opt.get_opt --zl-gs) ]; then
         ZL_gs="--zl-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
+    MIL_repo=""
+    if [ $(b.opt.get_opt --mil-repo) ]; then
+        MIL_repo="--repo $(sanitize_arg $(b.opt.get_opt --mil-repo))"
+    fi
+    ZL_repo=""
+    if [ $(b.opt.get_opt --zl-repo) ]; then
+        ZL_repo="--zl-repo $(sanitize_arg $(b.opt.get_opt --zl-repo))"
+    fi
 
     cd "$WDir"/repos
 
@@ -53,9 +61,9 @@ function _get_source () {
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
     if b.path.dir? "$WDir/../repos/MediaInfoLib" ; then
-         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -sp "$WDir/../repos/MediaInfoLib" -wp "$WDir" $ZL_gs -${Target} -na
+         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -sp "$WDir/../repos/MediaInfoLib" -wp "$WDir" $ZL_repo $ZL_gs -${Target} -na
     else
-        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
+        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_repo $MIL_gs $ZL_repo $ZL_gs -${Target} -na
     fi
 }
 

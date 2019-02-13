@@ -34,14 +34,22 @@ function _get_source () {
     if [ $(b.opt.get_opt --zl-gs) ]; then
         ZL_gs="--zl-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
+    MIL_repo=""
+    if [ $(b.opt.get_opt --mil-repo) ]; then
+        MIL_repo="--repo $(sanitize_arg $(b.opt.get_opt --mil-repo))"
+    fi
+    ZL_repo=""
+    if [ $(b.opt.get_opt --zl-repo) ]; then
+        ZL_repo="--zl-repo $(sanitize_arg $(b.opt.get_opt --zl-repo))"
+    fi
 
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
     if b.path.dir? "$WDir/../upgrade_version/MediaInfoLib" ; then
-         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -sp "$WDir/../upgrade_version/MediaInfoLib" -wp "$WDir" $ZL_gs -${Target} -na
+         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -sp "$WDir/../upgrade_version/MediaInfoLib" -wp "$WDir" $ZL_repo $ZL_gs -${Target} -na
     else
-        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_gs $ZL_gs -${Target} -na
+        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_repo $MIL_gs $ZL_repo $ZL_gs -${Target} -na
     fi
 }
 

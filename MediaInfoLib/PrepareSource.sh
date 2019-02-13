@@ -8,7 +8,7 @@
 
 function _get_source () {
 
-    local ZL_gs
+    local ZL_gs ZL_repo
 
     cd "$WDir"
     if ! b.path.dir? repos; then
@@ -33,9 +33,14 @@ function _get_source () {
         ZL_gs="-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
 
+    ZL_repo=""
+    if [ $(b.opt.get_opt --zl-repo) ]; then
+        ZL_repo="--repo $(sanitize_arg $(b.opt.get_opt --zl-repo))"
+    fi
+
     # Dependency : ZenLib
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
-    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" $ZL_gs -${Target} -na
+    $(b.get bang.src_path)/bang run PrepareSource.sh -p ZenLib -wp "$WDir" $ZL_repo $ZL_gs -${Target} -na
 
     # Dependency : zlib
     cd "$WDir"/repos
