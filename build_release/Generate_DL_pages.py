@@ -542,7 +542,7 @@ def OBS():
                 Template_file.close()
 
                 Release_name_formated = Release_name
-                if Distrib_name == "Debian":
+                if Distrib_name == "Debian" or Distrib_name == "Raspbian":
                     Release_name_formated = Release_name.replace(".0", "")
 
                 Count = Count + 1
