@@ -40,6 +40,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
+    Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
     Files[((index++))]="Source/Lib/RAWcooked/RAWcooked.cpp"
     Files[((index++))]="Source/CLI/rawcooked.1"
 
@@ -55,6 +56,7 @@ function btask.UpgradeVersion.run () {
     unset -v Files
     index=0
     Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
+    Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
 
     for File in ${Files[@]}
     do
