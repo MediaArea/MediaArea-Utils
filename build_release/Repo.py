@@ -139,9 +139,16 @@ def Create_repo_deb(Path, Repo, Release = False):
 
         Ubuntu_releases = Ubuntu_releases + Configuration["Ubuntu_names"][Ubuntu_version]
 
+    Raspbian_releases = ""
+    for Raspbian_version, Raspbian_codename in sorted(Configuration["Raspbian_names"].items()):
+        Raspbian_releases = Raspbian_releases + "," if Raspbian_releases else ""
+        Raspbian_releases = Raspbian_releases + re.split('_|\.', Raspbian_version)[-2] + ":"
+        Raspbian_releases = Raspbian_releases + Configuration["Raspbian_names"][Raspbian_version]
+
     Postinst_file = Postinst_file.replace("REPO_NAME", Repo)
     Postinst_file = Postinst_file.replace("DEBIAN_RELEASES", Debian_releases)
     Postinst_file = Postinst_file.replace("UBUNTU_RELEASES", Ubuntu_releases)
+    Postinst_file = Postinst_file.replace("RASPBIAN_RELEASES", Raspbian_releases)
     Postinst_file = Postinst_file.replace("REPO_URL", Configuration["Repo_url"])
     Postinst_file = Postinst_file.replace("SNAPSHOT", "" if Release else "-snapshots")
 
@@ -289,11 +296,15 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
 # Add_deb_package - add package to his repository, create the repository if don't exist.
 #
 def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False):
-    Dest = "Debian" if fnmatch.fnmatch(Distribution, "Debian_*") else "Ubuntu"
+    Dest = "Debian" if fnmatch.fnmatch(Distribution, "Debian_*") else "Raspbian" if fnmatch.fnmatch(Distribution, "Raspbian_*") else "Ubuntu"
     if Arch == "x86_64":
         Arch = "amd64"
     elif Arch == "i586":
         Arch = "i386"
+    elif Arch=="armv7l":
+        Arch="armhf"
+    elif Arch=="aarch64":
+        Arch="arm64"
 
     if not Configuration[Dest + "_names"].has_key(Distribution):
         print("ERROR: unable to import package %s, unknown distribution %s" % (Package, Distribution))
@@ -315,6 +326,9 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Freight_conf = Freight_conf.replace("CACHE_DIR", Cache_directory)
         Freight_conf = Freight_conf.replace("LIB_DIR", Lib_directory)
         Freight_conf = Freight_conf.replace("KEY_NAME", Configuration["Repo_key"]["key"])
+        if Dest=="Raspbian":
+            Freight_conf = Freight_conf + "\n"
+            Freight_conf = Freight_conf + "ARCHS=\"armhf arm64\""
         Freight_conf_file.write(Freight_conf)
         Freight_conf_file.close()
     else:

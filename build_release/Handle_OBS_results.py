@@ -339,7 +339,8 @@ def Get_packages_on_OBS(Distrib_name, Arch):
     # Initialization depending on the distrib’s family
     Revision = ""
     if fnmatch.fnmatch(Distrib_name, "Debian*") or \
-       fnmatch.fnmatch(Distrib_name, "*Ubuntu*"):
+       fnmatch.fnmatch(Distrib_name, "*Ubuntu*") or \
+       fnmatch.fnmatch(Distrib_name, "Raspbian*"):
         Package_type = "deb"
         Revision = "-1"
     if fnmatch.fnmatch(Distrib_name, "RHEL*") or \
@@ -369,7 +370,8 @@ def Get_packages_on_OBS(Distrib_name, Arch):
         elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
              or (fnmatch.fnmatch(Distrib_name, "Debian*") and Distrib_name > "Debian_8.0") \
              or Distrib_name == "Ubuntu_Next_standard" \
-             or Distrib_name == "Debian_Next_ga" :
+             or Distrib_name == "Debian_Next_ga" \
+             or fnmatch.fnmatch(Distrib_name, "Raspbian*"):
             Bin_name += "v5"
 
     ### Bin package ###

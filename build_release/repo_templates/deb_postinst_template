@@ -3,11 +3,12 @@ set -e
 
 debian="DEBIAN_RELEASES"
 ubuntu="UBUNTU_RELEASES"
+raspbian="RASPBIAN_RELEASES"
 
 eval `grep ^ID= /etc/os-release`
 eval `grep ^VERSION_ID= /etc/os-release`
 
-if ! test "$ID" = "debian" -o "$ID" = "ubuntu" -o "$ID" = "linuxmint" ; then
+if ! test "$ID" = "debian" -o "$ID" = "ubuntu" -o "$ID" = "raspbian" -o "$ID" = "linuxmint" ; then
     echo "ERROR: unable to identify OS, guessing ubuntu"
     ID="ubuntu"
 fi
@@ -20,6 +21,10 @@ case "$ID" in
     "ubuntu")
         DISTRIBUTION=ubuntu
         CODENAME=`echo $ubuntu | grep -o "$VERSION_ID:[a-z]\+" | cut -d: -f2`
+        ;;
+    "raspbian")
+        DISTRIBUTION=raspbian
+        CODENAME=`echo $raspbian | grep -o "$VERSION_ID:[a-z]\+" | cut -d: -f2`
         ;;
     "linuxmint")
         DISTRIBUTION=ubuntu
