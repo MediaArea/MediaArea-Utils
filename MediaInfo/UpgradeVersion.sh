@@ -38,6 +38,7 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Source/GUI/Android/app/src/main/res/values/strings.xml"
     MI_files[((index++))]="Source/GUI/Android/app/build.gradle"
     MI_files[((index++))]="Source/GUI/Cocoa/MediaInfo.xcodeproj/project.pbxproj"
+    MI_files[((index++))]="Source/GUI/iOS/MediaInfo/Info.plist"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
     MI_files[((index++))]="debian/changelog"
