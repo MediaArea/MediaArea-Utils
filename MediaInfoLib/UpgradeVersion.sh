@@ -47,6 +47,7 @@ function btask.UpgradeVersion.run () {
     MIL_files[((index++))]="Project/OBS/deb9.dsc"
     MIL_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MIL_files[((index++))]="Project/Solaris/mkpkg"
+    MIL_files[((index++))]="Project/Android/MediaInfoJs/app/build.gradle"
 
     for MIL_file in ${MIL_files[@]}
     do
