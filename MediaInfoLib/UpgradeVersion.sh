@@ -59,12 +59,6 @@ function btask.UpgradeVersion.run () {
     echo "Passage for major.minor.patch.build..."
     unset -v MIL_files
     index=0
-    MIL_files[((index++))]="Project/MSVC2010/Dll/MediaInfo.rc"
-    MIL_files[((index++))]="Project/MSVC2010/Example/HowToUse.rc"
-    MIL_files[((index++))]="Project/MSVC2010/ShellExtension/MediaInfoShellExt.rc"
-    MIL_files[((index++))]="Project/MSVC2012/Dll/MediaInfo.rc"
-    MIL_files[((index++))]="Project/MSVC2012/Example/HowToUse.rc"
-    MIL_files[((index++))]="Project/MSVC2012/ShellExtension/MediaInfoShellExt.rc"
     MIL_files[((index++))]="Project/MSVC2013/Dll/MediaInfo.rc"
     MIL_files[((index++))]="Project/MSVC2013/Example/HowToUse.rc"
     MIL_files[((index++))]="Project/MSVC2013/ShellExtension/MediaInfoShellExt.rc"
