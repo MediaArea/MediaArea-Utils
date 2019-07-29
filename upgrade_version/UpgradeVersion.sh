@@ -18,8 +18,8 @@ function load_options () {
     b.opt.add_opt --project "The project to modify"
     b.opt.add_alias --project -p
 
-    #b.opt.add_opt --date "Release date"
-    #b.opt.add_alias --date -d
+    b.opt.add_opt --date "Release date"
+    b.opt.add_alias --date -d
 
     b.opt.add_opt --new "New version of the project"
     b.opt.add_alias --new -n
@@ -185,7 +185,10 @@ function run () {
             Version_new_build=0
         fi
 
-        #Release_date=$(sanitize_arg $(b.opt.get_opt --date))
+        Release_date=$(sanitize_arg $(b.opt.get_opt --date))
+        if ! [ $Release_date ]; then
+            Release_date=$(date +%Y-%m-%d)
+        fi
 
         WDir=/tmp
         if [ $(b.opt.get_opt --working-path) ] ; then
@@ -239,10 +242,8 @@ function run () {
 
         # For lisibility
         echo
-
-        #unset -v Project Release_date Script
         unset -v Project Repo Script WDir SDir
-        unset -v Version_old Version_new
+        unset -v Version_old Version_new Release_date
         unset -v Version_old_escaped Version_old_comma Version_new_comma
         unset -v Version_old_array Version_new_array
         unset -v Version_old_major Version_old_minor Version_old_patch

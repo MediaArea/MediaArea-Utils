@@ -41,6 +41,7 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Source/GUI/iOS/MediaInfo/Info.plist"
     MI_files[((index++))]="Project/GNU/CLI/configure.ac"
     MI_files[((index++))]="Project/GNU/GUI/configure.ac"
+    MI_files[((index++))]="Project/GNU/GUI/mediainfo-gui.metainfo.xml"
     MI_files[((index++))]="debian/changelog"
     MI_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb7.debian/changelog"
@@ -58,6 +59,10 @@ function btask.UpgradeVersion.run () {
         echo "${MI_source}/${MI_file}"
         updateFile "$Version_old_escaped" $Version_new "${MI_source}/${MI_file}"
     done
+
+    echo
+    echo "Update date in ${MI_source}/Project/GNU/GUI/mediainfo-gui.metainfo.xml"
+    updateFile "date=\"[0-9-]\+\"" "date=\"$Release_date\"" "${MI_source}"/Project/GNU/GUI/mediainfo-gui.metainfo.xml
 
     echo
     echo "Update ${MI_source}/Project/GNU/mediainfo.spec"
