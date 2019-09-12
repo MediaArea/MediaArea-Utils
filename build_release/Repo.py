@@ -123,8 +123,11 @@ def Create_repo_deb(Path, Repo, Release = False):
 
         if Debian_version == "Debian_Next_ga":
             Debian_releases = Debian_releases + Configuration["Debian_testing"] + ":"
-        else:
+
+        elif "." in Debian_version:
             Debian_releases = Debian_releases + re.split('_|\.', Debian_version)[-2] + ":"
+        else:
+            Debian_releases = Debian_releases + re.split('_', Debian_version)[-1] + ":"
 
         Debian_releases = Debian_releases + Configuration["Debian_names"][Debian_version]
 
