@@ -145,7 +145,12 @@ def Create_repo_deb(Path, Repo, Release = False):
     Raspbian_releases = ""
     for Raspbian_version, Raspbian_codename in sorted(Configuration["Raspbian_names"].items()):
         Raspbian_releases = Raspbian_releases + "," if Raspbian_releases else ""
-        Raspbian_releases = Raspbian_releases + re.split('_|\.', Raspbian_version)[-2] + ":"
+
+        if "." in Raspbian_version:
+            Raspbian_releases = Raspbian_releases + re.split('_|\.', Raspbian_version)[-2] + ":"
+        else
+            Raspbian_releases = Raspbian_releases + re.split('_', Raspbian_version)[-1] + ":"
+
         Raspbian_releases = Raspbian_releases + Configuration["Raspbian_names"][Raspbian_version]
 
     Postinst_file = Postinst_file.replace("REPO_NAME", Repo)
