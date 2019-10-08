@@ -148,7 +148,7 @@ def Create_repo_deb(Path, Repo, Release = False):
 
         if "." in Raspbian_version:
             Raspbian_releases = Raspbian_releases + re.split('_|\.', Raspbian_version)[-2] + ":"
-        else
+        else:
             Raspbian_releases = Raspbian_releases + re.split('_', Raspbian_version)[-1] + ":"
 
         Raspbian_releases = Raspbian_releases + Configuration["Raspbian_names"][Raspbian_version]
