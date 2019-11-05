@@ -63,6 +63,11 @@ function project_get () {
         Dirname="adctest"
         Repo="https://github.com/MediaArea/ADCTest.git"
     fi
+    if [ "$Project" = "dr" ] || [ "$Project" = "DR" ] || [ "$Project" = "dvrescue" ]; then
+        Project=dvrescue
+        Dirname="dvrescue"
+        Repo="https://github.com/MediaArea/dvrescue.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
