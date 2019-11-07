@@ -67,7 +67,7 @@ function deb_obs () {
 
     local deb7="Debian_7.0 xUbuntu_12.04"
     local deb8="Debian_8.0 xUbuntu_14.04"
-    local deb9="Debian_9.0 Raspbian_9.0 xUbuntu_16.04 xUbuntu_17.10 xUbuntu_18.04  xUbuntu_18.10 xUbuntu_19.04 Ubuntu_Next_standard Debian_10 Raspbian_10 Debian_Next_ga"
+    local deb9="Debian_9.0 Raspbian_9.0 xUbuntu_16.04 xUbuntu_17.10 xUbuntu_18.04  xUbuntu_18.10 xUbuntu_19.04 xUbuntu_19.10 Ubuntu_Next_standard Debian_10 Raspbian_10 Debian_Next_ga"
 
     local Targets="$deb7 $deb8 $deb9"
 
