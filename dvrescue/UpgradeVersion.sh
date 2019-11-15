@@ -34,6 +34,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version with dots..."
     index=0
     DR_files[((index++))]="debian/changelog"
+    DR_files[((index++))]="Project/GNU/dvrescue.spec"
     DR_files[((index++))]="Project/Mac/Info.plist"
     DR_files[((index++))]="Source/Common/Config.h"
 
