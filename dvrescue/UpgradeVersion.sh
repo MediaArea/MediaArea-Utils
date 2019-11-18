@@ -63,7 +63,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for major.minor.patch.build..."
     unset -v DR_files
     index=0
-    DR_files[((index++))]="Project/MSVC2017/CLI/DVRescue.rc"
+    DR_files[((index++))]="Source/CLI/DVRescue.rc"
 
     for DR_file in ${DR_files[@]}
     do
