@@ -64,6 +64,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2013/GUI/QCTools.rc"
     Files[((index++))]="Project/MSVC2015/GUI/QCTools.rc"
     Files[((index++))]="Project/QtCreator/qctools-gui/QCTools.rc"
+    Files[((index++))]="Project/QtCreator/qctools-cli/qcli.rc"
 
     for File in ${Files[@]}
     do
