@@ -65,12 +65,12 @@ function _all_inclusive () {
 
     cp -r qctools/debian .
 
-    git clone --depth 1 "https://git.videolan.org/git/ffmpeg.git"
+    git clone --depth 1 "https://git.videolan.org/git/ffmpeg.git" ffmpeg
 
-    wget -q https://downloads.sf.net/project/freetype/freetype2/2.7.1/freetype-2.7.1.tar.bz2
-    tar -jxf freetype-2.7.1.tar.bz2
-    rm freetype-2.7.1.tar.bz2
-    mv freetype-2.7.1 freetype
+    wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
+    tar -jxf freetype-2.10.0.tar.bz2
+    rm freetype-2.10.0.tar.bz2
+    mv freetype-2.10.0 freetype
 
     wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar -zxf yasm-1.3.0.tar.gz
@@ -78,7 +78,7 @@ function _all_inclusive () {
     mv yasm-1.3.0 yasm
 
     wget -q http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2
-    tar jxf qwt-6.1.2.tar.bz2
+    tar -jxf qwt-6.1.2.tar.bz2
     rm qwt-6.1.2.tar.bz2
     mv qwt-6.1.2 qwt
     sed -i \
