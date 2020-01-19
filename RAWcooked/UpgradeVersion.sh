@@ -34,6 +34,7 @@ function btask.UpgradeVersion.run () {
     echo
     echo "Passage for version with dots..."
     index=0
+    Files[((index++))]="Project/Chocolatey/rawcooked.nuspec"
     Files[((index++))]="Project/GNU/rawcooked.spec"
     Files[((index++))]="Project/GNU/rawcooked.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
