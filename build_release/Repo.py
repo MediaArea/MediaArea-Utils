@@ -334,9 +334,11 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Freight_conf = Freight_conf.replace("CACHE_DIR", Cache_directory)
         Freight_conf = Freight_conf.replace("LIB_DIR", Lib_directory)
         Freight_conf = Freight_conf.replace("KEY_NAME", Configuration["Repo_key"]["key"])
+        Freight_conf = Freight_conf + "\n"
         if Dest=="Raspbian":
-            Freight_conf = Freight_conf + "\n"
             Freight_conf = Freight_conf + "ARCHS=\"armhf arm64\""
+        else:
+            Freight_conf = Freight_conf + "ARCHS=\"i386 amd64 armhf arm64\""
         Freight_conf_file.write(Freight_conf)
         Freight_conf_file.close()
     else:
