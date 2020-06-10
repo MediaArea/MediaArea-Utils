@@ -166,7 +166,7 @@ rem *** Signature of executables ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\win32\Release\MediaConch-GUI.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com /td sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch-Server.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\Win32\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\x64\Release\MediaConch.exe ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2017\win32\Release\MediaConch-GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
 
@@ -184,7 +184,7 @@ rem *** Signature of installers ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com /td sha256 /d MediaConch /du http://mediaarea.net ..\..\%MC_SOURCES%\MediaConch\Release\MediaConch_GUI_%Version%_Windows.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
 
@@ -294,7 +294,7 @@ rem *** Signature of executables ***
 call set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\Win32\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo_InfoTip.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo_InfoTip.dll  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\x64\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\win32\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com /td sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\Win32\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\Win32\Release\MediaInfo_InfoTip.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2017\x64\Release\MediaInfo_InfoTip.dll  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2017\x64\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\win32\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 call set CodeSigningCertificatePass=
 
@@ -330,7 +330,7 @@ rem *** Signature of installers ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com/?td=sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://timestamp.comodoca.com /td sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
 
