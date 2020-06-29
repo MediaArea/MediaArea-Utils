@@ -118,32 +118,26 @@ def Create_repo_deb(Path, Repo, Release = False):
     Postinst_file_template.close()
 
     Debian_releases = ""
-    for Debian_version, Debian_codename in sorted(Configuration["Debian_names"].items()):
+    for Debian_version, Debian_codename in Configuration["Debian_names"]:
         Debian_releases = Debian_releases + "," if Debian_releases else ""
 
-        if Debian_version == "Debian_Next_ga":
-            Debian_releases = Debian_releases + Configuration["Debian_testing"] + ":"
-
-        elif "." in Debian_version:
+        if "." in Debian_version:
             Debian_releases = Debian_releases + re.split('_|\.', Debian_version)[-2] + ":"
         else:
             Debian_releases = Debian_releases + re.split('_', Debian_version)[-1] + ":"
 
-        Debian_releases = Debian_releases + Configuration["Debian_names"][Debian_version]
+        Debian_releases = Debian_releases + Debian_codename
 
     Ubuntu_releases = ""
-    for Ubuntu_version, Ubuntu_codename in sorted(Configuration["Ubuntu_names"].items()):
+    for Ubuntu_version, Ubuntu_codename in Configuration["Ubuntu_names"]:
         Ubuntu_releases = Ubuntu_releases + "," if Ubuntu_releases else ""
 
-        if Ubuntu_version == "Ubuntu_Next_standard":
-             Ubuntu_releases = Ubuntu_releases + Configuration["Ubuntu_testing"] + ":"
-        else:
-            Ubuntu_releases = Ubuntu_releases + Ubuntu_version.split('_')[-1].upper() + ":"
+        Ubuntu_releases = Ubuntu_releases + Ubuntu_version.split('_')[-1].upper() + ":"
 
-        Ubuntu_releases = Ubuntu_releases + Configuration["Ubuntu_names"][Ubuntu_version]
+        Ubuntu_releases = Ubuntu_releases + Ubuntu_codename
 
     Raspbian_releases = ""
-    for Raspbian_version, Raspbian_codename in sorted(Configuration["Raspbian_names"].items()):
+    for Raspbian_version, Raspbian_codename in Configuration["Raspbian_names"]:
         Raspbian_releases = Raspbian_releases + "," if Raspbian_releases else ""
 
         if "." in Raspbian_version:
@@ -151,7 +145,7 @@ def Create_repo_deb(Path, Repo, Release = False):
         else:
             Raspbian_releases = Raspbian_releases + re.split('_', Raspbian_version)[-1] + ":"
 
-        Raspbian_releases = Raspbian_releases + Configuration["Raspbian_names"][Raspbian_version]
+        Raspbian_releases = Raspbian_releases + Raspbian_codename
 
     Postinst_file = Postinst_file.replace("REPO_NAME", Repo)
     Postinst_file = Postinst_file.replace("DEBIAN_RELEASES", Debian_releases)
@@ -314,11 +308,11 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
     elif Arch=="aarch64":
         Arch="arm64"
 
-    if not Configuration[Dest + "_names"].has_key(Distribution):
+    if len([item for item in Configuration[Dest + "_names"] if item[0] == Distribution]) == 0:
         print("ERROR: unable to import package %s, unknown distribution %s" % (Package, Distribution))
         return
 
-    Dist = Configuration[Dest + "_names"][Distribution]
+    Dist = [item for item in Configuration[Dest + "_names"] if item[0] == Distribution][0][1]
     if not Release:
         Dist += "-snapshots"
 

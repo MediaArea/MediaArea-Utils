@@ -33,9 +33,20 @@ case "$ID" in
         ;;
 esac
 
-if test -z "CODENAME" ; then
-    echo "ERROR: unable to identify $DISTRIBUTION version, guessing testing"
-    CODENAME="testing"
+if test -z "$CODENAME" ; then
+    case "$DISTRIBUTION" in
+        "debian")
+            CODENAME=`echo $debian | grep -o '[^:]*$'`
+            ;;
+        "ubuntu")
+            CODENAME=`echo $ubuntu | grep -o '[^:]*$'`
+            ;;
+        "raspbian")
+            CODENAME=`echo $raspbian | grep -o '[^:]*$'`
+            ;;
+    esac
+
+    echo "ERROR: unable to identify $DISTRIBUTION version, guessing $CODENAME"
 fi
 
 mkdir -p /etc/apt/sources.list.d
