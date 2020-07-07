@@ -303,10 +303,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Arch = "amd64"
     elif Arch == "i586":
         Arch = "i386"
-    elif Arch=="armv7l":
-        Arch="armhf"
-    elif Arch=="aarch64":
-        Arch="arm64"
+    # OBS doesn't use Debian names for arm architectures
 
     if len([item for item in Configuration[Dest + "_names"] if item[0] == Distribution]) == 0:
         print("ERROR: unable to import package %s, unknown distribution %s" % (Package, Distribution))
