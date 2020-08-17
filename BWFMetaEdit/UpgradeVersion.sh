@@ -37,6 +37,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/bwfmetaedit.spec"
     Files[((index++))]="Project/GNU/bwfmetaedit.dsc"
     Files[((index++))]="Project/GNU/PKGBUILD"
+    Files[((index++))]="Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml"
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="Project/OBS/deb7.dsc"
     Files[((index++))]="Project/OBS/deb7.debian/changelog"
@@ -72,4 +73,8 @@ function btask.UpgradeVersion.run () {
         echo "${Source}/${File}"
         updateFile $Version_old_major,$Version_old_minor,$Version_old_patch,$Version_old_build $Version_new_major,$Version_new_minor,$Version_new_patch,$Version_new_build "${Source}/${File}"
     done
+
+    echo
+    echo "Update date in ${Source}/Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml"
+    updateFile "date=\"[0-9-]\+\"" "date=\"$Release_date\"" "${source}"/Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml
 }
