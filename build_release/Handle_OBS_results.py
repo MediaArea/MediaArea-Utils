@@ -243,7 +243,7 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
     # We pass Package_infos as argument even if is global because it locally modified by the calling function
 
     # The wanted name for the package, under the form:
-    # name[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.xz]
+    # name[_|-]version[-1][_|.]Arch.[deb|rpm|pkg.tar.zst]
     Name_wanted = Name \
                 + Package_infos[Package_type]["dash"] + Version \
                 + Revision \
@@ -260,7 +260,7 @@ def Get_package(Name, Distrib_name, Arch, Revision, Package_type, Package_infos,
            + "/" + Distrib_name \
            + "/" + Arch \
            + "/" + OBS_package \
-           + " |grep 'rpm\"\|deb\"\|pkg.tar.xz\"'" \
+           + " |grep 'rpm\"\|deb\"\|pkg.tar.zst\"'" \
            + " |grep " + Name + Package_infos[Package_type]["dash"] + Version \
            + " |grep -v src |awk -F '\"' '{print $2}'"
 
@@ -356,7 +356,7 @@ def Get_packages_on_OBS(Distrib_name, Arch):
         Package_type = "rpm"
         Package_infos[Package_type]["i586"] = "i586"
     if fnmatch.fnmatch(Distrib_name, "Arch*"):
-        Package_type = "pkg.tar.xz"
+        Package_type = "pkg.tar.zst"
 
 
     # Handle libzen and libmediainfo without 0 ending and Debian 9/Ubuntu 15.10+ 0v5 ending
@@ -530,7 +530,7 @@ def Verify_states_and_files():
     # Bin packages #
     ################
 
-    Params = "ls %s/%s*%s*  |grep 'rpm\|deb\|pkg.tar.xz'  |grep -v 'dbg\|debug\|dev\|devel\|doc' %s |wc -l" % \
+    Params = "ls %s/%s*%s*  |grep 'rpm\|deb\|pkg.tar.zst'  |grep -v 'dbg\|debug\|dev\|devel\|doc' %s |wc -l" % \
            (Destination, (Project["dev_name"] if Project["kind"] == "lib" else Project["bin_name"]), Version, Grep_filter)
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_bin = int(Result)
@@ -555,7 +555,7 @@ def Verify_states_and_files():
     ##################
 
 
-    Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.xz' |grep 'dbg\|debug' %s |wc -l" % \
+    Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.zst' |grep 'dbg\|debug' %s |wc -l" % \
            (Destination, (Project["dev_name"] if Project["kind"] == "lib" else Project["bin_name"]), Grep_filter)
     Result = subprocess.check_output(Params, shell=True).strip()
     Number_dbg = int(Result)
@@ -579,7 +579,7 @@ def Verify_states_and_files():
     ######################
 
     if Project["kind"] == "lib":
-        Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.xz' |grep 'dev\|devel' %s |wc -l" % \
+        Params = "ls %s/%s* |grep 'rpm\|deb\|pkg.tar.zst' |grep 'dev\|devel' %s |wc -l" % \
                (Destination, Project["dev_name"], Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_dev = int(Result)
@@ -597,7 +597,7 @@ def Verify_states_and_files():
                    + " " + Config["Email_to"]
             subprocess.call(Params, shell=True)
 
-        Params = "ls %s/%s-doc* |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+        Params = "ls %s/%s-doc* |grep 'rpm\|deb\|pkg.tar.zst' %s |wc -l" % \
                (Destination, Project["dev_name"], Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_doc = int(Result)
@@ -620,7 +620,7 @@ def Verify_states_and_files():
     ###################
 
     if Project.get("srv_name"):
-        Params = "ls %s/%s?%s*  |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+        Params = "ls %s/%s?%s*  |grep 'rpm\|deb\|pkg.tar.zst' %s |wc -l" % \
                (Destination_server, Project["srv_name"], Version, Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_srv = int(Result)
@@ -643,7 +643,7 @@ def Verify_states_and_files():
     ################
 
     if Project.get("gui_name"):
-        Params = "ls %s/%s?%s* |grep 'rpm\|deb\|pkg.tar.xz' %s |wc -l" % \
+        Params = "ls %s/%s?%s* |grep 'rpm\|deb\|pkg.tar.zst' %s |wc -l" % \
                (Destination_gui, Project["gui_name"], Version, Grep_filter)
         Result = subprocess.check_output(Params, shell=True).strip()
         Number_gui = int(Result)

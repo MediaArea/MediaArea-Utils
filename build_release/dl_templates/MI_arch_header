@@ -4,6 +4,6 @@
     <td>Is currently up to date</td>
 </tr>
 <tr>
-    <th colspan="5">Notes for installing the packages below:<br>"pacman -U *pkg.tar.xz"</th>
+    <th colspan="5">Notes for installing the packages below:<br>"pacman -U *pkg.tar.zst"</th>
 </tr>
 
