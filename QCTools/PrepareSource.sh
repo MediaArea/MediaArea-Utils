@@ -77,15 +77,10 @@ function _all_inclusive () {
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
-    wget -q http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2
-    tar -jxf qwt-6.1.2.tar.bz2
-    rm qwt-6.1.2.tar.bz2
-    mv qwt-6.1.2 qwt
-    sed -i \
-        -e 's/\(^QWT_CONFIG\s\++= QwtDll\)/#\1/g' \
-        -e 's/\(^QWT_CONFIG\s\++= QwtSvg\)/#\1/g' \
-        -e 's/\(^QWT_CONFIG\s\++= QwtOpenGL\)/#\1/g' \
-        -e 's/\(^QWT_CONFIG\s\++= QwtDesigner\)/#\1/g' qwt/qwtconfig.pri
+    wget -q https://github.com/ElderOrb/qwt/archive/v6.1.5.zip
+    unzip v6.1.5.zip
+    mv qwt-6.1.5 qwt
+    rm v6.1.5.zip
 
     # fix ffmpeg configure for static freetype2
     sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
