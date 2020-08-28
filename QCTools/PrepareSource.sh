@@ -77,10 +77,10 @@ function _all_inclusive () {
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
-    wget -q https://github.com/ElderOrb/qwt/archive/v6.1.5.zip
-    unzip v6.1.5.zip
-    mv qwt-6.1.5 qwt
-    rm v6.1.5.zip
+    wget -q https://github.com/ElderOrb/qwt/archive/master.zip
+    unzip master.zip
+    mv qwt-master qwt
+    rm master.zip
 
     # fix ffmpeg configure for static freetype2
     sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
