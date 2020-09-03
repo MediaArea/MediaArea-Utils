@@ -42,7 +42,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="debian/changelog"
     Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
     Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
-    Files[((index++))]="Source/Lib/RAWcooked/RAWcooked.cpp"
+    Files[((index++))]="Source/Lib/Compressed/RAWcooked/RAWcooked.cpp"
     Files[((index++))]="Source/CLI/rawcooked.1"
 
     # Make the replacements
