@@ -40,8 +40,6 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/PKGBUILD"
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="debian/changelog"
-    Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
-    Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
     Files[((index++))]="Source/Lib/Compressed/RAWcooked/RAWcooked.cpp"
     Files[((index++))]="Source/CLI/rawcooked.1"
 
