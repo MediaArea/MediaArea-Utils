@@ -45,6 +45,12 @@ function _get_source () {
         ZL_repo="--zl-repo $(sanitize_arg $(b.opt.get_opt --zl-repo))"
     fi
 
+    # Qwt
+    curl -LO https://github.com/ElderOrb/qwt/archive/master.zip
+    unzip master.zip
+    mv qwt-master qwt
+    rm master.zip
+
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
@@ -53,7 +59,6 @@ function _get_source () {
     else
         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_repo $ZL_repo $MIL_gs $ZL_gs -${Target} -na
     fi
-
 }
 
 function _unix_cli () {
@@ -104,6 +109,53 @@ function _unix_cli () {
 
 }
 
+function _unix_gui () {
+
+    echo
+    echo "Generate the DR GUI directory for compilation under Unix:"
+    echo "1: copy what is wanted..."
+
+    cd "$WDir"/DR
+    mkdir dvrescue_GUI_GNU_FromSource
+    cd dvrescue_GUI_GNU_FromSource
+
+    cp -r "$DR_source" .
+    mv dvrescue/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
+    chmod +x GUI_Compile.sh
+    chmod +x dvrescue/Project/Mac/BR_extension_GUI.sh
+    chmod +x dvrescue/Project/Mac/mkdmg.sh
+
+    # ZenLib and MediaInfoLib
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Qwt
+    cp -r "$WDir"/qwt .
+
+    # Dependency : zlib
+    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+
+    echo "2: remove what isn’t wanted..."
+    pushd dvrescue
+        rm -fr .git*
+        rm -fr debian
+        rm -fr Sources/CLI Project/GNU/CLI
+        rm -f Project/GNU/dvrescue.dsc Project/GNU/dvrescue.spec Project/GNU/PKGBUILD Project/Mac/BR_extension_CLI.sh
+    popd
+
+    if $MakeArchives; then
+        echo "3: compressing..."
+        cd "$WDir"/DR
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
+        fi
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/dvrescue_GUI${Version}_GNU_FromSource.tar.gz dvrescue_GUI_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/dvrescue_GUI${Version}_GNU_FromSource.tar.bz2 dvrescue_GUI_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvrescue_GUI${Version}_GNU_FromSource.tar.xz dvrescue_GUI_GNU_FromSource)
+    fi
+
+}
+
 function _all_inclusive () {
 
     echo
@@ -120,6 +172,7 @@ function _all_inclusive () {
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/qwt .
 
     echo "2: remove what isn’t wanted..."
     pushd dvrescue
@@ -163,9 +216,9 @@ function _source_package () {
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvrescue${Version}.tar.xz dvrescue)
 
         mkdir ../archives/obs
-
         cp ../archives/dvrescue${Version}.tar.xz ../archives/obs/dvrescue${Version}.orig.tar.xz
         cp ../archives/dvrescue${Version}.tar.gz ../archives/obs
+
         cp "$WDir/DR/dvrescue/Project/GNU/dvrescue.spec" ../archives/obs
         cp "$WDir/DR/dvrescue/Project/GNU/PKGBUILD" ../archives/obs
 
@@ -198,6 +251,7 @@ function btask.PrepareSource.run () {
 
     if [ "$Target" = "cu" ]; then
         _unix_cli
+        _unix_gui
     fi
     if [ "$Target" = "ai" ]; then
         _all_inclusive
@@ -207,6 +261,7 @@ function btask.PrepareSource.run () {
     fi
     if [ "$Target" = "all" ]; then
         _unix_cli
+        _unix_gui
         _all_inclusive
         _source_package
     fi
