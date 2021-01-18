@@ -37,6 +37,7 @@ function btask.UpgradeVersion.run () {
     DR_files[((index++))]="Project/GNU/dvrescue.spec"
     DR_files[((index++))]="Project/Mac/Info.plist"
     DR_files[((index++))]="Source/Common/Config.h"
+    DR_files[((index++))]="Source/Install/dvrescue.nsi"
 
     for DR_file in ${DR_files[@]}
     do
