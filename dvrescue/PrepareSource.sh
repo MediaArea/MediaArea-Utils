@@ -51,6 +51,15 @@ function _get_source () {
     mv qwt-master qwt
     rm master.zip
 
+    # ffmpeg
+    git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
+
+    # yasm
+    curl -LO http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
+    tar -zxf yasm-1.3.0.tar.gz
+    mv yasm-1.3.0 yasm
+    rm yasm-1.3.0.tar.gz
+
     # MediaInfoLib (will also bring ZenLib and zlib)
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
@@ -132,6 +141,12 @@ function _unix_gui () {
     # Qwt
     cp -r "$WDir"/qwt .
 
+    # ffmpeg
+    cp -r "$WDir"/ffmpeg .
+
+    # yasm
+    cp -r "$WDir"/yasm .
+
     # Dependency : zlib
     cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
 
@@ -142,7 +157,12 @@ function _unix_gui () {
         rm -fr Sources/CLI Project/GNU/CLI
         rm -f Project/GNU/dvrescue.dsc Project/GNU/dvrescue.spec Project/GNU/PKGBUILD Project/Mac/BR_extension_CLI.sh
     popd
-
+    pushd qwt
+        rm -fr .git*
+    popd
+    pushd ffmpeg
+        rm -fr .git*
+    popd
     if $MakeArchives; then
         echo "3: compressing..."
         cd "$WDir"/DR
@@ -172,12 +192,20 @@ function _all_inclusive () {
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/ffmpeg .
+    cp -r "$WDir"/yasm .
     cp -r "$WDir"/qwt .
 
     echo "2: remove what isn’t wanted..."
     pushd dvrescue
         rm -fr .git*
         rm -fr Project/Mac
+    popd
+    pushd qwt
+        rm -fr .git*
+    popd
+    pushd ffmpeg
+        rm -fr .git*
     popd
 
     if $MakeArchives; then
@@ -215,9 +243,23 @@ function _source_package () {
         (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/dvrescue${Version}.tar.bz2 dvrescue)
         (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/dvrescue${Version}.tar.xz dvrescue)
 
-        mkdir ../archives/obs
-        cp ../archives/dvrescue${Version}.tar.xz ../archives/obs/dvrescue${Version}.orig.tar.xz
-        cp ../archives/dvrescue${Version}.tar.gz ../archives/obs
+        echo "4: OBS archives..."
+        mkdir -p obs/dvrescue
+
+        #OBS Dependencies
+        cp -r "$DR_source" obs/dvrescue
+        cp -r "$WDir"/ffmpeg obs/dvrescue
+        pushd obs/dvrescue/dvrescue
+            rm -fr .git*
+        popd
+        pushd obs/dvrescue/ffmpeg
+            rm -fr .git*
+        popd
+        mkdir -p ../archives/obs
+        pushd obs
+            (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../../archives/obs/dvrescue${Version}.orig.tar.xz dvrescue)
+            (GZIP=-9 tar -cz --owner=root --group=root -f ../../archives/obs/dvrescue${Version}.tar.gz dvrescue)
+        popd
 
         cp "$WDir/DR/dvrescue/Project/GNU/dvrescue.spec" ../archives/obs
         cp "$WDir/DR/dvrescue/Project/GNU/PKGBUILD" ../archives/obs
