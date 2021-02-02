@@ -209,6 +209,76 @@ function _unix_server () {
 
 }
 
+function _unix_library () {
+
+    echo
+    echo "Generate the MC library directory for compilation under Unix:"
+    echo "1: copy what is wanted..."
+
+    cd "$WDir"/MC
+    mkdir MediaConch_DLL_GNU_FromSource
+    cd MediaConch_DLL_GNU_FromSource
+
+    cp -a "$MC_source" MediaConch
+    mv MediaConch/Project/GNU/Library/AddThisToRoot_DLL_compile.sh DLL_Compile.sh
+    chmod +x Library_Compile.sh
+    chmod +x MediaConch/Project/GNU/Library/autogen.sh
+
+    # ZenLib and MediaInfoLib
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+
+    # Dependency : zlib
+    cp -a "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+
+
+    mkdir -p Shared/Source
+    cp -a "$WDir"/repos/zlib Shared/Source
+
+    # ? Dependencies : libxml2...
+    cp -a "$WDir"/repos/libxml2 .
+    cp -a "$WDir"/repos/libxslt .
+    cp -a "$WDir"/repos/jansson .
+    cp -a "$WDir"/repos/libevent .
+    cp -a "$WDir"/repos/sqlite .
+
+    rm -fr {Shared/Source/zlib,libxml2,libxslt,jansson,libevent}/.git*
+
+    echo "2: remove what isn’t wanted..."
+    cd MediaConch
+        rm -fr .cvsignore .git*
+        rm -f History_GUI.txt
+        rm -fr debian
+        cd Project
+            rm -fr GNU/CLI Mac/*_CLI.sh
+            rm -fr GNU/GUI Mac/*_GUI.sh
+            rm -f GNU/mediaconch.dsc GNU/mediaconch.spec GNU/PKGBUILD
+            rm -fr OBS
+            rm -fr MSVC2013
+        cd ..
+        rm -fr Source/GUI
+    cd ..
+
+    echo "3: Autotools..."
+    (cd MediaConch/Project/GNU/Library && ./autogen.sh > /dev/null 2>&1)
+    (cd libxml2 && autoreconf -i -f > /dev/null 2>&1)
+    (cd libxslt && autoreconf -i -f > /dev/null 2>&1)
+    (cd jansson && autoreconf -i -f > /dev/null 2>&1)
+    (cd libevent && autoreconf -i -f > /dev/null 2>&1)
+
+    if $MakeArchives; then
+        echo "4: compressing..."
+        cd "$WDir"/MC
+        if ! b.path.dir? ../archives; then
+            mkdir ../archives
+        fi
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/MediaConch_DLL${Version}_GNU_FromSource.tar.gz MediaConch_DLL_GNU_FromSource)
+        (BZIP=-9 tar -cj --owner=root --group=root -f ../archives/MediaConch_DLL${Version}_GNU_FromSource.tar.bz2 MediaConch_DLL_GNU_FromSource)
+        (XZ_OPT=-9e tar -cJ --owner=root --group=root -f ../archives/MediaConch_DLL${Version}_GNU_FromSource.tar.xz MediaConch_DLL_GNU_FromSource)
+    fi
+
+}
+
 function _unix_gui () {
 
     echo
@@ -378,6 +448,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "cu" ]; then
         _unix_cli
         _unix_server
+        _unix_library
         _unix_gui
     fi
     if [ "$Target" = "ai" ]; then
@@ -389,6 +460,7 @@ function btask.PrepareSource.run () {
     if [ "$Target" = "all" ]; then
         _unix_cli
         _unix_server
+        _unix_library
         _unix_gui
         _all_inclusive
         _source_package
