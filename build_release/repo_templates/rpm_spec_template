@@ -22,7 +22,7 @@ if test -f %{_sysconfdir}/os-release ; then
             DIST=Fedora
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
             ;;
-        centos)
+        centos|ol)
             DIST=CentOS
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
             ;;
