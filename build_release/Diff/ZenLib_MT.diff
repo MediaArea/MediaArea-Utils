@@ -1,10 +1,10 @@
- Project/MSVC2017/Library/ZenLib.vcxproj | 4 ++--
+ Project/MSVC2019/Library/ZenLib.vcxproj | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Project/MSVC2017/Library/ZenLib.vcxproj b/Project/MSVC2017/Library/ZenLib.vcxproj
+diff --git a/Project/MSVC2019/Library/ZenLib.vcxproj b/Project/MSVC2019/Library/ZenLib.vcxproj
 index 8a9fbea..7594381 100644
---- a/Project/MSVC2017/Library/ZenLib.vcxproj
-+++ b/Project/MSVC2017/Library/ZenLib.vcxproj
+--- a/Project/MSVC2019/Library/ZenLib.vcxproj
++++ b/Project/MSVC2019/Library/ZenLib.vcxproj
 @@ -88,7 +88,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
