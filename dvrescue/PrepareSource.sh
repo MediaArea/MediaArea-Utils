@@ -52,7 +52,7 @@ function _get_source () {
     rm master.zip
 
     # ffmpeg
-    git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
+    git clone --depth 1 --branch n4.4 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
 
     # yasm
     curl -LO http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
