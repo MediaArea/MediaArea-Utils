@@ -76,5 +76,5 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update date in ${Source}/Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml"
-    updateFile "date=\"[0-9-]\+\"" "date=\"$Release_date\"" "${source}"/Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml
+    updateFile "date=\"[0-9-]\+\"" "date=\"$Release_date\"" "${Source}"/Project/GNU/GUI/bwfmetaedit-gui.metainfo.xml
 }
