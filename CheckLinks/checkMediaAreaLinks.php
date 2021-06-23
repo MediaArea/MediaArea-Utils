@@ -15,7 +15,7 @@ tree.
 
 require __DIR__.'/checkLinks.class.php';
 
-$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm', 'rc');
+$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm', 'rc', 'dr');
 $options = getopt('', array('project:', 'directory::'));
 if (isset($options['project']) && in_array($options['project'], $projects)) {
     switch ($options['project']) {
@@ -42,6 +42,9 @@ if (isset($options['project']) && in_array($options['project'], $projects)) {
             break;
         case 'rc':
             $directory = 'src/RAWcookedBundle/Resources/views/Download/';
+            break;
+        case 'dr':
+            $directory = 'src/DVRescueBundle/Resources/views/Download/';
             break;
     }
 } else {
