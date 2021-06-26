@@ -14,19 +14,11 @@ import re
 # Sign_rpm_package - sign the given rpm with the configured key
 #
 def Sign_rpm_package(Package):
-    Command = "rpm --addsign --define '%%_gpg_name %s' " % Configuration["Repo_key"]["key"]
-    Command = Command + "--define '__gpg_sign_cmd %{__gpg} gpg --batch --no-verbose --no-armor "
-    Command = Command + "--force-v3-sigs --digest-algo=sha1 --passphrase-fd 3  --no-secmem-warning "
-    Command = Command + "-u \"%s\" -sbo %%{__signature_filename} " % Configuration["Repo_key"]["key"]
-    Command = Command + "%%{__plaintext_filename}' %s" % Package
+    Command = ["rpm", "--addsign",
+               "--define", "%%_gpg_name %s" % Configuration["Repo_key"]["key"],
+               "--define", "%%_gpg_sign_cmd_extra_args --pinentry-mode loopback --passphrase-file=%s" % Configuration["Repo_key"]["passfile"],
+               Package]
 
-    Proc = pexpect.spawn(Command, env={"LC_ALL": "C"})
-    Proc.expect("Enter pass phrase: ")
-    Proc.sendline(open(Configuration["Repo_key"]["passfile"], "r").read())
-    Proc.expect(pexpect.EOF)
-
-    # Verify signature
-    Command = ["rpm", "-K", Package]
     if subprocess.call(Command, stdout=OUT, stderr=OUT) != 0:
         print("ERROR: unable to sign rpm package %s" % Package)
 
@@ -278,7 +270,7 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
             shutil.copyfile(os.path.join(Package_directory, "..", "..", "..", Activation_rpm_file), os.path.join(Package_directory, Activation_rpm_file))
 
     # Update repository
-    Command = ["createrepo", os.path.join(Package_directory, "..")]
+    Command = ["createrepo_c", os.path.join(Package_directory, "..")]
     subprocess.call(Command, stdout=OUT, stderr=OUT)
 
     # Sign repository
