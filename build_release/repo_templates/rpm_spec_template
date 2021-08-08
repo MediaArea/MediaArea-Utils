@@ -34,8 +34,8 @@ if test -f %{_sysconfdir}/os-release ; then
 #            DIST=Mageia
 #            VERSION=`grep ^VERSION= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`_standard
 #            ;;
-        opensuse)
-            DIST=OpenSUSE
+        opensuse*)
+            DIST=openSUSE
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2`
             ;;
         sle?)
