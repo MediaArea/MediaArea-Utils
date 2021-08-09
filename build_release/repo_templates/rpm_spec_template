@@ -65,13 +65,13 @@ case `arch` in
         ;;
 esac
 
-if test "$DIST" = "OpenSUSE" && test "$ARCH" = "ppc64le" ; then
+if test "$DIST" = "openSUSE" && test "$ARCH" = "ppc64le" ; then
     VERSION="Factory_PowerPC"
-elif test "$DIST" = "OpenSUSE" && test "$ARCH" = "aarch64" -o "$ARCH" = "armv7l" ; then
+elif test "$DIST" = "openSUSE" && test "$ARCH" = "aarch64" -o "$ARCH" = "armv7l" ; then
     VERSION="Factory_ARM"
-elif test "$DIST" = "OpenSUSE" && test -z "${VERSION%%????????}" ; then
+elif test "$DIST" = "openSUSE" && test -z "${VERSION%%????????}" ; then
     VERSION="Tumbleweed"
-elif test "$DIST" = "OpenSUSE" && grep -q '^NAME=\"\?openSUSE Leap\"\?$' ; then
+elif test "$DIST" = "openSUSE" && grep -q '^NAME=\"\?openSUSE Leap\"\?$' ; then
     VERSION="Leap_$VERSION"
 fi
 
@@ -94,7 +94,7 @@ EOF
 REPO_KEY
 EOF
         ;;
-    OpenSUSE|SLE)
+    openSUSE|SLE)
         cat > %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo <<EOF
 [REPO_NAME]
 name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
