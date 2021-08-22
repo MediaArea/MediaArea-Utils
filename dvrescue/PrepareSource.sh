@@ -46,10 +46,12 @@ function _get_source () {
     fi
 
     # Qwt
-    curl -LO https://github.com/ElderOrb/qwt/archive/master.zip
+    curl -LO https://github.com/opencor/qwt/archive/master.zip
     unzip master.zip
     mv qwt-master qwt
     rm master.zip
+
+    (cd qwt && curl -L https://github.com/ElderOrb/qwt/commit/3e72164e902cf7a690d19cc0cdf44f9faebbcdc8.patch | patch -p1)
 
     # ffmpeg
     git clone --depth 1 --branch n4.4 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
