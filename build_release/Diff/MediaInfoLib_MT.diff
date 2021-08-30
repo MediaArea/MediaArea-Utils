@@ -59,13 +59,13 @@ index 38ca5dc..3b9f073 100644
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>false</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
 @@ -111,7 +111,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
        <MultiProcessorCompilation>false</MultiProcessorCompilation>
