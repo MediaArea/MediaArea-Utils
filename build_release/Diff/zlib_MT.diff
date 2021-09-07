@@ -1,8 +1,8 @@
- contrib/vstudio/vc15/zlibstat.vcxproj | 8 ++++----
+ contrib/vstudio/vc16/zlibstat.vcxproj | 8 ++++----
  1 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/contrib/vstudio/vc15/zlibstat.vcxproj
-+++ b/contrib/vstudio/vc15/zlibstat.vcxproj
+--- a/contrib/vstudio/vc16/zlibstat.vcxproj
++++ b/contrib/vstudio/vc16/zlibstat.vcxproj
 @@ -152,7 +152,7 @@
        <StringPooling>true</StringPooling>
        <ExceptionHandling>
