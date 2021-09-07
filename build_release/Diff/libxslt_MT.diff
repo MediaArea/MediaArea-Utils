@@ -1,11 +1,11 @@
- win32/VC15/libexslt/libexslt.vcxproj | 2 ++
- win32/VC15/libxslt/libxslt.vcxproj   | 2 ++
+ win32/VC16/libexslt/libexslt.vcxproj | 2 ++
+ win32/VC16/libxslt/libxslt.vcxproj   | 2 ++
  2 files changed, 4 insertions(+)
 
-diff --git a/win32/VC15/libexslt/libexslt.vcxproj b/win32/VC15/libexslt/libexslt.vcxproj
+diff --git a/win32/VC16/libexslt/libexslt.vcxproj b/win32/VC16/libexslt/libexslt.vcxproj
 index 518afb2..71b8c24 100644
---- a/win32/VC15/libexslt/libexslt.vcxproj
-+++ b/win32/VC15/libexslt/libexslt.vcxproj
+--- a/win32/VC16/libexslt/libexslt.vcxproj
++++ b/win32/VC16/libexslt/libexslt.vcxproj
 @@ -124,6 +124,7 @@
        <PrecompiledHeaderOutputFile>.\Release\libexslt_so.pch</PrecompiledHeaderOutputFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -22,10 +22,10 @@ index 518afb2..71b8c24 100644
      </ClCompile>
      <Midl>
        <SuppressStartupBanner>true</SuppressStartupBanner>
-diff --git a/win32/VC15/libxslt/libxslt.vcxproj b/win32/VC15/libxslt/libxslt.vcxproj
+diff --git a/win32/VC16/libxslt/libxslt.vcxproj b/win32/VC16/libxslt/libxslt.vcxproj
 index 1c59b92..34da783 100644
---- a/win32/VC15/libxslt/libxslt.vcxproj
-+++ b/win32/VC15/libxslt/libxslt.vcxproj
+--- a/win32/VC16/libxslt/libxslt.vcxproj
++++ b/win32/VC16/libxslt/libxslt.vcxproj
 @@ -109,6 +109,7 @@
        <AdditionalIncludeDirectories>..\..\..\libxslt;..\..\..;..\..\..\..\libxml2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>LIBXML_STATIC;LIBXSLT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
