@@ -368,7 +368,7 @@ def Get_packages_on_OBS(Distrib_name, Arch):
            fnmatch.fnmatch(Distrib_name, "Arch*"):
             Bin_name = Project["dev_name"]
         elif (fnmatch.fnmatch(Distrib_name, "xUbuntu*") and Distrib_name > "xUbuntu_15.04") \
-             or (fnmatch.fnmatch(Distrib_name, "Debian*") and (Distrib_name > "Debian_8.0" or Distrib_name == "Debian_10")) \
+             or (fnmatch.fnmatch(Distrib_name, "Debian*") and (Distrib_name > "Debian_8.0" or Distrib_name == "Debian_10" or Distrib_name == "Debian_11")) \
              or Distrib_name == "Ubuntu_Next_standard" \
              or Distrib_name == "Debian_Next_ga" \
              or fnmatch.fnmatch(Distrib_name, "Raspbian*"):

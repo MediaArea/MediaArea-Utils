@@ -68,9 +68,10 @@ function deb_obs () {
     local deb7="Debian_7.0 xUbuntu_12.04"
     local deb8="Debian_8.0 xUbuntu_14.04"
     local deb9="Debian_9.0 Raspbian_9.0 xUbuntu_16.04 xUbuntu_17.10 xUbuntu_18.04"
-    local deb10="xUbuntu_18.10 xUbuntu_19.04 xUbuntu_19.10 xUbuntu_20.04 xUbuntu_21.04 xUbuntu_20.10 Debian_10 Raspbian_10 Ubuntu_Next_standard Debian_Next_ga"
+    local deb10="xUbuntu_18.10 xUbuntu_19.04 xUbuntu_19.10 xUbuntu_20.04 xUbuntu_21.04 xUbuntu_20.10 Debian_10 Raspbian_10"
+    local deb11="Debian_11"
 
-    local Targets="$deb7 $deb8 $deb9 $deb10"
+    local Targets="$deb7 $deb8 $deb9 $deb10 $deb11"
 
     pushd "$Sources"
 
@@ -86,6 +87,10 @@ function deb_obs () {
         update_dsc "$Output/$Filename$Version-1.debian.tar.xz" "$Output/$Filename$Version-1.dsc"
     fi
 
+    # Use deb10 target for deb11 by default
+    if [ ! -e "Project/OBS/deb11.dsc" ] ; then
+        deb10="$deb10 $deb11"
+    fi
     # Use deb9 target for deb10 by default
     if [ ! -e "Project/OBS/deb10.dsc" ] ; then
         deb9="$deb9 $deb10"
