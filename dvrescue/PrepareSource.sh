@@ -8,7 +8,7 @@
 
 function _get_source () {
 
-    local MIL_gs ZL_gs MIL_repo ZL_repo
+    local MI_gs MIL_gs ZL_gs MI_repo MIL_repo ZL_repo
 
     cd "$WDir"
     if ! b.path.dir? repos; then
@@ -27,18 +27,27 @@ function _get_source () {
             git checkout $(sanitize_arg $(b.opt.get_opt --git-state))
         fi
     fi
+    cd "$WDir"
 
+    MI_gs=""
+    if [ $(b.opt.get_opt --mi-gs) ]; then
+        MI_gs="-gs $(sanitize_arg $(b.opt.get_opt --mi-gs))"
+    fi
     MIL_gs=""
     if [ $(b.opt.get_opt --mil-gs) ]; then
-        MIL_gs="-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
+        MIL_gs="--mil-gs $(sanitize_arg $(b.opt.get_opt --mil-gs))"
     fi
     ZL_gs=""
     if [ $(b.opt.get_opt --zl-gs) ]; then
         ZL_gs="--zl-gs $(sanitize_arg $(b.opt.get_opt --zl-gs))"
     fi
+    MI_repo=""
+    if [ $(b.opt.get_opt --mi-repo) ]; then
+        MI_repo="--repo $(sanitize_arg $(b.opt.get_opt --mi-repo))"
+    fi
     MIL_repo=""
     if [ $(b.opt.get_opt --mil-repo) ]; then
-        MIL_repo="--repo $(sanitize_arg $(b.opt.get_opt --mil-repo))"
+        MIL_repo="--mil-repo $(sanitize_arg $(b.opt.get_opt --mil-repo))"
     fi
     ZL_repo=""
     if [ $(b.opt.get_opt --zl-repo) ]; then
@@ -62,13 +71,19 @@ function _get_source () {
     mv yasm-1.3.0 yasm
     rm yasm-1.3.0.tar.gz
 
-    # MediaInfoLib (will also bring ZenLib and zlib)
+    # xmlstarlet
+    curl -LO http://downloads.sourceforge.net/project/xmlstar/xmlstarlet/1.6.1/xmlstarlet-1.6.1.tar.gz
+    tar -zxf xmlstarlet-1.6.1.tar.gz
+    mv xmlstarlet-1.6.1 xmlstarlet
+    rm xmlstarlet-1.6.1.tar.gz
+
+    # MediaInfo (will also bring MediaInfoLib, ZenLib and zlib)
     cd "$(dirname ${BASH_SOURCE[0]})/../prepare_source"
 
-    if b.path.dir? "$WDir/../upgrade_version/MediaInfoLib" ; then
-         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -sp "$WDir/../upgrade_version/MediaInfoLib" -wp "$WDir" $ZL_repo $ZL_gs -${Target} -na
+    if b.path.dir? "$WDir/../upgrade_version/MediaInfo" ; then
+         $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfo -sp "$WDir/../upgrade_version/MediaInfo" -wp "$WDir" $MIL_repo $ZL_repo $MIL_gs $ZL_gs -${Target} -na
     else
-        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfoLib -wp "$WDir" $MIL_repo $ZL_repo $MIL_gs $ZL_gs -${Target} -na
+        $(b.get bang.src_path)/bang run PrepareSource.sh -p MediaInfo -wp "$WDir/MI" $MI_repo $MIL_repo $ZL_repo $MI_gs $MIL_gs $ZL_gs -${Target} -na
     fi
 }
 
@@ -90,11 +105,11 @@ function _unix_cli () {
     chmod +x dvrescue/Project/Mac/mkdmg.sh
 
     # ZenLib and MediaInfoLib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/MediaInfoLib .
 
     # Dependency : zlib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/Shared .
 
     echo "2: remove what isn’t wanted..."
     pushd dvrescue
@@ -133,12 +148,15 @@ function _unix_gui () {
     cp -r "$DR_source" .
     mv dvrescue/Project/GNU/GUI/AddThisToRoot_GUI_compile.sh GUI_Compile.sh
     chmod +x GUI_Compile.sh
+    chmod +x dvrescue/Project/GNU/CLI/autogen.sh
+    chmod +x dvrescue/Project/Mac/BR_extension_CLI.sh
     chmod +x dvrescue/Project/Mac/BR_extension_GUI.sh
     chmod +x dvrescue/Project/Mac/mkdmg.sh
 
-    # ZenLib and MediaInfoLib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/ZenLib .
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/MediaInfoLib .
+    # ZenLib, MediaInfoLib and MediaInfo
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/ZenLib .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/MediaInfoLib .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/MediaInfo .
 
     # Qwt
     cp -r "$WDir"/qwt .
@@ -149,15 +167,17 @@ function _unix_gui () {
     # yasm
     cp -r "$WDir"/yasm .
 
+    # xmlstarlet
+    cp -r "$WDir"/xmlstarlet .
+
     # Dependency : zlib
-    cp -r "$WDir"/MIL/MediaInfo_DLL_GNU_FromSource/Shared .
+    cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/Shared .
 
     echo "2: remove what isn’t wanted..."
     pushd dvrescue
         rm -fr .git*
         rm -fr debian
-        rm -fr Sources/CLI Project/GNU/CLI
-        rm -f Project/GNU/dvrescue.dsc Project/GNU/dvrescue.spec Project/GNU/PKGBUILD Project/Mac/BR_extension_CLI.sh
+        rm -f Project/GNU/dvrescue.dsc Project/GNU/dvrescue.spec Project/GNU/PKGBUILD
     popd
     pushd qwt
         rm -fr .git*
@@ -165,6 +185,11 @@ function _unix_gui () {
     pushd ffmpeg
         rm -fr .git*
     popd
+
+    echo "3: Autotools..."
+    cd dvrescue/Project/GNU/CLI
+    ./autogen.sh > /dev/null 2>&1
+
     if $MakeArchives; then
         echo "3: compressing..."
         cd "$WDir"/DR
@@ -191,9 +216,10 @@ function _all_inclusive () {
     cp -r "$DR_source" .
 
     # Dependencies
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
-    cp -r "$WDir"/MIL/libmediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/zlib .
+    cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/ZenLib .
+    cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfoLib .
+    cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfo .
     cp -r "$WDir"/ffmpeg .
     cp -r "$WDir"/yasm .
     cp -r "$WDir"/qwt .
@@ -282,8 +308,7 @@ function btask.PrepareSource.run () {
     rm -fr archives
     rm -fr repos
     mkdir repos
-    rm -fr ZL
-    rm -fr MIL
+    rm -fr MI
     rm -fr DR
     mkdir DR
 
@@ -313,8 +338,7 @@ function btask.PrepareSource.run () {
     if $CleanUp; then
         cd "$WDir"
         rm -fr repos
-        rm -fr ZL
-        rm -fr MIL
+        rm -fr MI
         rm -fr DR
     fi
 
