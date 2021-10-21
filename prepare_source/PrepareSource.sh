@@ -38,9 +38,11 @@ function load_options () {
     b.opt.add_opt --git-state "Ask for a specific git state of the current project"
     b.opt.add_alias --git-state -gs
 
+    b.opt.add_opt --mi-repo "Ask for a specific git repository for the MI as dependency"
     b.opt.add_opt --mil-repo "Ask for a specific git repository for the MIL dependency"
     b.opt.add_opt --zl-repo "Ask for a specific git repository for the ZL dependency"
 
+    b.opt.add_opt --mi-gs "Ask for a specific git state for the MI as dependency"
     b.opt.add_opt --mil-gs "Ask for a specific git state for the MIL dependency"
     b.opt.add_opt --zl-gs "Ask for a specific git state for the ZL dependency"
 
