@@ -368,6 +368,16 @@ function _all_inclusive () {
         cp -a "$MC_source" MediaConch
     fi
 
+    # ZenLib and MediaInfoLib
+    if b.path.dir? "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib; then
+        rm -fr ZenLib
+        cp -a "$WDir"/MIL/libmediainfo_AllInclusive/ZenLib .
+    fi
+
+    if b.path.dir? "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib; then
+        rm -fr MediaInfoLib
+        cp -a "$WDir"/MIL/libmediainfo_AllInclusive/MediaInfoLib .
+    fi
     echo "2: remove what isn’t wanted..."
     rm -fr .git* */*.git*
 
