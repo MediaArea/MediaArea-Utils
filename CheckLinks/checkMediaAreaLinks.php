@@ -15,7 +15,7 @@ tree.
 
 require __DIR__.'/checkLinks.class.php';
 
-$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'mm', 'rc');
+$projects = array('mi', 'mc', 'qc', 'am', 'bm', 'dv', 'dr', 'mm', 'rc');
 $options = getopt('', array('project:', 'directory::'));
 if (isset($options['project']) && in_array($options['project'], $projects)) {
     switch ($options['project']) {
@@ -37,6 +37,9 @@ if (isset($options['project']) && in_array($options['project'], $projects)) {
         case 'dv':
             $directory = 'src/DVAnalyzerBundle/Resources/views/Download/';
             break;
+        case 'dr':
+            $directory = 'src/DVRescueBundle/Resources/views/Download/';
+            break;
         case 'mm':
             $directory = 'src/MOVMetaEditBundle/Resources/views/Download/';
             break;
@@ -45,7 +48,7 @@ if (isset($options['project']) && in_array($options['project'], $projects)) {
             break;
     }
 } else {
-    exit('You should specify a project to check (--project=)'."\n".'Supported: '.implode($projects, ', ')."\n");
+    exit('You should specify a project to check (--project=)'."\n".'Supported: '.implode(',', $projects)."\n");
 }
 
 if (isset($options['directory']) && '' != $options['directory']) {
