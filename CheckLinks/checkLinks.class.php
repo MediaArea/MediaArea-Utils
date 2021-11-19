@@ -80,7 +80,7 @@ class checkLinks
     {
         $content = file_get_contents($file);
         preg_match_all($this->pattern, $content, $links);
-        if (isset($links[0]) && count($links[0] > 0)) {
+        if (isset($links[0]) && count($links[0]) > 0) {
             $this->links = $links[0];
         }
         else {
