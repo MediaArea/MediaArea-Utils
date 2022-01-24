@@ -68,6 +68,11 @@ function project_get () {
         Dirname="dvrescue"
         Repo="https://github.com/MediaArea/dvrescue.git"
     fi
+    if [ "$Project" = "sp" ] || [ "$Project" = "SP" ] || [ "$Project" = "sony9pin" ]; then
+        Project=sony9pin
+        Dirname="sony9pin"
+        Repo="https://github.com/mipops/digividcommander.git"
+    fi
 
     if [ $(b.opt.get_opt --repo) ]; then
         Repo="$(sanitize_arg $(b.opt.get_opt --repo))"
