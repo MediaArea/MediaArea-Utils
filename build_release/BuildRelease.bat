@@ -284,8 +284,6 @@ if EXIST "C:\Program Files (x86)\Embarcadero\Studio\19.0\bin\rsvars.bat" (
 )
 cd %OLD_CD%\..\..\%MI_SOURCES%\zlib\contrib\BCB && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 zlib.cbproj || exit /b 1
 cd %OLD_CD%\..\..\%MI_SOURCES%\ZenLib\Project\BCB\Library && MSBuild /maxcpucount:1 /p:Configuration=Release;Platform=Win32 /verbosity:quiet ZenLib.cbproj || exit /b 1
-cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\BCB\Library && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfoLib.cbproj || exit /b 1
-cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\BCB\Dll && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfo_i386.cbproj || exit /b 1
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 /t:Build MediaInfo_GUI.cbproj || exit /b 1
 call set PATH=%PATH_TEMP%
 call set PATH_TEMP=
