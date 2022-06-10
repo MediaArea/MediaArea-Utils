@@ -36,6 +36,7 @@ function _source_package () {
 
     cd "$WDir"/RC
     cp -r "$Source" rawcooked
+    cp -r "$Source" rawcooked-${Version:1}
 
     echo "2: remove what isn’t wanted..."
     rm -fr rawcooked/.git*
@@ -55,7 +56,7 @@ function _source_package () {
 
         mkdir ../archives/obs
 
-        cp ../archives/rawcooked${Version}.tar.gz ../archives/obs/rawcooked${Version}-1.tar.gz
+        (GZIP=-9 tar -cz --owner=root --group=root -f ../archives/obs/rawcooked${Version}-1.tar.gz rawcooked-${Version:1})
         cp ../archives/rawcooked${Version}.tar.xz ../archives/obs/rawcooked${Version}.orig.tar.xz
 
         cp "$WDir/RC/rawcooked/Project/GNU/rawcooked.spec" ../archives/obs
