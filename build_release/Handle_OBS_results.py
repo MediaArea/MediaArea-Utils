@@ -113,6 +113,13 @@ def Initialize_DB():
                 if Cursor.rowcount() == 0:
                     Cursor.execute("ALTER TABLE `" + DL_pages_table + "` ADD `libnamedoc` VARCHAR(120) DEFAULT '';")
 
+            if Project.get("extra"):
+                for Package in Project.get("extra"):
+                    Cursor.execute("SELECT * FROM information_schema.columns WHERE table_schema = '" + Config["MySQL_db"] \
+                                   + "' AND table_name = '" + DL_pages_table + "' AND column_name = '" + Package["dbname"] + "';")
+                    if Cursor.rowcount() == 0:
+                        Cursor.execute("ALTER TABLE `" + DL_pages_table + "` ADD `" + Package["dbname"] + "` VARCHAR(120) DEFAULT '';")
+
     # Ensure that all the distribs in the dictionary are presents
     # in the DB
 
@@ -418,6 +425,19 @@ def Get_packages_on_OBS(Distrib_name, Arch):
             else:
                 Server_debug_name_wanted = Get_package(Project["bin_name"] + Package_infos[Package_type]["debugsuffix"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
 
+    ### Extra packages ###
+    Extra_names_wanted = {}
+    if Project.get("extra"):
+        for Package in Project.get("extra"):
+            Extra_names_wanted[Package["name"]] = ''
+            if not any(fnmatch.fnmatch(Distrib_name, p) for p in Package.get("exclude", [])):
+                if Package.get("destination", "") == "gui":
+                    Extra_names_wanted[Package["name"]] = Get_package(Package["name"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_gui)
+                elif Package.get("destination", "") == "server":
+                    Extra_names_wanted[Package["name"]] = Get_package(Package["name"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination_server)
+                else: # Assume cli
+                    Extra_names_wanted[Package["name"]] = Get_package(Package["name"], Distrib_name, Arch, Revision, Package_type, Package_infos, Destination)
+
     if fnmatch.fnmatch(Distrib_name, "RHEL*") or fnmatch.fnmatch(Distrib_name, "CentOS*"):
         if OBS_package == "ZenLib":
             Suffix="".join(Version.split(".")[0:3])
@@ -463,6 +483,11 @@ def Get_packages_on_OBS(Distrib_name, Arch):
                 Request += ", servername = '%s', servernamedbg = '%s' " % (Server_name_wanted, Server_debug_name_wanted)
             if Project.get("gui_name"):
                 Request += ", guiname = '%s', guinamedbg = '%s' " % (Gui_name_wanted, Gui_debug_name_wanted)
+
+            if Project.get("extra"):
+                for Package in Project.get("extra"):
+                    Request += ", %s = '%s' " % (Package["dbname"], Extra_names_wanted[Package["name"]])
+
         Request += "WHERE platform ='%s' AND arch = '%s';" % (Distrib_name, Arch)
 
         Cursor.execute(Request)
@@ -818,6 +843,10 @@ if Project.get("srv_name"):
 if Project.get("gui_name"):
     DB_structure += " , guiname varchar(120), guinamedbg varchar(120)"
     Destination_gui = Args.destination.pop(0)
+
+if Project.get("extra"):
+    for Package in Project.get("extra"):
+        DB_structure += " , %s varchar(120)" %  Package["dbname"]
 
 if len(DL_pages_table) > 1:
     Release = True
