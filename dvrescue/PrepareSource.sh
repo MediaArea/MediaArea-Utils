@@ -63,7 +63,7 @@ function _get_source () {
     (cd qwt && curl -L https://github.com/ElderOrb/qwt/commit/3e72164e902cf7a690d19cc0cdf44f9faebbcdc8.patch | patch -p1)
 
     # ffmpeg
-    git clone --depth 1 --branch n4.4.1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
+    git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
     curl -LO https://gist.githubusercontent.com/g-maxime/a8d40c5167d5326e2858718b9476494b/raw/8d2d0d34902bdac4e4cc50de187651f930df932a/ffmpeg-av.diff
     (cd ffmpeg && git apply < ../ffmpeg-av.diff)
     rm ffmpeg-av.diff
