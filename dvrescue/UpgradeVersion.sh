@@ -35,6 +35,7 @@ function btask.UpgradeVersion.run () {
     index=0
     DR_files[((index++))]="debian/changelog"
     DR_files[((index++))]="Project/OBS/deb10.debian/changelog"
+    DR_files[((index++))]="Project/OBS/deb11.debian/changelog"
     DR_files[((index++))]="Project/GNU/dvrescue.spec"
     DR_files[((index++))]="Project/Mac/Info.plist"
     DR_files[((index++))]="Source/Common/Config.h"
@@ -63,6 +64,13 @@ function btask.UpgradeVersion.run () {
     # sed will take the last of the longuest strings first and
     # will replace the 3 lines
     updateFile "00000000000000000000000000000000 000000 dvrescue_$Version_old_escaped" "00000000000000000000000000000000 000000 dvrescue_$Version_new" "${DR_source}"/Project/OBS/deb10.dsc
+
+    echo
+    echo "Update ${DR_source}/Project/OBS/deb11.dsc"
+    updateFile "Version: $Version_old_escaped" "Version: $Version_new" "${DR_source}"/Project/OBS/deb11.dsc
+    # sed will take the last of the longuest strings first and
+    # will replace the 3 lines
+    updateFile "00000000000000000000000000000000 000000 dvrescue_$Version_old_escaped" "00000000000000000000000000000000 000000 dvrescue_$Version_new" "${DR_source}"/Project/OBS/deb11.dsc
 
     echo
     echo "Update ${DR_source}/Project/GNU/PKGBUILD"
