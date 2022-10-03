@@ -60,8 +60,8 @@ function btask.UpgradeVersion.run () {
     updateFile "%global libzen_version_minor\(\s\+\)$Version_old_minor" \
         "%global libzen_version_minor\1$Version_new_minor" \
         "${ZL_source}/Project/GNU/libzen.spec"
-    updateFile "%global libzen_version_release\(\s\+\)$Version_old_path" \
-        "%global libzen_version_release\1$Version_new_path" \
+    updateFile "%global libzen_version_release\(\s\+\)$Version_old_patch" \
+        "%global libzen_version_release\1$Version_new_patch" \
         "${ZL_source}/Project/GNU/libzen.spec"
 
     echo
