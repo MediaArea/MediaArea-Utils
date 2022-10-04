@@ -92,7 +92,7 @@ class checkLinks
     {
         // handle links without http/https prefix
         if ('//' == substr($link, 0, 2)) {
-            $link = 'http:' . $link;
+            $link = 'https:' . $link;
         }
 
         $curl = curl_init();
