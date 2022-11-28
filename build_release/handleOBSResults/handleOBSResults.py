@@ -5,6 +5,7 @@ import os
 import re
 import sys
 import time
+import fnmatch
 import argparse
 import traceback
 import importlib
@@ -136,10 +137,6 @@ class HandleOBSResults:
         return (result, output)
 
     def download_packages(self, dist: str, arch: str, distinfo: object, buildinfo: object, pkgsinfo: object) -> None:
-        dist_version = (
-            f"{self.config['runtime']['version']}-"
-            f"{'1' if distinfo.get('format', {}).get('extension', '') != 'rpm' else buildinfo.find('./release').text}"
-        )
         for package in self.packages:
             if any(re.match(d, dist) for d in package.get('exclude', [])):
                 continue
@@ -156,7 +153,7 @@ class HandleOBSResults:
             name_dist = (
                 f"{name_short}"
                 f"{distinfo.get('format', {}).get('separator1', '-')}"
-                f"{dist_version}"
+                f"{self.config['runtime']['version']}-*"
                 f"{distinfo.get('format', {}).get('separator2', '-')}"
                 f"{distinfo.get('format', {}).get(arch, arch) if not package.get('universal', False) else distinfo.get('format', {}).get('noarch', 'noarch')}."
                 f"{distinfo.get('format', {}).get('extension', '')}"
@@ -173,7 +170,14 @@ class HandleOBSResults:
                 f"{distinfo.get('format', {}).get('extension', '')}"
             )
 
-            if pkgsinfo.find(f"./binary[@filename='{name_dist}']" ) is None:
+            binary_found = False;
+            for binary in pkgsinfo.findall('binary'):
+                if fnmatch.fnmatch(binary.attrib.get('filename', ''), name_dist):
+                    name_dist = binary.attrib.get('filename', '')
+                    binary_found = True
+                    break
+
+            if not binary_found:
                 self.error(f"missing package '{name_dist}' for '{dist}/{arch}'")
                 continue
 
@@ -209,7 +213,7 @@ class HandleOBSResults:
             try:
                 os.rename(os.path.join(dest, name_dist), os.path.join(dest, name_local))
             except:
-                self.error(f"download failed for '{dist}/{arch}/{filename}'")
+                self.error(f"download failed for '{dist}/{arch}/{name_dist}'")
                 try:
                     os.remove(os.path.join(dest, name_dist))
                 except:
