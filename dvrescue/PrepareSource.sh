@@ -62,6 +62,12 @@ function _get_source () {
 
     (cd qwt && curl -L https://github.com/ElderOrb/qwt/commit/3e72164e902cf7a690d19cc0cdf44f9faebbcdc8.patch | patch -p1)
 
+    # freetype
+    curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
+    tar -jxf freetype-2.10.0.tar.bz2
+    rm freetype-2.10.0.tar.bz2
+    mv freetype-2.10.0 freetype
+
     # ffmpeg
     git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
     curl -LO https://gist.githubusercontent.com/g-maxime/a8d40c5167d5326e2858718b9476494b/raw/8d2d0d34902bdac4e4cc50de187651f930df932a/ffmpeg-av.diff
@@ -164,6 +170,9 @@ function _unix_gui () {
     # Qwt
     cp -r "$WDir"/qwt .
 
+    # freetype
+    cp -r "$WDir"/freetype .
+
     # ffmpeg
     cp -r "$WDir"/ffmpeg .
 
@@ -223,6 +232,7 @@ function _all_inclusive () {
     cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/ZenLib .
     cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfo .
+    cp -r "$WDir"/freetype .
     cp -r "$WDir"/ffmpeg .
     cp -r "$WDir"/yasm .
     cp -r "$WDir"/qwt .
@@ -280,6 +290,7 @@ function _source_package () {
         #OBS Dependencies
         cp -r "$DR_source" obs/dvrescue
         cp -r "$WDir"/ffmpeg obs/dvrescue
+        cp -r "$WDir"/freetype obs/dvrescue
         cp -r "$WDir"/xmlstarlet obs/dvrescue
         cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/ZenLib obs/dvrescue
         cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/MediaInfoLib obs/dvrescue
