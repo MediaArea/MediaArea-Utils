@@ -237,31 +237,31 @@ class HandleOBSResults:
                 continue
 
             for arch in list(archs):
-                result = root.find(f"./result[@repository='{dist}'][@arch='{arch}']/status[@package='{self.config['runtime']['project']}']").get('code')
+                result = root.find(f"./result[@repository='{dist}'][@arch='{arch}']/status[@package='{self.config['runtime']['project']}']")
                 if result is None:
                     self.error(f"missing status for '{dist}/{arch}'")
                     continue
-                elif result == 'succeeded':
+                elif result.get('code') == 'succeeded':
                     self.info(f"build succeeded for '{dist}/{arch}', downloading packages...")
 
                     result, output = self.run_command(f"osc api /build/{self.config['runtime']['repository']}/{dist}/{arch}/{self.config['runtime']['project']}/_buildenv")
                     if not result:
-                        self.error(f"unable to fetch build informations for {dist}/{arch}")
+                        self.error(f"unable to fetch build informations for '{dist}/{arch}'")
                         continue
                     buildinfo = ElementTree.fromstring(output)
 
                     result, output = self.run_command(f"osc api /build/{self.config['runtime']['repository']}/{dist}/{arch}/{self.config['runtime']['project']}")
                     if not result:
-                        self.error("unable to fetch packages list for {dist}/{arch}")
+                        self.error("unable to fetch packages list for '{dist}/{arch}'")
                         continue
                     pkgsinfo = ElementTree.fromstring(output)
 
                     self.download_packages(dist, arch, distinfo, buildinfo, pkgsinfo)
                     self.distributions[dist].remove(arch)
-                elif result == 'excluded' or result == 'disabled':
+                elif result.get('code') == 'excluded' or result.get('code') == 'disabled':
                     self.distributions[dist].remove(arch)
-                elif result == 'broken' or result == 'unresolvable' or result == 'failed':
-                    self.error(f"build {result} for '{dist}/{arch}'")
+                elif result.get('code') == 'broken' or result.get('code') == 'unresolvable' or result.get('code') == 'failed':
+                    self.error(f"build {result.get('code')} for '{dist}/{arch}'")
                     self.distributions[dist].remove(arch)
 
                 self.build_status(dist, arch, result)
