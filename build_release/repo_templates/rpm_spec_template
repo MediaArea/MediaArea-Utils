@@ -26,6 +26,10 @@ if test -f %{_sysconfdir}/os-release ; then
             DIST=CentOS
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
             ;;
+        rocky)
+            DIST=RockyLinux
+            VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            ;;
         rhel)
             DIST=RHEL
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
@@ -48,6 +52,8 @@ if test -f %{_sysconfdir}/os-release ; then
 elif test -f %{_sysconfdir}/redhat-release ; then
     if grep '^Red Hat Entreprise Linux' %{_sysconfdir}/redhat-release; then
         DIST=RHEL
+    elif grep '^Rocky Linux' %{_sysconfdir}/redhat-release ; then
+        DIST=RockyLinux
     elif grep '^CentOS' %{_sysconfdir}/redhat-release ; then
         DIST=CentOS
     elif grep '^Fedora' %{_sysconfdir}/redhat-release ; then
