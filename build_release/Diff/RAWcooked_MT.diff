@@ -1,7 +1,7 @@
-diff --git a/Project/MSVC2017/CLI/RAWcooked_CLI.vcxproj b/Project/MSVC2017/CLI/RAWcooked_CLI.vcxproj
+diff --git a/Project/MSVC2019/CLI/RAWcooked_CLI.vcxproj b/Project/MSVC2019/CLI/RAWcooked_CLI.vcxproj
 index cd9708d..e9de62c 100644
---- a/Project/MSVC2017/CLI/RAWcooked_CLI.vcxproj
-+++ b/Project/MSVC2017/CLI/RAWcooked_CLI.vcxproj
+--- a/Project/MSVC2019/CLI/RAWcooked_CLI.vcxproj
++++ b/Project/MSVC2019/CLI/RAWcooked_CLI.vcxproj
 @@ -121,7 +121,7 @@
        <AdditionalIncludeDirectories>../../../Source</AdditionalIncludeDirectories>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -38,10 +38,10 @@ index cd9708d..e9de62c 100644
        <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
      </ClCompile>
      <Link>
-diff --git a/Project/MSVC2017/Lib/RAWcooked_Lib.vcxproj b/Project/MSVC2017/Lib/RAWcooked_Lib.vcxproj
+diff --git a/Project/MSVC2019/Lib/RAWcooked_Lib.vcxproj b/Project/MSVC2019/Lib/RAWcooked_Lib.vcxproj
 index 9036455..6a1136e 100644
---- a/Project/MSVC2017/Lib/RAWcooked_Lib.vcxproj
-+++ b/Project/MSVC2017/Lib/RAWcooked_Lib.vcxproj
+--- a/Project/MSVC2019/Lib/RAWcooked_Lib.vcxproj
++++ b/Project/MSVC2019/Lib/RAWcooked_Lib.vcxproj
 @@ -217,7 +217,7 @@
        <AdditionalIncludeDirectories>../../../Source;../../../Source/Lib/ThirdParty/flac/include;../../../Source/Lib/ThirdParty/flac/src/libFLAC/include;../../../Source/Lib/ThirdParty/md5;../../../Source/Lib/ThirdParty/thread-pool/include;../../../Source/Lib/ThirdParty/zlib</AdditionalIncludeDirectories>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
