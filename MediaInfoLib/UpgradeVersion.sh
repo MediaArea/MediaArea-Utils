@@ -46,6 +46,8 @@ function btask.UpgradeVersion.run () {
     #MIL_files[((index++))]="Project/OBS/u12.04.debian/changelog"
     MIL_files[((index++))]="Project/OBS/deb9.dsc"
     MIL_files[((index++))]="Project/OBS/deb9.debian/changelog"
+    MIL_files[((index++))]="Project/OBS/deb12.dsc"
+    MIL_files[((index++))]="Project/OBS/deb12.debian/changelog"
     MIL_files[((index++))]="Project/Solaris/mkpkg"
     MIL_files[((index++))]="Project/Android/MediaInfoJs/app/build.gradle"
 
@@ -131,10 +133,15 @@ function btask.UpgradeVersion.run () {
         echo "Update ZenLib in Project/OBS/deb9.debian/control"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb9.debian/control
         updateFile "libzen0v5 (>= [0-9.-]\+)" "libzen0v5 (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb9.debian/control
+        echo "Update ZenLib in Project/OBS/deb12.debian/control"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb12.debian/control
+        updateFile "libzen0v5 (>= [0-9.-]\+)" "libzen0v5 (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb12.debian/control
         echo "Update ZenLib in Project/OBS/deb6.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb6.dsc
         echo "Update ZenLib in Project/OBS/deb9.dsc"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb9.dsc
+        echo "Update ZenLib in Project/OBS/deb12.dsc"
+        updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/Project/OBS/deb12.dsc
         echo "Update ZenLib in debian/control"
         updateFile "libzen-dev (>= [0-9.-]\+)" "libzen-dev (>= $ZL_version)" "${MIL_source}"/debian/control
         updateFile "libzen0 (>= [0-9.-]\+)" "libzen0 (>= $ZL_version)" "${MIL_source}"/debian/control
