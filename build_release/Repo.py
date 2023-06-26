@@ -291,12 +291,6 @@ def Add_rpm_package(Package, Name, Version, Arch, Distribution, Release = False)
 #
 def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False):
     Dest = "Debian" if fnmatch.fnmatch(Distribution, "Debian_*") else "Raspbian" if fnmatch.fnmatch(Distribution, "Raspbian_*") else "Ubuntu"
-    if Arch == "x86_64":
-        Arch = "amd64"
-    elif Arch == "i586":
-        Arch = "i386"
-    # OBS doesn't use Debian names for arm architectures
-
     if len([item for item in Configuration[Dest + "_names"] if item[0] == Distribution]) == 0:
         print("ERROR: unable to import package %s, unknown distribution %s" % (Package, Distribution))
         return
@@ -326,22 +320,11 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Freight_conf_file.close()
     else:
         # Clean old packages
-        if fnmatch.fnmatch(Name, "*-doc"):
-            map(os.remove, glob(os.path.join(Deb_directory, "%s_*%s.deb" % (Name, Distribution))))
-        else:
-            map(os.remove, glob(os.path.join(Deb_directory, "%s_*%s.%s.deb" % (Name, Arch, Distribution))))
+        map(os.remove, glob(os.path.join(Deb_directory, "%s_*.deb" % Name)))
 
     # Import deb file
     Command = [ "freight-add", "-c", os.path.join(Cache_directory, "conf", "freight.conf"),
                 Package, "apt/" + Dist
-              ]
-    subprocess.call(Command, stdout=OUT, stderr=OUT)
-
-    # Update repository
-    Command = [ "freight-cache", "-c", os.path.join(Cache_directory, "conf", "freight.conf"),
-                "-g", Configuration["Repo_key"]["key"],
-                "-p", Configuration["Repo_key"]["passfile"],
-                "apt/" + Dist
               ]
     subprocess.call(Command, stdout=OUT, stderr=OUT)
 
