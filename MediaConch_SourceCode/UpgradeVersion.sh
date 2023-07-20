@@ -34,8 +34,7 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version YY.MM ..."
     index=0
     MC_files[((index++))]="License.html"
-    MC_files[((index++))]="Source/CLI/Help.cpp"
-    MC_files[((index++))]="Source/Daemon/Daemon.cpp"
+    MC_files[((index++))]="Source/Common/Version.h"
     MC_files[((index++))]="Project/GNU/mediaconch.dsc"
     MC_files[((index++))]="debian/changelog"
     MC_files[((index++))]="Project/OBS/deb7.dsc"
@@ -58,9 +57,6 @@ function btask.UpgradeVersion.run () {
 
     echo "Update ${MC_source}/Project/GNU/PKGBUILD"
     updateFile "pkgver=$Version_old_escaped" "pkgver=$Version_new" "${MC_source}"/Project/GNU/PKGBUILD
-
-    echo "Update ${MC_source}/Source/GUI/Qt/mainwindow.cpp"
-    updateFile "version = \"$Version_old_escaped\"" "version = \"$Version_new\"" "${MC_source}"/Source/GUI/Qt/mainwindow.cpp
 
     echo
     echo "Update ${MC_source}/Project/AppImage/Recipe.sh"
