@@ -25,14 +25,25 @@ if test -f %{_sysconfdir}/os-release ; then
         centos|ol)
             DIST=CentOS
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            if test "$VERSION" -ge "9" ; then
+                DIST=RockyLinux
+            fi
             ;;
-        rocky)
+        rocky|almalinux)
             DIST=RockyLinux
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            if test "$VERSION" -eq "8" ; then
+                DIST=CentOS
+            fi
             ;;
         rhel)
             DIST=RHEL
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+            if test "$VERSION" -eq "8" ; then
+                DIST=CentOS
+            elif test "$VERSION" -ge "9" ; then
+                DIST=RockyLinux
+            fi
             ;;
 #        mageia)
 #            DIST=Mageia
@@ -48,11 +59,22 @@ if test -f %{_sysconfdir}/os-release ; then
             VERSION=${VERSION/./_SP}
             VERSION=${VERSION%%_SP0}
             ;;
+        *)
+            if grep ^ID_LIKE= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2- | grep rhel ; then
+                DIST=RHEL
+                VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
+                if test "$VERSION" -eq "8" ; then
+                    DIST=CentOS
+                elif test "$VERSION" -ge "9" ; then
+                    DIST=RockyLinux
+                fi
+            fi
+            ;;
     esac
 elif test -f %{_sysconfdir}/redhat-release ; then
     if grep '^Red Hat Entreprise Linux' %{_sysconfdir}/redhat-release; then
         DIST=RHEL
-    elif grep '^Rocky Linux' %{_sysconfdir}/redhat-release ; then
+    elif grep '^Rocky Linux\|^AlmaLinux' %{_sysconfdir}/redhat-release ; then
         DIST=RockyLinux
     elif grep '^CentOS' %{_sysconfdir}/redhat-release ; then
         DIST=CentOS
@@ -87,7 +109,18 @@ if test -z "$DIST" -o -z "$VERSION" -o -z "$ARCH"; then
 fi
 
 case "$DIST" in
-    Fedora|CentOS|RHEL)
+    openSUSE|SLE)
+        cat > %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo <<EOF
+[REPO_NAME]
+name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
+baseurl=REPO_URL/${DIST}_${VERSION}/${ARCH}
+enabled=1
+gpgcheck=1
+autorefresh=1
+type=rpm-md
+EOF
+        ;;
+    *)
         cat > %{_sysconfdir}/yum.repos.d/repo-REPO_NAME.repo <<EOF
 [REPO_NAME]
 name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
@@ -98,17 +131,6 @@ gpgkey=file:///etc/pki/rpm-gpg/GPG-KEY-REPO_NAME
 EOF
         cat > %{_sysconfdir}/pki/rpm-gpg/GPG-KEY-REPO_NAME <<EOF
 REPO_KEY
-EOF
-        ;;
-    openSUSE|SLE)
-        cat > %{_sysconfdir}/zypp/repos.d/repo-REPO_NAME.repo <<EOF
-[REPO_NAME]
-name=MediaArea.net SARL software repository for rpm based distributions - $ARCH
-baseurl=REPO_URL/${DIST}_${VERSION}/${ARCH}
-enabled=1
-gpgcheck=1
-autorefresh=1
-type=rpm-md
 EOF
         ;;
 esac
