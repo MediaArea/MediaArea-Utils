@@ -201,7 +201,7 @@ class HandleOBSResults:
             except:
                 pass
 
-            result, _ = self.run_command(f"osc getbinaries --debug -q -d '{dest}' {self.config['runtime']['repository']} {self.config['runtime']['project']} {dist} {arch} {name_dist}")
+            result, _ = self.run_command(f"osc getbinaries --debuginfo -q -d '{dest}' {self.config['runtime']['repository']} {self.config['runtime']['project']} {dist} {arch} {name_dist}")
             if not result:
                 self.error(f"download failed for '{dist}/{arch}/{name_dist}'")
                 try:
