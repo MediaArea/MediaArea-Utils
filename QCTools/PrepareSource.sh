@@ -65,12 +65,17 @@ function _all_inclusive () {
 
     cp -r qctools/debian .
 
-    git clone --depth 1 --branch n5.1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg
+    git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg
 
     wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
     tar -jxf freetype-2.10.0.tar.bz2
     rm freetype-2.10.0.tar.bz2
     mv freetype-2.10.0 freetype
+
+    wget -q https://github.com/harfbuzz/harfbuzz/releases/download/8.2.2/harfbuzz-8.2.2.tar.xz
+    tar -Jxf harfbuzz-8.2.2.tar.xz
+    rm harfbuzz-8.2.2.tar.xz
+    mv harfbuzz-8.2.2 harfbuzz
 
     wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
     tar -zxf yasm-1.3.0.tar.gz
@@ -84,6 +89,9 @@ function _all_inclusive () {
 
     # fix ffmpeg configure for static freetype2
     sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
+
+    # fix ffmpeg configure for static libharfbuzz
+    sed -i 's/^enabled libharfbuzz.*//g' ffmpeg/configure
 
     echo "2: remove what isn’t wanted..."
 
