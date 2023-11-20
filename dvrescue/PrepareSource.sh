@@ -63,10 +63,16 @@ function _get_source () {
     (cd qwt && curl -L https://github.com/ElderOrb/qwt/commit/3e72164e902cf7a690d19cc0cdf44f9faebbcdc8.patch | patch -p1)
 
     # freetype
-    curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
-    tar -jxf freetype-2.10.0.tar.bz2
-    rm freetype-2.10.0.tar.bz2
-    mv freetype-2.10.0 freetype
+    curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-2.13.2.tar.xz
+    tar -Jxf freetype-2.13.2.tar.xz
+    rm freetype-2.13.2.tar.xz
+    mv freetype-2.13.2 freetype
+
+    # harfbuzz
+    curl -LO https://github.com/harfbuzz/harfbuzz/releases/download/8.2.2/harfbuzz-8.2.2.tar.xz
+    tar -Jxf harfbuzz-8.2.2.tar.xz
+    rm harfbuzz-8.2.2.tar.xz
+    mv harfbuzz-8.2.2 harfbuzz
 
     # ffmpeg
     git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
@@ -173,6 +179,9 @@ function _unix_gui () {
     # freetype
     cp -r "$WDir"/freetype .
 
+    # harfbuzz
+    cp -r "$WDir"/harfbuzz .
+
     # ffmpeg
     cp -r "$WDir"/ffmpeg .
 
@@ -233,6 +242,7 @@ function _all_inclusive () {
     cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfoLib .
     cp -r "$WDir"/MI/MI/mediainfo_AllInclusive/MediaInfo .
     cp -r "$WDir"/freetype .
+    cp -r "$WDir"/harfbuzz .
     cp -r "$WDir"/ffmpeg .
     cp -r "$WDir"/yasm .
     cp -r "$WDir"/qwt .
@@ -291,6 +301,7 @@ function _source_package () {
         cp -r "$DR_source" obs/dvrescue
         cp -r "$WDir"/ffmpeg obs/dvrescue
         cp -r "$WDir"/freetype obs/dvrescue
+        cp -r "$WDir"/harfbuzz obs/dvrescue
         cp -r "$WDir"/xmlstarlet obs/dvrescue
         cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/ZenLib obs/dvrescue
         cp -r "$WDir"/MI/MI/MediaInfo_CLI_GNU_FromSource/MediaInfoLib obs/dvrescue
