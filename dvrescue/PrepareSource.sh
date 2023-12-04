@@ -75,7 +75,7 @@ function _get_source () {
     mv harfbuzz-8.2.2 harfbuzz
 
     # ffmpeg
-    git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg
+    git clone --depth 1 "https://git.ffmpeg.org/ffmpeg.git" ffmpeg --branch n6.0
     curl -LO https://gist.githubusercontent.com/g-maxime/a8d40c5167d5326e2858718b9476494b/raw/8d2d0d34902bdac4e4cc50de187651f930df932a/ffmpeg-av.diff
     (cd ffmpeg && git apply < ../ffmpeg-av.diff)
     rm ffmpeg-av.diff
