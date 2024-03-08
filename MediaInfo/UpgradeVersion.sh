@@ -171,10 +171,14 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update Source/Install/MediaInfo_GUI_Windows.nsi ..."
-    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
-    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_patch\.$Version_old_build\"" \
-        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" \
-        "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    updateFile $Version_old $Version_new "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    if [ "$Version_new_build" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\"" "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    elif [ "$Version_new_patch" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    else
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" "${MI_source}"/Source/Install/MediaInfo_GUI_Windows.nsi
+    fi
 
     echo "Replace major/minor in ${MI_source}/Project/GNU/mediainfo.spec"
     updateFile "%global mediainfo_version_major\(\s\+\)$Version_old_major" \
