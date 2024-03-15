@@ -65,7 +65,7 @@ function _all_inclusive () {
 
     cp -r qctools/debian .
 
-    git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg
+    git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg --branch n6.1.1
 
     wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
     tar -jxf freetype-2.10.0.tar.bz2
