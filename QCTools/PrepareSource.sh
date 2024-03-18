@@ -67,10 +67,10 @@ function _all_inclusive () {
 
     git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg --branch n6.1.1
 
-    wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.bz2
-    tar -jxf freetype-2.10.0.tar.bz2
-    rm freetype-2.10.0.tar.bz2
-    mv freetype-2.10.0 freetype
+    wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.13.2.tar.xz
+    tar -Jxf freetype-2.13.2.tar.xz
+    rm freetype-2.13.2.tar.bz2
+    mv freetype-2.13.2 freetype
 
     wget -q https://github.com/harfbuzz/harfbuzz/releases/download/8.2.2/harfbuzz-8.2.2.tar.xz
     tar -Jxf harfbuzz-8.2.2.tar.xz
