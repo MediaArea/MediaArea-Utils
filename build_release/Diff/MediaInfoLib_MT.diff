@@ -97,18 +97,18 @@ diff --git a/Project/MSVC2019/ShellExtension/MediaInfoShellExt.vcxproj b/Project
 index cfa94c1..afb32c3 100644
 --- a/Project/MSVC2019/ShellExtension/MediaInfoShellExt.vcxproj
 +++ b/Project/MSVC2019/ShellExtension/MediaInfoShellExt.vcxproj
-@@ -157,6 +157,7 @@
-       <PrecompiledHeader>Use</PrecompiledHeader>
+@@ -156,6 +156,7 @@
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
      </ClCompile>
      <ResourceCompile>
        <Culture>0x0409</Culture>
-@@ -187,6 +188,7 @@
-       <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+@@ -188,6 +188,7 @@
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
      </ClCompile>
      <ResourceCompile>
