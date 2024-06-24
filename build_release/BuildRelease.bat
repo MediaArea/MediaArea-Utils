@@ -283,8 +283,11 @@ if EXIST "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat" (
     call rsvars.bat
 )
 cd %OLD_CD%\..\..\%MI_SOURCES%\zlib\contrib\BCB && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 zlib.cbproj || exit /b 1
+cd %OLD_CD%\..\..\%MI_SOURCES%\zlib\contrib\BCB && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win64 zlib.cbproj || exit /b 1
 cd %OLD_CD%\..\..\%MI_SOURCES%\ZenLib\Project\BCB\Library && MSBuild /maxcpucount:1 /p:Configuration=Release;Platform=Win32 /verbosity:quiet ZenLib.cbproj || exit /b 1
+cd %OLD_CD%\..\..\%MI_SOURCES%\ZenLib\Project\BCB\Library && MSBuild /maxcpucount:1 /p:Configuration=Release;Platform=Win64 /verbosity:quiet ZenLib.cbproj || exit /b 1
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 /t:Build MediaInfo_GUI.cbproj || exit /b 1
+cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI && MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win64 /t:Build MediaInfo_GUI.cbproj || exit /b 1
 call set PATH=%PATH_TEMP%
 call set PATH_TEMP=
 
@@ -292,7 +295,15 @@ rem *** Signature of executables ***
 call set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://ts.ssl.com /td sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\Win32\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\x64\Release\MediaInfo.dll ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2019\Win32\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\Win32\Release\MediaInfo_InfoTip.dll ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\x64\Release\MediaInfo_InfoTip.dll  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2019\x64\Release\MediaInfo.exe ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\win32\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://ts.ssl.com /td sha256 /d MediaInfo /du http://mediaarea.net^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\Win32\Release\MediaInfo.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\x64\Release\MediaInfo.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\Win32\Release\MediaInfo_InfoTip.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2019\x64\Release\MediaInfo_InfoTip.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2019\Win32\Release\MediaInfo.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2019\x64\Release\MediaInfo.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\Win32\Release\MediaInfo_GUI.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\Win64\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 call set CodeSigningCertificatePass=
 
@@ -313,12 +324,6 @@ if EXIST "%USERPROFILE%\MediaInfo_Donors.diff" (
     move /y ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
 )
 
-if EXIST "%USERPROFILE%\InstallerAdditions.bat" (
-    copy /y ..\Source\Install\MediaInfo_GUI_Windows.nsi ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig || exit /b 1
-    call %USERPROFILE%\InstallerAdditions.bat || exit /b 1
-    move /y ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig ..\Source\Install\MediaInfo_GUI_Windows.nsi || exit /b 1
-)
-
 call Release_GUI_Windows.bat
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Release
 call Release_DLL_Windows_i386.bat
@@ -328,7 +333,13 @@ rem *** Signature of installers ***
 set /P CodeSigningCertificatePass= < %USERPROFILE%\CodeSigningCertificate.pass
 if "%NOSIGN%"=="" (
     cd %OLD_CD%
-    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://ts.ssl.com /td sha256 /d MediaInfo /du http://mediaarea.net ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
+    signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://ts.ssl.com /td sha256 /d MediaInfo /du http://mediaarea.net^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
 
@@ -344,6 +355,8 @@ copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_CLI_Windows_x64.zip Release\
 mkdir Release\download\binary\mediainfo-gui\ || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
 mkdir Release\download\binary\libmediainfo0\ || exit /b 1
