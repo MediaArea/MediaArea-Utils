@@ -69,7 +69,7 @@ function _all_inclusive () {
 
     wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.13.2.tar.xz
     tar -Jxf freetype-2.13.2.tar.xz
-    rm freetype-2.13.2.tar.bz2
+    rm freetype-2.13.2.tar.xz
     mv freetype-2.13.2 freetype
 
     wget -q https://github.com/harfbuzz/harfbuzz/releases/download/8.2.2/harfbuzz-8.2.2.tar.xz
@@ -82,10 +82,9 @@ function _all_inclusive () {
     rm yasm-1.3.0.tar.gz
     mv yasm-1.3.0 yasm
 
-    wget -q https://github.com/ElderOrb/qwt/archive/master.zip
-    unzip master.zip
-    mv qwt-master qwt
-    rm master.zip
+    git clone --depth 1 https://git.code.sf.net/p/qwt/git qwt --branch v6.3.0
+    git -C qwt fetch https://github.com/ElderOrb/qwt.git
+    git -C qwt cherry-pick 3e72164e902cf7a690d19cc0cdf44f9faebbcdc8
 
     # fix ffmpeg configure for static freetype2
     sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
