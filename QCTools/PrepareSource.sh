@@ -86,12 +86,6 @@ function _all_inclusive () {
     git -C qwt fetch https://github.com/ElderOrb/qwt.git
     git -C qwt cherry-pick 3e72164e902cf7a690d19cc0cdf44f9faebbcdc8
 
-    # fix ffmpeg configure for static freetype2
-    sed -i 's/^enabled libfreetype.*//g' ffmpeg/configure
-
-    # fix ffmpeg configure for static libharfbuzz
-    sed -i 's/^enabled libharfbuzz.*//g' ffmpeg/configure
-
     echo "2: remove what isn’t wanted..."
 
     rm -fr */.git*
