@@ -70,6 +70,8 @@ function btask.UpgradeVersion.run () {
     MIL_files[((index++))]="Project/MSVC2017/ShellExtension/MediaInfoShellExt.rc"
     MIL_files[((index++))]="Project/MSVC2019/Example/HowToUse.rc"
     MIL_files[((index++))]="Project/MSVC2019/ShellExtension/MediaInfoShellExt.rc"
+    MIL_files[((index++))]="Project/MSVC2022/Example/HowToUse.rc"
+    MIL_files[((index++))]="Project/MSVC2022/ShellExtension/MediaInfoShellExt.rc"
 
     for MIL_file in ${MIL_files[@]}
     do
