@@ -135,8 +135,6 @@ function btask.UpgradeVersion.run () {
     unset -v MI_files
     index=0
     MI_files[((index++))]="Project/BCB/GUI/MediaInfo_GUI.cbproj"
-    MI_files[((index++))]="Project/MSVC2012/GUI/MediaInfo_GUI.rc"
-    MI_files[((index++))]="Project/MSVC2012/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2013/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2013/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2015/GUI/MediaInfo_GUI.rc"
@@ -145,6 +143,8 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/MSVC2017/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/MSVC2019/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2019/CLI/MediaInfo_CLI.rc"
+    MI_files[((index++))]="Project/MSVC2022/GUI/MediaInfo_GUI.rc"
+    MI_files[((index++))]="Project/MSVC2022/CLI/MediaInfo_CLI.rc"
     MI_files[((index++))]="Project/QMake/GUI/mediainfo-gui.rc"
     MI_files[((index++))]="Project/QMake/GUI/MediaInfoQt.pro"
 
