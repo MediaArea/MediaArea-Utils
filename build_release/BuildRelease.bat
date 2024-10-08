@@ -277,8 +277,8 @@ cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2019
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
 call set PATH_TEMP=%PATH%
-if EXIST "C:\Program Files (x86)\Embarcadero\Studio\23.0\bin\rsvars.bat" (
-    call "C:\Program Files (x86)\Embarcadero\Studio\23.0\bin\rsvars.bat"
+if EXIST "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat" (
+    call "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat"
 ) else (
     call rsvars.bat
 )
