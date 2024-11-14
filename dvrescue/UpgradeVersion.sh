@@ -89,6 +89,13 @@ function btask.UpgradeVersion.run () {
         updateFile $Version_old_major,$Version_old_minor,$Version_old_patch $Version_new_major,$Version_new_minor,$Version_new_patch "${DR_source}/${DR_file}"
     done
 
+    echo "Update version in Source/GUI/dvrescue/dvrescue/main.cpp"
+    updateFile "#define BUILD_VERSION \"devel\"" "#define BUILD_VERSION \"$Version_new\"" "${DR_source}"/Source/GUI/dvrescue/dvrescue/main.cpp
+
+    echo "Update timestamp in Source/GUI/dvrescue/dvrescue/main.cpp"
+    updateFile "__DATE__" "$(LC_ALL=C date -u +"\"%b %d %Y\"")" "${DR_source}"/Source/GUI/dvrescue/dvrescue/main.cpp
+    updateFile "__TIME__" "$(LC_ALL=C date -u +"\"%H:%M:%S\"")" "${DR_source}"/Source/GUI/dvrescue/dvrescue/main.cpp
+
     # Update MediaInfoLib required version
     if [ $(b.opt.get_opt --mil-version) ]; then
         echo
