@@ -1,11 +1,26 @@
- Project/MSVC2019/CLI/MediaInfo.vcxproj | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Project/MSVC2019/CLI/MediaInfo.vcxproj b/Project/MSVC2019/CLI/MediaInfo.vcxproj
-index 2b70eb5..ba19bda 100644
---- a/Project/MSVC2019/CLI/MediaInfo.vcxproj
-+++ b/Project/MSVC2019/CLI/MediaInfo.vcxproj
-@@ -94,7 +94,7 @@
+diff --git a/Project/MSVC2022/CLI/MediaInfo.vcxproj b/Project/MSVC2022/CLI/MediaInfo.vcxproj
+index 4d50ecd68..b7d29296d 100644
+--- a/Project/MSVC2022/CLI/MediaInfo.vcxproj
++++ b/Project/MSVC2022/CLI/MediaInfo.vcxproj
+@@ -73,7 +73,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <Link>
+@@ -84,7 +84,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <LanguageStandard>stdcpplatest</LanguageStandard>
+       <Optimization>Disabled</Optimization>
+@@ -97,7 +97,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -14,7 +29,7 @@ index 2b70eb5..ba19bda 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-@@ -108,7 +108,7 @@
+@@ -114,7 +114,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

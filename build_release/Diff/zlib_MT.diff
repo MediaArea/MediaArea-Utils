@@ -1,8 +1,16 @@
- contrib/vstudio/vc16/zlibstat.vcxproj | 8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
-
---- a/contrib/vstudio/vc16/zlibstat.vcxproj
-+++ b/contrib/vstudio/vc16/zlibstat.vcxproj
+diff --git a/contrib/vstudio/vc17/zlibstat.vcxproj b/contrib/vstudio/vc17/zlibstat.vcxproj
+index 42913d4..f010fdd 100644
+--- a/contrib/vstudio/vc17/zlibstat.vcxproj
++++ b/contrib/vstudio/vc17/zlibstat.vcxproj
+@@ -123,7 +123,7 @@
+       <PreprocessorDefinitions>WIN32;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ExceptionHandling>
+       </ExceptionHandling>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <BufferSecurityCheck>false</BufferSecurityCheck>
+       <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
+       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
 @@ -152,7 +152,7 @@
        <StringPooling>true</StringPooling>
        <ExceptionHandling>
@@ -18,16 +26,25 @@
        </ExceptionHandling>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <BufferSecurityCheck>false</BufferSecurityCheck>
+       <BufferSecurityCheck>true</BufferSecurityCheck>
        <FunctionLevelLinking>true</FunctionLevelLinking>
        <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
+@@ -216,7 +216,7 @@
+       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ExceptionHandling>
+       </ExceptionHandling>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <BufferSecurityCheck>false</BufferSecurityCheck>
+       <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
+       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
 @@ -247,7 +247,7 @@
        <StringPooling>true</StringPooling>
        <ExceptionHandling>
        </ExceptionHandling>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <BufferSecurityCheck>true</BufferSecurityCheck>
+       <BufferSecurityCheck>false</BufferSecurityCheck>
        <FunctionLevelLinking>true</FunctionLevelLinking>
        <PrecompiledHeaderOutputFile>$(IntDir)zlibstat.pch</PrecompiledHeaderOutputFile>
 @@ -280,7 +280,7 @@
