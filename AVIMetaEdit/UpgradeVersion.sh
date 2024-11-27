@@ -46,6 +46,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/AVI_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/AVI_MetaEdit_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/AVI_MetaEdit_CLI.rc"
     Files[((index++))]="Project/QtCreator/avimetaedit-gui.rc"
     Files[((index++))]="Source/Install/AVI_MetaEdit_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/AVI_MetaEdit_GUI_Windows_x64.nsi"
@@ -65,6 +67,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/AVI_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/AVI_MetaEdit_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/GUI/AVI_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/AVI_MetaEdit_CLI.rc"
     Files[((index++))]="Project/QtCreator/avimetaedit-gui.rc"
 
     for File in ${Files[@]}

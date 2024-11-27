@@ -47,6 +47,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/BWF_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/BWF_MetaEdit_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/BWF_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/BWF_MetaEdit_CLI.rc"
     Files[((index++))]="Project/QtCreator/bwfmetaedit-gui.rc"
     Files[((index++))]="Source/Install/BWF_MetaEdit_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/BWF_MetaEdit_GUI_Windows_x64.nsi"
@@ -66,6 +67,7 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/BWF_MetaEdit_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/BWF_MetaEdit_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/BWF_MetaEdit_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/BWF_MetaEdit_CLI.rc"
     Files[((index++))]="Project/QtCreator/bwfmetaedit-gui.rc"
 
     for File in ${Files[@]}

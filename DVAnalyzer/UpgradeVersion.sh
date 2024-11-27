@@ -46,6 +46,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/AVPS_DV_Analyzer_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/AVPS_DV_Analyzer_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/AVPS_DV_Analyzer_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/AVPS_DV_Analyzer_CLI.rc"
+    Files[((index++))]="Project/MSVC2022/GUI/AVPS_DV_Analyzer_GUI.rc"
     Files[((index++))]="Project/QtCreator/dvanalyzer-gui.rc"
     Files[((index++))]="Source/Install/AVPS_DV_Analyzer_GUI_Windows_i386.nsi"
     Files[((index++))]="Source/Install/AVPS_DV_Analyzer_GUI_Windows_x64.nsi"
@@ -65,6 +67,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/MSVC2015/GUI/AVPS_DV_Analyzer_GUI.rc"
     Files[((index++))]="Project/MSVC2017/CLI/AVPS_DV_Analyzer_CLI.rc"
     Files[((index++))]="Project/MSVC2017/GUI/AVPS_DV_Analyzer_GUI.rc"
+    Files[((index++))]="Project/MSVC2022/CLI/AVPS_DV_Analyzer_CLI.rc"
+    Files[((index++))]="Project/MSVC2022/GUI/AVPS_DV_Analyzer_GUI.rc"
     Files[((index++))]="Project/QtCreator/dvanalyzer-gui.rc"
 
     for File in ${Files[@]}
