@@ -131,9 +131,23 @@ function btask.UpgradeVersion.run () {
     updateFile "Version=\"$((10#$Version_old_major))\.$((10#$Version_old_minor))\.$((10#$UWP_Version_old_patch))\.0" "Version=\"$((10#$Version_new_major))\.$((10#$Version_new_minor))\.$((10#$UWP_Version_new_patch))\.0" "${MI_source}"/Source/GUI/UWP/Package.appxmanifest
 
     echo
+    echo "Update ${MI_source}/Source/WindowsSparsePackage/MSIX/AppxManifest.xml"
+    updateFile "Version=\"$((10#$Version_old_major))\.$((10#$Version_old_minor))\.$((10#$UWP_Version_old_patch))\.0" "Version=\"$((10#$Version_new_major))\.$((10#$Version_new_minor))\.$((10#$UWP_Version_new_patch))\.0" "${MI_source}"/Source/WindowsSparsePackage/MSIX/AppxManifest.xml
+
+    echo
+    echo "Update ${MI_source}/Source/WindowsQtPackage/AppxManifest.xml"
+    updateFile "Version=\"$((10#$Version_old_major))\.$((10#$Version_old_minor))\.$((10#$UWP_Version_old_patch))\.0" "Version=\"$((10#$Version_new_major))\.$((10#$Version_new_minor))\.$((10#$UWP_Version_new_patch))\.0" "${MI_source}"/Source/WindowsQtPackage/AppxManifest.xml
+
+    echo
+    echo "Update ${MI_source}/Source/GUI/VCL/Manifest.manifest"
+    updateFile "version=\"$((10#$Version_old_major))\.$((10#$Version_old_minor))\.$((10#$UWP_Version_old_patch))\.0" "version=\"$((10#$Version_new_major))\.$((10#$Version_new_minor))\.$((10#$UWP_Version_new_patch))\.0" "${MI_source}"/Source/GUI/VCL/Manifest.manifest
+
+    echo
     echo "Passage for major.minor.patch.build..."
     unset -v MI_files
     index=0
+    MI_files[((index++))]="Source/WindowsShellExtension/Resource.rc"
+    MI_files[((index++))]="Source/WindowsPackageHelper/Resource.rc"
     MI_files[((index++))]="Project/BCB/GUI/MediaInfo_GUI.cbproj"
     MI_files[((index++))]="Project/MSVC2013/GUI/MediaInfo_GUI.rc"
     MI_files[((index++))]="Project/MSVC2013/CLI/MediaInfo_CLI.rc"

@@ -271,10 +271,14 @@ cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfoLib.sln || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 MediaInfoLib.sln || exit /b 1
 
+rem *** Windows 11 menu ***
+cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022
+makeappx pack /d "..\..\Source\WindowsSparsePackage\MSIX" /p "x64\Release\MediaInfo_SparsePackage.msix" /nv
+
 rem *** MediaInfo ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 || exit /b 1
-MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 || exit /b 1
+MSBuild /maxcpucount:1 /restore /verbosity:quiet /p:RestorePackagesConfig=true;Configuration=Release;Platform=Win32 || exit /b 1
+MSBuild /maxcpucount:1 /restore /verbosity:quiet /p:RestorePackagesConfig=true;Configuration=Release;Platform=x64 || exit /b 1
 call set PATH_TEMP=%PATH%
 if EXIST "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat" (
     call "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat"
@@ -299,6 +303,11 @@ if "%NOSIGN%"=="" (
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\Win32\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo_InfoTip.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_SparsePackage.msix^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo_WindowsShellExtension.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_WindowsShellExtension.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo_PackageHelper.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_PackageHelper.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\Win32\Release\MediaInfo_GUI.exe^
