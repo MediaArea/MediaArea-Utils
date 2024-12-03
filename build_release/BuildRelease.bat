@@ -270,6 +270,7 @@ rem *** MediaInfoLib ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfoLib.sln || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 MediaInfoLib.sln || exit /b 1
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=ARM64 MediaInfoLib.sln || exit /b 1
 
 rem *** Windows 11 menu ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022
@@ -279,6 +280,7 @@ rem *** MediaInfo ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022
 MSBuild /maxcpucount:1 /restore /verbosity:quiet /p:RestorePackagesConfig=true;Configuration=Release;Platform=Win32 || exit /b 1
 MSBuild /maxcpucount:1 /restore /verbosity:quiet /p:RestorePackagesConfig=true;Configuration=Release;Platform=x64 || exit /b 1
+MSBuild /maxcpucount:1 /restore /verbosity:quiet /p:RestorePackagesConfig=true;Configuration=Release;Platform=ARM64 || exit /b 1
 call set PATH_TEMP=%PATH%
 if EXIST "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat" (
     call "C:\Program Files (x86)\Embarcadero\Studio\22.0\bin\rsvars.bat"
@@ -301,8 +303,10 @@ if "%NOSIGN%"=="" (
     signtool sign /f %USERPROFILE%\CodeSigningCertificate.p12 /p %CodeSigningCertificatePass% /fd sha256 /v /tr http://ts.ssl.com /td sha256 /d MediaInfo /du http://mediaarea.net^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\Win32\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\ARM64\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\Win32\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo_InfoTip.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\ARM64\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_SparsePackage.msix^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo_WindowsShellExtension.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_WindowsShellExtension.dll^
@@ -310,6 +314,7 @@ if "%NOSIGN%"=="" (
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_PackageHelper.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\ARM64\Release\MediaInfo.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\Win32\Release\MediaInfo_GUI.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\BCB\GUI\Win64\Release\MediaInfo_GUI.exe || set CodeSigningCertificatePass= && exit /b 1
 )
@@ -319,6 +324,7 @@ rem *** Packages ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Release
 call Release_CLI_Windows_i386.bat
 call Release_CLI_Windows_x64.bat
+call Release_CLI_Windows_ARM64.bat
 call Release_GUI_Windows_i386.bat
 call Release_GUI_Windows_x64.bat
 
@@ -360,6 +366,7 @@ mkdir Release\download\binary\mediainfo\ || exit /b 1
 mkdir Release\download\binary\mediainfo\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_CLI_Windows_i386.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_i386.zip || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_CLI_Windows_x64.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_x64.zip || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_CLI_Windows_ARM64.zip Release\download\binary\mediainfo\%Version%\MediaInfo_CLI_%Version%_Windows_ARM64.zip || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\ || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1

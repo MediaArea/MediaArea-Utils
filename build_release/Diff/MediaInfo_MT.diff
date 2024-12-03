@@ -1,8 +1,8 @@
 diff --git a/Project/MSVC2022/CLI/MediaInfo.vcxproj b/Project/MSVC2022/CLI/MediaInfo.vcxproj
-index 4d50ecd68..b7d29296d 100644
+index a05d1ff67..2f06304d8 100644
 --- a/Project/MSVC2022/CLI/MediaInfo.vcxproj
 +++ b/Project/MSVC2022/CLI/MediaInfo.vcxproj
-@@ -73,7 +73,7 @@
+@@ -129,7 +129,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -11,7 +11,16 @@ index 4d50ecd68..b7d29296d 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
      </ClCompile>
      <Link>
-@@ -84,7 +84,7 @@
+@@ -140,7 +140,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <Link>
+@@ -151,7 +151,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -20,7 +29,16 @@ index 4d50ecd68..b7d29296d 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <LanguageStandard>stdcpplatest</LanguageStandard>
        <Optimization>Disabled</Optimization>
-@@ -97,7 +97,7 @@
+@@ -164,7 +164,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <LanguageStandard>stdcpplatest</LanguageStandard>
+       <Optimization>Disabled</Optimization>
+@@ -177,7 +177,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -29,7 +47,16 @@ index 4d50ecd68..b7d29296d 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-@@ -114,7 +114,7 @@
+@@ -194,7 +194,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <OmitFramePointers>true</OmitFramePointers>
+       <DebugInformationFormat>None</DebugInformationFormat>
+@@ -209,7 +209,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -38,3 +65,83 @@ index 4d50ecd68..b7d29296d 100644
        <DebugInformationFormat>None</DebugInformationFormat>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+@@ -226,7 +226,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <DebugInformationFormat>None</DebugInformationFormat>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
+diff --git a/Project/MSVC2022/GUI/MediaInfo_GUI.vcxproj b/Project/MSVC2022/GUI/MediaInfo_GUI.vcxproj
+index d0f336b92..3c80a394c 100644
+--- a/Project/MSVC2022/GUI/MediaInfo_GUI.vcxproj
++++ b/Project/MSVC2022/GUI/MediaInfo_GUI.vcxproj
+@@ -71,7 +71,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../wxWidgets/include;../../../../wxWidgets/lib/vc_lib/mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <ResourceCompile>
+@@ -87,7 +87,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../wxWidgets/include;../../../../wxWidgets/lib/vc_x64_lib/mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <PreprocessorDefinitions>MEDIAINFO_ADVANCED2_NO;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <LanguageStandard>stdcpplatest</LanguageStandard>
+@@ -104,7 +104,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../wxWidgets/include;../../../../wxWidgets/lib/vc_lib/mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <DebugInformationFormat>None</DebugInformationFormat>
+     </ClCompile>
+diff --git a/Project/MSVC2022/MediaInfo_Qt/MediaInfo_Qt.vcxproj b/Project/MSVC2022/MediaInfo_Qt/MediaInfo_Qt.vcxproj
+index 012be4ecd..613b32f7e 100644
+--- a/Project/MSVC2022/MediaInfo_Qt/MediaInfo_Qt.vcxproj
++++ b/Project/MSVC2022/MediaInfo_Qt/MediaInfo_Qt.vcxproj
+@@ -70,7 +70,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../Qt/include;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <MinimalRebuild>true</MinimalRebuild>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+@@ -94,7 +94,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../Qt/include;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <MinimalRebuild>true</MinimalRebuild>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+@@ -113,7 +113,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;../../../../Qt/include;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+@@ -138,7 +138,7 @@
+     </Midl>
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../Qt/include/;../../../../Qt/include/QtCore;../../../../Qt/include/QtGui;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
