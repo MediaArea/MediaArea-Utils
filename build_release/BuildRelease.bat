@@ -271,6 +271,7 @@ cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32 MediaInfoLib.sln || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64 MediaInfoLib.sln || exit /b 1
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=ARM64 MediaInfoLib.sln || exit /b 1
+MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=ARM64EC MediaInfoLib.sln || exit /b 1
 
 rem *** Windows 11 menu ***
 cd %OLD_CD%\..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022
@@ -304,12 +305,14 @@ if "%NOSIGN%"=="" (
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\Win32\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\ARM64\Release\MediaInfo.dll^
+                  ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\ARM64EC\Release\MediaInfo.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\Win32\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\x64\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Project\MSVC2022\ARM64\Release\MediaInfo_InfoTip.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_SparsePackage.msix^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo_WindowsShellExtension.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_WindowsShellExtension.dll^
+                  ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\ARM64\Release\MediaInfo_WindowsShellExtension.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo_PackageHelper.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\x64\Release\MediaInfo_PackageHelper.dll^
                   ..\..\%MI_SOURCES%\MediaInfo\Project\MSVC2022\Win32\Release\MediaInfo.exe^
@@ -327,6 +330,7 @@ call Release_CLI_Windows_x64.bat
 call Release_CLI_Windows_ARM64.bat
 call Release_GUI_Windows_i386.bat
 call Release_GUI_Windows_x64.bat
+call Release_GUI_Windows_ARM64.bat
 
 if EXIST "%USERPROFILE%\MediaInfo_Donors.diff" (
     copy /y ..\Source\Install\MediaInfo_GUI_Windows.nsi ..\Source\Install\MediaInfo_GUI_Windows.nsi.orig || exit /b 1
@@ -353,6 +357,7 @@ if "%NOSIGN%"=="" (
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ARM64.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ThankYou.exe || set CodeSigningCertificatePass= && exit /b 1
 )
 set CodeSigningCertificatePass=
@@ -372,8 +377,10 @@ mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ARM64.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_i386_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_x64_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_x64_WithoutInstaller.7z || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_Windows_ARM64_WithoutInstaller.7z Release\download\binary\mediainfo-gui\%Version%\MediaInfo_GUI_%Version%_Windows_ARM64_WithoutInstaller.7z || exit /b 1
 mkdir Release\download\binary\libmediainfo0\ || exit /b 1
 mkdir Release\download\binary\libmediainfo0\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_Windows_i386_WithoutInstaller.7z Release\download\binary\libmediainfo0\%Version%\MediaInfo_DLL_%Version%_Windows_i386_WithoutInstaller.7z || exit /b 1
