@@ -1,8 +1,8 @@
 diff --git a/Project/MSVC2022/Library/ZenLib.vcxproj b/Project/MSVC2022/Library/ZenLib.vcxproj
-index d744e82..b30914f 100644
+index c798854..c5de1bd 100644
 --- a/Project/MSVC2022/Library/ZenLib.vcxproj
 +++ b/Project/MSVC2022/Library/ZenLib.vcxproj
-@@ -124,7 +124,7 @@
+@@ -155,7 +155,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -11,7 +11,7 @@ index d744e82..b30914f 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -134,7 +134,7 @@
+@@ -165,7 +165,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -20,7 +20,7 @@ index d744e82..b30914f 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -144,7 +144,7 @@
+@@ -175,7 +175,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -29,7 +29,16 @@ index d744e82..b30914f 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -154,7 +154,7 @@
+@@ -185,7 +185,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+@@ -195,7 +195,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -38,7 +47,7 @@ index d744e82..b30914f 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
-@@ -165,7 +165,7 @@
+@@ -206,7 +206,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -47,7 +56,7 @@ index d744e82..b30914f 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
-@@ -177,7 +177,7 @@
+@@ -218,7 +218,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -56,7 +65,7 @@ index d744e82..b30914f 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
-@@ -188,7 +188,7 @@
+@@ -229,7 +229,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -65,7 +74,16 @@ index d744e82..b30914f 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
-@@ -200,7 +200,7 @@
+@@ -242,7 +242,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <PrecompiledHeaderFile>ZenLib/PreComp.h</PrecompiledHeaderFile>
+@@ -255,7 +255,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

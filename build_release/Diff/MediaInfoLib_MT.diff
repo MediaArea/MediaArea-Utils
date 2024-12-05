@@ -1,8 +1,8 @@
 diff --git a/Project/MSVC2022/Dll/MediaInfoDll.vcxproj b/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
-index a627e1e88..948422d72 100644
+index 6dd27e6e0..4b22bbc83 100644
 --- a/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
 +++ b/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
-@@ -145,7 +145,7 @@
+@@ -180,7 +180,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -11,7 +11,7 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -159,7 +159,7 @@
+@@ -194,7 +194,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -20,7 +20,7 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -173,7 +173,7 @@
+@@ -208,7 +208,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -29,7 +29,16 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -187,7 +187,7 @@
+@@ -222,7 +222,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <Optimization>Disabled</Optimization>
+       <SDLCheck>true</SDLCheck>
+@@ -236,7 +236,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -38,7 +47,7 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <LanguageStandard>stdcpp20</LanguageStandard>
-@@ -202,7 +202,7 @@
+@@ -251,7 +251,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -47,7 +56,7 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -224,7 +224,7 @@
+@@ -273,7 +273,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -56,7 +65,7 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -244,7 +244,7 @@
+@@ -293,7 +293,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -65,7 +74,16 @@ index a627e1e88..948422d72 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -265,7 +265,7 @@
+@@ -315,7 +315,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <OmitFramePointers>true</OmitFramePointers>
+       <DebugInformationFormat>None</DebugInformationFormat>
+@@ -337,7 +337,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -75,10 +93,10 @@ index a627e1e88..948422d72 100644
        <DebugInformationFormat>None</DebugInformationFormat>
        <SDLCheck>true</SDLCheck>
 diff --git a/Project/MSVC2022/Example/HowToUse_Dll.vcxproj b/Project/MSVC2022/Example/HowToUse_Dll.vcxproj
-index b61184fef..057511a6a 100644
+index 4ee2a48be..31a1b3bb1 100644
 --- a/Project/MSVC2022/Example/HowToUse_Dll.vcxproj
 +++ b/Project/MSVC2022/Example/HowToUse_Dll.vcxproj
-@@ -137,7 +137,7 @@
+@@ -167,7 +167,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../zlib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <MinimalRebuild>true</MinimalRebuild>
@@ -87,7 +105,7 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -155,7 +155,7 @@
+@@ -185,7 +185,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../zlib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <MinimalRebuild>true</MinimalRebuild>
@@ -96,7 +114,7 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -171,7 +171,7 @@
+@@ -201,7 +201,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../zlib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <MinimalRebuild>true</MinimalRebuild>
@@ -105,7 +123,7 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -190,7 +190,7 @@
+@@ -217,7 +217,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../zlib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <MinimalRebuild>true</MinimalRebuild>
@@ -114,7 +132,16 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -207,7 +207,7 @@
+@@ -236,7 +236,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../zlib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <MinimalRebuild>true</MinimalRebuild>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+@@ -253,7 +253,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../ZLib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -123,7 +150,7 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -228,7 +228,7 @@
+@@ -274,7 +274,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../ZLib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -132,7 +159,7 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -246,7 +246,7 @@
+@@ -292,7 +292,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../ZLib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -141,7 +168,16 @@ index b61184fef..057511a6a 100644
        <PrecompiledHeader>
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -268,7 +268,7 @@
+@@ -311,7 +311,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../ZLib;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+@@ -333,7 +333,7 @@
      </Midl>
      <ClCompile>
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -151,10 +187,10 @@ index b61184fef..057511a6a 100644
        </PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
 diff --git a/Project/MSVC2022/FieldsDescription/FieldsDescription.vcxproj b/Project/MSVC2022/FieldsDescription/FieldsDescription.vcxproj
-index dbcb90ea1..2735e154d 100644
+index 88c3ad3ee..429b35014 100644
 --- a/Project/MSVC2022/FieldsDescription/FieldsDescription.vcxproj
 +++ b/Project/MSVC2022/FieldsDescription/FieldsDescription.vcxproj
-@@ -131,7 +131,7 @@
+@@ -158,7 +158,7 @@
        <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -163,7 +199,7 @@ index dbcb90ea1..2735e154d 100644
      </ClCompile>
      <Link>
        <SubSystem>Console</SubSystem>
-@@ -145,7 +145,7 @@
+@@ -172,7 +172,7 @@
        <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -172,7 +208,7 @@ index dbcb90ea1..2735e154d 100644
      </ClCompile>
      <Link>
        <SubSystem>Console</SubSystem>
-@@ -159,7 +159,7 @@
+@@ -186,7 +186,7 @@
        <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -181,7 +217,16 @@ index dbcb90ea1..2735e154d 100644
      </ClCompile>
      <Link>
        <SubSystem>Console</SubSystem>
-@@ -175,7 +175,7 @@
+@@ -200,7 +200,7 @@
+       <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -216,7 +216,7 @@
        <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -190,7 +235,7 @@ index dbcb90ea1..2735e154d 100644
        <ControlFlowGuard>Guard</ControlFlowGuard>
      </ClCompile>
      <Link>
-@@ -194,7 +194,7 @@
+@@ -235,7 +235,7 @@
        <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -199,7 +244,7 @@ index dbcb90ea1..2735e154d 100644
        <ControlFlowGuard>Guard</ControlFlowGuard>
      </ClCompile>
      <Link>
-@@ -213,7 +213,7 @@
+@@ -254,7 +254,7 @@
        <PreprocessorDefinitions>WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -208,7 +253,16 @@ index dbcb90ea1..2735e154d 100644
        <ControlFlowGuard>Guard</ControlFlowGuard>
        <GuardEHContMetadata>true</GuardEHContMetadata>
      </ClCompile>
-@@ -231,7 +231,7 @@
+@@ -274,7 +274,7 @@
+       <PreprocessorDefinitions>WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
+       <GuardEHContMetadata>true</GuardEHContMetadata>
+     </ClCompile>
+@@ -292,7 +292,7 @@
        <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -217,7 +271,7 @@ index dbcb90ea1..2735e154d 100644
      </ClCompile>
      <Link>
        <SubSystem>Console</SubSystem>
-@@ -247,7 +247,7 @@
+@@ -308,7 +308,7 @@
        <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <ConformanceMode>true</ConformanceMode>
        <AdditionalIncludeDirectories>../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -227,10 +281,10 @@ index dbcb90ea1..2735e154d 100644
        <GuardEHContMetadata>true</GuardEHContMetadata>
      </ClCompile>
 diff --git a/Project/MSVC2022/Library/MediaInfoLib.vcxproj b/Project/MSVC2022/Library/MediaInfoLib.vcxproj
-index a3f4fcda1..1aec477d8 100644
+index 575801130..0ea75d7f8 100644
 --- a/Project/MSVC2022/Library/MediaInfoLib.vcxproj
 +++ b/Project/MSVC2022/Library/MediaInfoLib.vcxproj
-@@ -145,7 +145,7 @@
+@@ -180,7 +180,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -239,7 +293,7 @@ index a3f4fcda1..1aec477d8 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -157,7 +157,7 @@
+@@ -192,7 +192,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -248,7 +302,7 @@ index a3f4fcda1..1aec477d8 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -169,7 +169,7 @@
+@@ -204,7 +204,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -257,7 +311,16 @@ index a3f4fcda1..1aec477d8 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -181,7 +181,7 @@
+@@ -216,7 +216,7 @@
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+@@ -228,7 +228,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -266,7 +329,7 @@ index a3f4fcda1..1aec477d8 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <Optimization>Disabled</Optimization>
-@@ -196,7 +196,7 @@
+@@ -243,7 +243,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -275,7 +338,7 @@ index a3f4fcda1..1aec477d8 100644
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -211,7 +211,7 @@
+@@ -258,7 +258,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -284,7 +347,7 @@ index a3f4fcda1..1aec477d8 100644
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -225,7 +225,7 @@
+@@ -272,7 +272,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -293,7 +356,16 @@ index a3f4fcda1..1aec477d8 100644
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -241,7 +241,7 @@
+@@ -288,7 +288,7 @@
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
+     <ClCompile>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+@@ -305,7 +305,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -303,10 +375,10 @@ index a3f4fcda1..1aec477d8 100644
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
 diff --git a/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj b/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj
-index de22beefa..9b70008bc 100644
+index f6b4882f6..bbba6ce48 100644
 --- a/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj
 +++ b/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj
-@@ -162,7 +162,7 @@
+@@ -196,7 +196,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -315,7 +387,7 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
      </ClCompile>
      <Link>
-@@ -175,7 +175,7 @@
+@@ -209,7 +209,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -324,7 +396,7 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
      </ClCompile>
      <Link>
-@@ -188,7 +188,7 @@
+@@ -222,7 +222,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -333,7 +405,7 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
      </ClCompile>
      <Link>
-@@ -201,7 +201,7 @@
+@@ -235,7 +235,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -342,7 +414,16 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
      </ClCompile>
      <Link>
-@@ -214,7 +214,7 @@
+@@ -248,7 +248,7 @@
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+     </ClCompile>
+     <Link>
+@@ -261,7 +261,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -351,7 +432,7 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
        <ControlFlowGuard>Guard</ControlFlowGuard>
-@@ -231,7 +231,7 @@
+@@ -278,7 +278,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -360,7 +441,7 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <ControlFlowGuard>Guard</ControlFlowGuard>
      </ClCompile>
-@@ -247,7 +247,7 @@
+@@ -294,7 +294,7 @@
        <PrecompiledHeader>
        </PrecompiledHeader>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -369,7 +450,16 @@ index de22beefa..9b70008bc 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <ControlFlowGuard>Guard</ControlFlowGuard>
        <GuardEHContMetadata>true</GuardEHContMetadata>
-@@ -265,7 +265,7 @@
+@@ -311,7 +311,7 @@
+       <PrecompiledHeader>
+       </PrecompiledHeader>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
+       <GuardEHContMetadata>true</GuardEHContMetadata>
+@@ -329,7 +329,7 @@
        </PrecompiledHeader>
        <FunctionLevelLinking>true</FunctionLevelLinking>
        <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\Source\ThirdParty\md5;..\..\..\..\ZenLib\Source</AdditionalIncludeDirectories>
@@ -379,10 +469,10 @@ index de22beefa..9b70008bc 100644
        <ControlFlowGuard>Guard</ControlFlowGuard>
        <GuardEHContMetadata>true</GuardEHContMetadata>
 diff --git a/Project/MSVC2022/ShellExtension/MediaInfoShellExt.vcxproj b/Project/MSVC2022/ShellExtension/MediaInfoShellExt.vcxproj
-index 5ad903d10..32c710cb6 100644
+index de5c72b89..fdf0565ab 100644
 --- a/Project/MSVC2022/ShellExtension/MediaInfoShellExt.vcxproj
 +++ b/Project/MSVC2022/ShellExtension/MediaInfoShellExt.vcxproj
-@@ -169,7 +169,7 @@
+@@ -207,7 +207,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -391,7 +481,7 @@ index 5ad903d10..32c710cb6 100644
      </ClCompile>
      <ResourceCompile>
        <Culture>0x0409</Culture>
-@@ -197,7 +197,7 @@
+@@ -235,7 +235,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -400,7 +490,7 @@ index 5ad903d10..32c710cb6 100644
      </ClCompile>
      <ResourceCompile>
        <Culture>0x0409</Culture>
-@@ -224,7 +224,7 @@
+@@ -262,7 +262,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -409,7 +499,16 @@ index 5ad903d10..32c710cb6 100644
      </ClCompile>
      <ResourceCompile>
        <Culture>0x0409</Culture>
-@@ -253,7 +253,7 @@
+@@ -289,7 +289,7 @@
+       <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+     </ClCompile>
+     <ResourceCompile>
+       <Culture>0x0409</Culture>
+@@ -318,7 +318,7 @@
        <PrecompiledHeader>Use</PrecompiledHeader>
        <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -418,7 +517,7 @@ index 5ad903d10..32c710cb6 100644
      </ClCompile>
      <ResourceCompile>
        <Culture>0x0409</Culture>
-@@ -282,7 +282,7 @@
+@@ -347,7 +347,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -427,7 +526,7 @@ index 5ad903d10..32c710cb6 100644
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
        <ControlFlowGuard>Guard</ControlFlowGuard>
      </ClCompile>
-@@ -315,7 +315,7 @@
+@@ -380,7 +380,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -436,7 +535,7 @@ index 5ad903d10..32c710cb6 100644
        <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
        <ControlFlowGuard>Guard</ControlFlowGuard>
      </ClCompile>
-@@ -346,7 +346,7 @@
+@@ -411,7 +411,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -445,7 +544,16 @@ index 5ad903d10..32c710cb6 100644
        <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
        <ControlFlowGuard>Guard</ControlFlowGuard>
        <GuardEHContMetadata>true</GuardEHContMetadata>
-@@ -379,7 +379,7 @@
+@@ -444,7 +444,7 @@
+       <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+       <ControlFlowGuard>Guard</ControlFlowGuard>
+       <GuardEHContMetadata>true</GuardEHContMetadata>
+@@ -478,7 +478,7 @@
        <AdditionalIncludeDirectories>..\..\..\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
