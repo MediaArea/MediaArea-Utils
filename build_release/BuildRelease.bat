@@ -20,6 +20,7 @@ set ERRORLEVEL=
 set BUILD_RELEASE_ERRORCODE=
 set BUILD_MC=
 set BUILD_MI=
+set SNAPSHOT=
 set ARCHIVE=
 set NOSIGN=
 
@@ -45,6 +46,7 @@ if not "%1"=="" (
     if /I "%1"=="MC" set BUILD_MC=1
     if /I "%1"=="MediaInfo" set BUILD_MI=1
     if /I "%1"=="MI" set BUILD_MI=1
+    if /I "%1"=="/snapshot" set SNAPSHOT="%2"
     if /I "%1"=="/archive" set ARCHIVE=1
     if /I "%1"=="/nosign" set NOSIGN=1
     shift
@@ -355,6 +357,7 @@ if "%NOSIGN%"=="" (
                   ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_i386.exe^
                   ..\..\%MI_SOURCES%\MediaInfoLib\Release\MediaInfo_DLL_%Version%_Windows_x64.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe^
+                  ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_Online.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe^
                   ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ARM64.exe^
@@ -375,6 +378,7 @@ copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_CLI_Windows_ARM64.zip Releas
 mkdir Release\download\binary\mediainfo-gui\ || exit /b 1
 mkdir Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
+copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_Online.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_x64.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_i386.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
 copy ..\..\%MI_SOURCES%\MediaInfo\Release\MediaInfo_GUI_%Version%_Windows_ARM64.exe Release\download\binary\mediainfo-gui\%Version%\ || exit /b 1
