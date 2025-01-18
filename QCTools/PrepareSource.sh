@@ -65,26 +65,21 @@ function _all_inclusive () {
 
     cp -r qctools/debian .
 
-    git clone --depth 1 "git://source.ffmpeg.org/ffmpeg.git" ffmpeg --branch n6.1.1
-
-    wget -q https://download.savannah.gnu.org/releases/freetype/freetype-2.13.2.tar.xz
-    tar -Jxf freetype-2.13.2.tar.xz
-    rm freetype-2.13.2.tar.xz
-    mv freetype-2.13.2 freetype
-
-    wget -q https://github.com/harfbuzz/harfbuzz/releases/download/8.2.2/harfbuzz-8.2.2.tar.xz
-    tar -Jxf harfbuzz-8.2.2.tar.xz
-    rm harfbuzz-8.2.2.tar.xz
-    mv harfbuzz-8.2.2 harfbuzz
-
-    wget -q http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
-    tar -zxf yasm-1.3.0.tar.gz
-    rm yasm-1.3.0.tar.gz
-    mv yasm-1.3.0 yasm
-
-    git clone --depth 1 https://git.code.sf.net/p/qwt/git qwt --branch v6.3.0
-    git -C qwt fetch https://github.com/ElderOrb/qwt.git
-    git -C qwt cherry-pick 3e72164e902cf7a690d19cc0cdf44f9faebbcdc8
+    while read LINE; do
+        DIR=$(echo "$LINE" | cut -d: -f1)
+        URL=$(echo "$LINE" | cut -d: -f2-)
+        if [[ -z "$DIR" || -z "$URL" ]] ; then
+            continue
+        fi
+        if [[ ! -e "$DIR" ]] ; then
+            mkdir "$DIR"
+            pushd "$DIR"
+                curl -LO "$URL"
+                tar --extract --strip-components=1 --file=${URL##*/}
+                rm -f ${URL##*/}
+            popd
+        fi
+    done < "$QC_source/Project/BuildAllFromSource/dependencies.txt"
 
     echo "2: remove what isn’t wanted..."
 
