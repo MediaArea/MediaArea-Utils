@@ -1,5 +1,5 @@
 diff --git a/Project/MSVC2022/CLI/MediaInfo.vcxproj b/Project/MSVC2022/CLI/MediaInfo.vcxproj
-index a05d1ff67..2f06304d8 100644
+index 44ccc8306..f5353766a 100644
 --- a/Project/MSVC2022/CLI/MediaInfo.vcxproj
 +++ b/Project/MSVC2022/CLI/MediaInfo.vcxproj
 @@ -129,7 +129,7 @@
@@ -9,36 +9,36 @@ index a05d1ff67..2f06304d8 100644
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-     </ClCompile>
-     <Link>
-@@ -140,7 +140,7 @@
+       <LanguageStandard>stdcpp20</LanguageStandard>
+       <WarningLevel>Level3</WarningLevel>
+@@ -142,7 +142,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-     </ClCompile>
-     <Link>
-@@ -151,7 +151,7 @@
+       <LanguageStandard>stdcpp20</LanguageStandard>
+       <WarningLevel>Level3</WarningLevel>
+@@ -155,7 +155,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-       <LanguageStandard>stdcpplatest</LanguageStandard>
+       <LanguageStandard>stdcpp20</LanguageStandard>
        <Optimization>Disabled</Optimization>
-@@ -164,7 +164,7 @@
+@@ -169,7 +169,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-       <LanguageStandard>stdcpplatest</LanguageStandard>
+       <LanguageStandard>stdcpp20</LanguageStandard>
        <Optimization>Disabled</Optimization>
-@@ -177,7 +177,7 @@
+@@ -183,7 +183,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -47,7 +47,7 @@ index a05d1ff67..2f06304d8 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-@@ -194,7 +194,7 @@
+@@ -202,7 +202,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -56,7 +56,7 @@ index a05d1ff67..2f06304d8 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -209,7 +209,7 @@
+@@ -219,7 +219,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -65,7 +65,7 @@ index a05d1ff67..2f06304d8 100644
        <DebugInformationFormat>None</DebugInformationFormat>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-@@ -226,7 +226,7 @@
+@@ -238,7 +238,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../MediaInfoLib/Source;../../../../ZenLib/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
