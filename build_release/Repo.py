@@ -320,7 +320,7 @@ def Add_deb_package(Package, Name, Version, Arch, Distribution, Release = False)
         Freight_conf_file.close()
     else:
         # Clean old packages
-        map(os.remove, glob(os.path.join(Deb_directory, "%s_*.deb" % Name)))
+        map(os.remove, glob(os.path.join(Deb_directory, "%s_*_%s.*.deb" % (Name, Deb_archs.get(Arch, Arch)))))
 
     # Import deb file
     Command = [ "freight-add", "-c", os.path.join(Cache_directory, "conf", "freight.conf"),
@@ -370,6 +370,14 @@ if Configuration.get("log", False):
     OUT = open(os.devnull, 'w')
 else:
     OUT = sys.stdout
+
+# OBS to Debian archituctures map
+Deb_archs = {
+    "i586": "i386",
+    "x86_64": "amd64",
+    "armv7l": "armhf",
+    "aarch64": "arm64"
+}
 
 # Command line invocation
 if __name__ == "__main__":
