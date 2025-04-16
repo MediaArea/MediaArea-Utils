@@ -150,7 +150,7 @@ function _unix_gui () {
             rm -f GNU/mediainfo.dsc GNU/mediainfo.spec GNU/PKGBUILD
             rm -fr OBS Solaris
             rm -fr MSVC2008 MSVC2010 MSVC2012 MSVC2013
-            rm -fr BCB QMake CodeBlocks
+            rm -fr BCB CodeBlocks
         cd ..
         # Don’t delete CLI source, required for command-line parsing
     cd ..
