@@ -63,8 +63,8 @@ RUN DEBIAN_FRONTEND=noninteractive update-alternatives --set php /usr/bin/php7.3
 #  mysql-connector-python is needed by handleOBSResults.py db plugin
 RUN pip3 install mysql-connector-python
 
-#RUN curl -LO http://fr.archive.ubuntu.com/ubuntu/pool/main/a/automake-1.16/automake_1.16.5-1.3_all.deb
-#RUN DEBIAN_FRONTEND=noninteractive dpkg -i automake_1.16.5-1.3_all.deb
+RUN curl -LO http://fr.archive.ubuntu.com/ubuntu/pool/main/a/automake-1.16/automake_1.16.5-1.3_all.deb
+RUN DEBIAN_FRONTEND=noninteractive dpkg -i automake_1.16.5-1.3_all.deb
 
 # restore bash as default shell
 RUN echo dash dash/sh boolean false | debconf-set-selections

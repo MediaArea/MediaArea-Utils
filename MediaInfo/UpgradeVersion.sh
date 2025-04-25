@@ -48,6 +48,8 @@ function btask.UpgradeVersion.run () {
     MI_files[((index++))]="Project/OBS/deb9.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb7.debian/changelog"
     MI_files[((index++))]="Project/OBS/deb6.debian/changelog"
+    MI_files[((index++))]="Project/Snap/mediainfo/snapcraft.yaml"
+    MI_files[((index++))]="Project/Snap/mediainfo-gui/snapcraft.yaml"
     # For release mode only
     #MI_files[((index++))]="debian/control"
     #MI_files[((index++))]="Project/OBS/deb9.debian/control"
@@ -106,14 +108,6 @@ function btask.UpgradeVersion.run () {
     echo
     echo "Update ${MI_source}/Project/AppImage/Recipe.sh"
     updateFile "VERSION=$Version_old_escaped" "VERSION=$Version_new" "${MI_source}"/Project/AppImage/Recipe.sh
-
-    echo
-    echo "Update ${MI_source}/Project/Snap/mediainfo/snapcraft.yaml"
-    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MI_source}"/Project/Snap/mediainfo/snapcraft.yaml
-
-    echo
-    echo "Update ${MI_source}/Project/Snap/mediainfo-gui/snapcraft.yaml"
-    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MI_source}"/Project/Snap/mediainfo-gui/snapcraft.yaml
 
     echo
     echo "Update ${MI_source}/Project/GNU/PKGBUILD"
