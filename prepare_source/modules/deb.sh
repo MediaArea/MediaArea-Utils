@@ -68,7 +68,7 @@ function deb_obs () {
     local deb9="xUbuntu_16.04 xUbuntu_18.04"
     local deb10="xUbuntu_19.04 xUbuntu_20.04 xUbuntu_21.04 Debian_10 Raspbian_10"
     local deb11="Debian_11 Raspbian_11 xUbuntu_22.04 Ubuntu_22.10"
-    local deb12="Ubuntu_23.04 Ubuntu_23.10 Debian_12 Raspbian_12 Ubuntu_24.04 Ubuntu_24.10"
+    local deb12="Ubuntu_23.04 Ubuntu_23.10 Debian_12 Raspbian_12 Ubuntu_24.04 Ubuntu_24.10 Ubuntu_25.04"
 
     local Targets="$deb9 $deb10 $deb11 $deb12"
 
