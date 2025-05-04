@@ -144,19 +144,37 @@ call:Patch_MediaConch_GUI
 if NOT EXIST ..\..\%MC_SOURCES%\Qt5.9-msvc2017\ mklink /D ..\..\%MC_SOURCES%\Qt5.9-msvc2017\ %OLD_CD%\..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.9-msvc2017 || exit /b 1
 if NOT EXIST ..\..\%MC_SOURCES%\Qt5.9-msvc2017_64\ mklink /D ..\..\%MC_SOURCES%\Qt5.9-msvc2017_64\ %OLD_CD%\..\..\MediaArea-Utils-Binaries\Windows\Qt\Qt5.9-msvc2017_64 || exit /b 1
 ping 127.0.0.1 -n 5 -w 10000 > NUL
+set OLD_PATH=%PATH%
+set OLD_LINK=%LINK%
+set OLD_IncludePath=%IncludePath%
+
 cd ..\..\%MC_SOURCES%\MediaConch\Project\MSVC2022
+set QT_ROOT_DIR=%OLD_CD%\..\..\%MC_SOURCES%\Qt5.9-msvc2017\5.9\msvc2017
+set PATH=%QT_ROOT_DIR%\bin;%OLD_PATH%
+set LINK=/LIBPATH:%QT_ROOT_DIR%\lib
+set IncludePath=%QT_ROOT_DIR%\include\QtGui;%QT_ROOT_DIR%\include\QtWidgets;%QT_ROOT_DIR%\include\QtCore;%QT_ROOT_DIR%\include\QtWebEngine;%QT_ROOT_DIR%\include\QtWebEngineWidgets;%QT_ROOT_DIR%\include\QtWebEngineCore;%QT_ROOT_DIR%\include\QtWebChannel;%QT_ROOT_DIR%\include;%OLD_IncludePath%
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=Win32
 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
     exit /b 1
 )
+
+set QT_ROOT_DIR=%OLD_CD%\..\..\%MC_SOURCES%\Qt5.9-msvc2017_64\5.9\msvc2017_64
+set PATH=%QT_ROOT_DIR%\bin;%OLD_PATH%
+set LINK=/LIBPATH:%QT_ROOT_DIR%\lib
+set IncludePath=%QT_ROOT_DIR%\include\QtGui;%QT_ROOT_DIR%\include\QtWidgets;%QT_ROOT_DIR%\include\QtCore;%QT_ROOT_DIR%\include\QtWebEngine;%QT_ROOT_DIR%\include\QtWebEngineWidgets;%QT_ROOT_DIR%\include\QtWebEngineCore;%QT_ROOT_DIR%\include\QtWebChannel;%QT_ROOT_DIR%\include;%OLD_IncludePath%
 MSBuild /maxcpucount:1 /verbosity:quiet /p:Configuration=Release;Platform=x64
 ping 127.0.0.1 -n 5 -w 10000 > NUL
 if %ERRORLEVEL% NEQ 0 (
     cd %OLD_CD%
     exit /b 1
 )
+
+set PATH=%OLD_PATH%
+set LINK=%OLD_LINK%
+set IncludePath=%OLD_IncludePath%
+
 cd %OLD_CD%
 
 rem *** libcurl ***
