@@ -1,0 +1,18 @@
+---
+- name: Create Qt directory
+  win_file:
+    path: C:\Qt
+    state: directory
+
+- name: Get aqt
+  win_shell: |
+    Invoke-WebRequest -Uri https://github.com/miurahr/aqtinstall/releases/latest/download/aqt_x64.exe -OutFile C:\Qt\aqt.exe
+  args:
+    executable: powershell
+
+- name: Install Qt versions and modules
+  win_shell: |
+      & C:\Qt\aqt.exe install-qt --outputdir C:\Qt windows desktop {{ item.version }} {{ item.arch }} {%+ if 'modules' in item %} -m {{ item.modules | join(' ') }} {% endif %}
+  args:
+    executable: powershell
+  loop: "{{ qt_versions }}"

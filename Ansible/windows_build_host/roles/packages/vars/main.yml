@@ -1,0 +1,10 @@
+---
+packages_list:
+  - git
+  - 7zip
+  - meson
+  - cmake
+  - ninja
+  - python
+  - nsis.portable
+  - microsoft-openjdk-21

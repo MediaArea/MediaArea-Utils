@@ -1,0 +1,6 @@
+---
+  - hosts: all
+    roles:
+      - packages
+      - visualstudio2022
+      - qt
