@@ -1,0 +1,5 @@
+---
+- name: Install main packages with chocolatey
+  win_chocolatey:
+    name: " {{ item }}"
+  loop: "{{ packages_list }}"

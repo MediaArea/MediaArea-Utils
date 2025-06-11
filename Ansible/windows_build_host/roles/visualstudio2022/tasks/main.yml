@@ -1,0 +1,7 @@
+---
+- name: Install Visual Studio 2022 Community with Chocolatey
+  win_chocolatey:
+    name: visualstudio2022community
+    state: present
+    package_params: --includeRecommended --passive --locale en-US --add {{ visualstudio2022_workloads | join(' --add ') }} --add {{ visualstudio2022_components | join(' --add ') }}
+    force: true

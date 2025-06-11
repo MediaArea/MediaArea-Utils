@@ -1,0 +1,16 @@
+---
+qt_versions:
+  - version: "5.15.2"
+    arch: win32_msvc2019
+    modules:
+      - qtwebengine
+  - version: "5.15.2"
+    arch: win64_msvc2019_64
+    modules:
+      - qtwebengine
+  - version: "6.4.3"
+    arch: win64_msvc2019_64
+    modules:
+      - qtwebengine
+  - version: "6.4.3"
+    arch: win64_msvc2019_arm64
