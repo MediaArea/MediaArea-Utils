@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.description="Contains all the tools needed to run MediaArea-Utils scripts \
 Tools and scripts may require additional, not included, configuration"
@@ -26,8 +26,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y wget \
                                                       doxygen \
                                                       dos2unix \
                                                       python2 \
-                                                      python-is-python2 \
-                                                      python-pexpect \
                                                       python3-pip \
                                                       python3-m2crypto \
                                                       python3-setuptools \
@@ -57,8 +55,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y wget \
 # PHP 7.3
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php7.3-cli php7.3-mbstring php7.3-curl php7.3-xml php7.3-gd php7.3-mysql composer phpunit	
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php7.3-cli php7.3-mbstring php7.3-curl php7.3-xml php7.3-gd php7.3-mysql
 RUN DEBIAN_FRONTEND=noninteractive update-alternatives --set php /usr/bin/php7.3
+
+# composer
+RUN curl -L https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --1 --install-dir=/usr/local/bin --filename=composer
 
 #  mysql-connector-python is needed by handleOBSResults.py db plugin
 RUN pip3 install mysql-connector-python
