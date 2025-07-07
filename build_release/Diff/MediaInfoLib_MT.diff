@@ -1,5 +1,5 @@
 diff --git a/Project/MSVC2022/Dll/MediaInfoDll.vcxproj b/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
-index 6dd27e6e0..4b22bbc83 100644
+index 5e8d0cd6e..1ba6cf320 100644
 --- a/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
 +++ b/Project/MSVC2022/Dll/MediaInfoDll.vcxproj
 @@ -180,7 +180,7 @@
@@ -11,7 +11,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -194,7 +194,7 @@
+@@ -195,7 +195,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -20,7 +20,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -208,7 +208,7 @@
+@@ -210,7 +210,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -29,7 +29,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -222,7 +222,7 @@
+@@ -225,7 +225,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;MEDIAINFO_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -38,7 +38,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <SDLCheck>true</SDLCheck>
-@@ -236,7 +236,7 @@
+@@ -240,7 +240,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -47,7 +47,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <Optimization>Disabled</Optimization>
        <LanguageStandard>stdcpp20</LanguageStandard>
-@@ -251,7 +251,7 @@
+@@ -255,7 +255,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -56,7 +56,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -273,7 +273,7 @@
+@@ -278,7 +278,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -65,7 +65,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -293,7 +293,7 @@
+@@ -299,7 +299,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -74,7 +74,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -315,7 +315,7 @@
+@@ -322,7 +322,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -83,7 +83,7 @@ index 6dd27e6e0..4b22bbc83 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <OmitFramePointers>true</OmitFramePointers>
        <DebugInformationFormat>None</DebugInformationFormat>
-@@ -337,7 +337,7 @@
+@@ -345,7 +345,7 @@
      <ClCompile>
        <AdditionalIncludeDirectories>../../../Source;../../../../ZenLib/Source;../../../../Shared/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
        <PreprocessorDefinitions>MEDIAINFODLL_EXPORTS_NODLLEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -281,94 +281,94 @@ index 88c3ad3ee..429b35014 100644
        <GuardEHContMetadata>true</GuardEHContMetadata>
      </ClCompile>
 diff --git a/Project/MSVC2022/Library/MediaInfoLib.vcxproj b/Project/MSVC2022/Library/MediaInfoLib.vcxproj
-index 575801130..0ea75d7f8 100644
+index 0f918fbd6..1aa7f80ab 100644
 --- a/Project/MSVC2022/Library/MediaInfoLib.vcxproj
 +++ b/Project/MSVC2022/Library/MediaInfoLib.vcxproj
 @@ -180,7 +180,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -192,7 +192,7 @@
+@@ -193,7 +193,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -204,7 +204,7 @@
+@@ -206,7 +206,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -216,7 +216,7 @@
+@@ -219,7 +219,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
-@@ -228,7 +228,7 @@
+@@ -232,7 +232,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
        <Optimization>Disabled</Optimization>
-@@ -243,7 +243,7 @@
+@@ -247,7 +247,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -258,7 +258,7 @@
+@@ -263,7 +263,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -272,7 +272,7 @@
+@@ -278,7 +278,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -288,7 +288,7 @@
+@@ -295,7 +295,7 @@
    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
-@@ -305,7 +305,7 @@
+@@ -313,7 +313,7 @@
      <ClCompile>
-       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+       <AdditionalIncludeDirectories>../../../Source;../../../Source/ThirdParty/aes-gladman;../../../Source/ThirdParty/hmac-gladman;../../../Source/ThirdParty/sha1-gladman;../../../Source/ThirdParty/sha2-gladman;../../../Source/ThirdParty/tinyxml2;../../../Source/ThirdParty/md5;../../../Source/ThirdParty/base64;../../../Source/ThirdParty;../../../../ZenLib/Source;../../../../ZLib;../../../../curl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <PreprocessorDefinitions>MEDIAINFO_MPEGTS_DUPLICATE_NO;MEDIAINFO_LIBCURL_DLL_RUNTIME;MEDIAINFO_GRAPHVIZ_DLL_RUNTIME;FMT_UNICODE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 -      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 +      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
