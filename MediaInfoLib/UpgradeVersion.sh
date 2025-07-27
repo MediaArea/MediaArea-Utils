@@ -122,6 +122,15 @@ function btask.UpgradeVersion.run () {
         "%global libmediainfo_version_minor\1$Version_new_minor" \
         "${MIL_source}/Project/GNU/libmediainfo.spec"
 
+    echo "Update Source/Resource/JavaScript/package.json ..."
+    if [ "$Version_new_build" -ne 0 ] ; then
+        updateFile "\"version\": \"[0-9.-]*\"" "\"version\": \"$(expr $Version_new_major + 0).$(expr $Version_new_minor + 0).$(expr $Version_new_patch + 0)-$(expr $Version_new_build + 0)\"" "${MIL_source}"/Project/JavaScript/package.json
+    elif [ "$Version_new_patch" -ne 0 ] ; then
+        updateFile "\"version\": \"[0-9.-]*\"" "\"version\": \"$(expr $Version_new_major + 0).$(expr $Version_new_minor + 0).$(expr $Version_new_patch + 0)\"" "${MIL_source}"/Project/JavaScript/package.json
+    else
+        updateFile "\"version\": \"[0-9.-]*\"" "\"version\": \"$(expr $Version_new_major + 0).$(expr $Version_new_minor + 0)\"" "${MIL_source}"/Project/JavaScript/package.json
+    fi
+
     # Update ZenLib required version
     if [ $(b.opt.get_opt --zl-version) ]; then
         echo
