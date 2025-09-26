@@ -60,7 +60,7 @@ RUN DEBIAN_FRONTEND=noninteractive update-alternatives --set php /usr/bin/php7.3
 
 # composer
 RUN curl -L https://getcomposer.org/installer -o composer-setup.php
-RUN php composer-setup.php --1 --install-dir=/usr/local/bin --filename=composer
+RUN php composer-setup.php --2.2 --install-dir=/usr/local/bin --filename=composer
 
 #  mysql-connector-python is needed by handleOBSResults.py db plugin
 RUN pip3 install mysql-connector-python
