@@ -4,7 +4,6 @@ import subprocess
 import datetime
 import os.path
 import fnmatch
-import pexpect
 import shutil
 import sys
 import os
