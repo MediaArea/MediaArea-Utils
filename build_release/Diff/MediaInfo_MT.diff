@@ -105,3 +105,61 @@ index d0f336b92..3c80a394c 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <DebugInformationFormat>None</DebugInformationFormat>
      </ClCompile>
+diff --git a/Project/MSVC2022/PreRelease/PreRelease.vcxproj b/Project/MSVC2022/PreRelease/PreRelease.vcxproj
+index e52118d49..d13a3f5ee 100644
+--- a/Project/MSVC2022/PreRelease/PreRelease.vcxproj
++++ b/Project/MSVC2022/PreRelease/PreRelease.vcxproj
+@@ -123,7 +123,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -140,7 +140,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -155,7 +155,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -170,7 +170,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -187,7 +187,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
+@@ -204,7 +204,7 @@
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+       <AdditionalIncludeDirectories>..\..\..\Source;..\..\..\..\ZenLib\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+     </ClCompile>
+     <Link>
+       <SubSystem>Console</SubSystem>
