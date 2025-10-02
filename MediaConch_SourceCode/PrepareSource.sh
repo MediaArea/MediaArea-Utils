@@ -48,7 +48,7 @@ function _get_source () {
     cd "$WDir"/repos
 
     # zlib, libxml2, libxslt, jansson, libevent, sqlite
-    git clone --depth 1 https://github.com/MediaArea/zlib.git
+    git clone --depth 1 https://github.com/MediaArea/zlib.git -b develop
     git clone --depth 1 https://gitlab.gnome.org/GNOME/libxml2.git
     git clone --depth 1 https://gitlab.gnome.org/GNOME/libxslt.git
     git clone --depth 1 https://github.com/MediaArea/jansson.git
