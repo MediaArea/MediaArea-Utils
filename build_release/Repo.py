@@ -105,8 +105,12 @@ def Create_repo_deb(Path, Repo, Release = False):
     Control_file = Control_file.replace("VERSION_FULL", Version)
 
     Postinst_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_postinst_template"), "r")
-    Postinst_file =  Postinst_file_template.read()
+    Postinst_file = Postinst_file_template.read()
     Postinst_file_template.close()
+
+    Compat_file_template = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_compat_template"), "r")
+    Compat_file = Compat_file_template.read()
+    Compat_file_template.close()
 
     Debian_releases = ""
     for Debian_version, Debian_codename in Configuration["Debian_names"]:
@@ -150,8 +154,6 @@ def Create_repo_deb(Path, Repo, Release = False):
     Postrm_file_template.close()
 
     Postrm_file = Postrm_file.replace("REPO_NAME", Repo)
-
-    Compat_file = "5"
 
     Build_root = "/tmp"
     Build_dir = "repo-%s_%s_all" % (Repo, Version)
@@ -201,13 +203,11 @@ def Create_repo_deb(Path, Repo, Release = False):
     Destination = open(Install_filename, "w")
     Destination.write(Install_file)
     Destination.close()
-    os.chmod(Install_filename, 0755)
 
     # Add compat file
     Destination = open(Compat_filename, "w")
     Destination.write(Compat_file)
     Destination.close()
-
 
     # Add rules
     shutil.copy(os.path.join(os.path.dirname(os.path.realpath(__file__)), "repo_templates", "deb_rules_template"), Rules_filename)
