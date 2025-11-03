@@ -2,9 +2,16 @@
 packages_list:
   - git
   - 7zip
+  - nsis
+  - nasm
   - meson
   - cmake
   - ninja
   - python
-  - nsis.portable
+  - wixtoolset
   - microsoft-openjdk-21
+
+ packages_path:
+   - C:\Program Files (x86)\WiX Toolset v3.14\bin
+   - C:\Program Files (x86)\NSIS
+   - C:\Program Files\NASM

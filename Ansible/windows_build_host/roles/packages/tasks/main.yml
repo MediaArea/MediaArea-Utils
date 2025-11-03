@@ -3,3 +3,7 @@
   win_chocolatey:
     name: " {{ item }}"
   loop: "{{ packages_list }}"
+
+- name: Ensure all tools are in the PATH
+  win_path:
+    elements: "{{ packages_path }}"
