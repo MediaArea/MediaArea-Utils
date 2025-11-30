@@ -374,6 +374,50 @@ index 0f918fbd6..1aa7f80ab 100644
        <MultiProcessorCompilation>true</MultiProcessorCompilation>
        <PrecompiledHeader>Use</PrecompiledHeader>
        <PrecompiledHeaderFile>MediaInfo/PreComp.h</PrecompiledHeaderFile>
+diff --git a/Project/MSVC2022/PreRelease/PreRelease.vcxproj b/Project/MSVC2022/PreRelease/PreRelease.vcxproj
+index f40df449a..2d2e4f462 100644
+--- a/Project/MSVC2022/PreRelease/PreRelease.vcxproj
++++ b/Project/MSVC2022/PreRelease/PreRelease.vcxproj
+@@ -148,6 +148,7 @@
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>true</SDLCheck>
+       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+     </ClCompile>
+@@ -161,6 +162,7 @@
+       <WarningLevel>Level3</WarningLevel>
+       <SDLCheck>true</SDLCheck>
+       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+     </ClCompile>
+@@ -174,6 +176,7 @@
+       <WarningLevel>Level3</WarningLevel>
+       <SDLCheck>true</SDLCheck>
+       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+     </ClCompile>
+@@ -189,6 +192,7 @@
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>true</SDLCheck>
+       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+     </ClCompile>
+@@ -204,6 +208,7 @@
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>true</SDLCheck>
+       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+       <ConformanceMode>true</ConformanceMode>
+       <LanguageStandard>stdcpp23</LanguageStandard>
+     </ClCompile>
 diff --git a/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj b/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj
 index f6b4882f6..bbba6ce48 100644
 --- a/Project/MSVC2022/RegressionTest/RegressionTest.vcxproj
