@@ -113,6 +113,15 @@ function btask.UpgradeVersion.run () {
     else
         updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_x64.nsi
     fi
+    echo "Update Source/Install/MediaInfo_DLL_Windows_ARM64.nsi ..."
+    updateFile $Version_old $Version_new "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_ARM64.nsi
+    if [ "$Version_new_build" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\"" "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_ARM64.nsi
+    elif [ "$Version_new_patch" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_ARM64.nsi
+    else
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" "${MIL_source}"/Source/Install/MediaInfo_DLL_Windows_ARM64.nsi
+    fi
 
     echo "Replace major/minor in ${MIL_source}/Project/GNU/libmediainfo.spec"
     updateFile "%global libmediainfo_version_major\(\s\+\)$Version_old_major" \
