@@ -26,11 +26,11 @@ if test -f %{_sysconfdir}/os-release ; then
             DIST=CentOS
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
             if test "$VERSION" -ge "9" ; then
-                DIST=RockyLinux
+                DIST=AlmaLinux
             fi
             ;;
         rocky|almalinux)
-            DIST=RockyLinux
+            DIST=AlmaLinux
             VERSION=`grep ^VERSION_ID= %{_sysconfdir}/os-release | tr -d \" | cut -d= -f2 | cut -d. -f1`
             if test "$VERSION" -eq "8" ; then
                 DIST=CentOS
@@ -42,7 +42,7 @@ if test -f %{_sysconfdir}/os-release ; then
             if test "$VERSION" -eq "8" ; then
                 DIST=CentOS
             elif test "$VERSION" -ge "9" ; then
-                DIST=RockyLinux
+                DIST=AlmaLinux
             fi
             ;;
 #        mageia)
@@ -66,7 +66,7 @@ if test -f %{_sysconfdir}/os-release ; then
                 if test "$VERSION" -eq "8" ; then
                     DIST=CentOS
                 elif test "$VERSION" -ge "9" ; then
-                    DIST=RockyLinux
+                    DIST=AlmaLinux
                 fi
             fi
             ;;
@@ -75,7 +75,7 @@ elif test -f %{_sysconfdir}/redhat-release ; then
     if grep '^Red Hat Entreprise Linux' %{_sysconfdir}/redhat-release; then
         DIST=RHEL
     elif grep '^Rocky Linux\|^AlmaLinux' %{_sysconfdir}/redhat-release ; then
-        DIST=RockyLinux
+        DIST=AlmaLinux
     elif grep '^CentOS' %{_sysconfdir}/redhat-release ; then
         DIST=CentOS
     elif grep '^Fedora' %{_sysconfdir}/redhat-release ; then
