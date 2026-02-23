@@ -95,7 +95,8 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/MSVC2022/CLI/MediaConch_CLI.rc"
     MC_files[((index++))]="Project/MSVC2022/Server/MediaConch-Server.rc"
     MC_files[((index++))]="Project/MSVC2022/GUI/MediaConch_GUI.rc"
-    MC_files[((index++))]="Project/OBS/obs_mediaconch"
+    MC_files[((index++))]="Project/MSVC2022/DLL/MediaConch_DLL.rc"
+    MC_files[((index++))]="Project/Qt/MediaConch.rc"
 
     for MC_file in ${MC_files[@]}
     do
@@ -122,6 +123,8 @@ function btask.UpgradeVersion.run () {
     MC_files[((index++))]="Project/MSVC2022/CLI/MediaConch_CLI.rc"
     MC_files[((index++))]="Project/MSVC2022/Server/MediaConch-Server.rc"
     MC_files[((index++))]="Project/MSVC2022/GUI/MediaConch_GUI.rc"
+    MC_files[((index++))]="Project/MSVC2022/DLL/MediaConch_DLL.rc"
+    MC_files[((index++))]="Project/Qt/MediaConch.rc"
 
     for MC_file in ${MC_files[@]}
     do
@@ -131,10 +134,14 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update Source/Install/MediaConch_GUI_Windows.nsi ..."
-    updateFile $Version_old_major\.$Version_old_minor $Version_new_major.$Version_new_minor "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
-    updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_old_patch\.0\"" \
-        "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\.$Version_new_patch\.0\"" \
-        "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
+    updateFile $Version_old $Version_new "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
+    if [ "$Version_new_build" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}\"" "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
+    elif [ "$Version_new_patch" -ne 0 ] ; then
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_build\"" "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
+    else
+        updateFile "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}[0-9.]*\"" "!define PRODUCT_VERSION4 \"\${PRODUCT_VERSION}.$Version_new_patch.$Version_new_build\"" "${MC_source}"/Source/Install/MediaConch_GUI_Windows.nsi
+    fi
 
     # Update MediaInfoLib required version
     if [ $(b.opt.get_opt --mil-version) ]; then
