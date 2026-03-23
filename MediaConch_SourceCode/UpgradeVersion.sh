@@ -64,15 +64,15 @@ function btask.UpgradeVersion.run () {
 
     echo
     echo "Update ${MC_source}/Project/Snap/mediaconch/snapcraft.yaml"
-    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch/snapcraft.yaml
+    updateFile "version: '$Version_old_escaped'" "version: '$Version_new'" "${MC_source}"/Project/Snap/mediaconch/snapcraft.yaml
 
     echo
     echo "Update ${MC_source}/Project/Snap/mediaconch-server/snapcraft.yaml"
-    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch-server/snapcraft.yaml
+    updateFile "version: '$Version_old_escaped'" "version: '$Version_new'" "${MC_source}"/Project/Snap/mediaconch-server/snapcraft.yaml
 
     echo
     echo "Update ${MC_source}/Project/Snap/mediaconch-gui/snapcraft.yaml"
-    updateFile "version: $Version_old_escaped" "version: $Version_new" "${MC_source}"/Project/Snap/mediaconch-gui/snapcraft.yaml
+    updateFile "version: '$Version_old_escaped'" "version: '$Version_new'" "${MC_source}"/Project/Snap/mediaconch-gui/snapcraft.yaml
 
     echo
     echo "Passage for version YY.MM.patch ..."
