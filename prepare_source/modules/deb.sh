@@ -87,6 +87,14 @@ function deb_obs () {
         update_dsc "$Output/$Filename$Version-1.debian.tar.xz" "$Output/$Filename$Version-1.dsc"
     fi
 
+    # Use deb12 target for deb13 by default
+    if [ ! -e "Project/OBS/deb13.dsc" ] ; then
+        deb12="$deb12 $deb13"
+    fi
+    # Use deb11 target for deb12 by default
+    if [ ! -e "Project/OBS/deb12.dsc" ] ; then
+        deb11="$deb11 $deb12"
+    fi
     # Use deb10 target for deb11 by default
     if [ ! -e "Project/OBS/deb11.dsc" ] ; then
         deb10="$deb10 $deb11"
