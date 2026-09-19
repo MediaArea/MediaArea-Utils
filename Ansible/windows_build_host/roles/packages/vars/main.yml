@@ -9,6 +9,7 @@ packages_list:
   - ninja
   - python
   - wixtoolset
+  - vulkan-sdk
   - strawberryperl
   - microsoft-openjdk-21
 
