@@ -41,9 +41,8 @@ function btask.UpgradeVersion.run () {
     Files[((index++))]="Project/GNU/PKGBUILD"
     Files[((index++))]="Project/Mac/Info.plist"
     Files[((index++))]="debian/changelog"
-    Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
-    Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
     Files[((index++))]="Project/MSVC2022/CLI/RAWcooked.rc"
+    Files[((index++))]="Project/MSVC2026/CLI/RAWcooked.rc"
     Files[((index++))]="Source/Lib/Compressed/RAWcooked/RAWcooked.cpp"
     Files[((index++))]="Source/CLI/rawcooked.1"
 
@@ -58,9 +57,8 @@ function btask.UpgradeVersion.run () {
     echo "Passage for version AA,BB,CC,DD ..."
     unset -v Files
     index=0
-    Files[((index++))]="Project/MSVC2017/CLI/RAWcooked.rc"
-    Files[((index++))]="Project/MSVC2019/CLI/RAWcooked.rc"
     Files[((index++))]="Project/MSVC2022/CLI/RAWcooked.rc"
+    Files[((index++))]="Project/MSVC2026/CLI/RAWcooked.rc"
 
     for File in ${Files[@]}
     do
